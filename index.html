@@ -264,7 +264,6 @@ body::before{
     display:flex;
     flex-direction:column;
     padding:22px;
-    text-decoration:none;
     color:inherit;
     min-height:100%;
     height:100%;
@@ -329,8 +328,7 @@ body::before{
     display:flex;
     flex-wrap:wrap;
     gap:8px;
-    margin-top:auto;
-    padding-top:20px;
+    margin-top:18px;
 }
 
 .tool-meta span{
@@ -341,6 +339,50 @@ body::before{
     font-size:10px;
     letter-spacing:.12em;
     text-transform:uppercase;
+}
+
+.tool-links{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:auto;
+    padding-top:20px;
+}
+
+.tool-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.05);
+    color:var(--text);
+    text-decoration:none;
+    font-size:10px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    transition:transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.tool-link:hover{
+    transform:translateY(-1px);
+    border-color:rgba(255,255,255,.24);
+    background:rgba(255,255,255,.08);
+}
+
+.tool-link.guide-link{
+    background:color-mix(in srgb, var(--card-accent) 16%, rgba(255,255,255,.04));
+    border-color:color-mix(in srgb, var(--card-accent) 48%, rgba(255,255,255,.14));
+    color:var(--card-accent);
+    font-weight:700;
+    box-shadow:0 10px 24px color-mix(in srgb, var(--card-accent) 18%, transparent);
+}
+
+.tool-link.guide-link:hover{
+    background:color-mix(in srgb, var(--card-accent) 24%, rgba(255,255,255,.05));
+    border-color:color-mix(in srgb, var(--card-accent) 70%, rgba(255,255,255,.14));
+    color:#fff7e8;
 }
 
 .tool-site{
@@ -462,7 +504,7 @@ body::before{
         </div>
     </div>
         <div class="tool-grid" id="tools">
-            <a class="tool-card tool-site" href="Data_Consultant_Website_v2_10.html">
+            <div class="tool-card tool-site">
                 <div class="tool-icon">🌐</div>
                 <div class="tool-tag">Portal</div>
                 <h3>DC Resource Site</h3>
@@ -472,9 +514,12 @@ body::before{
                     <span>Procedures</span>
                     <span>Launch Pads</span>
                 </div>
-            </a>
+                <div class="tool-links">
+                    <a class="tool-link" href="Data_Consultant_Website_v2_10.html">Launch Portal</a>
+                </div>
+            </div>
 
-            <a class="tool-card tool-main" href="App - Main Checklist Generator.html">
+            <div class="tool-card tool-main">
                 <div class="tool-icon">✅</div>
                 <div class="tool-tag">Implementation App</div>
                 <h3>Main Checklist Generator</h3>
@@ -484,9 +529,13 @@ body::before{
                     <span>Dashboard</span>
                     <span>Calendar</span>
                 </div>
-            </a>
+                <div class="tool-links">
+                    <a class="tool-link" href="App - Main Checklist Generator.html">Launch App</a>
+                    <a class="tool-link guide-link" href="Main_Checklist_Generator_How_To_Guide.docx">📘 Open Guide</a>
+                </div>
+            </div>
 
-            <a class="tool-card tool-payroll" href="App - Payroll Checklist Generator.html">
+            <div class="tool-card tool-payroll">
                 <div class="tool-icon">💳</div>
                 <div class="tool-tag">Payroll App</div>
                 <h3>Payroll Checklist Generator</h3>
@@ -496,7 +545,11 @@ body::before{
                     <span>Testing</span>
                     <span>Go-Live</span>
                 </div>
-            </a>
+                <div class="tool-links">
+                    <a class="tool-link" href="App - Payroll Checklist Generator.html">Launch App</a>
+                    <a class="tool-link guide-link" href="Payroll_Checklist_Generator_Guide.docx">📘 Open Guide</a>
+                </div>
+            </div>
         </div>
     </section>
 
