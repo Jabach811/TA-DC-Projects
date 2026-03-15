@@ -4,114 +4,506 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Data Consultant Toolkit</title>
-
 <style>
+:root{
+    --bg:#0d0f12;
+    --bg-2:#17181b;
+    --panel:#17191d;
+    --panel-2:#1f2329;
+    --line:rgba(255,255,255,.10);
+    --line-strong:rgba(255,255,255,.18);
+    --text:#f4efe5;
+    --muted:#b3ab9d;
+    --soft:#7f7a72;
+    --gold:#f0b64a;
+    --blue:#6a8cff;
+    --green:#44d4ad;
+    --violet:#8d74ff;
+    --shadow:0 28px 70px rgba(0,0,0,.34);
+}
 
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
     margin:0;
-    font-family:Segoe UI, Arial, sans-serif;
-    background:#0f172a;
-    color:white;
+    min-height:100vh;
+    color:var(--text);
+    font-family:"Segoe UI",Tahoma,sans-serif;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(240,182,74,.12), transparent 24%),
+        radial-gradient(circle at 100% 20%, rgba(106,140,255,.10), transparent 26%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+    overflow-x:hidden;
 }
 
-.header{
-    text-align:center;
-    padding:60px 20px 30px 20px;
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        linear-gradient(135deg, rgba(255,255,255,.03) 0 1px, transparent 1px 38px),
+        linear-gradient(0deg, rgba(255,255,255,.02), rgba(255,255,255,.02));
+    background-size:38px 38px, auto;
+    mask-image:radial-gradient(circle at center, black 58%, transparent 100%);
+    pointer-events:none;
+    opacity:.65;
 }
 
-.header h1{
-    font-size:42px;
-    margin:0;
-    letter-spacing:1px;
+.page{
+    width:min(1380px, calc(100vw - 40px));
+    margin:0 auto;
+    position:relative;
+    z-index:1;
 }
 
-.header p{
-    color:#94a3b8;
-    margin-top:10px;
+.topband{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+    padding:22px 0 10px;
+    animation:slideDown .7s ease both;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.brand-mark{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    border:1px solid var(--line-strong);
+    background:
+        radial-gradient(circle at 30% 30%, rgba(240,182,74,.48), transparent 32%),
+        linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.03));
+    display:grid;
+    place-items:center;
+    box-shadow:0 12px 30px rgba(0,0,0,.22);
     font-size:18px;
 }
 
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:40px 20px 80px 20px;
+.brand-copy strong{
+    display:block;
+    font-size:12px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--gold);
 }
 
-.grid{
+.brand-copy span{
+    display:block;
+    margin-top:4px;
+    font-size:13px;
+    color:var(--muted);
+}
+
+.top-pills{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+
+.pill{
+    padding:10px 14px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.04);
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    backdrop-filter:blur(10px);
+}
+
+.hero{
+    margin-top:12px;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:30px;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);
+    gap:22px;
+    align-items:stretch;
 }
 
-.card{
-    background:#1e293b;
-    border-radius:14px;
-    padding:30px;
-    transition:all .2s ease;
+.hero-main,
+.tool-card{
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border-radius:28px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(12px);
+}
+
+.hero-main{
+    padding:42px 40px 34px;
+    position:relative;
+    overflow:hidden;
+    animation:riseIn .75s ease both;
+}
+
+.hero-main::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at 78% 18%, rgba(106,140,255,.18), transparent 22%),
+        radial-gradient(circle at 14% 80%, rgba(68,212,173,.11), transparent 20%);
+    pointer-events:none;
+}
+
+.eyebrow{
+    position:relative;
+    z-index:1;
+    font-size:11px;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--gold);
+}
+
+.hero h1{
+    position:relative;
+    z-index:1;
+    margin:18px 0 12px;
+    font-size:clamp(52px, 7vw, 92px);
+    line-height:.9;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+}
+
+.hero h1 span{color:var(--gold)}
+
+.hero-copy{
+    position:relative;
+    z-index:1;
+    max-width:760px;
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.75;
+}
+
+.hero-actions{
+    position:relative;
+    z-index:1;
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:26px;
+}
+
+.hero-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 18px;
+    border-radius:16px;
+    border:1px solid var(--line);
     text-decoration:none;
-    color:white;
-    border:1px solid #334155;
+    transition:transform .18s ease, border-color .18s ease, background .18s ease;
 }
 
-.card:hover{
-    transform:translateY(-6px);
-    border-color:#60a5fa;
-    box-shadow:0 10px 25px rgba(0,0,0,.35);
+.hero-btn:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,255,255,.28);
 }
 
-.card h2{
-    margin-top:0;
-    font-size:22px;
+.hero-btn.primary{
+    background:var(--gold);
+    color:#1a1307;
+    border-color:transparent;
+    font-weight:700;
 }
 
-.card p{
-    color:#94a3b8;
-    font-size:15px;
+.hero-btn.secondary{
+    background:rgba(255,255,255,.04);
+    color:var(--text);
+}
+
+.hero-stats{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:14px;
+    margin-top:28px;
+}
+
+.hero-stat{
+    padding:16px 16px 14px;
+    border-radius:18px;
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.hero-stat strong{
+    display:block;
+    font-size:34px;
+    line-height:1;
+}
+
+.hero-stat span{
+    display:block;
+    margin-top:8px;
+    color:var(--muted);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+}
+
+.tool-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:18px;
+    align-content:start;
+    animation:riseIn .85s ease both;
+    grid-auto-rows:1fr;
+}
+
+.tool-card{
+    display:flex;
+    flex-direction:column;
+    padding:22px;
+    text-decoration:none;
+    color:inherit;
+    min-height:100%;
+    height:100%;
+    position:relative;
+    overflow:hidden;
+    transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.tool-card::before{
+    content:"";
+    position:absolute;
+    inset:auto -20% -40% auto;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background:var(--card-glow);
+    filter:blur(24px);
+    opacity:.35;
+    pointer-events:none;
+}
+
+.tool-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(255,255,255,.24);
+    box-shadow:0 24px 54px rgba(0,0,0,.26);
+}
+
+.tool-icon{
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.08);
+}
+
+.tool-tag{
+    margin-top:18px;
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--card-accent);
+}
+
+.tool-card h3{
+    margin:14px 0 10px;
+    font-size:28px;
+    line-height:1.02;
+    text-transform:uppercase;
+}
+
+.tool-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.75;
+}
+
+.tool-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:auto;
+    padding-top:20px;
+}
+
+.tool-meta span{
+    padding:8px 10px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    color:var(--soft);
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+}
+
+.tool-site{
+    --card-accent:var(--blue);
+    --card-glow:rgba(106,140,255,.34);
+}
+
+.tool-main{
+    --card-accent:var(--gold);
+    --card-glow:rgba(240,182,74,.32);
+}
+
+.tool-payroll{
+    --card-accent:var(--green);
+    --card-glow:rgba(68,212,173,.30);
 }
 
 .footer{
-    text-align:center;
-    color:#64748b;
-    font-size:14px;
-    padding-bottom:30px;
+    padding:30px 0 40px;
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    color:var(--soft);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
 }
 
+@keyframes riseIn{
+    from{opacity:0;transform:translateY(18px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes slideDown{
+    from{opacity:0;transform:translateY(-10px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+@media (max-width: 1100px){
+    .hero{
+        grid-template-columns:1fr;
+    }
+    .tool-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width: 720px){
+    .page{
+        width:min(100vw - 24px, 100%);
+    }
+    .topband{
+        padding-top:16px;
+    }
+    .hero-main,
+    .hero-side,
+    .tool-card,
+    .summary-panel{
+        border-radius:22px;
+    }
+    .hero-main{
+        padding:28px 24px 24px;
+    }
+    .hero h1{
+        font-size:48px;
+    }
+    .hero-stats{
+        grid-template-columns:1fr;
+    }
+    .footer{
+        padding-bottom:28px;
+        font-size:11px;
+    }
+}
 </style>
 </head>
-
 <body>
+<div class="page">
+    <div class="topband">
+        <div class="brand">
+            <div class="brand-mark">DC</div>
+            <div class="brand-copy">
+                <strong>Data Consultant</strong>
+                <span>Internal toolkit and launch hub</span>
+            </div>
+        </div>
+        <div class="top-pills">
+            <div class="pill">Resource Portal</div>
+            <div class="pill">Implementation App</div>
+            <div class="pill">Payroll App</div>
+        </div>
+    </div>
 
-<div class="header">
-<h1>Data Consultant Toolkit</h1>
-<p>Internal tools for implementation, payroll processing, and project workflows</p>
+    <section class="hero">
+        <div class="hero-main">
+            <div class="eyebrow">Internal Operations Launcher</div>
+            <h1>Data Consultant <span>Toolkit</span></h1>
+            <div class="hero-copy">
+                Launch the core Data Consultant workspace from one modern landing page. The portal, implementation checklist generator, and payroll checklist generator stay grouped here so the team can move faster without digging through folders.
+            </div>
+            <div class="hero-actions">
+                <a class="hero-btn primary" href="#tools">Open Tool Hub</a>
+                <a class="hero-btn secondary" href="Data_Consultant_Website_v2_10.html">Enter Resource Site</a>
+            </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <strong>3</strong>
+                <span>Primary Launch Points</span>
+            </div>
+                <div class="hero-stat">
+                    <strong>1</strong>
+                    <span>Shared DC Workspace</span>
+                </div>
+                <div class="hero-stat">
+                    <strong>Live</strong>
+                <span>Standalone HTML Apps</span>
+            </div>
+        </div>
+    </div>
+        <div class="tool-grid" id="tools">
+            <a class="tool-card tool-site" href="Data_Consultant_Website_v2_10.html">
+                <div class="tool-icon">🌐</div>
+                <div class="tool-tag">Portal</div>
+                <h3>DC Resource Site</h3>
+                <p>Main Data Consultant portal for documentation, walkthroughs, process references, and quick-launch internal tools.</p>
+                <div class="tool-meta">
+                    <span>Reference Hub</span>
+                    <span>Procedures</span>
+                    <span>Launch Pads</span>
+                </div>
+            </a>
+
+            <a class="tool-card tool-main" href="App - Main Checklist Generator.html">
+                <div class="tool-icon">✅</div>
+                <div class="tool-tag">Implementation App</div>
+                <h3>Main Checklist Generator</h3>
+                <p>Generate implementation plans, manage live checklist execution, monitor due dates, and work from dashboards, vaults, and calendar views.</p>
+                <div class="tool-meta">
+                    <span>Checklist</span>
+                    <span>Dashboard</span>
+                    <span>Calendar</span>
+                </div>
+            </a>
+
+            <a class="tool-card tool-payroll" href="App - Payroll Checklist Generator.html">
+                <div class="tool-icon">💳</div>
+                <div class="tool-tag">Payroll App</div>
+                <h3>Payroll Checklist Generator</h3>
+                <p>Create payroll onboarding checklists, manage vendor setup work, and track payroll implementation tasks in a dedicated app shell.</p>
+                <div class="tool-meta">
+                    <span>Vendor Setup</span>
+                    <span>Testing</span>
+                    <span>Go-Live</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <div class="footer">
+        <div>Data Consultant Workspace</div>
+        <div>Internal Tools Launcher</div>
+    </div>
 </div>
-
-<div class="container">
-
-<div class="grid">
-
-<a class="card" href="Data_Consultant_Website_v2_10.html">
-<h2>DC Resource Site</h2>
-<p>Main data consultant portal containing documentation, procedures, and project references.</p>
-</a>
-
-<a class="card" href="App - Main Checklist Generator.html">
-<h2>Implementation Checklist Generator</h2>
-<p>Generate implementation checklists dynamically based on plan characteristics and setup parameters.</p>
-</a>
-
-<a class="card" href="App - Payroll Checklist Generator.html">
-<h2>Payroll Checklist Generator</h2>
-<p>Create payroll onboarding and configuration checklists for new implementations.</p>
-</a>
-
-</div>
-
-</div>
-
-<div class="footer">
-Data Consultant Tools
-</div>
-
 </body>
 </html>
