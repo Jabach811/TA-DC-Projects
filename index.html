@@ -1,57 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Joel's Data Consultant Tools</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background: #f5f7fb;
-      color: #1f2937;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Consultant Toolkit</title>
 
-    h1 {
-      margin-bottom: 10px;
-    }
+<style>
 
-    p {
-      margin-bottom: 24px;
-    }
+body{
+    margin:0;
+    font-family:Segoe UI, Arial, sans-serif;
+    background:#0f172a;
+    color:white;
+}
 
-    .link-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 700px;
-    }
+.header{
+    text-align:center;
+    padding:60px 20px 30px 20px;
+}
 
-    a {
-      display: block;
-      padding: 14px 16px;
-      background: white;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      text-decoration: none;
-      color: #111827;
-      font-weight: 600;
-    }
+.header h1{
+    font-size:42px;
+    margin:0;
+    letter-spacing:1px;
+}
 
-    a:hover {
-      background: #eaf2ff;
-      border-color: #93c5fd;
-    }
-  </style>
+.header p{
+    color:#94a3b8;
+    margin-top:10px;
+    font-size:18px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:40px 20px 80px 20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:14px;
+    padding:30px;
+    transition:all .2s ease;
+    text-decoration:none;
+    color:white;
+    border:1px solid #334155;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    border-color:#60a5fa;
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
+}
+
+.card h2{
+    margin-top:0;
+    font-size:22px;
+}
+
+.card p{
+    color:#94a3b8;
+    font-size:15px;
+}
+
+.footer{
+    text-align:center;
+    color:#64748b;
+    font-size:14px;
+    padding-bottom:30px;
+}
+
+</style>
 </head>
-<body>
-  <h1>Joel's Data Consultant Tools</h1>
-  <p>Select a tool below.</p>
 
-  <div class="link-list">
-    <a href="archive/implementation-checklist-generator_7_BACKUP2.html">
-      Implementation Checklist Generator
-    </a>
-  </div>
+<body>
+
+<div class="header">
+<h1>Data Consultant Toolkit</h1>
+<p>Internal tools for implementation, payroll processing, and project workflows</p>
+</div>
+
+<div class="container">
+
+<div class="grid">
+
+<a class="card" href="Data_Consultant_Website_v2_10.html">
+<h2>DC Resource Site</h2>
+<p>Main data consultant portal containing documentation, procedures, and project references.</p>
+</a>
+
+<a class="card" href="App - Main Checklist Generator.html">
+<h2>Implementation Checklist Generator</h2>
+<p>Generate implementation checklists dynamically based on plan characteristics and setup parameters.</p>
+</a>
+
+<a class="card" href="App - Payroll Checklist Generator.html">
+<h2>Payroll Checklist Generator</h2>
+<p>Create payroll onboarding and configuration checklists for new implementations.</p>
+</a>
+
+</div>
+
+</div>
+
+<div class="footer">
+Data Consultant Tools
+</div>
+
 </body>
 </html>
