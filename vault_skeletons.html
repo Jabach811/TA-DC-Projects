@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault Page — 5 Skeleton Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0f0d0a;
+  --paper:  #f2ede4;
+  --paper2: #e8e2d6;
+  --paper3: #ddd7c9;
+  --paper4: #cfc8b5;
+  --red:    #c8290a;
+  --red2:   #a01f04;
+  --dim:    #7a7060;
+  --serif:  'Playfair Display', Georgia, serif;
+  --sans:   'IBM Plex Sans', sans-serif;
+  --brut:   'Bebas Neue', sans-serif;
+  --mono:   'IBM Plex Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #1a1614; font-family: var(--sans); }
+
+/* ── NAV BETWEEN CONCEPTS ── */
+.concept-nav {
+  position: sticky; top: 0; z-index: 999;
+  background: #0a0806; border-bottom: 1px solid #2a2420;
+  display: flex; align-items: center; gap: 0; padding: 0 24px;
+}
+.concept-nav-label {
+  font-family: var(--brut); font-size: 13px; letter-spacing: 3px;
+  color: rgba(255,255,255,.25); padding-right: 24px;
+  border-right: 1px solid #2a2420; margin-right: 4px; white-space: nowrap;
+}
+.cnav-btn {
+  font-family: var(--sans); font-size: 10px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,.3); padding: 14px 16px;
+  cursor: pointer; border: none; background: none;
+  transition: color .15s; white-space: nowrap;
+  text-decoration: none; display: block;
+}
+.cnav-btn:hover { color: var(--paper); }
+.cnav-btn.here { color: var(--red); }
+
+/* ── CONCEPT WRAPPERS ── */
+.concept { display: none; }
+.concept.active { display: block; }
+.concept-label {
+  font-family: var(--brut); font-size: 11px; letter-spacing: 4px;
+  color: rgba(255,255,255,.15); text-align: center;
+  padding: 10px; background: #0a0806;
+  border-bottom: 1px solid #1e1a16;
+}
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 1 — THE VAULT (Dark Dramatic)
+═══════════════════════════════════════════════ */
+.v1 { background: #0d0b09; }
+
+.v1-hero {
+  position: relative; overflow: hidden;
+  background: #0d0b09;
+  border-bottom: 3px solid var(--red);
+  display: grid; grid-template-columns: 1fr 340px;
+  min-height: 320px;
+}
+.v1-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 70% 50%, rgba(200,41,10,.07) 0%, transparent 70%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.02) 39px, rgba(255,255,255,.02) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.02) 39px, rgba(255,255,255,.02) 40px);
+}
+.v1-hero-left {
+  position: relative; z-index: 1;
+  padding: 52px 56px; display: flex; flex-direction: column; justify-content: center;
+  border-right: 2px solid #1e1a16;
+}
+.v1-kicker {
+  font-family: var(--sans); font-size: 9px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 18px;
+  display: flex; align-items: center; gap: 12px;
+}
+.v1-kicker::before {
+  content: ''; display: block; width: 32px; height: 1px; background: var(--red);
+}
+.v1-hero-title {
+  font-family: var(--brut); font-size: 88px; line-height: .9;
+  color: var(--paper); letter-spacing: 2px; margin-bottom: 6px;
+}
+.v1-hero-title em { color: var(--red); font-style: normal; }
+.v1-hero-sub {
+  font-family: var(--serif); font-size: 16px; font-style: italic;
+  color: rgba(255,255,255,.35); max-width: 480px; line-height: 1.7;
+  margin-top: 20px;
+}
+.v1-hero-right {
+  position: relative; z-index: 1;
+  padding: 40px 36px; display: flex; flex-direction: column;
+  justify-content: space-between; border-left: 2px solid #1e1a16;
+}
+.v1-stat-block { display: flex; flex-direction: column; gap: 24px; }
+.v1-stat { border-left: 3px solid var(--red); padding-left: 18px; }
+.v1-stat-n {
+  font-family: var(--brut); font-size: 48px; color: var(--paper);
+  line-height: 1; display: block;
+}
+.v1-stat-l {
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.25);
+}
+.v1-search {
+  display: flex; align-items: center; gap: 12px;
+  background: #1a1614; border: 1px solid #2e2a26;
+  padding: 12px 16px; margin-top: auto;
+}
+.v1-search svg { color: var(--red); flex-shrink: 0; }
+.v1-search-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--serif); font-style: italic; font-size: 13px;
+  color: rgba(255,255,255,.45);
+}
+
+/* V1 Category Strip */
+.v1-cats {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border-bottom: 3px solid #1e1a16;
+}
+.v1-cat {
+  padding: 22px 24px; border-right: 1px solid #1e1a16;
+  cursor: pointer; transition: background .15s; position: relative;
+  overflow: hidden;
+}
+.v1-cat:last-child { border-right: none; }
+.v1-cat:hover { background: #1a1614; }
+.v1-cat-icon {
+  font-size: 22px; margin-bottom: 10px; display: block;
+}
+.v1-cat-name {
+  font-family: var(--brut); font-size: 17px; letter-spacing: 2px;
+  color: var(--paper); display: block; margin-bottom: 4px;
+}
+.v1-cat-count {
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(255,255,255,.25);
+}
+.v1-cat-bar {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: var(--red); transform: scaleX(0); transform-origin: left;
+  transition: transform .2s;
+}
+.v1-cat:hover .v1-cat-bar { transform: scaleX(1); }
+
+/* V1 Main grid */
+.v1-body { display: grid; grid-template-columns: 1fr 300px; }
+.v1-main { border-right: 2px solid #1e1a16; }
+
+.v1-section-hd {
+  display: flex; align-items: center; gap: 0;
+  border-bottom: 2px solid #1e1a16; background: #100e0c;
+}
+.v1-section-hd-label {
+  font-family: var(--brut); font-size: 13px; letter-spacing: 3px;
+  color: var(--paper); padding: 12px 22px;
+  border-right: 2px solid #1e1a16;
+}
+.v1-section-hd-sub {
+  font-family: var(--serif); font-size: 11px; font-style: italic;
+  color: rgba(255,255,255,.25); padding: 0 22px; flex: 1;
+}
+.v1-section-hd-n {
+  font-family: var(--brut); font-size: 24px; color: var(--red);
+  padding: 0 22px; border-left: 2px solid #1e1a16;
+  align-self: stretch; display: flex; align-items: center;
+}
+
+.v1-cards { display: grid; grid-template-columns: repeat(3, 1fr); }
+.v1-card {
+  padding: 28px 26px; border-right: 1px solid #1e1a16;
+  border-bottom: 1px solid #1e1a16; cursor: pointer;
+  transition: background .15s;
+}
+.v1-card:hover { background: #1a1614; }
+.v1-card:nth-child(3n) { border-right: none; }
+.v1-card-tag {
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 10px; display: block;
+}
+.v1-card-title {
+  font-family: var(--serif); font-size: 15px; font-weight: 700;
+  color: var(--paper); line-height: 1.4; margin-bottom: 10px;
+}
+.v1-card-desc {
+  font-family: var(--sans); font-size: 11px; color: rgba(255,255,255,.3);
+  line-height: 1.6; margin-bottom: 16px;
+}
+.v1-card-meta {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.2);
+}
+.v1-card-meta-dot {
+  width: 4px; height: 4px; background: #2e2a26; border-radius: 50%;
+}
+
+/* V1 Sidebar */
+.v1-sidebar { padding: 0; }
+.v1-sb-block { border-bottom: 2px solid #1e1a16; padding: 24px 22px; }
+.v1-sb-title {
+  font-family: var(--brut); font-size: 13px; letter-spacing: 3px;
+  color: var(--paper); margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid #1e1a16;
+}
+.v1-featured {
+  background: var(--red); padding: 20px 22px;
+  margin-bottom: 2px; cursor: pointer;
+}
+.v1-featured-eyebrow {
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,.6); margin-bottom: 10px;
+}
+.v1-featured-title {
+  font-family: var(--serif); font-size: 17px; font-weight: 700;
+  color: #fff; line-height: 1.4;
+}
+.v1-sb-list { display: flex; flex-direction: column; gap: 0; }
+.v1-sb-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid #1e1a16; cursor: pointer;
+}
+.v1-sb-item:last-child { border-bottom: none; padding-bottom: 0; }
+.v1-sb-num {
+  font-family: var(--brut); font-size: 20px; color: #2a2420;
+  flex-shrink: 0; line-height: 1; margin-top: 2px;
+}
+.v1-sb-item-title {
+  font-family: var(--serif); font-size: 12px; color: rgba(255,255,255,.55);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 2 — EDITORIAL GRID (Magazine)
+═══════════════════════════════════════════════ */
+.v2 { background: var(--paper); }
+
+.v2-mastband {
+  background: var(--ink); color: var(--paper);
+  padding: 0; border-bottom: 4px solid var(--red);
+  display: grid; grid-template-columns: auto 1fr auto;
+}
+.v2-mb-accent {
+  background: var(--red); width: 8px;
+}
+.v2-mb-body { padding: 40px 56px; }
+.v2-mb-eyebrow {
+  font-family: var(--sans); font-size: 9px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 14px;
+}
+.v2-mb-title {
+  font-family: var(--brut); font-size: 72px; letter-spacing: 4px;
+  color: var(--paper); line-height: .92; margin-bottom: 16px;
+}
+.v2-mb-title span { color: var(--red); }
+.v2-mb-rule {
+  display: flex; align-items: center; gap: 20px;
+  font-family: var(--serif); font-size: 13px; font-style: italic;
+  color: rgba(255,255,255,.4);
+}
+.v2-mb-rule::before {
+  content: ''; display: block; width: 48px; height: 1px;
+  background: rgba(255,255,255,.2);
+}
+.v2-mb-stats {
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 0; padding: 0 48px; border-left: 2px solid #1e1a16;
+}
+.v2-mb-stat { display: flex; align-items: baseline; gap: 8px; padding: 10px 0; border-bottom: 1px solid #1e1a16; }
+.v2-mb-stat:last-child { border-bottom: none; }
+.v2-mb-stat-n { font-family: var(--brut); font-size: 36px; color: var(--red); }
+.v2-mb-stat-l { font-family: var(--sans); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.25); }
+
+/* V2 Filter Bar */
+.v2-filters {
+  display: flex; align-items: center; gap: 0;
+  border-bottom: 3px solid var(--ink); background: var(--paper2);
+  overflow-x: auto;
+}
+.v2-filter {
+  font-family: var(--brut); font-size: 13px; letter-spacing: 2px;
+  color: var(--dim); padding: 14px 22px; cursor: pointer;
+  border-right: 1px solid var(--paper3); white-space: nowrap;
+  transition: all .15s; text-decoration: none;
+}
+.v2-filter:hover { color: var(--ink); background: var(--paper3); }
+.v2-filter.on { color: var(--paper); background: var(--ink); }
+.v2-filter-count {
+  font-family: var(--mono); font-size: 9px; color: var(--red);
+  margin-left: 6px; vertical-align: super;
+}
+
+/* V2 Hero Feature */
+.v2-feature {
+  display: grid; grid-template-columns: 1fr 380px;
+  border-bottom: 3px solid var(--ink);
+}
+.v2-feature-main {
+  padding: 52px 52px 48px; border-right: 3px solid var(--ink);
+  position: relative; overflow: hidden;
+}
+.v2-feature-tag {
+  display: inline-block; background: var(--red); color: var(--paper);
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 5px 12px; margin-bottom: 20px;
+}
+.v2-feature-num {
+  font-family: var(--brut); font-size: 160px; color: var(--paper3);
+  line-height: 1; position: absolute; right: -8px; bottom: -20px;
+  pointer-events: none; user-select: none;
+}
+.v2-feature-title {
+  font-family: var(--serif); font-size: 42px; font-weight: 900;
+  line-height: 1.12; color: var(--ink); max-width: 500px;
+  margin-bottom: 18px; position: relative; z-index: 1;
+}
+.v2-feature-title em { font-style: italic; color: var(--red); }
+.v2-feature-body {
+  font-family: var(--sans); font-size: 13px; color: var(--dim);
+  line-height: 1.75; max-width: 480px; margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+.v2-feature-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--brut); font-size: 14px; letter-spacing: 2px;
+  color: var(--paper); background: var(--ink); padding: 14px 28px;
+  cursor: pointer; border: none; transition: background .15s;
+  position: relative; z-index: 1;
+}
+.v2-feature-cta:hover { background: var(--red); }
+
+.v2-feature-aside {
+  display: flex; flex-direction: column;
+}
+.v2-aside-item {
+  flex: 1; padding: 28px 28px; border-bottom: 2px solid var(--ink);
+  cursor: pointer; transition: background .15s;
+}
+.v2-aside-item:last-child { border-bottom: none; }
+.v2-aside-item:hover { background: var(--paper2); }
+.v2-aside-tag {
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 8px; display: block;
+}
+.v2-aside-title {
+  font-family: var(--serif); font-size: 16px; font-weight: 700;
+  color: var(--ink); line-height: 1.4; margin-bottom: 8px;
+}
+.v2-aside-meta {
+  font-family: var(--mono); font-size: 9px; color: var(--dim);
+}
+
+/* V2 Card Grid */
+.v2-grid-header {
+  display: flex; align-items: center;
+  border-bottom: 2px solid var(--ink); background: var(--paper2);
+}
+.v2-gh-label {
+  font-family: var(--brut); font-size: 16px; letter-spacing: 3px;
+  color: var(--ink); padding: 12px 24px; border-right: 2px solid var(--ink);
+}
+.v2-gh-sub {
+  font-family: var(--serif); font-size: 12px; font-style: italic;
+  color: var(--dim); padding: 0 24px; flex: 1;
+}
+.v2-gh-count {
+  font-family: var(--brut); font-size: 28px; color: var(--red);
+  padding: 0 24px; border-left: 2px solid var(--ink);
+  align-self: stretch; display: flex; align-items: center;
+}
+
+.v2-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-bottom: 3px solid var(--ink);
+}
+.v2-card {
+  padding: 28px 24px; border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink); cursor: pointer; transition: background .15s;
+}
+.v2-card:hover { background: var(--paper2); }
+.v2-card:nth-child(4n) { border-right: none; }
+.v2-card-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+.v2-card-tag {
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 8px; display: block;
+}
+.v2-card-title {
+  font-family: var(--serif); font-size: 15px; font-weight: 700;
+  color: var(--ink); line-height: 1.4; margin-bottom: 10px;
+}
+.v2-card-desc {
+  font-family: var(--sans); font-size: 11px; color: var(--dim);
+  line-height: 1.6; margin-bottom: 14px;
+}
+.v2-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--mono); font-size: 9px; color: var(--paper4);
+  padding-top: 12px; border-top: 1px solid var(--paper3);
+}
+.v2-card-arrow { color: var(--red); font-size: 14px; }
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 3 — TERMINAL / MONOCHROME
+═══════════════════════════════════════════════ */
+.v3 { background: #0c0f0c; }
+
+.v3-hero {
+  background: #0c0f0c; border-bottom: 1px solid #1a2a1a;
+  padding: 0; display: grid; grid-template-columns: 6px 1fr;
+}
+.v3-accent-bar { background: #2aff6a; }
+.v3-hero-body { padding: 48px 52px; }
+.v3-terminal-top {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
+}
+.v3-dot { width: 10px; height: 10px; border-radius: 50%; }
+.v3-dot-r { background: #ff5f57; }
+.v3-dot-y { background: #febc2e; }
+.v3-dot-g { background: #28c840; }
+.v3-terminal-path {
+  font-family: var(--mono); font-size: 11px;
+  color: rgba(42,255,106,.35); margin-left: 12px;
+}
+.v3-prompt {
+  font-family: var(--mono); font-size: 13px; color: rgba(42,255,106,.4);
+  margin-bottom: 6px; display: block;
+}
+.v3-hero-title {
+  font-family: var(--mono); font-size: 52px; font-weight: 600;
+  color: #2aff6a; line-height: 1; letter-spacing: -1px;
+  margin-bottom: 12px; display: block;
+}
+.v3-hero-title .v3-cursor {
+  display: inline-block; width: 3px; height: 52px;
+  background: #2aff6a; margin-left: 4px; vertical-align: top;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.v3-hero-sub {
+  font-family: var(--mono); font-size: 12px;
+  color: rgba(42,255,106,.4); margin-bottom: 32px; line-height: 1.8;
+  max-width: 540px;
+}
+.v3-search {
+  display: flex; align-items: center; gap: 0;
+  border: 1px solid #1a3a1a; max-width: 520px;
+}
+.v3-search-prefix {
+  font-family: var(--mono); font-size: 12px; color: #2aff6a;
+  padding: 12px 16px; background: #0f180f; border-right: 1px solid #1a3a1a;
+  flex-shrink: 0;
+}
+.v3-search-input {
+  flex: 1; background: #0c0f0c; border: none; outline: none;
+  font-family: var(--mono); font-size: 12px;
+  color: rgba(42,255,106,.7); padding: 12px 16px;
+}
+
+/* V3 Stat Bar */
+.v3-statbar {
+  display: flex; border-bottom: 1px solid #1a2a1a; background: #0a0d0a;
+}
+.v3-sbar-item {
+  flex: 1; padding: 16px 24px; border-right: 1px solid #1a2a1a;
+  display: flex; align-items: center; gap: 16px;
+}
+.v3-sbar-item:last-child { border-right: none; }
+.v3-sbar-n { font-family: var(--mono); font-size: 28px; font-weight: 600; color: #2aff6a; }
+.v3-sbar-l { font-family: var(--mono); font-size: 9px; color: rgba(42,255,106,.3); text-transform: uppercase; letter-spacing: 1.5px; }
+
+/* V3 Categories */
+.v3-cats {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border-bottom: 1px solid #1a2a1a;
+}
+.v3-cat {
+  padding: 20px 22px; border-right: 1px solid #1a2a1a;
+  cursor: pointer; transition: background .15s; position: relative;
+}
+.v3-cat:last-child { border-right: none; }
+.v3-cat:hover { background: #0f180f; }
+.v3-cat-num {
+  font-family: var(--mono); font-size: 9px; color: rgba(42,255,106,.3);
+  margin-bottom: 8px; display: block;
+}
+.v3-cat-name {
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  color: rgba(42,255,106,.75); display: block; margin-bottom: 4px;
+}
+.v3-cat-count {
+  font-family: var(--mono); font-size: 9px; color: rgba(42,255,106,.25);
+}
+.v3-cat-bar {
+  position: absolute; bottom: 0; left: 0; height: 2px;
+  background: #2aff6a; width: 0; transition: width .25s;
+}
+.v3-cat:hover .v3-cat-bar { width: 100%; }
+
+/* V3 Cards */
+.v3-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid #1a2a1a;
+}
+.v3-card {
+  padding: 26px 24px; border-right: 1px solid #1a2a1a;
+  border-bottom: 1px solid #1a2a1a; cursor: pointer; transition: background .15s;
+}
+.v3-card:hover { background: #0f180f; }
+.v3-card:nth-child(3n) { border-right: none; }
+.v3-card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 14px;
+}
+.v3-card-tag {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 1px;
+  text-transform: uppercase; color: #2aff6a;
+  border: 1px solid rgba(42,255,106,.3); padding: 3px 8px;
+}
+.v3-card-badge {
+  font-family: var(--mono); font-size: 8px; color: rgba(42,255,106,.3);
+}
+.v3-card-title {
+  font-family: var(--mono); font-size: 14px; font-weight: 600;
+  color: rgba(42,255,106,.8); line-height: 1.5; margin-bottom: 10px;
+}
+.v3-card-desc {
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(42,255,106,.3); line-height: 1.7; margin-bottom: 16px;
+}
+.v3-card-footer {
+  display: flex; gap: 12px; align-items: center;
+  font-family: var(--mono); font-size: 9px; color: rgba(42,255,106,.2);
+  padding-top: 12px; border-top: 1px solid #1a2a1a;
+}
+.v3-card-footer-tag {
+  background: rgba(42,255,106,.08); color: rgba(42,255,106,.4);
+  padding: 2px 8px;
+}
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 4 — CARD CATALOG (Library / Archival)
+═══════════════════════════════════════════════ */
+.v4 { background: #f7f2e8; }
+
+.v4-header {
+  background: var(--ink); border-bottom: 6px double #3a3026;
+  display: flex; align-items: stretch;
+}
+.v4-header-spine {
+  background: #8b1a08; width: 72px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font-family: var(--brut); font-size: 11px; letter-spacing: 4px;
+  color: rgba(255,255,255,.6);
+}
+.v4-header-body { padding: 36px 52px; flex: 1; }
+.v4-header-dewey {
+  font-family: var(--mono); font-size: 28px; font-weight: 600;
+  color: rgba(255,255,255,.12); margin-bottom: 8px;
+}
+.v4-header-title {
+  font-family: var(--serif); font-size: 56px; font-weight: 900;
+  font-style: italic; color: var(--paper);
+  line-height: .92; margin-bottom: 14px;
+}
+.v4-header-title em { color: #c8290a; font-style: normal; }
+.v4-header-sub {
+  font-family: var(--sans); font-size: 12px; color: rgba(255,255,255,.35);
+  letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,.1);
+  padding-top: 12px; display: flex; gap: 32px;
+}
+.v4-header-sub span { display: flex; flex-direction: column; gap: 3px; }
+.v4-header-sub strong { color: rgba(255,255,255,.7); font-size: 9px; text-transform: uppercase; letter-spacing: 2px; }
+.v4-header-sub em { font-family: var(--mono); font-size: 13px; color: var(--red); font-style: normal; }
+
+/* V4 Catalog strip */
+.v4-catalog-strip {
+  background: #efe9db; border-bottom: 3px solid var(--ink);
+  border-top: 2px solid #d4cbb8; display: flex; gap: 0; overflow-x: auto;
+  padding: 0;
+}
+.v4-tab {
+  padding: 16px 22px; border-right: 1px solid #d4cbb8;
+  cursor: pointer; transition: background .15s; min-width: 140px;
+}
+.v4-tab:hover { background: #e5dfd2; }
+.v4-tab.on { background: var(--paper); border-bottom: 3px solid var(--ink); position: relative; top: 3px; }
+.v4-tab-call {
+  font-family: var(--mono); font-size: 9px; color: var(--dim);
+  margin-bottom: 4px; display: block;
+}
+.v4-tab-name {
+  font-family: var(--serif); font-size: 13px; font-weight: 700; color: var(--ink);
+  display: block; margin-bottom: 2px;
+}
+.v4-tab-n {
+  font-family: var(--mono); font-size: 9px; color: var(--red);
+}
+
+/* V4 Main layout */
+.v4-layout { display: grid; grid-template-columns: 260px 1fr; border-bottom: 3px solid var(--ink); }
+
+/* V4 Index panel */
+.v4-index {
+  background: #efe9db; border-right: 3px solid var(--ink);
+  border-top: 2px solid #d4cbb8;
+}
+.v4-index-hd {
+  font-family: var(--brut); font-size: 11px; letter-spacing: 3px;
+  color: var(--ink); padding: 14px 20px; background: var(--ink);
+  color: var(--paper); border-bottom: 2px solid #1e1a16;
+}
+.v4-index-item {
+  padding: 12px 20px; border-bottom: 1px solid #d4cbb8;
+  cursor: pointer; display: flex; align-items: center; gap: 12px;
+  transition: background .15s;
+}
+.v4-index-item:hover { background: #e5dfd2; }
+.v4-index-item.on { background: var(--paper); border-left: 3px solid var(--red); }
+.v4-index-num {
+  font-family: var(--mono); font-size: 10px; color: var(--dim);
+  flex-shrink: 0; width: 32px;
+}
+.v4-index-name {
+  font-family: var(--serif); font-size: 13px; color: var(--ink); flex: 1;
+}
+.v4-index-dot {
+  border-bottom: 1px dotted #bbb4a4; flex: 1; margin: 0 4px;
+  align-self: flex-end; margin-bottom: 4px;
+}
+.v4-index-pg {
+  font-family: var(--mono); font-size: 9px; color: var(--dim);
+  flex-shrink: 0;
+}
+
+/* V4 Catalog cards */
+.v4-cards { padding: 0; }
+.v4-cards-hd {
+  padding: 18px 28px; background: #f7f2e8;
+  border-bottom: 2px solid var(--ink);
+  font-family: var(--serif); font-size: 13px; font-style: italic; color: var(--dim);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.v4-cards-hd strong { font-style: normal; color: var(--ink); }
+.v4-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.v4-card {
+  background: #fffdf8; border: 1px solid #d4cbb8;
+  border-bottom: 4px solid var(--ink); margin: 16px 12px;
+  padding: 20px 18px; cursor: pointer; position: relative;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 3px 3px 0 #cfc8b5;
+}
+.v4-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #bbb4a4;
+}
+.v4-card-call {
+  font-family: var(--mono); font-size: 9px; color: var(--dim);
+  border-bottom: 1px solid #d4cbb8; padding-bottom: 8px; margin-bottom: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.v4-card-call-tag {
+  background: var(--red); color: var(--paper);
+  font-family: var(--sans); font-size: 7px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 6px;
+}
+.v4-card-title {
+  font-family: var(--serif); font-size: 15px; font-weight: 700;
+  color: var(--ink); line-height: 1.35; margin-bottom: 10px;
+}
+.v4-card-author {
+  font-family: var(--sans); font-size: 10px; color: var(--dim);
+  font-style: italic; margin-bottom: 8px;
+}
+.v4-card-desc {
+  font-family: var(--sans); font-size: 11px; color: var(--dim);
+  line-height: 1.6; margin-bottom: 12px;
+}
+.v4-card-stamp {
+  position: absolute; bottom: 14px; right: 14px;
+  width: 44px; height: 44px; border: 2px solid rgba(200,41,10,.25);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-family: var(--brut); font-size: 8px; letter-spacing: 1px;
+  color: rgba(200,41,10,.4); text-align: center; line-height: 1.2;
+}
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 5 — NEON GRID (Bold Accent)
+═══════════════════════════════════════════════ */
+.v5 { background: var(--ink); }
+
+.v5-hero {
+  display: grid; grid-template-columns: 120px 1fr;
+  border-bottom: 4px solid #c8290a; min-height: 260px;
+}
+.v5-hero-num {
+  background: var(--red); display: flex; align-items: center;
+  justify-content: center;
+  font-family: var(--brut); font-size: 64px; color: var(--paper);
+  letter-spacing: -2px; writing-mode: vertical-rl;
+  border-right: 4px solid var(--ink);
+}
+.v5-hero-body {
+  padding: 44px 52px; background: var(--ink);
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.v5-hero-body::after {
+  content: 'VAULT';
+  position: absolute; right: -20px; bottom: -30px;
+  font-family: var(--brut); font-size: 200px; color: rgba(255,255,255,.02);
+  line-height: 1; pointer-events: none; user-select: none;
+}
+.v5-eyebrow {
+  font-family: var(--sans); font-size: 9px; font-weight: 700;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.v5-eyebrow::after { content: ''; display: block; height: 1px; background: var(--red); flex: 1; max-width: 60px; }
+.v5-title {
+  font-family: var(--brut); font-size: 80px; line-height: .88;
+  color: var(--paper); letter-spacing: 3px; margin-bottom: 20px;
+  position: relative; z-index: 1;
+}
+.v5-title em { color: var(--red); font-style: normal; }
+.v5-sub {
+  font-family: var(--serif); font-size: 14px; font-style: italic;
+  color: rgba(255,255,255,.35); max-width: 480px; line-height: 1.75;
+  position: relative; z-index: 1;
+}
+
+/* V5 Accent row */
+.v5-accent-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-bottom: 3px solid #1e1a16;
+}
+.v5-ar-item {
+  padding: 24px 28px; border-right: 2px solid #1e1a16;
+  display: flex; align-items: center; gap: 16px;
+}
+.v5-ar-item:last-child { border-right: none; }
+.v5-ar-icon {
+  width: 44px; height: 44px; background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.v5-ar-text {}
+.v5-ar-n { font-family: var(--brut); font-size: 32px; color: var(--paper); line-height: 1; }
+.v5-ar-l { font-family: var(--sans); font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.2); margin-top: 2px; }
+
+/* V5 Cards — Bento style */
+.v5-bento {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 3px; padding: 3px; background: #1a1614;
+  border-bottom: 3px solid #1a1614;
+}
+.v5-bento-card {
+  background: var(--ink); padding: 28px 26px; cursor: pointer;
+  transition: background .15s; position: relative; overflow: hidden;
+}
+.v5-bento-card:hover { background: #1a1614; }
+.v5-bento-card.featured {
+  grid-row: span 2; background: #160f0d;
+  border-left: 4px solid var(--red);
+}
+.v5-bc-tag {
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 12px; display: block;
+}
+.v5-bc-title {
+  font-family: var(--serif); font-size: 20px; font-weight: 700;
+  color: var(--paper); line-height: 1.35; margin-bottom: 10px;
+}
+.v5-bento-card.featured .v5-bc-title {
+  font-size: 32px; line-height: 1.2;
+}
+.v5-bc-desc {
+  font-family: var(--sans); font-size: 11px; color: rgba(255,255,255,.3);
+  line-height: 1.65; margin-bottom: 14px;
+}
+.v5-bc-footer {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.2);
+  padding-top: 12px; border-top: 1px solid #1e1a16; margin-top: auto;
+}
+.v5-bc-badge {
+  background: rgba(200,41,10,.15); color: rgba(200,41,10,.7);
+  border: 1px solid rgba(200,41,10,.2);
+  font-family: var(--sans); font-size: 8px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px;
+}
+.v5-bc-arrow {
+  margin-left: auto; color: var(--red); font-size: 16px;
+  opacity: 0; transition: opacity .15s;
+}
+.v5-bento-card:hover .v5-bc-arrow { opacity: 1; }
+
+/* V5 Bottom row */
+.v5-bottom {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+  border-top: 3px solid #1a1614;
+}
+.v5-bottom-card {
+  padding: 22px 22px; border-right: 2px solid #1e1a16;
+  cursor: pointer; transition: background .15s;
+}
+.v5-bottom-card:last-child { border-right: none; }
+.v5-bottom-card:hover { background: #1a1614; }
+.v5-bottom-num {
+  font-family: var(--brut); font-size: 42px; color: #1e1a16;
+  line-height: 1; margin-bottom: 8px;
+}
+.v5-bottom-title {
+  font-family: var(--serif); font-size: 13px; font-weight: 700;
+  color: rgba(255,255,255,.6); line-height: 1.45; margin-bottom: 6px;
+}
+.v5-bottom-tag {
+  font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.2);
+}
+
+/* ── SHARED SKELETON PLACEHOLDERS ── */
+.skel {
+  background: linear-gradient(90deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.04) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius: 2px;
+}
+.skel-dark {
+  background: linear-gradient(90deg, rgba(0,0,0,.06) 0%, rgba(0,0,0,.1) 50%, rgba(0,0,0,.06) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius: 2px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+</style>
+</head>
+<body>
+
+<!-- ── CONCEPT NAV ── -->
+<div class="concept-nav">
+  <span class="concept-nav-label">VAULT · 5 CONCEPTS</span>
+  <a class="cnav-btn here" onclick="show(1)" href="#">1 · THE VAULT (Dark)</a>
+  <a class="cnav-btn" onclick="show(2)" href="#">2 · EDITORIAL GRID</a>
+  <a class="cnav-btn" onclick="show(3)" href="#">3 · TERMINAL</a>
+  <a class="cnav-btn" onclick="show(4)" href="#">4 · CARD CATALOG</a>
+  <a class="cnav-btn" onclick="show(5)" href="#">5 · BENTO GRID</a>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     CONCEPT 1 — THE VAULT (Dark Dramatic)
+════════════════════════════════════════════════ -->
+<div class="concept active" id="c1">
+  <div class="concept-label">CONCEPT 01 — "THE VAULT" · Dark Dramatic</div>
+  <div class="v1">
+
+    <!-- Hero -->
+    <div class="v1-hero">
+      <div class="v1-hero-bg"></div>
+      <div class="v1-hero-left">
+        <div class="v1-kicker">Section 11 · Knowledge Base</div>
+        <div class="v1-hero-title">THE<br><em>VAULT</em></div>
+        <div class="v1-hero-sub">
+          Deep reference library. Curated studies, troubleshooting guides,
+          and technical deep-dives — organized and ready.
+        </div>
+      </div>
+      <div class="v1-hero-right">
+        <div class="v1-stat-block">
+          <div class="v1-stat">
+            <span class="v1-stat-n">47</span>
+            <span class="v1-stat-l">Articles</span>
+          </div>
+          <div class="v1-stat">
+            <span class="v1-stat-n">6</span>
+            <span class="v1-stat-l">Categories</span>
+          </div>
+          <div class="v1-stat">
+            <span class="v1-stat-n">3</span>
+            <span class="v1-stat-l">New This Week</span>
+          </div>
+        </div>
+        <div class="v1-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="v1-search-input" type="text" placeholder="Search the vault…">
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Strip -->
+    <div class="v1-cats">
+      <div class="v1-cat">
+        <span class="v1-cat-icon">🗄️</span>
+        <span class="v1-cat-name">INFORMATICA</span>
+        <span class="v1-cat-count">12 articles</span>
+        <div class="v1-cat-bar"></div>
+      </div>
+      <div class="v1-cat">
+        <span class="v1-cat-icon">📊</span>
+        <span class="v1-cat-name">EDS / FEEDS</span>
+        <span class="v1-cat-count">9 articles</span>
+        <div class="v1-cat-bar"></div>
+      </div>
+      <div class="v1-cat">
+        <span class="v1-cat-icon">🛠️</span>
+        <span class="v1-cat-name">TROUBLESHOOT</span>
+        <span class="v1-cat-count">11 articles</span>
+        <div class="v1-cat-bar"></div>
+      </div>
+      <div class="v1-cat">
+        <span class="v1-cat-icon">📋</span>
+        <span class="v1-cat-name">PROCESS</span>
+        <span class="v1-cat-count">8 articles</span>
+        <div class="v1-cat-bar"></div>
+      </div>
+      <div class="v1-cat">
+        <span class="v1-cat-icon">💡</span>
+        <span class="v1-cat-name">DEEP DIVES</span>
+        <span class="v1-cat-count">7 articles</span>
+        <div class="v1-cat-bar"></div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="v1-body">
+      <div class="v1-main">
+        <div class="v1-section-hd">
+          <div class="v1-section-hd-label">RECENT ADDITIONS</div>
+          <div class="v1-section-hd-sub">Newly added and updated entries</div>
+          <div class="v1-section-hd-n">6</div>
+        </div>
+        <div class="v1-cards">
+          <div class="v1-card">
+            <span class="v1-card-tag">Informatica</span>
+            <div class="v1-card-title">Mapping Failures &amp; Common Error Codes</div>
+            <div class="v1-card-desc">A breakdown of the most frequent Informatica mapping errors, their root causes, and resolution paths.</div>
+            <div class="v1-card-meta">Mar 12, 2025 <span class="v1-card-meta-dot"></span> 8 min read</div>
+          </div>
+          <div class="v1-card">
+            <span class="v1-card-tag">EDS / Feeds</span>
+            <div class="v1-card-title">Eligibility File Prep Checklist</div>
+            <div class="v1-card-desc">Step-by-step file validation checklist before submitting eligibility data to the EDS system.</div>
+            <div class="v1-card-meta">Mar 10, 2025 <span class="v1-card-meta-dot"></span> 5 min read</div>
+          </div>
+          <div class="v1-card">
+            <span class="v1-card-tag">Deep Dive</span>
+            <div class="v1-card-title">Roth Contribution Mechanics</div>
+            <div class="v1-card-desc">How Roth after-tax contributions flow through payroll, EDS, and downstream recordkeeping.</div>
+            <div class="v1-card-meta">Mar 8, 2025 <span class="v1-card-meta-dot"></span> 12 min read</div>
+          </div>
+          <div class="v1-card">
+            <span class="v1-card-tag">Troubleshoot</span>
+            <div class="v1-card-title">Balance Discrepancy Root Cause Guide</div>
+            <div class="v1-card-desc">Decision tree for isolating where balance errors originate across systems and feeds.</div>
+            <div class="v1-card-meta">Mar 6, 2025 <span class="v1-card-meta-dot"></span> 6 min read</div>
+          </div>
+          <div class="v1-card">
+            <span class="v1-card-tag">Process</span>
+            <div class="v1-card-title">Loan Processing — End to End</div>
+            <div class="v1-card-desc">Full walkthrough of how loans are initiated, validated, disbursed, and tracked in the system.</div>
+            <div class="v1-card-meta">Mar 3, 2025 <span class="v1-card-meta-dot"></span> 10 min read</div>
+          </div>
+          <div class="v1-card">
+            <span class="v1-card-tag">Informatica</span>
+            <div class="v1-card-title">Workflow Scheduling &amp; Dependencies</div>
+            <div class="v1-card-desc">Understanding how Informatica workflows are chained and how to audit their execution sequence.</div>
+            <div class="v1-card-meta">Feb 28, 2025 <span class="v1-card-meta-dot"></span> 7 min read</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="v1-sidebar">
+        <div class="v1-featured">
+          <div class="v1-featured-eyebrow">⭐ Featured</div>
+          <div class="v1-featured-title">The Complete EDS Field Specification Reference</div>
+        </div>
+        <div class="v1-sb-block">
+          <div class="v1-sb-title">MOST READ</div>
+          <div class="v1-sb-list">
+            <div class="v1-sb-item">
+              <div class="v1-sb-num">01</div>
+              <div class="v1-sb-item-title">Understanding Payroll Feed Timing</div>
+            </div>
+            <div class="v1-sb-item">
+              <div class="v1-sb-num">02</div>
+              <div class="v1-sb-item-title">Deferred Comp — How Elections Work</div>
+            </div>
+            <div class="v1-sb-item">
+              <div class="v1-sb-num">03</div>
+              <div class="v1-sb-item-title">Informatica: Session Log Reading Guide</div>
+            </div>
+            <div class="v1-sb-item">
+              <div class="v1-sb-num">04</div>
+              <div class="v1-sb-item-title">EDS Error Code Dictionary</div>
+            </div>
+          </div>
+        </div>
+        <div class="v1-sb-block">
+          <div class="v1-sb-title">TAGS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">informatica</span>
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">EDS</span>
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">payroll</span>
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">eligibility</span>
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">loans</span>
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">roth</span>
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">balance</span>
+            <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);border:1px solid #2a2420;padding:4px 9px;">SQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     CONCEPT 2 — EDITORIAL GRID
+════════════════════════════════════════════════ -->
+<div class="concept" id="c2">
+  <div class="concept-label">CONCEPT 02 — EDITORIAL GRID · Newspaper Magazine</div>
+  <div class="v2">
+
+    <!-- Mastband -->
+    <div class="v2-mastband">
+      <div class="v2-mb-accent"></div>
+      <div class="v2-mb-body">
+        <div class="v2-mb-eyebrow">Section 11 · Data Consulting Division · Knowledge Base</div>
+        <div class="v2-mb-title">THE<br><span>VAULT</span></div>
+        <div class="v2-mb-rule">A curated library of deep-reference articles, guides, and technical studies</div>
+      </div>
+      <div class="v2-mb-stats">
+        <div class="v2-mb-stat"><span class="v2-mb-stat-n">47</span><span class="v2-mb-stat-l">Articles</span></div>
+        <div class="v2-mb-stat"><span class="v2-mb-stat-n">6</span><span class="v2-mb-stat-l">Categories</span></div>
+        <div class="v2-mb-stat"><span class="v2-mb-stat-n">3</span><span class="v2-mb-stat-l">New</span></div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="v2-filters">
+      <div class="v2-filter on">All<span class="v2-filter-count">47</span></div>
+      <div class="v2-filter">Informatica<span class="v2-filter-count">12</span></div>
+      <div class="v2-filter">EDS &amp; Feeds<span class="v2-filter-count">9</span></div>
+      <div class="v2-filter">Troubleshoot<span class="v2-filter-count">11</span></div>
+      <div class="v2-filter">Process<span class="v2-filter-count">8</span></div>
+      <div class="v2-filter">Deep Dives<span class="v2-filter-count">7</span></div>
+    </div>
+
+    <!-- Hero Feature -->
+    <div class="v2-feature">
+      <div class="v2-feature-main">
+        <div class="v2-feature-tag">Featured Article</div>
+        <div class="v2-feature-title">The Complete <em>EDS Field Specification</em> Reference</div>
+        <div class="v2-feature-body">
+          A comprehensive, searchable guide to every EDS field — data types, acceptable values,
+          validation rules, error codes, and example payloads. The single source of truth for
+          anyone working with eligibility and enrollment data.
+        </div>
+        <div class="v2-feature-cta">Read Article →</div>
+        <div class="v2-feature-num">01.</div>
+      </div>
+      <div class="v2-feature-aside">
+        <div class="v2-aside-item">
+          <span class="v2-aside-tag">Informatica</span>
+          <div class="v2-aside-title">Mapping Failures &amp; Common Error Codes</div>
+          <div class="v2-aside-meta">Mar 12 · 8 min read</div>
+        </div>
+        <div class="v2-aside-item">
+          <span class="v2-aside-tag">Troubleshoot</span>
+          <div class="v2-aside-title">Balance Discrepancy Root Cause Guide</div>
+          <div class="v2-aside-meta">Mar 6 · 6 min read</div>
+        </div>
+        <div class="v2-aside-item">
+          <span class="v2-aside-tag">Process</span>
+          <div class="v2-aside-title">Loan Processing — End to End</div>
+          <div class="v2-aside-meta">Mar 3 · 10 min read</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="v2-grid-header">
+      <div class="v2-gh-label">ALL ARTICLES</div>
+      <div class="v2-gh-sub">Browse by topic or scroll to explore</div>
+      <div class="v2-gh-count">47</div>
+    </div>
+    <div class="v2-cards">
+      <div class="v2-card">
+        <span class="v2-card-icon">🗄️</span>
+        <span class="v2-card-tag">Informatica</span>
+        <div class="v2-card-title">Workflow Scheduling &amp; Dependencies</div>
+        <div class="v2-card-desc">How Informatica workflows are chained and how to audit their execution sequence.</div>
+        <div class="v2-card-footer"><span>Feb 28</span><span class="v2-card-arrow">→</span></div>
+      </div>
+      <div class="v2-card">
+        <span class="v2-card-icon">📊</span>
+        <span class="v2-card-tag">EDS / Feeds</span>
+        <div class="v2-card-title">Eligibility File Prep Checklist</div>
+        <div class="v2-card-desc">Step-by-step file validation checklist before submitting eligibility data.</div>
+        <div class="v2-card-footer"><span>Mar 10</span><span class="v2-card-arrow">→</span></div>
+      </div>
+      <div class="v2-card">
+        <span class="v2-card-icon">💡</span>
+        <span class="v2-card-tag">Deep Dive</span>
+        <div class="v2-card-title">Roth Contribution Mechanics Explained</div>
+        <div class="v2-card-desc">How Roth contributions flow through payroll, EDS, and downstream recordkeeping.</div>
+        <div class="v2-card-footer"><span>Mar 8</span><span class="v2-card-arrow">→</span></div>
+      </div>
+      <div class="v2-card">
+        <span class="v2-card-icon">🛠️</span>
+        <span class="v2-card-tag">Troubleshoot</span>
+        <div class="v2-card-title">Payroll Feed Timing — Lag &amp; Cutoffs</div>
+        <div class="v2-card-desc">Understanding timing windows, cutoffs, and how late feeds cascade downstream.</div>
+        <div class="v2-card-footer"><span>Mar 1</span><span class="v2-card-arrow">→</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     CONCEPT 3 — TERMINAL
+════════════════════════════════════════════════ -->
+<div class="concept" id="c3">
+  <div class="concept-label">CONCEPT 03 — TERMINAL · Monospace / Green-on-Dark</div>
+  <div class="v3">
+
+    <!-- Hero -->
+    <div class="v3-hero">
+      <div class="v3-accent-bar"></div>
+      <div class="v3-hero-body">
+        <div class="v3-terminal-top">
+          <span class="v3-dot v3-dot-r"></span>
+          <span class="v3-dot v3-dot-y"></span>
+          <span class="v3-dot v3-dot-g"></span>
+          <span class="v3-terminal-path">~/portal/knowledge-base $</span>
+        </div>
+        <span class="v3-prompt">$ open vault --section=11 --mode=deep-reference</span>
+        <span class="v3-hero-title">KNOWLEDGE_BASE<span class="v3-cursor"></span></span>
+        <div class="v3-hero-sub">
+          Curated technical reference. Deep dives, troubleshooting playbooks,<br>
+          and research drops — indexed and searchable.
+        </div>
+        <div class="v3-search">
+          <span class="v3-search-prefix">grep -r "</span>
+          <input class="v3-search-input" type="text" placeholder="search query here…">
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat bar -->
+    <div class="v3-statbar">
+      <div class="v3-sbar-item">
+        <span class="v3-sbar-n">47</span>
+        <span class="v3-sbar-l">total entries</span>
+      </div>
+      <div class="v3-sbar-item">
+        <span class="v3-sbar-n">6</span>
+        <span class="v3-sbar-l">categories</span>
+      </div>
+      <div class="v3-sbar-item">
+        <span class="v3-sbar-n">3</span>
+        <span class="v3-sbar-l">added this week</span>
+      </div>
+      <div class="v3-sbar-item">
+        <span class="v3-sbar-n">98%</span>
+        <span class="v3-sbar-l">index coverage</span>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="v3-cats">
+      <div class="v3-cat">
+        <span class="v3-cat-num">[01]</span>
+        <span class="v3-cat-name">informatica/</span>
+        <span class="v3-cat-count">12 files</span>
+        <div class="v3-cat-bar"></div>
+      </div>
+      <div class="v3-cat">
+        <span class="v3-cat-num">[02]</span>
+        <span class="v3-cat-name">eds-feeds/</span>
+        <span class="v3-cat-count">9 files</span>
+        <div class="v3-cat-bar"></div>
+      </div>
+      <div class="v3-cat">
+        <span class="v3-cat-num">[03]</span>
+        <span class="v3-cat-name">troubleshoot/</span>
+        <span class="v3-cat-count">11 files</span>
+        <div class="v3-cat-bar"></div>
+      </div>
+      <div class="v3-cat">
+        <span class="v3-cat-num">[04]</span>
+        <span class="v3-cat-name">process/</span>
+        <span class="v3-cat-count">8 files</span>
+        <div class="v3-cat-bar"></div>
+      </div>
+      <div class="v3-cat">
+        <span class="v3-cat-num">[05]</span>
+        <span class="v3-cat-name">deep-dives/</span>
+        <span class="v3-cat-count">7 files</span>
+        <div class="v3-cat-bar"></div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="v3-cards">
+      <div class="v3-card">
+        <div class="v3-card-header">
+          <span class="v3-card-tag">INFORMATICA</span>
+          <span class="v3-card-badge">v1.3</span>
+        </div>
+        <div class="v3-card-title">mapping_failures_error_codes.md</div>
+        <div class="v3-card-desc">Breakdown of common Informatica mapping errors, root causes, and resolution paths with example log excerpts.</div>
+        <div class="v3-card-footer">
+          <span class="v3-card-footer-tag">8 min</span>
+          <span class="v3-card-footer-tag">error-handling</span>
+          <span>2025-03-12</span>
+        </div>
+      </div>
+      <div class="v3-card">
+        <div class="v3-card-header">
+          <span class="v3-card-tag">EDS / FEEDS</span>
+          <span class="v3-card-badge">v2.1</span>
+        </div>
+        <div class="v3-card-title">eligibility_file_prep.md</div>
+        <div class="v3-card-desc">Validation checklist before submitting eligibility data. Covers field requirements and rejection reasons.</div>
+        <div class="v3-card-footer">
+          <span class="v3-card-footer-tag">5 min</span>
+          <span class="v3-card-footer-tag">eligibility</span>
+          <span>2025-03-10</span>
+        </div>
+      </div>
+      <div class="v3-card">
+        <div class="v3-card-header">
+          <span class="v3-card-tag">DEEP DIVE</span>
+          <span class="v3-card-badge">v1.0</span>
+        </div>
+        <div class="v3-card-title">roth_contribution_mechanics.md</div>
+        <div class="v3-card-desc">Complete trace of how Roth after-tax elections flow from payroll intake through EDS into recordkeeping.</div>
+        <div class="v3-card-footer">
+          <span class="v3-card-footer-tag">12 min</span>
+          <span class="v3-card-footer-tag">roth</span>
+          <span>2025-03-08</span>
+        </div>
+      </div>
+      <div class="v3-card">
+        <div class="v3-card-header">
+          <span class="v3-card-tag">TROUBLESHOOT</span>
+          <span class="v3-card-badge">v3.0</span>
+        </div>
+        <div class="v3-card-title">balance_discrepancy_guide.md</div>
+        <div class="v3-card-desc">Decision tree for isolating where balance errors originate — payroll, feed, or system level.</div>
+        <div class="v3-card-footer">
+          <span class="v3-card-footer-tag">6 min</span>
+          <span class="v3-card-footer-tag">balance</span>
+          <span>2025-03-06</span>
+        </div>
+      </div>
+      <div class="v3-card">
+        <div class="v3-card-header">
+          <span class="v3-card-tag">PROCESS</span>
+          <span class="v3-card-badge">v2.2</span>
+        </div>
+        <div class="v3-card-title">loan_processing_e2e.md</div>
+        <div class="v3-card-desc">Full walkthrough of loan initiation, validation, disbursement, and status tracking across systems.</div>
+        <div class="v3-card-footer">
+          <span class="v3-card-footer-tag">10 min</span>
+          <span class="v3-card-footer-tag">loans</span>
+          <span>2025-03-03</span>
+        </div>
+      </div>
+      <div class="v3-card">
+        <div class="v3-card-header">
+          <span class="v3-card-tag">INFORMATICA</span>
+          <span class="v3-card-badge">v1.1</span>
+        </div>
+        <div class="v3-card-title">workflow_scheduling_deps.md</div>
+        <div class="v3-card-desc">How workflows are chained, execution order controlled, and how to read session logs for dependency issues.</div>
+        <div class="v3-card-footer">
+          <span class="v3-card-footer-tag">7 min</span>
+          <span class="v3-card-footer-tag">workflow</span>
+          <span>2025-02-28</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     CONCEPT 4 — CARD CATALOG
+════════════════════════════════════════════════ -->
+<div class="concept" id="c4">
+  <div class="concept-label">CONCEPT 04 — CARD CATALOG · Library / Archival</div>
+  <div class="v4">
+
+    <!-- Header -->
+    <div class="v4-header">
+      <div class="v4-header-spine">DATA CONSULTING DIVISION</div>
+      <div class="v4-header-body">
+        <div class="v4-header-dewey">025.5 · REF</div>
+        <div class="v4-header-title">The <em>Vault</em></div>
+        <div class="v4-header-sub">
+          <span><strong>Section</strong><em>11</em></span>
+          <span><strong>Articles</strong><em>47</em></span>
+          <span><strong>Categories</strong><em>6</em></span>
+          <span><strong>Status</strong><em>Active</em></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catalog Tabs -->
+    <div class="v4-catalog-strip">
+      <div class="v4-tab on">
+        <span class="v4-tab-call">025.5 · ALL</span>
+        <span class="v4-tab-name">All Categories</span>
+        <span class="v4-tab-n">47 entries</span>
+      </div>
+      <div class="v4-tab">
+        <span class="v4-tab-call">005.7 · INFA</span>
+        <span class="v4-tab-name">Informatica</span>
+        <span class="v4-tab-n">12 entries</span>
+      </div>
+      <div class="v4-tab">
+        <span class="v4-tab-call">005.3 · EDS</span>
+        <span class="v4-tab-name">EDS &amp; Feeds</span>
+        <span class="v4-tab-n">9 entries</span>
+      </div>
+      <div class="v4-tab">
+        <span class="v4-tab-call">005.1 · TRBL</span>
+        <span class="v4-tab-name">Troubleshoot</span>
+        <span class="v4-tab-n">11 entries</span>
+      </div>
+      <div class="v4-tab">
+        <span class="v4-tab-call">650 · PROC</span>
+        <span class="v4-tab-name">Process</span>
+        <span class="v4-tab-n">8 entries</span>
+      </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="v4-layout">
+      <!-- Index -->
+      <div class="v4-index">
+        <div class="v4-index-hd">TABLE OF CONTENTS</div>
+        <div class="v4-index-item on">
+          <span class="v4-index-num">001</span>
+          <span class="v4-index-name">EDS Field Specification</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.1</span>
+        </div>
+        <div class="v4-index-item">
+          <span class="v4-index-num">002</span>
+          <span class="v4-index-name">Mapping Failure Codes</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.3</span>
+        </div>
+        <div class="v4-index-item">
+          <span class="v4-index-num">003</span>
+          <span class="v4-index-name">Eligibility File Prep</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.5</span>
+        </div>
+        <div class="v4-index-item">
+          <span class="v4-index-num">004</span>
+          <span class="v4-index-name">Roth Contribution Mechanics</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.7</span>
+        </div>
+        <div class="v4-index-item">
+          <span class="v4-index-num">005</span>
+          <span class="v4-index-name">Balance Discrepancy Guide</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.11</span>
+        </div>
+        <div class="v4-index-item">
+          <span class="v4-index-num">006</span>
+          <span class="v4-index-name">Loan Processing E2E</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.14</span>
+        </div>
+        <div class="v4-index-item">
+          <span class="v4-index-num">007</span>
+          <span class="v4-index-name">Workflow Scheduling</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.17</span>
+        </div>
+        <div class="v4-index-item">
+          <span class="v4-index-num">008</span>
+          <span class="v4-index-name">Payroll Feed Timing</span>
+          <span class="v4-index-dot"></span>
+          <span class="v4-index-pg">p.20</span>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="v4-cards">
+        <div class="v4-cards-hd">
+          Showing <strong>47 entries</strong> — sorted by date added
+        </div>
+        <div class="v4-card-grid">
+          <div class="v4-card">
+            <div class="v4-card-call">025.5 REF · 001 <span class="v4-card-call-tag">FEATURED</span></div>
+            <div class="v4-card-title">The Complete EDS Field Specification Reference</div>
+            <div class="v4-card-author">Data Consulting Division · Mar 2025</div>
+            <div class="v4-card-desc">A comprehensive guide to every EDS field — data types, values, validation rules, and error codes.</div>
+            <div class="v4-card-stamp">⭐<br>PINNED</div>
+          </div>
+          <div class="v4-card">
+            <div class="v4-card-call">005.7 INFA · 002 <span class="v4-card-call-tag">NEW</span></div>
+            <div class="v4-card-title">Mapping Failures &amp; Common Error Codes</div>
+            <div class="v4-card-author">Data Consulting Division · Mar 12, 2025</div>
+            <div class="v4-card-desc">Root causes and resolution paths for frequent Informatica mapping errors.</div>
+            <div class="v4-card-stamp">8<br>MIN</div>
+          </div>
+          <div class="v4-card">
+            <div class="v4-card-call">005.3 EDS · 003</div>
+            <div class="v4-card-title">Eligibility File Prep Checklist</div>
+            <div class="v4-card-author">Data Consulting Division · Mar 10, 2025</div>
+            <div class="v4-card-desc">Field-by-field validation checklist before submitting eligibility data.</div>
+            <div class="v4-card-stamp">5<br>MIN</div>
+          </div>
+          <div class="v4-card">
+            <div class="v4-card-call">REF · 004</div>
+            <div class="v4-card-title">Roth Contribution Mechanics</div>
+            <div class="v4-card-author">Data Consulting Division · Mar 8, 2025</div>
+            <div class="v4-card-desc">End-to-end trace of Roth elections through payroll, EDS, and downstream systems.</div>
+            <div class="v4-card-stamp">12<br>MIN</div>
+          </div>
+          <div class="v4-card">
+            <div class="v4-card-call">005.1 TRBL · 005</div>
+            <div class="v4-card-title">Balance Discrepancy Root Cause Guide</div>
+            <div class="v4-card-author">Data Consulting Division · Mar 6, 2025</div>
+            <div class="v4-card-desc">Decision tree for isolating balance errors across systems and feeds.</div>
+            <div class="v4-card-stamp">6<br>MIN</div>
+          </div>
+          <div class="v4-card">
+            <div class="v4-card-call">650 PROC · 006</div>
+            <div class="v4-card-title">Loan Processing — End to End</div>
+            <div class="v4-card-author">Data Consulting Division · Mar 3, 2025</div>
+            <div class="v4-card-desc">Full walkthrough of loan initiation, validation, disbursement, and tracking.</div>
+            <div class="v4-card-stamp">10<br>MIN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     CONCEPT 5 — BENTO GRID
+════════════════════════════════════════════════ -->
+<div class="concept" id="c5">
+  <div class="concept-label">CONCEPT 05 — BENTO GRID · Bold Accent / Dark</div>
+  <div class="v5">
+
+    <!-- Hero -->
+    <div class="v5-hero">
+      <div class="v5-hero-num">11</div>
+      <div class="v5-hero-body">
+        <div class="v5-eyebrow">Section 11 · Knowledge Base</div>
+        <div class="v5-title">THE<br><em>VAULT</em></div>
+        <div class="v5-sub">
+          Deep reference library. Technical studies, troubleshooting playbooks,
+          and curated research — built for the people doing the real work.
+        </div>
+      </div>
+    </div>
+
+    <!-- Accent Row -->
+    <div class="v5-accent-row">
+      <div class="v5-ar-item">
+        <div class="v5-ar-icon">🗄️</div>
+        <div class="v5-ar-text">
+          <div class="v5-ar-n">47</div>
+          <div class="v5-ar-l">Total Articles</div>
+        </div>
+      </div>
+      <div class="v5-ar-item">
+        <div class="v5-ar-icon">📂</div>
+        <div class="v5-ar-text">
+          <div class="v5-ar-n">6</div>
+          <div class="v5-ar-l">Categories</div>
+        </div>
+      </div>
+      <div class="v5-ar-item">
+        <div class="v5-ar-icon">⭐</div>
+        <div class="v5-ar-text">
+          <div class="v5-ar-n">3</div>
+          <div class="v5-ar-l">New This Week</div>
+        </div>
+      </div>
+      <div class="v5-ar-item">
+        <div class="v5-ar-icon">🔍</div>
+        <div style="flex:1;">
+          <input style="width:100%;background:#1a1614;border:1px solid #2a2420;outline:none;font-family:var(--serif);font-style:italic;font-size:13px;color:rgba(255,255,255,.45);padding:10px 14px;" type="text" placeholder="Search the vault…">
+        </div>
+      </div>
+    </div>
+
+    <!-- Bento Grid -->
+    <div class="v5-bento">
+      <!-- Featured — spans 2 rows -->
+      <div class="v5-bento-card featured" style="display:flex;flex-direction:column;">
+        <span class="v5-bc-tag">⭐ Featured</span>
+        <div class="v5-bc-title">The Complete EDS Field Specification Reference</div>
+        <div class="v5-bc-desc">A comprehensive, searchable guide to every EDS field — data types, acceptable values, validation rules, error codes, and example payloads. The definitive reference for anyone working with eligibility and enrollment data in the division.</div>
+        <div class="v5-bc-footer" style="margin-top:auto;">
+          <span>EDS / Feeds</span>
+          <span class="v5-bc-badge">Featured</span>
+          <span class="v5-bc-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Top right 2 cells -->
+      <div class="v5-bento-card">
+        <span class="v5-bc-tag">Informatica</span>
+        <div class="v5-bc-title">Mapping Failures &amp; Error Codes</div>
+        <div class="v5-bc-desc">Root causes and resolution paths for common mapping errors.</div>
+        <div class="v5-bc-footer">
+          <span>8 min</span>
+          <span class="v5-bc-badge">New</span>
+          <span class="v5-bc-arrow">→</span>
+        </div>
+      </div>
+      <div class="v5-bento-card">
+        <span class="v5-bc-tag">EDS / Feeds</span>
+        <div class="v5-bc-title">Eligibility File Prep Checklist</div>
+        <div class="v5-bc-desc">Field-by-field validation before submitting eligibility data.</div>
+        <div class="v5-bc-footer">
+          <span>5 min</span>
+          <span class="v5-bc-badge">New</span>
+          <span class="v5-bc-arrow">→</span>
+        </div>
+      </div>
+      <div class="v5-bento-card">
+        <span class="v5-bc-tag">Deep Dive</span>
+        <div class="v5-bc-title">Roth Contribution Mechanics</div>
+        <div class="v5-bc-desc">End-to-end trace through payroll, EDS, and recordkeeping.</div>
+        <div class="v5-bc-footer">
+          <span>12 min</span>
+          <span class="v5-bc-arrow">→</span>
+        </div>
+      </div>
+      <div class="v5-bento-card">
+        <span class="v5-bc-tag">Troubleshoot</span>
+        <div class="v5-bc-title">Balance Discrepancy Root Cause Guide</div>
+        <div class="v5-bc-desc">Decision tree for isolating balance errors across systems.</div>
+        <div class="v5-bc-footer">
+          <span>6 min</span>
+          <span class="v5-bc-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="v5-bottom">
+      <div class="v5-bottom-card">
+        <div class="v5-bottom-num">01</div>
+        <div class="v5-bottom-title">Loan Processing — End to End</div>
+        <div class="v5-bottom-tag">PROCESS · 10 min</div>
+      </div>
+      <div class="v5-bottom-card">
+        <div class="v5-bottom-num">02</div>
+        <div class="v5-bottom-title">Workflow Scheduling &amp; Dependencies</div>
+        <div class="v5-bottom-tag">INFORMATICA · 7 min</div>
+      </div>
+      <div class="v5-bottom-card">
+        <div class="v5-bottom-num">03</div>
+        <div class="v5-bottom-title">Payroll Feed Timing &amp; Cutoffs</div>
+        <div class="v5-bottom-tag">PROCESS · 5 min</div>
+      </div>
+      <div class="v5-bottom-card">
+        <div class="v5-bottom-num">04</div>
+        <div class="v5-bottom-title">Deferred Comp Election Flow</div>
+        <div class="v5-bottom-tag">DEEP DIVE · 9 min</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+function show(n) {
+  document.querySelectorAll('.concept').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.cnav-btn').forEach(el => el.classList.remove('here'));
+  document.getElementById('c' + n).classList.add('active');
+  document.querySelectorAll('.cnav-btn')[n - 1].classList.add('here');
+  window.scrollTo(0, 0);
+  return false;
+}
+// keyboard shortcuts 1-5
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '5') show(parseInt(e.key));
+});
+</script>
+</body>
+</html>

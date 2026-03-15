@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outlook Email Generator — VBA Project</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0f0d0a;
+  --paper:  #f2ede4;
+  --paper2: #e8e2d6;
+  --paper3: #ddd7c9;
+  --paper4: #cfc8b5;
+  --red:    #c8290a;
+  --red2:   #a01f04;
+  --dim:    #7a7060;
+  --serif:  'Playfair Display', Georgia, serif;
+  --sans:   'IBM Plex Sans', sans-serif;
+  --brut:   'Bebas Neue', sans-serif;
+  --mono:   'IBM Plex Mono', monospace;
+  --fd-bg:      #f5f7fb;
+  --fd-surface: #ffffff;
+  --fd-border:  #cfd6e3;
+  --fd-text:    #1b2533;
+  --fd-muted:   #6c7a90;
+  --fd-blue:    #2a6df4;
+  --fd-green:   #1aa96b;
+  --fd-yellow:  #d4a017;
+  --fd-red:     #c0392b;
+  --fd-purple:  #6f4cd7;
+  --fd-orange:  #e67e22;
+  --fd-teal:    #0e9aa0;
+  --node-w:     210px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh; }
+
+/* ─── HERO ─── */
+.proj-hero { background: var(--ink); border-bottom: 4px solid var(--red); display: grid; grid-template-columns: 120px 1fr auto; }
+.proj-hero-num { background: var(--red); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 36px 0; border-right: 4px solid var(--ink); min-width: 120px; }
+.proj-hero-num-val { font-family: var(--brut); font-size: 64px; color: #fff; line-height: .85; }
+.proj-hero-num-label { font-family: var(--sans); font-size: 7px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.45); margin-top: 10px; }
+.proj-hero-main { padding: 36px 48px; }
+.proj-hero-kicker { font-family: var(--sans); font-size: 8.5px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.proj-hero-kicker::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--red); flex-shrink: 0; }
+.proj-hero-title { font-family: var(--serif); font-size: 42px; font-weight: 900; color: var(--paper); line-height: 1.05; margin-bottom: 14px; }
+.proj-hero-title em { color: var(--red); font-style: italic; }
+.proj-hero-desc { font-family: var(--serif); font-size: 14px; font-style: italic; color: rgba(255,255,255,.32); line-height: 1.75; max-width: 540px; }
+.proj-hero-meta { display: flex; flex-direction: column; border-left: 2px solid #1e1a16; }
+.proj-meta-block { flex: 1; padding: 22px 34px; border-bottom: 1px solid #1e1a16; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.proj-meta-block:last-child { border-bottom: none; }
+.proj-meta-n { font-family: var(--brut); font-size: 38px; color: var(--red); line-height: 1; display: block; }
+.proj-meta-l { font-family: var(--sans); font-size: 7.5px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.18); margin-top: 3px; display: block; }
+
+/* ─── TAG STRIP ─── */
+.tag-strip { background: var(--paper2); border-bottom: 2px solid var(--ink); padding: 10px 28px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tag { font-family: var(--mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border: 1.5px solid var(--paper3); color: var(--dim); background: var(--paper); }
+.tag.red   { border-color: var(--red);   color: var(--red);   background: #fdf0ed; }
+.tag.green { border-color: #1e6b3c;      color: #1e6b3c;      background: #f0fbf5; }
+.tag.blue  { border-color: #1f4b8e;      color: #1f4b8e;      background: #f0f5ff; }
+.tag-sep   { color: var(--paper3); font-size: 14px; }
+
+/* ─── SECTION RULE ─── */
+.sec-rule { display: flex; align-items: center; border-bottom: 2px solid var(--ink); border-top: 1px solid var(--paper3); background: var(--paper2); }
+.sec-rule-label { font-family: var(--brut); font-size: 16px; letter-spacing: 3px; color: var(--ink); padding: 10px 22px; border-right: 2px solid var(--ink); flex-shrink: 0; }
+.sec-rule-sub { font-family: var(--serif); font-size: 12px; font-style: italic; color: var(--dim); padding: 0 22px; flex: 1; }
+.sec-rule-n { font-family: var(--brut); font-size: 24px; color: var(--red); padding: 0 22px; border-left: 2px solid var(--ink); align-self: stretch; display: flex; align-items: center; }
+
+/* ─── OVERVIEW GRID ─── */
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 3px solid var(--ink); }
+.ov-card { padding: 28px; border-right: 2px solid var(--ink); background: var(--paper); }
+.ov-card:last-child { border-right: none; }
+.ov-card-kicker { font-family: var(--sans); font-size: 7.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+.ov-card-title { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+.ov-card-body { font-family: var(--serif); font-size: 13px; color: var(--dim); line-height: 1.7; }
+.ov-card-list { list-style: none; margin-top: 10px; }
+.ov-card-list li { font-family: var(--sans); font-size: 11px; color: var(--dim); padding: 5px 0; border-bottom: 1px solid var(--paper3); display: flex; align-items: flex-start; gap: 8px; }
+.ov-card-list li:last-child { border-bottom: none; }
+.ov-card-list li::before { content: '→'; color: var(--red); flex-shrink: 0; font-size: 10px; margin-top: 1px; }
+
+/* ─── FLOW DIAGRAM ─── */
+.flow-panel-hd { display: flex; align-items: center; border-bottom: 2px solid var(--fd-border); background: var(--fd-surface); }
+.flow-panel-hd-main { padding: 20px 28px; flex: 1; }
+.flow-panel-hd h3 { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--fd-text); margin-bottom: 4px; }
+.flow-panel-hd p { font-family: var(--mono); font-size: 10px; color: var(--fd-muted); letter-spacing: .05em; }
+.flow-stats { display: flex; border-left: 2px solid var(--fd-border); }
+.flow-stat { padding: 20px 22px; border-right: 1px solid var(--fd-border); text-align: center; }
+.flow-stat:last-child { border-right: none; }
+.flow-stat-n { font-size: 22px; font-weight: 700; display: block; line-height: 1; }
+.flow-stat-l { font-family: var(--mono); font-size: 8px; letter-spacing: .15em; text-transform: uppercase; color: var(--fd-muted); margin-top: 3px; display: block; }
+.scroll-hint { text-align: center; font-family: var(--mono); font-size: 9px; letter-spacing: .18em; color: var(--fd-muted); padding: 6px 0 10px; opacity: .55; background: var(--fd-bg); border-bottom: 1px solid var(--fd-border); }
+.flow-wrap { overflow-x: auto; padding: 24px 20px 36px; background: var(--fd-bg); border-bottom: 3px solid var(--ink); }
+
+.section-band-fd { border: 2px solid var(--fd-border); border-radius: 8px; padding: 20px 16px 16px; margin: 0 auto 10px; background: var(--fd-surface); position: relative; }
+.section-band-fd::before { content: attr(data-section); position: absolute; top: -11px; left: 16px; font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; padding: 0 10px; background: var(--fd-bg); color: var(--fd-muted); }
+.section-band-fd.b-blue   { border-color: var(--fd-blue);   } .section-band-fd.b-blue::before   { color: var(--fd-blue);   }
+.section-band-fd.b-green  { border-color: var(--fd-green);  } .section-band-fd.b-green::before  { color: var(--fd-green);  }
+.section-band-fd.b-yellow { border-color: var(--fd-yellow); } .section-band-fd.b-yellow::before { color: var(--fd-yellow); }
+.section-band-fd.b-red    { border-color: var(--fd-red);    } .section-band-fd.b-red::before    { color: var(--fd-red);    }
+.section-band-fd.b-orange { border-color: var(--fd-orange); } .section-band-fd.b-orange::before { color: var(--fd-orange); }
+.section-band-fd.b-purple { border-color: var(--fd-purple); } .section-band-fd.b-purple::before { color: var(--fd-purple); }
+.section-band-fd.b-teal   { border-color: var(--fd-teal);   } .section-band-fd.b-teal::before   { color: var(--fd-teal);   }
+
+.fd-node { width: var(--node-w); background: var(--fd-surface); border: 2px solid var(--fd-border); border-radius: 6px; padding: 13px 15px; position: relative; transition: .15s; cursor: default; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+.fd-node:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.09); }
+.fd-node-type  { font-family: var(--mono); font-size: 8px; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 5px; color: var(--fd-muted); }
+.fd-node-title { font-size: 13px; font-weight: 500; line-height: 1.35; color: var(--fd-text); }
+.fd-node-sub   { font-size: 11px; color: var(--fd-muted); margin-top: 4px; font-style: italic; line-height: 1.45; }
+.fd-node-icon  { position: absolute; top: 9px; right: 11px; font-size: 14px; opacity: .4; }
+.fd-node.start    { border-color: #aab4c8; background: #f9fbff; }
+.fd-node.end-nd   { background: #eaf7ef; border-color: var(--fd-green); }
+.fd-node.branch-nd { border-style: dashed; }
+.fd-node.b-blue   { border-color: var(--fd-blue);   background: #f0f5ff; }
+.fd-node.b-green  { border-color: var(--fd-green);  background: #f0fbf5; }
+.fd-node.b-yellow { border-color: var(--fd-yellow); background: #fdf8ec; }
+.fd-node.b-red    { border-color: var(--fd-red);    background: #fdf0f0; }
+.fd-node.b-orange { border-color: var(--fd-orange); background: #fdf5ec; }
+.fd-node.b-purple { border-color: var(--fd-purple); background: #f5f0fd; }
+.fd-node.b-teal   { border-color: var(--fd-teal);   background: #f0fbfc; }
+.fd-choices { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.fd-chip { font-family: var(--mono); font-size: 8px; letter-spacing: .1em; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--fd-border); background: #fafbfd; display: inline-block; width: fit-content; }
+.fd-chip.b-blue   { border-color: var(--fd-blue);   color: var(--fd-blue);   background: #eef3ff; }
+.fd-chip.b-green  { border-color: var(--fd-green);  color: var(--fd-green);  background: #eaf7ef; }
+.fd-chip.b-yellow { border-color: var(--fd-yellow); color: var(--fd-yellow); background: #fffbe8; }
+.fd-chip.b-red    { border-color: var(--fd-red);    color: var(--fd-red);    background: #fff0f0; }
+.fd-chip.b-orange { border-color: var(--fd-orange); color: var(--fd-orange); background: #fff4ea; }
+.fd-chip.b-purple { border-color: var(--fd-purple); color: var(--fd-purple); background: #f4f0ff; }
+.fd-chip.b-teal   { border-color: var(--fd-teal);   color: var(--fd-teal);   background: #f0fbfc; }
+.fd-row   { display: flex; gap: 18px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.fd-col   { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.fd-flow  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.fd-paths { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+.fd-path  { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.fd-path-label { font-family: var(--mono); font-size: 8.5px; letter-spacing: .12em; padding: 4px 10px; border-radius: 3px; border: 1px solid var(--fd-border); background: #f7f9fc; white-space: nowrap; }
+.fd-path-label.b-blue   { border-color: var(--fd-blue);   color: var(--fd-blue);   background: #eef3ff; }
+.fd-path-label.b-green  { border-color: var(--fd-green);  color: var(--fd-green);  background: #eaf7ef; }
+.fd-path-label.b-purple { border-color: var(--fd-purple); color: var(--fd-purple); background: #f4f0ff; }
+.fd-path-label.b-teal   { border-color: var(--fd-teal);   color: var(--fd-teal);   background: #f0fbfc; }
+.fd-arrow { width: 2px; height: 22px; background: var(--fd-border); position: relative; margin: 0 auto; }
+.fd-arrow::after { content: ''; position: absolute; bottom: -6px; left: -4px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--fd-border); }
+.fd-arrow.blue   { background: var(--fd-blue);   } .fd-arrow.blue::after   { border-top-color: var(--fd-blue);   }
+.fd-arrow.green  { background: var(--fd-green);  } .fd-arrow.green::after  { border-top-color: var(--fd-green);  }
+.fd-arrow.yellow { background: var(--fd-yellow); } .fd-arrow.yellow::after { border-top-color: var(--fd-yellow); }
+.fd-arrow.red    { background: var(--fd-red);    } .fd-arrow.red::after    { border-top-color: var(--fd-red);    }
+.fd-arrow.purple { background: var(--fd-purple); } .fd-arrow.purple::after { border-top-color: var(--fd-purple); }
+.fd-arrow.orange { background: var(--fd-orange); } .fd-arrow.orange::after { border-top-color: var(--fd-orange); }
+.fd-arrow.teal   { background: var(--fd-teal);   } .fd-arrow.teal::after   { border-top-color: var(--fd-teal);   }
+.fd-note { background: #f9fbff; border: 1px dashed var(--fd-border); border-radius: 6px; padding: 11px 14px; font-size: 12px; color: var(--fd-muted); max-width: 860px; margin: 0 auto 14px; line-height: 1.55; }
+.fd-note strong { color: var(--fd-text); }
+.fd-merge { text-align: center; padding: 5px 0; font-family: var(--mono); font-size: 9px; letter-spacing: .2em; color: var(--fd-muted); }
+.c-blue   { color: var(--fd-blue)   !important; } .c-green  { color: var(--fd-green)  !important; }
+.c-yellow { color: var(--fd-yellow) !important; } .c-red    { color: var(--fd-red)    !important; }
+.c-purple { color: var(--fd-purple) !important; } .c-orange { color: var(--fd-orange) !important; }
+.c-teal   { color: var(--fd-teal)   !important; }
+
+/* ─── ARCHITECTURE GRID ─── */
+.arch-wrap { background: var(--fd-bg); padding: 28px; border-bottom: 3px solid var(--ink); overflow-x: auto; }
+.arch-grid { display: grid; grid-template-columns: 180px 240px 240px 240px; gap: 0; max-width: 960px; margin: 0 auto; }
+.arch-col-hd { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--fd-muted); text-align: center; padding: 0 0 16px; border-bottom: 2px solid var(--fd-border); margin-bottom: 16px; }
+.arch-col { padding: 0 12px; border-right: 1px dashed var(--fd-border); display: flex; flex-direction: column; gap: 10px; }
+.arch-col:first-child { padding-left: 0; }
+.arch-col:last-child  { border-right: none; padding-right: 0; }
+.arch-item { background: var(--fd-surface); border: 2px solid var(--fd-border); border-radius: 6px; padding: 12px 14px; transition: .15s; }
+.arch-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.arch-item-type { font-family: var(--mono); font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--fd-muted); margin-bottom: 4px; }
+.arch-item-name { font-size: 12px; font-weight: 600; color: var(--fd-text); line-height: 1.3; margin-bottom: 4px; }
+.arch-item-desc { font-size: 10.5px; color: var(--fd-muted); font-style: italic; line-height: 1.4; }
+.arch-item.ui   { border-color: var(--fd-blue);   background: #f0f5ff; } .arch-item.ui .arch-item-type   { color: var(--fd-blue);   }
+.arch-item.data { border-color: var(--fd-orange); background: #fdf5ec; } .arch-item.data .arch-item-type { color: var(--fd-orange); }
+.arch-item.fn   { border-color: var(--fd-green);  background: #f0fbf5; } .arch-item.fn .arch-item-type   { color: var(--fd-green);  }
+.arch-item.proc { border-color: var(--fd-purple); background: #f5f0fd; } .arch-item.proc .arch-item-type { color: var(--fd-purple); }
+
+/* ─── CODE MODULES ─── */
+.code-section { border-bottom: 3px solid var(--ink); }
+.module-hd { display: flex; align-items: center; background: var(--paper2); border-bottom: 2px solid var(--ink); cursor: pointer; transition: background .15s; user-select: none; }
+.module-hd:hover { background: var(--paper3); }
+.module-hd-num { font-family: var(--brut); font-size: 28px; color: var(--paper3); width: 60px; text-align: center; padding: 0 16px; flex-shrink: 0; border-right: 2px solid var(--ink); align-self: stretch; display: flex; align-items: center; justify-content: center; }
+.module-hd:hover .module-hd-num { color: var(--red); }
+.module-hd-body { flex: 1; padding: 14px 20px; }
+.module-hd-tag   { font-family: var(--sans); font-size: 7.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--red); margin-bottom: 3px; }
+.module-hd-title { font-family: var(--serif); font-size: 17px; font-weight: 700; color: var(--ink); }
+.module-hd-desc  { font-family: var(--serif); font-size: 12px; font-style: italic; color: var(--dim); margin-top: 2px; }
+.module-hd-toggle { font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--dim); padding: 0 24px; flex-shrink: 0; }
+.module-body { display: none; background: #13111a; }
+.module-body.open { display: block; }
+.module-toolbar { background: #1d1b2a; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2a2840; }
+.module-toolbar-label { font-family: var(--mono); font-size: 9px; letter-spacing: .15em; color: #7a6fa8; text-transform: uppercase; }
+.copy-btn { font-family: var(--sans); font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border: 1.5px solid #3a3560; background: transparent; color: #7a6fa8; cursor: pointer; transition: all .15s; }
+.copy-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.copy-btn.ok { background: #1a6b3c !important; border-color: #1a6b3c !important; color: #fff !important; }
+pre.vba { margin: 0; padding: 20px 24px; overflow-x: auto; font-family: var(--mono); font-size: 12px; line-height: 1.75; color: #c8c0e8; }
+pre.vba .kw  { color: #7fa8f4; }
+pre.vba .fn  { color: #7dd3aa; }
+pre.vba .str { color: #d4a060; }
+pre.vba .cm  { color: #5a5370; font-style: italic; }
+pre.vba .num { color: #f4b06a; }
+pre.vba .tok { color: #f48cb0; }
+
+/* ─── SETUP GUIDE ─── */
+.setup-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 3px solid var(--ink); }
+.setup-col { padding: 28px; border-right: 2px solid var(--ink); background: var(--paper); }
+.setup-col:last-child { border-right: none; }
+.setup-col-title { font-family: var(--brut); font-size: 16px; letter-spacing: 2px; color: var(--dim); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+.setup-step { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--paper3); }
+.setup-step:last-child { border-bottom: none; }
+.setup-num { font-family: var(--brut); font-size: 24px; color: var(--paper3); flex-shrink: 0; width: 32px; line-height: 1; }
+.setup-body {}
+.setup-title { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.setup-desc  { font-family: var(--sans); font-size: 11px; color: var(--dim); line-height: 1.55; }
+.setup-code  { font-family: var(--mono); font-size: 10px; color: var(--red); background: var(--paper2); border: 1px solid var(--paper3); padding: 2px 6px; margin-top: 4px; display: inline-block; }
+
+/* ─── FOOTER ─── */
+.proj-footer { background: var(--ink); display: flex; border-top: 4px solid var(--red); }
+.pf-block { flex: 1; padding: 22px 24px; border-right: 1px solid #1e1a16; text-align: center; }
+.pf-block:last-child { border-right: none; }
+.pf-n { font-family: var(--brut); font-size: 34px; color: var(--red); display: block; line-height: 1; }
+.pf-l { font-family: var(--serif); font-size: 11px; font-style: italic; color: rgba(255,255,255,.2); display: block; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ PROJECT HERO ═══ -->
+<div class="proj-hero">
+  <div class="proj-hero-num">
+    <div class="proj-hero-num-val">01</div>
+    <div class="proj-hero-num-label">Project</div>
+  </div>
+  <div class="proj-hero-main">
+    <div class="proj-hero-kicker">VBA Project · Outlook Automation · Data Consulting Division</div>
+    <div class="proj-hero-title">Outlook <em>Email Generator</em></div>
+    <div class="proj-hero-desc">A UserForm-driven Outlook macro that assembles templated emails from plan data, resolves dynamic date tokens, and automatically books follow-up calendar appointments based on per-type SLA rules.</div>
+  </div>
+  <div class="proj-hero-meta">
+    <div class="proj-meta-block"><span class="proj-meta-n">5</span><span class="proj-meta-l">Modules</span></div>
+    <div class="proj-meta-block"><span class="proj-meta-n">6</span><span class="proj-meta-l">Email Types</span></div>
+    <div class="proj-meta-block"><span class="proj-meta-n">14</span><span class="proj-meta-l">Flow Steps</span></div>
+  </div>
+</div>
+
+<!-- ═══ TAG STRIP ═══ -->
+<div class="tag-strip">
+  <span class="tag red">Outlook VBA</span>
+  <span class="tag-sep">·</span>
+  <span class="tag blue">UserForm</span>
+  <span class="tag blue">Calendar API</span>
+  <span class="tag-sep">·</span>
+  <span class="tag green">Token Replacement</span>
+  <span class="tag green">Dynamic Dates</span>
+  <span class="tag green">SLA-Based Scheduling</span>
+  <span class="tag-sep">·</span>
+  <span class="tag">Plan Conversions</span>
+  <span class="tag">Retirement Plans</span>
+</div>
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">OVERVIEW</div>
+  <div class="sec-rule-sub">What this tool does, what you can customize, and how it's structured</div>
+</div>
+<div class="overview-grid">
+  <div class="ov-card">
+    <div class="ov-card-kicker">What It Does</div>
+    <div class="ov-card-title">One button → complete email + calendar item</div>
+    <div class="ov-card-body">Fill in a case number, plan name, and select TM/TC and email type. The macro loads the matching template from disk, resolves all tokens, opens the drafted email in Outlook, and creates a follow-up appointment in your calendar — all in one click.</div>
+  </div>
+  <div class="ov-card">
+    <div class="ov-card-kicker">What You Can Customize</div>
+    <div class="ov-card-title">All data is isolated from the engine</div>
+    <ul class="ov-card-list">
+      <li>TM and TC rosters — edit one function in mod_PeopleLists</li>
+      <li>Email types and template filenames — one Select Case in mod_Templates</li>
+      <li>Template body — edit the .txt files directly, no VBA needed</li>
+      <li>Token values — add new {tokens} with a single Replace() call</li>
+      <li>Follow-up SLA days — one Select Case in mod_EmailBuilder</li>
+      <li>Send vs Display — one property change per email type</li>
+    </ul>
+  </div>
+  <div class="ov-card">
+    <div class="ov-card-kicker">Structure at a Glance</div>
+    <div class="ov-card-title">5 components, clean separation of concerns</div>
+    <ul class="ov-card-list">
+      <li>frmEmailGenerator — UserForm: inputs + submit</li>
+      <li>mod_PeopleLists — TM/TC name + email arrays</li>
+      <li>mod_Templates — email type → template file mapping</li>
+      <li>mod_TokenEngine — {token} resolver including {date+N}</li>
+      <li>mod_EmailBuilder — assembly, dispatch, appointment creator</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ EXECUTION FLOW ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">EXECUTION FLOW</div>
+  <div class="sec-rule-sub">Combined architecture + runtime flow — from button click to calendar entry</div>
+  <div class="sec-rule-n">14</div>
+</div>
+<div class="flow-panel-hd">
+  <div class="flow-panel-hd-main">
+    <h3>Outlook Email Generator — Full Execution Flow</h3>
+    <p>5 stages · 14 steps · 2 decision points · 2 outputs (email + appointment)</p>
+  </div>
+  <div class="flow-stats">
+    <div class="flow-stat"><span class="flow-stat-n c-blue">5</span><span class="flow-stat-l">Stages</span></div>
+    <div class="flow-stat"><span class="flow-stat-n c-green">14</span><span class="flow-stat-l">Steps</span></div>
+    <div class="flow-stat"><span class="flow-stat-n" style="color:var(--fd-yellow);">2</span><span class="flow-stat-l">Decisions</span></div>
+    <div class="flow-stat"><span class="flow-stat-n" style="color:var(--fd-teal);">2</span><span class="flow-stat-l">Outputs</span></div>
+  </div>
+</div>
+<div class="scroll-hint">← SCROLL HORIZONTALLY IF NEEDED →</div>
+<div class="flow-wrap">
+  <div class="fd-flow" style="max-width:680px;margin:0 auto;">
+
+    <!-- Stage I: Launch -->
+    <div class="section-band-fd b-blue" data-section="Stage I · Form Launch (mod_EmailBuilder)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node start" style="width:100%;max-width:380px;"><span class="fd-node-icon">▶</span><div class="fd-node-type">Entry Point · Quick Access Toolbar</div><div class="fd-node-title">User clicks the macro button in Outlook</div><div class="fd-node-sub">Button wired to <code>EmailGeneratorMain()</code> in mod_EmailBuilder</div></div>
+        <div class="fd-arrow blue"></div>
+        <div class="fd-node b-blue" style="width:100%;max-width:380px;"><span class="fd-node-icon">📋</span><div class="fd-node-type">Step 01 · EmailGeneratorMain()</div><div class="fd-node-title">Form loads — combos populated from people lists</div><div class="fd-node-sub">UserForm_Initialize fires → GetTMList() + GetTCList() populate the combo boxes. Email type list populated from hard-coded entries.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage II: User Input -->
+    <div class="section-band-fd b-purple" data-section="Stage II · User Input + Validation (frmEmailGenerator)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">✏️</span><div class="fd-node-type">Step 02 · User Input</div><div class="fd-node-title">User fills form fields</div><div class="fd-node-sub">Case number, plan name, select TM + TC from combos, select email type from list. Amount field shows/hides based on email type.</div></div>
+        <div class="fd-arrow purple"></div>
+        <div class="fd-node b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">✔️</span><div class="fd-node-type">Step 03 · btnSubmit_Click · Validation</div><div class="fd-node-title">Required fields checked before proceeding</div><div class="fd-node-sub">Case #, plan name, TM, TC, and email type must all be filled. MsgBox shown on failure. On pass → BuildAndSendEmail() called.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage III: Template + Tokens -->
+    <div class="section-band-fd b-yellow" data-section="Stage III · Template Load + Token Resolution (mod_Templates · mod_TokenEngine)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">📄</span><div class="fd-node-type">Step 04 · GetTemplateAndMessage()</div><div class="fd-node-title">Email type → template filename + custom reminder message</div><div class="fd-node-sub">Select Case lookup. Returns the .txt filename and a MsgBox reminder string (e.g. "Attach the EDS layout before sending").</div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">📂</span><div class="fd-node-type">Step 05 · ReadTextFile()</div><div class="fd-node-title">Template file loaded from TEMPLATE_PATH folder</div><div class="fd-node-sub">Reads .txt file line by line into a string. Shows error MsgBox if file not found at the configured path.</div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔁</span><div class="fd-node-type">Step 06 · ReplaceTokens() · Static Pass</div><div class="fd-node-title">Static tokens swapped with live values</div><div class="fd-node-sub">Replace() calls for <span class="fd-node-sub" style="font-family:monospace;font-style:normal;">{case} {plan} {TM} {TC} {amount}</span> — five clean string replacements in sequence.</div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">📅</span><div class="fd-node-type">Step 07 · ReplaceTokens() · Dynamic Date Pass</div><div class="fd-node-title">Loop scans for any {date+N} patterns and resolves them</div><div class="fd-node-sub">InStr loop finds each <code>{date+N}</code> token, extracts N, adds to today's date, formats as mm/dd/yyyy. Handles any number of date tokens in one pass.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage IV: Email Assembly -->
+    <div class="section-band-fd b-green" data-section="Stage IV · Email Assembly + Dispatch (mod_EmailBuilder)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-green" style="width:100%;max-width:380px;"><span class="fd-node-icon">✉️</span><div class="fd-node-type">Step 08 · Build Outlook MailItem</div><div class="fd-node-title">Create Outlook MailItem — To, Subject, Body</div><div class="fd-node-sub">To: TM + TC email addresses. Subject: [Type] — Case #[N] — [Plan Name]. Body: processed template string.</div></div>
+        <div class="fd-arrow green"></div>
+        <div class="fd-node b-green" style="width:100%;max-width:380px;"><span class="fd-node-icon">📎</span><div class="fd-node-type">Step 09 · Pre-Send Reminder</div><div class="fd-node-title">Custom MsgBox shown before email is sent</div><div class="fd-node-sub">The reminder from Step 04 displays now — "Attach the TIK spreadsheet", "Confirm wire booked in cashiering", etc.</div></div>
+        <div class="fd-arrow green"></div>
+        <div class="fd-node branch-nd b-green" style="width:100%;max-width:380px;"><span class="fd-node-icon">⚡</span><div class="fd-node-type c-green">Step 10 · Decision: Send or Display?</div><div class="fd-node-title">Configured per email type</div><div class="fd-choices"><span class="fd-chip b-green">.Display — opens draft for review before sending</span><span class="fd-chip b-teal">.Send — fires immediately without review</span></div></div>
+        <div class="fd-arrow green"></div>
+        <div class="fd-node b-green" style="width:100%;max-width:380px;"><span class="fd-node-icon">✅</span><div class="fd-node-type">Step 11 · Optional Success Confirmation</div><div class="fd-node-title">MsgBox: "Email created for [Plan Name]"</div><div class="fd-node-sub">Commented out by default. Uncomment the MsgBox line in mod_EmailBuilder to enable.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage V: Follow-Up Appointment -->
+    <div class="section-band-fd b-teal" data-section="Stage V · Follow-Up Appointment (mod_EmailBuilder · CreateFollowUpAppointment)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node branch-nd b-teal" style="width:100%;max-width:380px;"><span class="fd-node-icon">⚡</span><div class="fd-node-type c-teal">Step 12 · Decision: Does this email type need a follow-up?</div><div class="fd-node-title">SLA day count checked per email type</div><div class="fd-choices"><span class="fd-chip b-red">0 days → no appointment created, exit</span><span class="fd-chip b-teal">N days → appointment created N days from today</span></div></div>
+        <div class="fd-arrow teal"></div>
+        <div class="fd-node b-teal" style="width:100%;max-width:380px;"><span class="fd-node-icon">📅</span><div class="fd-node-type">Step 13 · CreateFollowUpAppointment()</div><div class="fd-node-title">Build and save Outlook AppointmentItem</div><div class="fd-node-sub">Subject: "Follow Up — [Plan Name] — [Type]"<br>Date: today + N per SLA table · 30 min · 60-min reminder · Case # in body.</div></div>
+        <div class="fd-arrow teal"></div>
+        <div class="fd-node end-nd" style="width:100%;max-width:380px;"><span class="fd-node-icon">✅</span><div class="fd-node-type">Step 14 · Complete</div><div class="fd-node-title">Email sent (or in review) + appointment booked</div><div class="fd-node-sub">Form hides. Ready for next run — relaunch the form button for the next case.</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div style="max-width:640px;margin:16px auto 32px;padding:0 20px;"><div class="fd-note"><strong>Key design pattern:</strong> All customizable logic is isolated — people lists, template lookup, token engine, and SLA rules each live in their own clean module. To adapt this for a new use case, you only touch the data, not the engine.</div></div>
+
+<!-- ═══ CODE ARCHITECTURE ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">CODE ARCHITECTURE</div>
+  <div class="sec-rule-sub">Module layout — what lives where and why it's structured this way</div>
+  <div class="sec-rule-n">5</div>
+</div>
+<div class="arch-wrap">
+  <div class="arch-grid">
+    <div>
+      <div class="arch-col-hd">UserForm</div>
+      <div class="arch-col">
+        <div class="arch-item ui">
+          <div class="arch-item-type">UI · Form</div>
+          <div class="arch-item-name">frmEmailGenerator</div>
+          <div class="arch-item-desc">3 textboxes (case, plan, amount) + 2 combos (TM, TC) + email listbox + submit/cancel. Calls all other modules on submit.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">People &amp; Data</div>
+      <div class="arch-col">
+        <div class="arch-item data">
+          <div class="arch-item-type">Module · Public Functions</div>
+          <div class="arch-item-name">mod_PeopleLists</div>
+          <div class="arch-item-desc">GetTMList() and GetTCList() — returns 2D arrays of name + email pairs. Edit here only when the team roster changes.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Template &amp; Token Logic</div>
+      <div class="arch-col">
+        <div class="arch-item fn">
+          <div class="arch-item-type">Module · Functions</div>
+          <div class="arch-item-name">mod_Templates</div>
+          <div class="arch-item-desc">GetTemplateAndMessage() — Select Case maps email type → template .txt filename + pre-send reminder string.</div>
+        </div>
+        <div class="arch-item fn">
+          <div class="arch-item-type">Module · Token Engine</div>
+          <div class="arch-item-name">mod_TokenEngine</div>
+          <div class="arch-item-desc">ReplaceTokens() — handles static {token} replacements and dynamic {date+N} math via an InStr scan loop.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Orchestration</div>
+      <div class="arch-col">
+        <div class="arch-item proc">
+          <div class="arch-item-type">Module · Main Subs</div>
+          <div class="arch-item-name">mod_EmailBuilder</div>
+          <div class="arch-item-desc">BuildAndSendEmail() — assembles everything, dispatches.<br>CreateFollowUpAppointment() — SLA-based calendar entry.<br>EmailGeneratorMain() — form launcher, the only entry point.<br>ReadTextFile() — helper to load .txt templates from disk.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CODE MODULES ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">CODE MODULES</div>
+  <div class="sec-rule-sub">Click any module to expand — copy directly into your VBE</div>
+  <div class="sec-rule-n">5</div>
+</div>
+<div class="code-section">
+
+  <!-- MODULE 1 -->
+  <div class="module-hd" onclick="toggleModule('mod1')">
+    <div class="module-hd-num">01</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_PeopleLists · Public Functions</div>
+      <div class="module-hd-title">TM &amp; TC People Lists</div>
+      <div class="module-hd-desc">GetTMList() and GetTCList() — the only place you touch when someone joins or leaves the team</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod1">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod1">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_PeopleLists.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod1', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod1"><span class="cm">' ============================================================
+' mod_PeopleLists
+' Public functions that return TM and TC name/email arrays.
+' Edit these two functions whenever someone joins or leaves.
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Public Function</span> <span class="fn">GetTMList</span>() <span class="kw">As Variant</span>
+    <span class="kw">Dim</span> people(<span class="num">4</span>, <span class="num">1</span>) <span class="kw">As String</span>
+    <span class="cm">' Format: display name, email address</span>
+    people(<span class="num">0</span>, <span class="num">0</span>) = <span class="str">"Alex Johnson"</span>   : people(<span class="num">0</span>, <span class="num">1</span>) = <span class="str">"ajohnson@company.com"</span>
+    people(<span class="num">1</span>, <span class="num">0</span>) = <span class="str">"Maria Santos"</span>   : people(<span class="num">1</span>, <span class="num">1</span>) = <span class="str">"msantos@company.com"</span>
+    people(<span class="num">2</span>, <span class="num">0</span>) = <span class="str">"Derek Williams"</span> : people(<span class="num">2</span>, <span class="num">1</span>) = <span class="str">"dwilliams@company.com"</span>
+    people(<span class="num">3</span>, <span class="num">0</span>) = <span class="str">"Priya Mehta"</span>    : people(<span class="num">3</span>, <span class="num">1</span>) = <span class="str">"pmehta@company.com"</span>
+    people(<span class="num">4</span>, <span class="num">0</span>) = <span class="str">"Chris Okafor"</span>   : people(<span class="num">4</span>, <span class="num">1</span>) = <span class="str">"cokafor@company.com"</span>
+    <span class="fn">GetTMList</span> = people
+<span class="kw">End Function</span>
+
+<span class="kw">Public Function</span> <span class="fn">GetTCList</span>() <span class="kw">As Variant</span>
+    <span class="kw">Dim</span> people(<span class="num">3</span>, <span class="num">1</span>) <span class="kw">As String</span>
+    people(<span class="num">0</span>, <span class="num">0</span>) = <span class="str">"Jordan Lee"</span>    : people(<span class="num">0</span>, <span class="num">1</span>) = <span class="str">"jlee@company.com"</span>
+    people(<span class="num">1</span>, <span class="num">0</span>) = <span class="str">"Taylor Brooks"</span> : people(<span class="num">1</span>, <span class="num">1</span>) = <span class="str">"tbrooks@company.com"</span>
+    people(<span class="num">2</span>, <span class="num">0</span>) = <span class="str">"Sam Rivera"</span>    : people(<span class="num">2</span>, <span class="num">1</span>) = <span class="str">"srivera@company.com"</span>
+    people(<span class="num">3</span>, <span class="num">0</span>) = <span class="str">"Morgan Chen"</span>   : people(<span class="num">3</span>, <span class="num">1</span>) = <span class="str">"mchen@company.com"</span>
+    <span class="fn">GetTCList</span> = people
+<span class="kw">End Function</span></pre>
+  </div>
+
+  <!-- MODULE 2 -->
+  <div class="module-hd" onclick="toggleModule('mod2')">
+    <div class="module-hd-num">02</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_Templates · Template Lookup</div>
+      <div class="module-hd-title">Template &amp; Custom Message Lookup</div>
+      <div class="module-hd-desc">Maps each email type to its .txt template file and the reminder shown before send</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod2">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod2">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_Templates.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod2', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod2"><span class="cm">' ============================================================
+' mod_Templates
+' GetTemplateAndMessage() — given an email type, returns:
+'   (1) the template filename to load from disk
+'   (2) the custom reminder message shown before sending
+'
+' To add a new email type:
+'   1. Add a Case block here with template name + message
+'   2. Save the matching .txt file in your templates folder
+'   3. Add the type name to lstEmailType in the UserForm Initialize
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Public Sub</span> <span class="fn">GetTemplateAndMessage</span>(<span class="kw">ByVal</span> emailType <span class="kw">As String</span>, _
+                                  templateFile <span class="kw">As String</span>, _
+                                  customMsg    <span class="kw">As String</span>)
+
+    <span class="kw">Select Case</span> emailType
+
+        <span class="kw">Case</span> <span class="str">"Payroll Setup — Final Import"</span>
+            templateFile = <span class="str">"tmpl_payroll_final_import.txt"</span>
+            customMsg    = <span class="str">"Reminder: Attach the completed EDS Layout file before sending."</span>
+
+        <span class="kw">Case</span> <span class="str">"Balance Import Confirmation"</span>
+            templateFile = <span class="str">"tmpl_balance_import_confirm.txt"</span>
+            customMsg    = <span class="str">"Reminder: Confirm wire has been booked in cashiering before sending."</span>
+
+        <span class="kw">Case</span> <span class="str">"Re-Registration Notice"</span>
+            templateFile = <span class="str">"tmpl_rereg_notice.txt"</span>
+            customMsg    = <span class="str">"Reminder: Attach the completed Re-Reg form. Submit at least 4 weeks before liquidation."</span>
+
+        <span class="kw">Case</span> <span class="str">"Loan Setup — Takeover Confirmation"</span>
+            templateFile = <span class="str">"tmpl_loan_takeover.txt"</span>
+            customMsg    = <span class="str">"Reminder: Verify Loan Header balances match Loan Source totals before sending."</span>
+
+        <span class="kw">Case</span> <span class="str">"Client Follow-Up — No Response"</span>
+            templateFile = <span class="str">"tmpl_client_followup.txt"</span>
+            customMsg    = <span class="str">"No attachments needed. Check case notes before sending."</span>
+
+        <span class="kw">Case</span> <span class="str">"Onboarding — Welcome Email"</span>
+            templateFile = <span class="str">"tmpl_onboarding_welcome.txt"</span>
+            customMsg    = <span class="str">"Reminder: CC the assigned TM and include the welcome packet PDF."</span>
+
+        <span class="cm">' Add additional email types here following the same pattern</span>
+
+        <span class="kw">Case Else</span>
+            templateFile = <span class="str">""</span>
+            customMsg    = <span class="str">"No custom message configured for this email type."</span>
+
+    <span class="kw">End Select</span>
+
+<span class="kw">End Sub</span></pre>
+  </div>
+
+  <!-- MODULE 3 -->
+  <div class="module-hd" onclick="toggleModule('mod3')">
+    <div class="module-hd-num">03</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_TokenEngine · Token Replacement</div>
+      <div class="module-hd-title">Token Replacement Engine</div>
+      <div class="module-hd-desc">Resolves static {tokens} and dynamic {date+N} relative date tokens in the template body</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod3">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod3">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_TokenEngine.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod3', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod3"><span class="cm">' ============================================================
+' mod_TokenEngine
+' ReplaceTokens() — takes the raw template string and swaps
+' every {token} with its live value.
+'
+' Static tokens:  {case}  {plan}  {TM}  {TC}  {amount}
+' Dynamic tokens: {date+N} where N = days to add to today
+'   {date+0}  → today
+'   {date+2}  → 2 days from today
+'   {date+10} → 10 days from today
+'
+' To add a new static token: add one Replace() call below.
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Public Function</span> <span class="fn">ReplaceTokens</span>(<span class="kw">ByVal</span> body    <span class="kw">As String</span>, _
+                               caseNum  <span class="kw">As String</span>, _
+                               planName <span class="kw">As String</span>, _
+                               tmName   <span class="kw">As String</span>, _
+                               tcName   <span class="kw">As String</span>, _
+                               amount   <span class="kw">As String</span>) <span class="kw">As String</span>
+
+    <span class="cm">' ── Static token replacement ──────────────────────────────</span>
+    body = <span class="fn">Replace</span>(body, <span class="tok">"{case}"</span>,   caseNum)
+    body = <span class="fn">Replace</span>(body, <span class="tok">"{plan}"</span>,   planName)
+    body = <span class="fn">Replace</span>(body, <span class="tok">"{TM}"</span>,    tmName)
+    body = <span class="fn">Replace</span>(body, <span class="tok">"{TC}"</span>,    tcName)
+    body = <span class="fn">Replace</span>(body, <span class="tok">"{amount}"</span>, amount)
+
+    <span class="cm">' ── Dynamic date token replacement ────────────────────────
+    ' Scans for any {date+N} pattern and resolves to a date string.
+    ' Example: {date+10} → "03/20/2026" when today is 03/10/2026</span>
+    <span class="kw">Dim</span> tokenStart <span class="kw">As Long</span>, tokenEnd <span class="kw">As Long</span>
+    <span class="kw">Dim</span> token <span class="kw">As String</span>, daysStr <span class="kw">As String</span>
+    <span class="kw">Dim</span> daysToAdd <span class="kw">As Long</span>
+
+    <span class="kw">Do</span>
+        tokenStart = <span class="fn">InStr</span>(body, <span class="tok">"{date+"</span>)
+        <span class="kw">If</span> tokenStart = <span class="num">0</span> <span class="kw">Then Exit Do</span>
+
+        tokenEnd = <span class="fn">InStr</span>(tokenStart, body, <span class="str">"}"</span>)
+        <span class="kw">If</span> tokenEnd = <span class="num">0</span> <span class="kw">Then Exit Do</span>
+
+        token   = <span class="fn">Mid</span>(body, tokenStart, tokenEnd - tokenStart + <span class="num">1</span>)
+        daysStr = <span class="fn">Mid</span>(token, <span class="num">7</span>, <span class="fn">Len</span>(token) - <span class="num">7</span>)
+        <span class="kw">If Not</span> <span class="fn">IsNumeric</span>(daysStr) <span class="kw">Then Exit Do</span>
+
+        daysToAdd = <span class="fn">CLng</span>(daysStr)
+        body = <span class="fn">Replace</span>(body, token, <span class="fn">Format</span>(<span class="fn">Date</span> + daysToAdd, <span class="str">"mm/dd/yyyy"</span>))
+    <span class="kw">Loop</span>
+
+    <span class="fn">ReplaceTokens</span> = body
+
+<span class="kw">End Function</span></pre>
+  </div>
+
+  <!-- MODULE 4 -->
+  <div class="module-hd" onclick="toggleModule('mod4')">
+    <div class="module-hd-num">04</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_EmailBuilder · Orchestration + Entry Point</div>
+      <div class="module-hd-title">Email Builder, Appointment Creator &amp; Form Launcher</div>
+      <div class="module-hd-desc">Main assembly sub, SLA-based follow-up appointment creator, entry point, and ReadTextFile helper</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod4">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod4">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_EmailBuilder.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod4', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod4"><span class="cm">' ============================================================
+' mod_EmailBuilder
+' Three subs + one helper:
+'   BuildAndSendEmail()         — main assembly + dispatch
+'   CreateFollowUpAppointment() — SLA-based calendar entry
+'   EmailGeneratorMain()        — entry point (wire button here)
+'   ReadTextFile()              — loads .txt template from disk
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="cm">' Update this path to point at your templates folder</span>
+<span class="kw">Private Const</span> TEMPLATE_PATH <span class="kw">As String</span> = <span class="str">"C:\Templates\EmailGen\"</span>
+
+<span class="cm">' ----------------------------------------------------------
+' BuildAndSendEmail — called by btnSubmit_Click
+' ----------------------------------------------------------</span>
+<span class="kw">Public Sub</span> <span class="fn">BuildAndSendEmail</span>(<span class="kw">ByVal</span> emailType <span class="kw">As String</span>, _
+                              caseNum  <span class="kw">As String</span>, _
+                              planName <span class="kw">As String</span>, _
+                              tmName   <span class="kw">As String</span>, tmEmail <span class="kw">As String</span>, _
+                              tcName   <span class="kw">As String</span>, tcEmail <span class="kw">As String</span>, _
+                              amount   <span class="kw">As String</span>)
+
+    <span class="kw">Dim</span> templateFile <span class="kw">As String</span>, customMsg <span class="kw">As String</span>
+    <span class="kw">Dim</span> body         <span class="kw">As String</span>
+    <span class="kw">Dim</span> mailItem     <span class="kw">As</span> Outlook.MailItem
+
+    <span class="cm">' 1. Get template filename + pre-send reminder</span>
+    <span class="fn">GetTemplateAndMessage</span> emailType, templateFile, customMsg
+
+    <span class="kw">If</span> templateFile = <span class="str">""</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> <span class="str">"No template configured for: "</span> &amp; emailType, vbExclamation
+        <span class="kw">Exit Sub</span>
+    <span class="kw">End If</span>
+
+    <span class="cm">' 2. Load template from disk</span>
+    body = <span class="fn">ReadTextFile</span>(TEMPLATE_PATH &amp; templateFile)
+
+    <span class="cm">' 3. Replace all tokens (static + dynamic dates)</span>
+    body = <span class="fn">ReplaceTokens</span>(body, caseNum, planName, tmName, tcName, amount)
+
+    <span class="cm">' 4. Show pre-send reminder</span>
+    <span class="kw">If</span> customMsg &lt;&gt; <span class="str">""</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> customMsg, vbInformation, <span class="str">"Before You Send"</span>
+    <span class="kw">End If</span>
+
+    <span class="cm">' 5. Build and display the mail item</span>
+    <span class="kw">Set</span> mailItem = <span class="fn">Application.CreateItem</span>(olMailItem)
+    <span class="kw">With</span> mailItem
+        .To      = tmEmail &amp; <span class="str">";"</span> &amp; tcEmail
+        .Subject = emailType &amp; <span class="str">" — Case #"</span> &amp; caseNum &amp; <span class="str">" — "</span> &amp; planName
+        .Body    = body
+        .Display   <span class="cm">' Change to .Send to fire immediately</span>
+    <span class="kw">End With</span>
+
+    <span class="cm">' 6. Create follow-up appointment if SLA requires it</span>
+    <span class="fn">CreateFollowUpAppointment</span> emailType, caseNum, planName
+
+    <span class="cm">' Optional: uncomment the line below for a success popup</span>
+    <span class="cm">' MsgBox "Email created for " &amp; planName &amp; " (Case #" &amp; caseNum &amp; ")", vbInformation</span>
+
+    <span class="kw">Set</span> mailItem = <span class="kw">Nothing</span>
+<span class="kw">End Sub</span>
+
+<span class="cm">' ----------------------------------------------------------
+' CreateFollowUpAppointment
+' SLA day counts per email type. Set to 0 for no appointment.
+' ----------------------------------------------------------</span>
+<span class="kw">Public Sub</span> <span class="fn">CreateFollowUpAppointment</span>(<span class="kw">ByVal</span> emailType <span class="kw">As String</span>, _
+                                       caseNum  <span class="kw">As String</span>, _
+                                       planName <span class="kw">As String</span>)
+
+    <span class="kw">Dim</span> followUpDays <span class="kw">As Long</span>
+
+    <span class="kw">Select Case</span> emailType
+        <span class="kw">Case</span> <span class="str">"Payroll Setup — Final Import"</span>      : followUpDays = <span class="num">10</span>
+        <span class="kw">Case</span> <span class="str">"Balance Import Confirmation"</span>        : followUpDays = <span class="num">3</span>
+        <span class="kw">Case</span> <span class="str">"Re-Registration Notice"</span>            : followUpDays = <span class="num">7</span>
+        <span class="kw">Case</span> <span class="str">"Loan Setup — Takeover Confirmation"</span> : followUpDays = <span class="num">5</span>
+        <span class="kw">Case</span> <span class="str">"Client Follow-Up — No Response"</span>     : followUpDays = <span class="num">5</span>
+        <span class="kw">Case</span> <span class="str">"Onboarding — Welcome Email"</span>         : followUpDays = <span class="num">0</span>
+        <span class="kw">Case Else</span>                                 : followUpDays = <span class="num">0</span>
+    <span class="kw">End Select</span>
+
+    <span class="kw">If</span> followUpDays = <span class="num">0</span> <span class="kw">Then Exit Sub</span>
+
+    <span class="kw">Dim</span> appt <span class="kw">As</span> Outlook.AppointmentItem
+    <span class="kw">Set</span> appt = <span class="fn">Application.CreateItem</span>(olAppointmentItem)
+
+    <span class="kw">With</span> appt
+        .Subject  = <span class="str">"Follow Up — "</span> &amp; planName &amp; <span class="str">" — "</span> &amp; emailType
+        .Body     = <span class="str">"Case #: "</span> &amp; caseNum &amp; vbCrLf &amp; <span class="str">"Plan: "</span> &amp; planName &amp; vbCrLf &amp; _
+                    <span class="str">"Email sent: "</span> &amp; emailType &amp; vbCrLf &amp; _
+                    <span class="str">"Follow-up SLA: "</span> &amp; followUpDays &amp; <span class="str">" days"</span>
+        .Start    = <span class="fn">Date</span> + followUpDays
+        .Duration = <span class="num">30</span>
+        .ReminderSet = <span class="kw">True</span>
+        .ReminderMinutesBeforeStart = <span class="num">60</span>
+        .Save
+    <span class="kw">End With</span>
+
+    <span class="kw">Set</span> appt = <span class="kw">Nothing</span>
+<span class="kw">End Sub</span>
+
+<span class="cm">' ----------------------------------------------------------
+' EmailGeneratorMain — entry point, wire your button here
+' ----------------------------------------------------------</span>
+<span class="kw">Public Sub</span> <span class="fn">EmailGeneratorMain</span>()
+    frmEmailGenerator.Show
+<span class="kw">End Sub</span>
+
+<span class="cm">' ----------------------------------------------------------
+' ReadTextFile — loads a .txt file and returns its contents
+' ----------------------------------------------------------</span>
+<span class="kw">Private Function</span> <span class="fn">ReadTextFile</span>(<span class="kw">ByVal</span> filePath <span class="kw">As String</span>) <span class="kw">As String</span>
+    <span class="kw">Dim</span> fileNum  <span class="kw">As Integer</span>
+    <span class="kw">Dim</span> content  <span class="kw">As String</span>
+    <span class="kw">Dim</span> line     <span class="kw">As String</span>
+
+    <span class="kw">If Not</span> <span class="fn">Dir</span>(filePath) &lt;&gt; <span class="str">""</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> <span class="str">"Template not found: "</span> &amp; filePath, vbCritical
+        <span class="fn">ReadTextFile</span> = <span class="str">""</span>
+        <span class="kw">Exit Function</span>
+    <span class="kw">End If</span>
+
+    fileNum = <span class="fn">FreeFile</span>
+    <span class="kw">Open</span> filePath <span class="kw">For Input As</span> #fileNum
+    <span class="kw">Do While Not EOF</span>(fileNum)
+        <span class="fn">Line Input</span> #fileNum, line
+        content = content &amp; line &amp; vbCrLf
+    <span class="kw">Loop</span>
+    <span class="kw">Close</span> #fileNum
+
+    <span class="fn">ReadTextFile</span> = content
+<span class="kw">End Function</span></pre>
+  </div>
+
+  <!-- MODULE 5 -->
+  <div class="module-hd" onclick="toggleModule('mod5')">
+    <div class="module-hd-num">05</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">UserForm · frmEmailGenerator · VBE Form Code</div>
+      <div class="module-hd-title">UserForm Code — Initialize, Populate &amp; Submit</div>
+      <div class="module-hd-desc">Form event handlers — populates combos on load, wires submit button to BuildAndSendEmail</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod5">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod5">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">frmEmailGenerator (code-behind)</span>
+      <button class="copy-btn" onclick="copyCode('code-mod5', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod5"><span class="cm">' ============================================================
+' frmEmailGenerator — UserForm code-behind
+' Paste into the form's code window in VBE.
+'
+' Controls needed (create in the form designer):
+'   txtCaseNum    — TextBox
+'   txtPlanName   — TextBox
+'   txtAmount     — TextBox (hidden by default)
+'   cboTM         — ComboBox
+'   cboTC         — ComboBox
+'   lstEmailType  — ListBox
+'   btnSubmit     — CommandButton
+'   btnCancel     — CommandButton
+'   lblAmountNote — Label (shows/hides with amount field)
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Private Sub</span> <span class="fn">UserForm_Initialize</span>()
+    <span class="kw">Dim</span> tmList <span class="kw">As Variant</span>, tcList <span class="kw">As Variant</span>
+    <span class="kw">Dim</span> i      <span class="kw">As Long</span>
+
+    <span class="cm">' Populate TM combo box</span>
+    tmList = <span class="fn">GetTMList</span>()
+    <span class="kw">For</span> i = <span class="num">0</span> <span class="kw">To UBound</span>(tmList, <span class="num">1</span>)
+        cboTM.AddItem tmList(i, <span class="num">0</span>)
+    <span class="kw">Next</span> i
+
+    <span class="cm">' Populate TC combo box</span>
+    tcList = <span class="fn">GetTCList</span>()
+    <span class="kw">For</span> i = <span class="num">0</span> <span class="kw">To UBound</span>(tcList, <span class="num">1</span>)
+        cboTC.AddItem tcList(i, <span class="num">0</span>)
+    <span class="kw">Next</span> i
+
+    <span class="cm">' Populate email type list — keep in sync with mod_Templates</span>
+    <span class="kw">With</span> lstEmailType
+        .AddItem <span class="str">"Payroll Setup — Final Import"</span>
+        .AddItem <span class="str">"Balance Import Confirmation"</span>
+        .AddItem <span class="str">"Re-Registration Notice"</span>
+        .AddItem <span class="str">"Loan Setup — Takeover Confirmation"</span>
+        .AddItem <span class="str">"Client Follow-Up — No Response"</span>
+        .AddItem <span class="str">"Onboarding — Welcome Email"</span>
+    <span class="kw">End With</span>
+
+    <span class="cm">' Hide amount field by default — shown only for relevant email types</span>
+    txtAmount.Visible     = <span class="kw">False</span>
+    lblAmountNote.Visible = <span class="kw">False</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">lstEmailType_Click</span>()
+    <span class="cm">' Show amount field only for email types that need it</span>
+    <span class="kw">Dim</span> needsAmount() <span class="kw">As String</span>
+    needsAmount = <span class="fn">Split</span>(<span class="str">"Balance Import Confirmation,Loan Setup — Takeover Confirmation"</span>, <span class="str">","</span>)
+
+    <span class="kw">Dim</span> showAmt <span class="kw">As Boolean</span>
+    showAmt = <span class="kw">False</span>
+
+    <span class="kw">Dim</span> i <span class="kw">As Long</span>
+    <span class="kw">For</span> i = <span class="num">0</span> <span class="kw">To UBound</span>(needsAmount)
+        <span class="kw">If</span> lstEmailType.Value = needsAmount(i) <span class="kw">Then</span> showAmt = <span class="kw">True</span>
+    <span class="kw">Next</span> i
+
+    txtAmount.Visible     = showAmt
+    lblAmountNote.Visible = showAmt
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnSubmit_Click</span>()
+    <span class="cm">' Validate required fields</span>
+    <span class="kw">If Trim</span>(txtCaseNum.Value) = <span class="str">""</span> <span class="kw">Or Trim</span>(txtPlanName.Value) = <span class="str">""</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> <span class="str">"Case number and plan name are required."</span>, vbExclamation
+        <span class="kw">Exit Sub</span>
+    <span class="kw">End If</span>
+    <span class="kw">If</span> cboTM.ListIndex = -<span class="num">1</span> <span class="kw">Or</span> cboTC.ListIndex = -<span class="num">1</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> <span class="str">"Please select a TM and TC."</span>, vbExclamation
+        <span class="kw">Exit Sub</span>
+    <span class="kw">End If</span>
+    <span class="kw">If</span> lstEmailType.ListIndex = -<span class="num">1</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> <span class="str">"Please select an email type."</span>, vbExclamation
+        <span class="kw">Exit Sub</span>
+    <span class="kw">End If</span>
+
+    <span class="cm">' Resolve TM and TC from the people list arrays</span>
+    <span class="kw">Dim</span> tmList <span class="kw">As Variant</span>, tcList <span class="kw">As Variant</span>
+    <span class="kw">Dim</span> tmIdx  <span class="kw">As Long</span>,   tcIdx  <span class="kw">As Long</span>
+    tmList = <span class="fn">GetTMList</span>() : tmIdx = cboTM.ListIndex
+    tcList = <span class="fn">GetTCList</span>() : tcIdx = cboTC.ListIndex
+
+    <span class="fn">BuildAndSendEmail</span> _
+        emailType := lstEmailType.Value,        _
+        caseNum   := <span class="fn">Trim</span>(txtCaseNum.Value),  _
+        planName  := <span class="fn">Trim</span>(txtPlanName.Value),  _
+        tmName    := tmList(tmIdx, <span class="num">0</span>), tmEmail := tmList(tmIdx, <span class="num">1</span>), _
+        tcName    := tcList(tcIdx, <span class="num">0</span>), tcEmail := tcList(tcIdx, <span class="num">1</span>), _
+        amount    := <span class="fn">Trim</span>(txtAmount.Value)
+
+    <span class="kw">Me.Hide</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnCancel_Click</span>()
+    <span class="kw">Me.Hide</span>
+<span class="kw">End Sub</span></pre>
+  </div>
+
+</div><!-- /code-section -->
+
+<!-- ═══ SETUP GUIDE ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">SETUP GUIDE</div>
+  <div class="sec-rule-sub">How to install and configure this macro from scratch</div>
+</div>
+<div class="setup-grid">
+  <div class="setup-col">
+    <div class="setup-col-title">INSTALLATION</div>
+    <div class="setup-step">
+      <div class="setup-num">01</div>
+      <div class="setup-body">
+        <div class="setup-title">Open the VBE in Outlook</div>
+        <div class="setup-desc">Alt + F11 inside Outlook opens the Visual Basic Editor. You're working inside the Outlook project, not Excel.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">02</div>
+      <div class="setup-body">
+        <div class="setup-title">Create the four modules</div>
+        <div class="setup-desc">Insert → Module four times. Rename each in the Properties panel: <span class="setup-code">mod_PeopleLists</span> <span class="setup-code">mod_Templates</span> <span class="setup-code">mod_TokenEngine</span> <span class="setup-code">mod_EmailBuilder</span></div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">03</div>
+      <div class="setup-body">
+        <div class="setup-title">Create the UserForm</div>
+        <div class="setup-desc">Insert → UserForm. Rename it <span class="setup-code">frmEmailGenerator</span>. Add all controls listed at the top of Module 05 above.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">04</div>
+      <div class="setup-body">
+        <div class="setup-title">Paste each module's code</div>
+        <div class="setup-desc">Copy each block above into its VBE module. Paste the form code into the UserForm's code window (not a standard module).</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">05</div>
+      <div class="setup-body">
+        <div class="setup-title">Set the template folder path</div>
+        <div class="setup-desc">Update the <span class="setup-code">TEMPLATE_PATH</span> constant at the top of <span class="setup-code">mod_EmailBuilder</span> to point at the folder where your .txt files live.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">06</div>
+      <div class="setup-body">
+        <div class="setup-title">Wire the launch button</div>
+        <div class="setup-desc">In Outlook's Quick Access Toolbar, add a macro button pointed at <span class="setup-code">EmailGeneratorMain</span> in <span class="setup-code">mod_EmailBuilder</span>. That's the only entry point.</div>
+      </div>
+    </div>
+  </div>
+  <div class="setup-col">
+    <div class="setup-col-title">TEMPLATE FORMAT</div>
+    <div class="setup-step">
+      <div class="setup-num">01</div>
+      <div class="setup-body">
+        <div class="setup-title">Save templates as .txt files</div>
+        <div class="setup-desc">Each email type needs one .txt file in the template folder. The filename must exactly match what you set in <span class="setup-code">mod_Templates</span>.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">02</div>
+      <div class="setup-body">
+        <div class="setup-title">Use curly-bracket tokens for dynamic values</div>
+        <div class="setup-desc">Write your template normally. Place <span class="setup-code">{case}</span> <span class="setup-code">{plan}</span> <span class="setup-code">{TM}</span> <span class="setup-code">{TC}</span> <span class="setup-code">{amount}</span> wherever those values should appear. The engine replaces them at runtime.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">03</div>
+      <div class="setup-body">
+        <div class="setup-title">Use {date+N} for relative dates</div>
+        <div class="setup-desc">For dates relative to today: <span class="setup-code">{date+0}</span> = today, <span class="setup-code">{date+10}</span> = 10 days out. Use as many as needed in a single template — all resolved in one pass.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">04</div>
+      <div class="setup-body">
+        <div class="setup-title">Add new email types easily</div>
+        <div class="setup-desc">Add a Case block in <span class="setup-code">mod_Templates</span>, save the .txt file, and add the type name to <span class="setup-code">lstEmailType</span> in the UserForm Initialize. No other changes needed.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">05</div>
+      <div class="setup-body">
+        <div class="setup-title">Configure follow-up SLA days</div>
+        <div class="setup-desc">In <span class="setup-code">CreateFollowUpAppointment()</span>, set the day count per email type. Set to <span class="setup-code">0</span> for no appointment. Adjust numbers to match your SLA windows.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">06</div>
+      <div class="setup-body">
+        <div class="setup-title">Send vs Display</div>
+        <div class="setup-desc">In <span class="setup-code">BuildAndSendEmail()</span>, the mail item currently uses <span class="setup-code">.Display</span> for review. Change to <span class="setup-code">.Send</span> to fire immediately — can be toggled per email type if needed.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="proj-footer">
+  <div class="pf-block"><span class="pf-n">01</span><span class="pf-l">Project number</span></div>
+  <div class="pf-block"><span class="pf-n">5</span><span class="pf-l">Modules</span></div>
+  <div class="pf-block"><span class="pf-n">6</span><span class="pf-l">Email types</span></div>
+  <div class="pf-block"><span class="pf-n">6</span><span class="pf-l">Token types</span></div>
+  <div class="pf-block"><span class="pf-n">14</span><span class="pf-l">Flow steps</span></div>
+  <div class="pf-block"><span class="pf-n">2</span><span class="pf-l">Outputs per run</span></div>
+</div>
+
+<script>
+function toggleModule(id) {
+  const body = document.getElementById(id);
+  const tog  = document.getElementById('tog-' + id);
+  const open = body.classList.toggle('open');
+  tog.textContent = open ? 'COLLAPSE ↑' : 'EXPAND ↓';
+}
+
+function copyCode(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('ok'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copied';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

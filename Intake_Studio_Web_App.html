@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma Intake Studio | Web App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #eef3f8;
+  --paper: #ffffff;
+  --paper-soft: #f6f9fc;
+  --ink: #101620;
+  --muted: #667085;
+  --line: #d7e1ea;
+  --blue: #173d73;
+  --sky: #4f8dd8;
+  --mint: #dff4ef;
+  --shadow: 0 26px 65px rgba(18, 33, 56, 0.12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top right, rgba(79,141,216,0.18), transparent 20%),
+    linear-gradient(180deg, #f4f8fc 0%, #eaf0f6 100%);
+}
+.shell { max-width: 1260px; margin: 0 auto; padding: 26px 22px 70px; }
+.topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:22px; }
+.toplink, .topbadge {
+  display:inline-flex; align-items:center; gap:10px; padding:11px 14px; border-radius:999px; text-decoration:none;
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+  border:1px solid var(--line); background:rgba(255,255,255,0.7); color:var(--ink);
+}
+.hero {
+  display:grid; grid-template-columns: 1.05fr 0.95fr; gap:20px; margin-bottom:20px;
+}
+.hero-card, .status-card, .form-card {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(16px);
+  border:1px solid rgba(255,255,255,0.82);
+  border-radius:30px;
+  box-shadow: var(--shadow);
+}
+.hero-card { padding: 34px 34px 28px; }
+.eyebrow { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--sky); margin-bottom:16px; }
+.hero h1 { margin:0; font-family:'DM Serif Display', serif; font-size: clamp(42px, 5vw, 74px); line-height:0.96; letter-spacing:-0.03em; }
+.hero h1 em { color:var(--blue); font-style:italic; }
+.hero p { margin:18px 0 0; max-width:640px; color:var(--muted); line-height:1.8; font-size:15px; }
+.status-card { padding:24px; display:flex; flex-direction:column; gap:14px; }
+.status-tile { border:1px solid var(--line); border-radius:22px; padding:18px; background:linear-gradient(180deg, #ffffff, var(--paper-soft)); }
+.status-tile strong { display:block; font-size:28px; }
+.status-tile span { display:block; margin-top:8px; color:var(--muted); font-size:13px; line-height:1.6; }
+.form-card { padding: 24px; }
+.form-header { display:flex; justify-content:space-between; align-items:end; gap:16px; margin-bottom:18px; }
+.form-header h2 { margin:0; font-family:'DM Serif Display', serif; font-size:38px; }
+.form-header p { margin:0; color:var(--muted); max-width:640px; line-height:1.7; }
+.section-grid { display:grid; gap:18px; }
+.section {
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:linear-gradient(180deg, #ffffff, #f7fbff);
+  overflow:hidden;
+}
+.section-head {
+  display:flex; justify-content:space-between; gap:14px; align-items:center;
+  padding:16px 18px; border-bottom:1px solid var(--line);
+  background:linear-gradient(90deg, rgba(23,61,115,0.05), rgba(79,141,216,0.04));
+}
+.section-head strong {
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--blue);
+}
+.section-head span { color:var(--muted); font-size:12px; }
+.section-body { padding:18px; display:grid; gap:16px; }
+.grid-2, .grid-3 { display:grid; gap:14px; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.field { display:grid; gap:7px; }
+.field label {
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#475467;
+}
+.field input, .field textarea, .field select {
+  width:100%; border:1px solid var(--line); border-radius:14px; padding:13px 14px;
+  font: inherit; color:var(--ink); background:#fff; outline:none; transition:border-color .15s, box-shadow .15s;
+}
+.field textarea { min-height:120px; resize:vertical; }
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--sky);
+  box-shadow: 0 0 0 4px rgba(79,141,216,0.12);
+}
+.toggle-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
+.toggle {
+  border:1px solid var(--line); border-radius:18px; padding:14px;
+  background:#fff; min-height:88px;
+}
+.toggle strong { display:block; font-size:14px; margin-bottom:6px; }
+.toggle span { color:var(--muted); font-size:12px; line-height:1.6; }
+.footer-actions {
+  margin-top:20px; display:flex; justify-content:space-between; gap:14px; align-items:center; flex-wrap:wrap;
+}
+.footer-note { color:var(--muted); font-size:13px; line-height:1.7; max-width:720px; }
+.cta-row { display:flex; gap:10px; flex-wrap:wrap; }
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:13px 18px; border-radius:16px; border:1px solid var(--line);
+  text-decoration:none; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.16em;
+  text-transform:uppercase; cursor:pointer; background:#fff; color:var(--ink);
+}
+.btn.primary { background:var(--blue); border-color:var(--blue); color:#fff; }
+.btn.secondary { background:#eef4fb; color:var(--blue); border-color:#cfe0f7; }
+@media (max-width: 980px) {
+  .hero { grid-template-columns:1fr; }
+  .grid-2, .grid-3, .toggle-grid { grid-template-columns:1fr; }
+}
+@media (max-width: 640px) {
+  .shell { padding-left:16px; padding-right:16px; }
+  .hero-card, .status-card, .form-card { border-radius:24px; }
+}
+</style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <a class="toplink" href="Intake_Studio_Landing.html">← Back to Intake Hub</a>
+      <div class="topbadge">Project Intake | Web App</div>
+    </div>
+
+    <div class="hero">
+      <section class="hero-card">
+        <div class="eyebrow">Application Discovery Intake</div>
+        <h1>Define the product before the build gets <em>expensive</em>.</h1>
+        <p>Use this intake to capture how the app should work, who it serves, what data it handles, and which workflows matter most. This is the right path for dashboards, trackers, portals, generators, calculators, and operational tools.</p>
+      </section>
+      <aside class="status-card">
+        <div class="status-tile">
+          <strong>Use this for</strong>
+          <span>Internal tools, client-facing utilities, portals, calculators, generators, trackers, workflow apps, approval systems, and dashboard products.</span>
+        </div>
+        <div class="status-tile" style="background:linear-gradient(180deg, #f5fbfa, var(--mint));">
+          <strong>Key inputs</strong>
+          <span>Users, permissions, pages, saved data, integrations, automation, notifications, and repeat-use actions.</span>
+        </div>
+      </aside>
+    </div>
+
+    <section class="form-card">
+      <div class="form-header">
+        <div>
+          <h2>Web App Intake</h2>
+        </div>
+        <p>Complete this page with the practical details needed to scope, design, and build the application correctly the first time.</p>
+      </div>
+
+      <div class="section-grid">
+        <section class="section">
+          <div class="section-head"><strong>01 | Project Basics</strong><span>Core identity and business context</span></div>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field"><label>Project Name</label><input type="text" placeholder="Name of the app or working project title"></div>
+              <div class="field"><label>Company / Brand</label><input type="text" placeholder="Company, team, or brand name"></div>
+              <div class="field"><label>Primary Goal</label><input type="text" placeholder="What should this app help users do?"></div>
+              <div class="field"><label>Target Launch Window</label><input type="text" placeholder="Desired timeline or milestone"></div>
+            </div>
+            <div class="field"><label>App Summary</label><textarea placeholder="Describe the app in plain language. What is it, who is it for, and why does it need to exist?"></textarea></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>02 | Users & Access</strong><span>Who uses it and how access should work</span></div>
+          <div class="section-body">
+            <div class="grid-3">
+              <div class="field"><label>Primary User Type</label><input type="text" placeholder="Admin, employee, client, manager..."></div>
+              <div class="field"><label>Secondary User Types</label><input type="text" placeholder="Any additional audiences"></div>
+              <div class="field"><label>Login Required?</label><select><option>Yes</option><option>No</option><option>Maybe</option></select></div>
+            </div>
+            <div class="toggle-grid">
+              <div class="toggle"><strong>Role-based permissions</strong><span>Should different user types see different pages, actions, or data?</span></div>
+              <div class="toggle"><strong>Saved user history</strong><span>Should users be able to return and view past submissions, activity, or records?</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>03 | App Structure</strong><span>Pages, views, and modules</span></div>
+          <div class="section-body">
+            <div class="grid-3">
+              <div class="field"><label>How Many Main Pages?</label><input type="number" placeholder="Ex: 5"></div>
+              <div class="field"><label>Main Pages / Modules</label><input type="text" placeholder="Dashboard, Reports, Intake, Settings..."></div>
+              <div class="field"><label>Most Important Page</label><input type="text" placeholder="Which page matters most?"></div>
+            </div>
+            <div class="field"><label>User Flow</label><textarea placeholder="Describe the normal path a user takes through the app from start to finish."></textarea></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>04 | Core Functionality</strong><span>What the app must actually do</span></div>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field"><label>Primary Actions</label><textarea placeholder="Search, submit forms, generate outputs, edit records, export reports, assign tasks..."></textarea></div>
+              <div class="field"><label>Secondary Features</label><textarea placeholder="Notifications, filters, tagging, notes, comments, uploads, saved views..."></textarea></div>
+            </div>
+            <div class="grid-3">
+              <div class="field"><label>File Uploads Needed?</label><select><option>Yes</option><option>No</option><option>Not Sure</option></select></div>
+              <div class="field"><label>Exports Needed?</label><select><option>Yes</option><option>No</option><option>Maybe</option></select></div>
+              <div class="field"><label>Dashboard / Metrics View?</label><select><option>Yes</option><option>No</option><option>Maybe</option></select></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>05 | Data & Integrations</strong><span>What information the app uses</span></div>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field"><label>Data Inputs</label><textarea placeholder="What information will users enter, upload, or manage?"></textarea></div>
+              <div class="field"><label>Integrations</label><textarea placeholder="SharePoint, email, CRM, database, API, calendar, Stripe, Forms, etc."></textarea></div>
+            </div>
+            <div class="grid-3">
+              <div class="field"><label>Needs Saved Records?</label><select><option>Yes</option><option>No</option><option>Possibly</option></select></div>
+              <div class="field"><label>Needs Search / Filter?</label><select><option>Yes</option><option>No</option><option>Possibly</option></select></div>
+              <div class="field"><label>Needs Automation?</label><select><option>Yes</option><option>No</option><option>Possibly</option></select></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>06 | Design Direction</strong><span>How the app should feel</span></div>
+          <div class="section-body">
+            <div class="grid-3">
+              <div class="field"><label>Overall Tone</label><input type="text" placeholder="Serious, premium, clean, bold, futuristic..."></div>
+              <div class="field"><label>Reference Apps</label><input type="text" placeholder="Apps or products you like"></div>
+              <div class="field"><label>Mobile Priority</label><select><option>Desktop First</option><option>Mobile First</option><option>Balanced</option></select></div>
+            </div>
+            <div class="field"><label>Aesthetic Notes</label><textarea placeholder="Describe the look: colors, mood, typography, animations, visual cues, degree of polish, anything you want to avoid."></textarea></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer-actions">
+        <div class="footer-note">Use this intake when the end product behaves like a tool. If the project is more about marketing, sections, and content hierarchy than workflows, use the Web Site intake instead.</div>
+        <div class="cta-row">
+          <a class="btn secondary" href="Intake_Studio_Landing.html">Back to Hub</a>
+          <a class="btn primary" href="Intake_Studio_Web_Site.html">Open Site Intake</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Implementation Checklist Generator v8</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg:#141210; --surface:#1c1a17; --surface2:#222018; --border:#ffffff0f; --border2:#ffffff18;
+  --text:#f0ece4; --muted:#7a7060; --ok:#16a34a; --critical:#dc2626; --warn:#d97706;
+  --accent:#2563eb; --accent2:#1d4ed8; --accent-ok:#4ade80;
+}
+/* ── DARK MODE ── */
+html.dark-mode {
+  --bg:#141210; --surface:#1c1a17; --surface2:#252320; --border:#ffffff12; --border2:#ffffff18;
+  --text:#f0ece4; --muted:#7a7060; --ok:#4ade80; --critical:#f87171; --warn:#fbbf24;
+  --accent:#3b82f6; --accent2:#2563eb; --accent-ok:#4ade80;
+}
+/* body + layout */
+html.dark-mode body { background:var(--bg); color:var(--text); }
+/* progress bar */
+html.dark-mode .prog-hdr { background:var(--surface); border-bottom-color:var(--border); }
+html.dark-mode .prog-track { background:var(--surface2); }
+/* phases */
+html.dark-mode .phase-block { background:var(--surface); border-color:var(--border); }
+html.dark-mode .phase-hdr { border-bottom-color:var(--border); }
+html.dark-mode .phase-hdr:hover { background:var(--surface2); }
+html.dark-mode .phase-num { color:var(--muted); }
+html.dark-mode .phase-title { color:var(--text); }
+html.dark-mode .phase-sub { color:var(--muted); }
+html.dark-mode .phase-cnt { color:var(--muted); }
+html.dark-mode .mp { background:var(--surface2); }
+html.dark-mode .done-banner { background:#052e16; border-color:#166534; color:var(--ok); }
+/* tasks */
+html.dark-mode .task-item { border-bottom-color:var(--border); }
+html.dark-mode .task-item:hover { background:var(--surface2); }
+html.dark-mode .task-item.done { opacity:0.42; }
+html.dark-mode .task-chk { background:var(--surface); border-color:#ffffff25; color:var(--surface); }
+html.dark-mode .task-item.done .task-chk { background:var(--ok); border-color:var(--ok); color:#0a1a0a; }
+html.dark-mode .task-txt { color:var(--text); }
+html.dark-mode .task-note { color:var(--muted); }
+/* sidebar cards */
+html.dark-mode .sc { background:var(--surface); border-color:var(--border); }
+html.dark-mode .sc h3 { color:var(--muted); }
+html.dark-mode .ss { border-bottom-color:var(--border); color:var(--text); }
+html.dark-mode .ss-n { color:var(--text); }
+html.dark-mode .pir { border-bottom-color:var(--border); }
+html.dark-mode .pir-l { color:var(--muted); }
+html.dark-mode .pir-v { color:var(--text); }
+html.dark-mode .pir-action { border-bottom-color:var(--border); }
+html.dark-mode .pj:hover { background:var(--surface2); }
+html.dark-mode .pj-name { color:var(--text); }
+html.dark-mode .pj-pct { color:var(--muted); }
+/* file buttons */
+html.dark-mode .sb-file-btn.sbfb-load { background:var(--surface2); border-color:var(--border); color:var(--muted); }
+html.dark-mode .sb-file-btn.sbfb-load:hover { border-color:var(--text); color:var(--text); }
+/* export / edit intake */
+html.dark-mode .export-btn { background:transparent; border-color:var(--border); color:var(--muted); }
+html.dark-mode .export-btn:hover { border-color:var(--text); color:var(--text); background:var(--surface2); }
+/* invest radio */
+html.dark-mode .ir-btn { background:var(--surface2); border-color:var(--border); color:var(--muted); }
+html.dark-mode .ir-btn:hover { border-color:var(--text); color:var(--text); }
+html.dark-mode .ir-btn.ir-selected { background:#0891b2; border-color:#0891b2; color:#fff; }
+
+/* ── THEME TOGGLE IN SIDEBAR ── */
+.theme-toggle-wrap { display:flex; align-items:center; justify-content:space-between; padding:6px 0; }
+.theme-toggle-label { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:7px; }
+.theme-switch { position:relative; width:40px; height:22px; flex-shrink:0; cursor:pointer; }
+.theme-switch input { opacity:0; width:0; height:0; position:absolute; }
+.theme-slider { position:absolute; inset:0; background:#e2e0d8; border-radius:11px; transition:background .25s; }
+html.dark-mode .theme-slider { background:#3a3628; }
+.theme-slider::before { content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:transform .25s, background .25s; box-shadow:0 1px 4px #00000030; }
+html.dark-mode .theme-slider::before { transform:translateX(18px); background:#fbbf24; }
+.theme-icon { font-size:13px; line-height:1; transition:opacity .2s; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; }
+
+.screen { display:none; }
+.screen.active { display:block; }
+#intakeScreen.active { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; }
+
+/* INTAKE */
+#intakeScreen { min-height:100vh; padding:40px 20px 60px; background:#1a1916; position:relative; overflow:hidden; }
+#intakeScreen::before { content:''; position:fixed; inset:0; background:repeating-linear-gradient(-45deg,transparent,transparent 40px,#ffffff03 40px,#ffffff03 41px); pointer-events:none; }
+.intake-inner { position:relative; z-index:1; width:100%; max-width:700px; }
+.intake-eyebrow { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color:#ffffff55; margin-bottom:12px; }
+.intake-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(44px,8vw,80px); color:#fff; line-height:0.95; margin-bottom:8px; letter-spacing:0.02em; }
+.intake-title span { color:#fbbf24; }
+.intake-sub { color:#ffffff44; font-size:14px; font-weight:300; margin-bottom:28px; line-height:1.5; }
+
+/* Saved bar */
+.saved-bar { background:#ffffff08; border:1px solid #ffffff14; border-radius:10px; padding:14px 16px; margin-bottom:18px; display:none; }
+.saved-bar.has-saves { display:block; }
+.saved-bar-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff55; margin-bottom:10px; }
+.saved-list { display:flex; flex-direction:column; gap:6px; }
+.saved-item { display:flex; align-items:center; gap:10px; background:#ffffff08; border:1px solid #ffffff14; border-radius:7px; padding:10px 14px; cursor:pointer; transition:all 0.15s; }
+.saved-item:hover { background:#ffffff15; border-color:#fbbf2455; }
+.saved-name { flex:1; font-size:13px; color:#ffffffcc; font-weight:500; }
+.saved-meta { font-family:'JetBrains Mono',monospace; font-size:10px; color:#ffffff44; }
+.saved-del { font-size:14px; color:#ffffff33; cursor:pointer; padding:2px 7px; border-radius:4px; transition:all 0.15s; line-height:1; }
+.saved-del:hover { background:#dc262622; color:#dc2626; }
+
+/* Intake file actions */
+.intake-file-actions { display:flex; gap:8px; margin-bottom:16px; }
+.intake-file-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:11px 14px; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:all 0.18s; border:1px solid; }
+.ifb-load { background:#ffffff0a; border-color:#ffffff20; color:#ffffffaa; }
+.ifb-load:hover { background:#ffffff14; border-color:#fbbf2466; color:#fff; }
+.ifb-load-icon { font-size:15px; }
+
+/* Form */
+.form-card { background:#ffffff0d; border:1px solid #ffffff18; border-radius:16px; padding:28px 26px 22px; }
+.fsec { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:#fbbf2477; margin:22px 0 12px; padding-bottom:7px; border-bottom:1px solid #ffffff0f; }
+.fsec:first-child { margin-top:0; }
+.fr { margin-bottom:14px; }
+.fr2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.fl { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:#ffffff66; margin-bottom:6px; display:block; }
+.fl .req { color:#fbbf24; margin-left:3px; }
+.fl .opt { color:#ffffff2a; font-size:9px; margin-left:5px; }
+.fi { width:100%; background:#ffffff0a; border:1px solid #ffffff18; border-radius:8px; padding:11px 14px; color:#fff; font-family:'Outfit',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; }
+.fi::placeholder { color:#ffffff25; }
+.fi:focus { border-color:#fbbf2466; background:#ffffff0f; }
+.fi[type="date"]::-webkit-calendar-picker-indicator { filter:invert(0.4); cursor:pointer; }
+
+/* Type grid */
+.type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.type-btn { background:#ffffff08; border:1px solid #ffffff14; border-radius:10px; padding:14px 10px; cursor:pointer; transition:all 0.2s; text-align:center; color:#ffffff55; }
+.type-btn:hover { border-color:#ffffff30; color:#fff; background:#ffffff10; }
+.type-btn.sel-startup  { background:#2563eb18; border-color:#2563eb; color:#60a5fa; }
+.type-btn.sel-conversion { background:#05966918; border-color:#059669; color:#34d399; }
+.type-btn.sel-merger   { background:#7c3aed18; border-color:#7c3aed; color:#c4b5fd; }
+.type-btn .ti { font-size:22px; margin-bottom:5px; }
+.type-btn .tn { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; font-weight:600; }
+.type-btn .td { font-size:10px; opacity:0.5; margin-top:2px; }
+
+.merger-sub { display:none; margin-top:10px; }
+.merger-sub.visible { display:block; }
+.merger-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mb { background:#ffffff08; border:1px solid #ffffff14; border-radius:8px; padding:12px; cursor:pointer; text-align:center; color:#ffffff44; font-size:12px; transition:all 0.2s; }
+.mb:hover { background:#ffffff12; color:#fff; }
+.mb.active { background:#7c3aed18; border-color:#7c3aed; color:#c4b5fd; }
+
+/* Strategy */
+.strat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.sb { background:#ffffff08; border:1px solid #ffffff14; border-radius:8px; padding:12px 8px; cursor:pointer; text-align:center; color:#ffffff44; transition:all 0.2s; }
+.sb:hover { background:#ffffff12; color:#fff; }
+.sb.active { background:#05966918; border-color:#059669; color:#34d399; }
+.sb .si { font-size:18px; margin-bottom:4px; }
+.sb .sn { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.08em; font-weight:600; }
+
+/* Char grid */
+.char-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.char-item { display:flex; align-items:flex-start; gap:11px; background:#ffffff08; border:1px solid #ffffff14; border-radius:10px; padding:13px 14px; cursor:pointer; transition:all 0.15s; user-select:none; }
+.char-item:hover { background:#ffffff10; border-color:#ffffff22; }
+.char-item.active { background:#fbbf2410; border-color:#fbbf2455; }
+.cc { width:17px; height:17px; border:2px solid #ffffff22; border-radius:4px; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; transition:all 0.15s; color:#1a1916; }
+.char-item.active .cc { background:#fbbf24; border-color:#fbbf24; }
+.char-name { font-size:13px; font-weight:600; color:#ffffffaa; margin-bottom:1px; }
+.char-item.active .char-name { color:#fbbf24; }
+.char-desc { font-size:11px; color:#ffffff2a; line-height:1.4; font-weight:300; }
+
+.fr3 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.cond-field { display:none; }
+.cond-field.visible { display:block; }
+
+.gen-btn { width:100%; padding:15px; background:#fbbf24; border:none; border-radius:10px; font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:0.08em; color:#1a1916; cursor:pointer; margin-top:22px; transition:all 0.2s; }
+.gen-btn:hover { background:#f59e0b; transform:translateY(-1px); box-shadow:0 8px 24px #fbbf2440; }
+.gen-btn:disabled { background:#ffffff12; color:#ffffff2a; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* CHECKLIST SCREEN */
+.cl-header { background:#1a1916; color:#fff; padding:26px 32px 22px; position:relative; overflow:hidden; }
+.cl-header::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(-45deg,transparent,transparent 30px,#ffffff03 30px,#ffffff03 31px); }
+.cl-header-inner { position:relative; z-index:1; max-width:1100px; margin:0 auto; }
+.cl-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+.cl-back { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff44; cursor:pointer; transition:color 0.15s; }
+.cl-back:hover { color:#fff; }
+.hdr-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.hdr-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:8px 16px; border-radius:7px; cursor:pointer; transition:all 0.15s; }
+.btn-save-json { background:#fbbf24; color:#1a1916; border:none; font-weight:700; }
+.btn-save-json:hover { background:#f59e0b; }
+.btn-save-ls { background:transparent; color:#ffffff55; border:1px solid #ffffff22; }
+.btn-save-ls:hover { border-color:#fbbf2466; color:#fbbf24; }
+.btn-print { background:transparent; color:#ffffff55; border:1px solid #ffffff22; }
+.btn-print:hover { border-color:#fff; color:#fff; }
+.cl-plan-name { font-family:'Bebas Neue',sans-serif; font-size:clamp(26px,5vw,50px); letter-spacing:0.03em; line-height:1; margin-bottom:4px; }
+.cl-plan-name span { color:#fbbf24; }
+.cl-case { font-family:'JetBrains Mono',monospace; font-size:11px; color:#ffffff33; margin-bottom:8px; }
+.cl-meta { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+.cl-badge { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 10px; border-radius:20px; border:1px solid; }
+
+/* ── STATUS PILL ── */
+.status-pill-wrap { display:flex; align-items:center; gap:6px; margin-top:12px; }
+.status-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff33; }
+.status-pill { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:4px 14px; border-radius:20px; border:1.5px solid; cursor:pointer; transition:all 0.18s; display:inline-flex; align-items:center; gap:6px; }
+.status-pill:hover { filter:brightness(1.15); }
+.sp-active   { color:#4ade80; border-color:#4ade8055; background:#4ade8010; }
+.sp-complete { color:#fbbf24; border-color:#fbbf2455; background:#fbbf2410; }
+.sp-hold     { color:#f87171; border-color:#f8717155; background:#f8717110; }
+.status-pill .sp-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.sp-active   .sp-dot { background:#4ade80; }
+.sp-complete .sp-dot { background:#fbbf24; }
+.sp-hold     .sp-dot { background:#f87171; }
+
+/* Status dropdown */
+.status-menu { position:absolute; top:calc(100% + 6px); left:0; background:#1e1c18; border:1px solid #ffffff18; border-radius:9px; padding:5px; z-index:500; min-width:150px; box-shadow:0 8px 24px #00000055; }
+.status-menu-item { display:flex; align-items:center; gap:9px; padding:8px 12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; transition:background 0.12s; }
+.status-menu-item:hover { background:#ffffff10; }
+.smi-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.smi-active   { color:#4ade80; } .smi-active   .smi-dot { background:#4ade80; }
+.smi-complete { color:#fbbf24; } .smi-complete .smi-dot { background:#fbbf24; }
+.smi-hold     { color:#f87171; } .smi-hold     .smi-dot { background:#f87171; }
+.status-wrap  { position:relative; display:inline-block; }
+
+/* Countdown */
+.cdown-bar { background:#ffffff08; border-top:1px solid #ffffff0f; padding:11px 32px; }
+.cdown-inner { max-width:1100px; margin:0 auto; display:flex; gap:20px; flex-wrap:wrap; align-items:center; }
+.cdown-item { display:flex; align-items:center; gap:9px; }
+.cdown-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff44; }
+.cdown-val { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.05em; }
+.cv-urgent { color:#f87171; } .cv-warn { color:#fbbf24; } .cv-ok { color:#4ade80; }
+.cv-na { color:#ffffff33; font-size:15px; font-family:'Outfit',sans-serif; font-weight:300; }
+.cdown-sep { color:#ffffff15; font-size:16px; }
+
+/* Progress */
+.prog-hdr { background:#fff; border-bottom:1px solid var(--border); padding:12px 32px; position:sticky; top:0; z-index:100; }
+.prog-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:14px; }
+.prog-track { flex:1; height:7px; background:var(--surface2); border-radius:4px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,#2563eb,#059669); border-radius:4px; transition:width 0.4s ease; }
+.prog-pct { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--text); min-width:46px; }
+.prog-txt { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
+
+/* Body */
+.cl-body { max-width:1100px; margin:0 auto; padding:26px 32px 80px; }
+@media(min-width:900px){
+  .cl-layout { display:grid; grid-template-columns:1fr 265px; gap:26px; align-items:start; }
+  .cl-sidebar { position:sticky; top:66px; }
+}
+
+/* Sidebar */
+.sc { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:16px; margin-bottom:13px; }
+.sc h3 { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-bottom:11px; }
+.ss { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.ss:last-child { border-bottom:none; }
+.ss-n { font-family:'JetBrains Mono',monospace; font-weight:600; font-size:15px; }
+.pir { display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid var(--border); gap:8px; }
+.pir:last-child { border-bottom:none; }
+.pir-l { color:var(--muted); font-weight:300; white-space:nowrap; flex-shrink:0; }
+.pir-v { font-weight:600; font-family:'JetBrains Mono',monospace; font-size:11px; text-align:right; word-break:break-all; }
+.pj { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:6px; cursor:pointer; transition:background 0.15s; font-size:12px; margin-bottom:3px; }
+.pj:hover { background:var(--surface2); }
+.pj-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.pj-name { flex:1; font-weight:500; }
+.pj-pct { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
+
+/* Sidebar file actions */
+.sb-file-actions { display:flex; gap:6px; margin-bottom:10px; }
+.sb-file-btn { flex:1; padding:7px 0; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; transition:all 0.15s; text-align:center; }
+.sbfb-save { background:#fbbf2415; border:1px solid #fbbf2444; color:#fbbf24; }
+.sbfb-save:hover { background:#fbbf2425; border-color:#fbbf2488; }
+.sbfb-load { background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+.sbfb-load:hover { border-color:var(--text); color:var(--text); }
+
+/* Phases */
+.phase-block { margin-bottom:20px; border-radius:11px; border:1px solid var(--border); overflow:hidden; background:var(--surface); }
+.phase-hdr { display:flex; align-items:center; gap:12px; padding:15px 18px; cursor:pointer; user-select:none; border-bottom:1px solid var(--border); transition:background 0.15s; }
+.phase-hdr:hover { background:var(--surface2); }
+.phase-num { font-family:'Bebas Neue',sans-serif; font-size:24px; line-height:1; color:var(--muted); min-width:24px; }
+.phase-bar { width:4px; height:30px; border-radius:2px; flex-shrink:0; }
+.phase-tw { flex:1; }
+.phase-title { font-weight:700; font-size:14px; margin-bottom:1px; }
+.phase-sub { font-size:11px; color:var(--muted); font-weight:300; }
+.phase-stats { display:flex; align-items:center; gap:9px; }
+.phase-cnt { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
+.mp { width:46px; height:4px; background:var(--surface2); border-radius:2px; overflow:hidden; margin-top:3px; }
+.mp-f { height:100%; border-radius:2px; transition:width 0.4s; }
+.phase-chev { color:var(--muted); font-size:17px; transition:transform 0.2s; }
+.phase-block.collapsed .phase-chev { transform:rotate(-90deg); }
+.phase-block.collapsed .phase-tasks { display:none; }
+.done-banner { display:none; background:#f0fdf4; border-top:1px solid #bbf7d0; padding:8px 18px; font-size:12px; color:var(--ok); font-weight:600; align-items:center; gap:7px; }
+.phase-block.phase-complete .done-banner { display:flex; }
+
+/* Tasks */
+.phase-tasks { padding:4px 0; }
+.task-item { display:flex; align-items:flex-start; gap:12px; padding:10px 18px; transition:background 0.1s; cursor:pointer; border-bottom:1px solid var(--border); }
+.task-item:last-child { border-bottom:none; }
+.task-item:hover { background:var(--surface2); }
+.task-item.done { opacity:0.42; }
+.task-item.done .task-txt { text-decoration:line-through; color:var(--muted); }
+.task-chk { width:18px; height:18px; border:2px solid var(--border); border-radius:4px; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; background:var(--surface); font-size:10px; font-weight:700; }
+.task-item.done .task-chk { background:var(--ok); border-color:var(--ok); color:#fff; }
+.task-body { flex:1; }
+.task-txt { font-size:13px; font-weight:500; line-height:1.4; margin-bottom:2px; }
+.task-note { font-size:11px; color:var(--muted); font-weight:300; line-height:1.4; }
+.task-tags { display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; }
+.tag { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 6px; border-radius:3px; border:1px solid; }
+.tag-critical { color:#dc2626; border-color:#dc262628; background:#dc262606; }
+.tag-routing  { color:#2563eb; border-color:#2563eb28; background:#2563eb06; }
+.tag-external { color:#d97706; border-color:#d9740628; background:#d9740606; }
+.tag-qual     { color:#7c3aed; border-color:#7c3aed28; background:#7c3aed06; }
+.tag-asset    { color:#059669; border-color:#05966928; background:#05966906; }
+.tag-payroll  { color:#be185d; border-color:#be185d28; background:#be185d06; }
+
+/* Toast */
+.toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(16px); background:#1a1916; color:#fff; padding:11px 22px; border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.08em; opacity:0; transition:all 0.3s; pointer-events:none; z-index:9999; white-space:nowrap; border:1px solid #fbbf2444; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Action buttons */
+.pir-action { display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:5px 0; border-bottom:1px solid var(--border); gap:8px; }
+.pir-action:last-child { border-bottom:none; }
+.pir-action .pir-l { color:var(--muted); font-weight:300; white-space:nowrap; flex-shrink:0; }
+.pir-action .pir-v { font-weight:600; font-family:'JetBrains Mono',monospace; font-size:11px; text-align:right; word-break:break-all; flex:1; }
+.email-btn { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:3px 9px; border-radius:5px; border:1px solid #2563eb44; background:#2563eb0a; color:#2563eb; cursor:pointer; white-space:nowrap; transition:all 0.15s; text-decoration:none; display:inline-block; flex-shrink:0; }
+.email-btn:hover { background:#2563eb18; border-color:#2563eb88; }
+.sp-btn { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:3px 9px; border-radius:5px; border:1px solid #d9740644; background:#d974060a; color:#d97706; cursor:pointer; white-space:nowrap; transition:all 0.15s; text-decoration:none; display:inline-block; }
+.sp-btn:hover { background:#d9740618; border-color:#d9740688; }
+.export-btn { width:100%; margin-top:10px; padding:9px; background:transparent; border:1px solid var(--border); border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.export-btn:hover { border-color:var(--text); color:var(--text); background:var(--surface2); }
+
+/* Invest radio */
+.invest-radio { display:flex; gap:6px; margin-top:8px; }
+.ir-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:5px 12px; border-radius:5px; border:1px solid var(--border); background:var(--surface2); color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.ir-btn:hover { border-color:var(--text); color:var(--text); }
+.ir-btn.ir-selected { background:#0891b2; border-color:#0891b2; color:#fff; font-weight:600; }
+
+/* ── LOAD CONFIRM CARD ── */
+.load-confirm-overlay { position:fixed; inset:0; background:#00000088; z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.load-confirm-overlay.open { opacity:1; pointer-events:all; }
+.load-confirm-box { background:#1a1916; border:1px solid #ffffff18; border-radius:16px; width:100%; max-width:440px; padding:28px; transform:translateY(12px); transition:transform 0.2s; }
+.load-confirm-overlay.open .load-confirm-box { transform:translateY(0); }
+.lcb-eyebrow { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:#ffffff33; margin-bottom:10px; }
+.lcb-planname { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#fff; line-height:1.1; margin-bottom:4px; }
+.lcb-case { font-family:'JetBrains Mono',monospace; font-size:11px; color:#ffffff44; margin-bottom:14px; }
+.lcb-rows { border:1px solid #ffffff12; border-radius:8px; overflow:hidden; margin-bottom:18px; }
+.lcb-row { display:flex; align-items:center; justify-content:space-between; padding:9px 14px; border-bottom:1px solid #ffffff0a; font-size:12px; }
+.lcb-row:last-child { border-bottom:none; }
+.lcb-row-l { color:#ffffff44; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; }
+.lcb-row-v { color:#ffffffcc; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+.lcb-actions { display:flex; gap:8px; }
+.lcb-confirm { flex:1; padding:11px; background:#fbbf24; border:none; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#1a1916; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.lcb-confirm:hover { background:#f59e0b; }
+.lcb-cancel { padding:11px 16px; background:transparent; border:1px solid #ffffff18; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#ffffff44; cursor:pointer; transition:all 0.15s; }
+.lcb-cancel:hover { color:#fff; border-color:#ffffff44; }
+
+/* ── OVERWRITE CONFIRM ── */
+.overwrite-overlay { position:fixed; inset:0; background:#00000088; z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.overwrite-overlay.open { opacity:1; pointer-events:all; }
+.overwrite-box { background:#1a1916; border:1px solid #f8717155; border-radius:14px; width:100%; max-width:380px; padding:24px; transform:translateY(12px); transition:transform 0.2s; }
+.overwrite-overlay.open .overwrite-box { transform:translateY(0); }
+.owb-icon { font-size:28px; margin-bottom:10px; }
+.owb-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#fff; margin-bottom:6px; }
+.owb-msg { font-size:12px; color:#ffffff55; line-height:1.6; margin-bottom:18px; }
+.owb-msg strong { color:#ffffffaa; }
+.owb-actions { display:flex; gap:8px; }
+.owb-overwrite { flex:1; padding:10px; background:#dc262618; border:1px solid #dc262655; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#f87171; cursor:pointer; transition:all 0.15s; }
+.owb-overwrite:hover { background:#dc262630; }
+.owb-new { flex:1; padding:10px; background:#fbbf24; border:none; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#1a1916; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.owb-new:hover { background:#f59e0b; }
+.owb-cancel { padding:10px 14px; background:transparent; border:1px solid #ffffff18; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#ffffff33; cursor:pointer; transition:all 0.15s; }
+.owb-cancel:hover { color:#fff; border-color:#ffffff44; }
+
+/* Email modal */
+.modal-overlay { position:fixed; inset:0; background:#00000088; z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box { background:#1a1916; border:1px solid #ffffff18; border-radius:16px; width:100%; max-width:600px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; transform:translateY(12px); transition:transform 0.2s; }
+.modal-overlay.open .modal-box { transform:translateY(0); }
+.modal-hdr { display:flex; align-items:center; justify-content:space-between; padding:18px 22px 14px; border-bottom:1px solid #ffffff12; }
+.modal-title { font-family:'Bebas Neue',sans-serif; font-size:20px; color:#fff; letter-spacing:0.05em; }
+.modal-close { color:#ffffff44; cursor:pointer; font-size:20px; line-height:1; padding:4px 8px; border-radius:5px; transition:all 0.15s; background:none; border:none; }
+.modal-close:hover { background:#ffffff12; color:#fff; }
+.modal-body { padding:18px 22px; overflow-y:auto; flex:1; }
+.modal-field { margin-bottom:14px; }
+.modal-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:#ffffff44; margin-bottom:6px; display:block; }
+.modal-input { width:100%; background:#ffffff0a; border:1px solid #ffffff18; border-radius:8px; padding:10px 14px; color:#fff; font-family:'Outfit',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; resize:none; }
+.modal-input:focus { border-color:#fbbf2466; background:#ffffff0f; }
+.modal-textarea { min-height:160px; line-height:1.5; }
+.modal-footer { padding:14px 22px; border-top:1px solid #ffffff12; display:flex; gap:8px; justify-content:flex-end; }
+.modal-send { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:10px 22px; border-radius:7px; background:#fbbf24; color:#1a1916; border:none; cursor:pointer; font-weight:700; transition:all 0.15s; }
+.modal-send:hover { background:#f59e0b; }
+.modal-cancel { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:10px 18px; border-radius:7px; background:transparent; color:#ffffff44; border:1px solid #ffffff18; cursor:pointer; transition:all 0.15s; }
+.modal-cancel:hover { color:#fff; border-color:#ffffff44; }
+.modal-cc-row { display:flex; gap:8px; }
+.modal-cc-row .modal-input { flex:1; }
+
+/* Wire task button */
+.wire-task-btn { display:inline-flex; align-items:center; gap:5px; margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 13px; border-radius:6px; border:1px solid #d9740644; background:#d974060a; color:#d97706; cursor:pointer; transition:all 0.15s; }
+.wire-task-btn:hover { background:#d9740618; border-color:#d9740688; }
+
+/* Hidden file input */
+#jsonFileInput { display:none; }
+
+/* ── TAG FILTER BAR ── */
+.tag-filter-bar { background:var(--surface); border-bottom:1px solid var(--border); padding:9px 32px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; position:sticky; top:52px; z-index:90; }
+.tfb-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); flex-shrink:0; }
+.tfb-tags { display:flex; gap:5px; flex-wrap:wrap; }
+.tfb-tag { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:4px 11px; border-radius:4px; border:1px solid; cursor:pointer; transition:all 0.15s; }
+.tfb-tag-all    { color:var(--muted); border-color:var(--border); background:transparent; }
+.tfb-tag-all.on { color:var(--text); border-color:var(--text); background:var(--surface2); }
+.tfb-tag-critical { color:#dc2626; border-color:#dc262628; background:transparent; }
+.tfb-tag-critical.on { background:#dc262614; border-color:#dc2626; }
+.tfb-tag-payroll  { color:#be185d; border-color:#be185d28; background:transparent; }
+.tfb-tag-payroll.on  { background:#be185d14; border-color:#be185d; }
+.tfb-tag-external { color:#d97706; border-color:#d9740628; background:transparent; }
+.tfb-tag-external.on { background:#d9740614; border-color:#d97706; }
+.tfb-tag-routing  { color:#2563eb; border-color:#2563eb28; background:transparent; }
+.tfb-tag-routing.on  { background:#2563eb14; border-color:#2563eb; }
+.tfb-tag-asset    { color:#059669; border-color:#05966928; background:transparent; }
+.tfb-tag-asset.on    { background:#05966914; border-color:#059669; }
+.tfb-tag-qual     { color:#7c3aed; border-color:#7c3aed28; background:transparent; }
+.tfb-tag-qual.on     { background:#7c3aed14; border-color:#7c3aed; }
+.tfb-sep { color:var(--border); font-size:14px; }
+.tfb-toggle-all { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; padding:4px 11px; border-radius:4px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; margin-left:auto; }
+.tfb-toggle-all:hover { border-color:var(--text); color:var(--text); }
+.task-item.tf-hidden { display:none !important; }
+html.dark-mode .tag-filter-bar { background:var(--surface); border-bottom-color:var(--border); }
+
+/* ── PHASE BULK COMPLETE ── */
+.phase-bulk-btn { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 9px; border-radius:4px; border:1px solid #05966944; background:#05966908; color:#059669; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
+.phase-bulk-btn:hover { background:#05966920; border-color:#059669; }
+.phase-bulk-btn.undo { border-color:#d9740644; background:#d9740608; color:#d97706; }
+.phase-bulk-btn.undo:hover { background:#d9740618; border-color:#d97706; }
+html.dark-mode .phase-bulk-btn { border-color:#05966955; }
+html.dark-mode .phase-bulk-btn.undo { border-color:#d9740655; }
+
+/* ── TASK NOTES ── */
+.task-note-area { display:none; margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); }
+.task-note-area.open { display:block; }
+.task-note-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:7px 10px; font-family:'Outfit',sans-serif; font-size:11px; color:var(--text); resize:vertical; min-height:54px; outline:none; transition:border-color 0.2s; line-height:1.5; }
+.task-note-input:focus { border-color:#fbbf2466; }
+.task-note-input::placeholder { color:var(--muted); opacity:0.6; }
+.task-note-toggle { display:inline-flex; align-items:center; gap:4px; margin-top:7px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; padding:2px 7px; border-radius:4px; border:1px solid transparent; transition:all 0.15s; user-select:none; }
+.task-note-toggle:hover { color:var(--text); border-color:var(--border); background:var(--surface2); }
+.task-note-toggle.has-note { color:#fbbf24; border-color:#fbbf2433; background:#fbbf2408; }
+.task-note-toggle.has-note:hover { background:#fbbf2415; border-color:#fbbf2466; }
+html.dark-mode .task-note-input { background:var(--surface2); border-color:var(--border); }
+
+/* ── NOTES PANEL ── */
+.notes-textarea { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:7px; padding:9px 11px; font-family:'Outfit',sans-serif; font-size:12px; color:var(--text); resize:vertical; min-height:90px; outline:none; transition:border-color 0.2s; line-height:1.5; }
+.notes-textarea:focus { border-color:#fbbf2466; }
+.notes-save-btn { width:100%; margin-top:6px; padding:7px; background:#fbbf2415; border:1px solid #fbbf2444; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#fbbf24; cursor:pointer; transition:all 0.15s; }
+.notes-save-btn:hover { background:#fbbf2425; border-color:#fbbf2488; }
+html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--border); color:var(--text); }
+
+@media print {
+  #intakeScreen { display:none !important; }
+  .prog-hdr,.cl-back,.cl-sidebar,.hdr-actions,.cdown-bar { display:none !important; }
+  .phase-block.collapsed .phase-tasks { display:block !important; }
+  body { background:#fff; }
+  .cl-header { background:#1a1916 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+</style>
+</head>
+<body>
+
+<!-- hidden file input for JSON load -->
+<input type="file" id="jsonFileInput" accept=".json" onchange="handleJsonLoad(event)">
+
+<!-- ════════════════════════════════
+     INTAKE
+════════════════════════════════ -->
+<div id="intakeScreen" class="screen active">
+<div class="intake-inner">
+  <div class="intake-eyebrow">Plan Implementation</div>
+  <div class="intake-title">CHECKLIST<br><span>GENERATOR</span></div>
+  <div class="intake-sub">Fill out the intake form — your fully customized checklist is generated instantly based on plan type and characteristics.</div>
+
+  <!-- Load from file button -->
+  <div class="intake-file-actions">
+    <button class="intake-file-btn ifb-load" onclick="document.getElementById('jsonFileInput').click()">
+      <span class="ifb-load-icon">📂</span> Load Saved Checklist (.json)
+    </button>
+  </div>
+
+  <div class="saved-bar" id="savedBar">
+    <div class="saved-bar-title">⚡ Quick Access — browser saves</div>
+    <div class="saved-list" id="savedList"></div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="fsec">Plan Information</div>
+    <div class="fr">
+      <label class="fl">Plan / Client Name <span class="req">*</span></label>
+      <input class="fi" id="planName" type="text" placeholder="e.g. Acme Corp 401(k)">
+    </div>
+    <div class="fr2">
+      <div>
+        <label class="fl">Case Number <span class="req">*</span></label>
+        <input class="fi" id="caseNumber" type="text" placeholder="e.g. CASE-00123">
+      </div>
+      <div>
+        <label class="fl">Effective Date <span class="req">*</span></label>
+        <input class="fi" id="effectiveDate" type="date">
+      </div>
+    </div>
+
+    <div class="fsec">Plan Type</div>
+    <div class="fr">
+      <div class="type-grid">
+        <div class="type-btn" id="btn-startup" onclick="selType('startup')">
+          <div class="ti">🚀</div><div class="tn">Startup</div><div class="td">New plan, no prior RK</div>
+        </div>
+        <div class="type-btn" id="btn-conversion" onclick="selType('conversion')">
+          <div class="ti">🔄</div><div class="tn">Conversion</div><div class="td">Existing plan, new RK</div>
+        </div>
+        <div class="type-btn" id="btn-merger" onclick="selType('merger')">
+          <div class="ti">🔀</div><div class="tn">Merger</div><div class="td">Two plans into one</div>
+        </div>
+      </div>
+      <div class="merger-sub" id="mergerSub">
+        <label class="fl" style="margin-top:12px;">Merger Type</label>
+        <div class="merger-grid">
+          <div class="mb" id="mb-internal" onclick="selMerger('internal')">
+            <div style="font-size:17px;margin-bottom:3px;">🏢</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.1em;">INTERNAL</div>
+            <div style="font-size:11px;opacity:0.5;margin-top:2px;">Same parent company</div>
+          </div>
+          <div class="mb" id="mb-external" onclick="selMerger('external')">
+            <div style="font-size:17px;margin-bottom:3px;">🤝</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.1em;">EXTERNAL</div>
+            <div style="font-size:11px;opacity:0.5;margin-top:2px;">Acquired / third party</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fr cond-field" id="fieldStrat">
+      <div class="fsec" style="margin-top:0;">Conversion Strategy <span style="color:#ffffff25;font-size:9px;">(SELECT ALL THAT APPLY)</span></div>
+      <div class="strat-grid">
+        <div class="sb" id="strat-cash"    onclick="togStrat('cash')">   <div class="si">💵</div><div class="sn">Cash</div></div>
+        <div class="sb" id="strat-mapping" onclick="togStrat('mapping')"><div class="si">🗺️</div><div class="sn">Mapping</div></div>
+        <div class="sb" id="strat-tik"     onclick="togStrat('tik')">    <div class="si">📦</div><div class="sn">Transfer in Kind</div></div>
+        <div class="sb" id="strat-mixed"   onclick="togStrat('mixed')">  <div class="si">🔀</div><div class="sn">Mixture</div></div>
+      </div>
+    </div>
+
+    <div class="fsec">Client Contact</div>
+    <div class="fr2">
+      <div><label class="fl">Name <span class="opt">optional</span></label><input class="fi" id="clientName" type="text" placeholder="Contact name"></div>
+      <div><label class="fl">Email <span class="opt">optional</span></label><input class="fi" id="clientEmail" type="email" placeholder="email@company.com"></div>
+    </div>
+
+    <div class="fsec">Your Team</div>
+    <div class="fr2">
+      <div><label class="fl">TM Name <span class="opt">optional</span></label><input class="fi" id="tmName" type="text" placeholder="Transition Manager name"></div>
+      <div><label class="fl">TM Email <span class="opt">optional</span></label><input class="fi" id="tmEmail" type="email" placeholder="tm@company.com"></div>
+    </div>
+    <div class="fr2">
+      <div><label class="fl">TC Name <span class="opt">optional</span></label><input class="fi" id="tcName" type="text" placeholder="Transition Coordinator name"></div>
+      <div><label class="fl">TC Email <span class="opt">optional</span></label><input class="fi" id="tcEmail" type="email" placeholder="tc@company.com"></div>
+    </div>
+
+    <div class="fsec">Payroll</div>
+    <div class="fr">
+      <label class="fl">Payroll Vendor <span class="opt">optional</span></label>
+      <input class="fi" id="payrollVendor" type="text" placeholder="e.g. ADP, Paychex, Paylocity">
+    </div>
+    <div class="fr2">
+      <div><label class="fl">Payroll Contact Name <span class="opt">optional</span></label><input class="fi" id="payrollName" type="text" placeholder="Contact name"></div>
+      <div><label class="fl">Payroll Contact Email <span class="opt">optional</span></label><input class="fi" id="payrollEmail" type="email" placeholder="email@payroll.com"></div>
+    </div>
+
+    <div class="cond-field" id="fieldPriorVendor">
+      <div class="fsec">Prior Record Keeper</div>
+      <div class="fr">
+        <label class="fl">Prior Vendor Name <span class="opt">optional</span></label>
+        <input class="fi" id="priorVendorName" type="text" placeholder="e.g. Fidelity, Vanguard, Principal">
+      </div>
+      <div class="fr2">
+        <div><label class="fl">Prior Vendor Contact Name <span class="opt">optional</span></label><input class="fi" id="priorContactName" type="text" placeholder="Contact name"></div>
+        <div><label class="fl">Prior Vendor Contact Email <span class="opt">optional</span></label><input class="fi" id="priorContactEmail" type="email" placeholder="email@vendor.com"></div>
+      </div>
+    </div>
+
+    <div class="cond-field" id="fieldWireDate">
+      <div class="fsec">Asset Transfer</div>
+      <div class="fr">
+        <label class="fl">Expected Wire Date <span class="opt">optional</span></label>
+        <input class="fi" id="wireDate" type="date">
+      </div>
+    </div>
+
+    <div class="fsec">SharePoint</div>
+    <div class="fr">
+      <label class="fl">SharePoint Folder URL <span class="opt">optional — paste link to plan folder</span></label>
+      <input class="fi" id="spUrl" type="url" placeholder="https://yourcompany.sharepoint.com/...">
+    </div>
+
+    <div class="fsec">Plan Characteristics <span style="color:#ffffff25;font-size:9px;">(SELECT ALL THAT APPLY)</span></div>
+    <div class="fr">
+      <div class="char-grid">
+        <div class="char-item" id="char-nonqual" onclick="togChar('nonqual')">
+          <div class="cc" id="cc-nonqual"></div>
+          <div><div class="char-name">Non-Qual Plan</div><div class="char-desc">Skips testing — straight to templates</div></div>
+        </div>
+        <div class="char-item" id="char-loans" onclick="togChar('loans')">
+          <div class="cc" id="cc-loans"></div>
+          <div><div class="char-name">Has Loans</div><div class="char-desc">Loan balances to transfer from prior RK</div></div>
+        </div>
+        <div class="char-item" id="char-roth" onclick="togChar('roth')">
+          <div class="cc" id="cc-roth"></div>
+          <div><div class="char-name">Has Roth</div><div class="char-desc">Roth source setup and tracking required</div></div>
+        </div>
+        <div class="char-item" id="char-autoenroll" onclick="togChar('autoenroll')">
+          <div class="cc" id="cc-autoenroll"></div>
+          <div><div class="char-name">Has Auto-Enroll</div><div class="char-desc">Default deferral rate and fund config</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generate()" disabled>GENERATE IMPLEMENTATION CHECKLIST →</button>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════
+     CHECKLIST
+════════════════════════════════ -->
+<div id="checklistScreen" class="screen">
+  <div class="cl-header">
+    <div class="cl-header-inner">
+      <div class="cl-top">
+        <div class="cl-back" onclick="goBack()">← New Plan</div>
+        <div class="hdr-actions">
+          <button class="hdr-btn btn-save-json" onclick="saveToJson()">💾 Save to File</button>
+          <button class="hdr-btn btn-save-ls"   onclick="saveChecklist()">⚡ Quick Save</button>
+          <button class="hdr-btn btn-print"      onclick="window.print()">🖨 Print</button>
+        </div>
+      </div>
+      <div class="cl-plan-name" id="clName"></div>
+      <div class="cl-case" id="clCase"></div>
+      <div class="cl-meta" id="clMeta"></div>
+      <!-- Status pill -->
+      <div class="status-pill-wrap">
+        <span class="status-lbl">Status</span>
+        <div class="status-wrap" id="statusWrap">
+          <div class="status-pill sp-active" id="statusPill" onclick="toggleStatusMenu()">
+            <span class="sp-dot"></span>
+            <span id="statusPillLabel">Active</span>
+            <span style="font-size:9px;opacity:0.5;">▾</span>
+          </div>
+          <div class="status-menu" id="statusMenu" style="display:none;">
+            <div class="status-menu-item smi-active"   onclick="setStatus('active')">  <span class="smi-dot"></span> Active</div>
+            <div class="status-menu-item smi-complete" onclick="setStatus('complete')"><span class="smi-dot"></span> Complete</div>
+            <div class="status-menu-item smi-hold"     onclick="setStatus('hold')">    <span class="smi-dot"></span> On Hold</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cdown-bar"><div class="cdown-inner" id="cdownInner"></div></div>
+  <div class="prog-hdr">
+    <div class="prog-inner">
+      <div class="prog-pct" id="progPct">0%</div>
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-txt" id="progTxt">0 of 0 tasks complete</div>
+    </div>
+  </div>
+  <!-- TAG FILTER BAR -->
+  <div class="tag-filter-bar" id="tagFilterBar">
+    <span class="tfb-label">Filter</span>
+    <div class="tfb-tags">
+      <span class="tfb-tag tfb-tag-all on" id="tfb-all"       onclick="setTagFilter('all')">All</span>
+      <span class="tfb-tag tfb-tag-critical" id="tfb-critical" onclick="setTagFilter('critical')">⚠ Critical</span>
+      <span class="tfb-tag tfb-tag-payroll"  id="tfb-payroll"  onclick="setTagFilter('payroll')">💳 Payroll</span>
+      <span class="tfb-tag tfb-tag-external" id="tfb-external" onclick="setTagFilter('external')">🤝 External</span>
+      <span class="tfb-tag tfb-tag-routing"  id="tfb-routing"  onclick="setTagFilter('routing')">🔀 Routing</span>
+      <span class="tfb-tag tfb-tag-asset"    id="tfb-asset"    onclick="setTagFilter('asset')">📦 Asset</span>
+    </div>
+    <span class="tfb-sep">|</span>
+    <button class="tfb-toggle-all" onclick="toggleAllPhases()">Collapse All</button>
+  </div>
+  <div class="cl-body">
+    <div class="cl-layout">
+      <div id="phaseContainer"></div>
+      <div class="cl-sidebar">
+        <!-- File actions in sidebar -->
+        <div class="sc">
+          <h3>File</h3>
+          <div class="sb-file-actions">
+            <button class="sb-file-btn sbfb-save" onclick="saveToJson()">💾 Save .json</button>
+            <button class="sb-file-btn sbfb-load" onclick="document.getElementById('jsonFileInput').click()">📂 Load .json</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);font-style:italic;line-height:1.5;">Save downloads a <strong>.json</strong> file you can load back anytime. Load picks any saved file.</div>
+        </div>
+        <div class="sc"><h3>Plan Details</h3><div id="planRows"></div></div>
+        <div class="sc"><h3>Quick Actions</h3><div id="quickActions"></div><button class="export-btn" onclick="exportCSV()">📊 Export to Excel / CSV</button></div>
+        <div class="sc">
+          <h3>Settings</h3>
+          <div class="theme-toggle-wrap">
+            <span class="theme-toggle-label"><span class="theme-icon" id="themeIcon">☀️</span> Dark Mode</span>
+            <label class="theme-switch">
+              <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+              <span class="theme-slider"></span>
+            </label>
+          </div>
+          <div style="margin-top:8px;">
+            <button class="export-btn" style="margin-top:0;" onclick="goBack()">← Edit Intake</button>
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Progress</h3>
+          <div class="ss"><span>Total Tasks</span><span class="ss-n" id="sTotal">—</span></div>
+          <div class="ss"><span>Completed</span><span class="ss-n" style="color:var(--ok)" id="sDone">0</span></div>
+          <div class="ss"><span>Remaining</span><span class="ss-n" id="sLeft">—</span></div>
+          <div class="ss"><span>Phases</span><span class="ss-n" id="sPhases">—</span></div>
+        </div>
+        <div class="sc"><h3>Jump to Phase</h3><div id="phaseJumps"></div></div>
+        <div class="sc">
+          <h3>Notes</h3>
+          <textarea class="notes-textarea" id="planNotes" placeholder="Add notes about this implementation..."></textarea>
+          <button class="notes-save-btn" onclick="saveNotes()">💾 Save Notes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="emailModal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modalTitle">DRAFT EMAIL</div>
+      <button class="modal-close" onclick="closeEmailModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label class="modal-label">To</label>
+        <input class="modal-input" id="modalTo" type="email" placeholder="recipient@email.com">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">CC</label>
+        <div class="modal-cc-row">
+          <input class="modal-input" id="modalCc" type="text" placeholder="cc1@email.com, cc2@email.com">
+        </div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Subject</label>
+        <input class="modal-input" id="modalSubject" type="text" placeholder="Email subject">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Body</label>
+        <textarea class="modal-input modal-textarea" id="modalBody" placeholder="Email body..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeEmailModal()">Cancel</button>
+      <button class="modal-send" onclick="sendModal()">✉ Open in Mail App →</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOAD CONFIRM CARD -->
+<div class="load-confirm-overlay" id="loadConfirmOverlay">
+  <div class="load-confirm-box">
+    <div class="lcb-eyebrow">Restore checklist from file</div>
+    <div class="lcb-planname" id="lcbPlanName">—</div>
+    <div class="lcb-case" id="lcbCase">—</div>
+    <div class="lcb-rows" id="lcbRows"></div>
+    <div class="lcb-actions">
+      <button class="lcb-cancel" onclick="cancelJsonLoad()">Cancel</button>
+      <button class="lcb-confirm" onclick="confirmJsonLoad()">✓ Load this Checklist →</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERWRITE WARNING -->
+<div class="overwrite-overlay" id="overwriteOverlay">
+  <div class="overwrite-box">
+    <div class="owb-icon">⚠️</div>
+    <div class="owb-title">File Already Saved</div>
+    <div class="owb-msg" id="owbMsg">A file for <strong id="owbPlanName">this plan</strong> was already saved this session. What would you like to do?</div>
+    <div class="owb-actions">
+      <button class="owb-cancel"    onclick="closeOverwriteOverlay()">Cancel</button>
+      <button class="owb-overwrite" onclick="doSaveJson(true)">Overwrite</button>
+      <button class="owb-new"       onclick="doSaveJson(false)">Save New File</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════ STATE ════════════════════════
+let S = {
+  planType:null, mergerType:null, strategies:[],
+  planName:'', caseNumber:'', effectiveDate:'', wireDate:'', spUrl:'',
+  clientName:'', clientEmail:'',
+  tmName:'', tmEmail:'', tcName:'', tcEmail:'',
+  payrollVendor:'', payrollName:'', payrollEmail:'',
+  priorVendorName:'', priorContactName:'', priorContactEmail:''
+};
+let CS       = {};
+let CN       = {}; // per-task user notes
+let saveKey  = null;
+let PHASES   = [];
+let planStatus = 'active'; // 'active' | 'complete' | 'hold'
+const STORE  = 'icg_v4';
+
+// Track filenames used this session to detect potential overwrites
+let sessionSavedFilename = null;
+let pendingJsonData = null; // holds parsed JSON waiting for load confirm
+
+// ════════════════════════ STATUS ════════════════════════
+function setStatus(s){
+  planStatus = s;
+  const pill  = document.getElementById('statusPill');
+  const label = document.getElementById('statusPillLabel');
+  const map   = { active:['sp-active','Active'], complete:['sp-complete','Complete'], hold:['sp-hold','On Hold'] };
+  pill.className = 'status-pill ' + map[s][0];
+  label.textContent = map[s][1];
+  closeStatusMenu();
+}
+
+function toggleStatusMenu(){
+  const m = document.getElementById('statusMenu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+
+function closeStatusMenu(){
+  document.getElementById('statusMenu').style.display = 'none';
+}
+
+// Close status menu on outside click
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('statusWrap');
+  if(wrap && !wrap.contains(e.target)) closeStatusMenu();
+});
+
+// ════════════════════════ JSON SAVE ════════════════════════
+function saveToJson(){
+  // Check if we've already saved a file for this plan this session
+  if(sessionSavedFilename){
+    document.getElementById('owbPlanName').textContent = S.planName || 'this plan';
+    document.getElementById('owbMsg').innerHTML = `A file for <strong>${esc(S.planName||'this plan')}</strong> was already saved this session. What would you like to do?`;
+    document.getElementById('overwriteOverlay').classList.add('open');
+    return;
+  }
+  doSaveJson(false);
+}
+
+function doSaveJson(overwrite){
+  closeOverwriteOverlay();
+
+  const done  = Object.values(CS).filter(Boolean).length;
+  const total = PHASES.reduce((s,p)=>s+p.tasks.length, 0);
+
+  const payload = {
+    _version:   2,
+    _savedAt:   new Date().toISOString(),
+    planName:   S.planName,
+    caseNumber: S.caseNumber,
+    effectiveDate: S.effectiveDate,
+    status:     planStatus,
+    pct:        total ? Math.round(done/total*100) : 0,
+    S:          JSON.parse(JSON.stringify(S)),
+    CS:         JSON.parse(JSON.stringify(CS)),
+    CN:         JSON.parse(JSON.stringify(CN)),
+    chars:      getChars(),
+    notes:      (document.getElementById('planNotes')||{}).value || ''
+  };
+
+  const json     = JSON.stringify(payload, null, 2);
+  const dateStr  = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const safeName = (S.planName||'plan').replace(/[^a-z0-9]/gi,'_').replace(/_+/g,'_').slice(0,40);
+  const safeCase = (S.caseNumber||'').replace(/[^a-z0-9]/gi,'_').slice(0,20);
+  const filename = `${safeName}_${safeCase}_${dateStr}.json`;
+
+  const blob = new Blob([json], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  sessionSavedFilename = filename;
+  showToast('💾 Saved — ' + filename);
+}
+
+function closeOverwriteOverlay(){
+  document.getElementById('overwriteOverlay').classList.remove('open');
+}
+
+// ════════════════════════ JSON LOAD ════════════════════════
+function handleJsonLoad(event){
+  const file = event.target.files[0];
+  if(!file){ return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.S || !data.planName){ throw new Error('Invalid file'); }
+      pendingJsonData = data;
+      showLoadConfirm(data);
+    } catch(err) {
+      showToast('⚠ Could not read file — is this a valid checklist JSON?');
+    }
+  };
+  reader.readAsText(file);
+  // Reset file input so same file can be re-loaded if needed
+  event.target.value = '';
+}
+
+function showLoadConfirm(data){
+  document.getElementById('lcbPlanName').textContent  = data.planName || '—';
+  document.getElementById('lcbCase').textContent = data.caseNumber ? 'Case No. ' + data.caseNumber : '';
+
+  const fd = ds => ds ? new Date(ds+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+  const statusLabels = { active:'Active', complete:'Complete', hold:'On Hold' };
+  const rows = [
+    ['Effective Date', fd(data.effectiveDate)],
+    ['Status',         statusLabels[data.status||'active'] || 'Active'],
+    ['Progress',       (data.pct||0) + '% complete'],
+    ['Saved',          data._savedAt ? new Date(data._savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}) : '—'],
+  ];
+  document.getElementById('lcbRows').innerHTML = rows.map(([l,v])=>
+    `<div class="lcb-row"><span class="lcb-row-l">${l}</span><span class="lcb-row-v">${esc(String(v))}</span></div>`
+  ).join('');
+
+  document.getElementById('loadConfirmOverlay').classList.add('open');
+}
+
+function cancelJsonLoad(){
+  pendingJsonData = null;
+  document.getElementById('loadConfirmOverlay').classList.remove('open');
+}
+
+function confirmJsonLoad(){
+  if(!pendingJsonData){ cancelJsonLoad(); return; }
+  document.getElementById('loadConfirmOverlay').classList.remove('open');
+  applyLoadedData(pendingJsonData);
+  pendingJsonData = null;
+}
+
+function applyLoadedData(data){
+  saveKey = null;
+  sessionSavedFilename = null;
+  S  = JSON.parse(JSON.stringify(data.S));
+  CS = JSON.parse(JSON.stringify(data.CS || {}));
+  CN = JSON.parse(JSON.stringify(data.CN || {}));
+
+  const ids = ['planName','caseNumber','effectiveDate','wireDate','spUrl','clientName','clientEmail',
+               'tmName','tmEmail','tcName','tcEmail','payrollVendor','payrollName','payrollEmail',
+               'priorVendorName','priorContactName','priorContactEmail'];
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = S[id]||''; });
+
+  if(S.planType)  selType(S.planType);
+  if(S.mergerType) selMerger(S.mergerType);
+  S.strategies.forEach(s => { const el = document.getElementById('strat-'+s); if(el) el.classList.add('active'); });
+
+  const c = data.chars || {};
+  ['nonqual','loans','roth','autoenroll'].forEach(id => {
+    const on = !!c[id];
+    document.getElementById('char-'+id).classList.toggle('active', on);
+    document.getElementById('cc-'+id).textContent = on ? '✓' : '';
+  });
+
+  // Restore status
+  setStatus(data.status || 'active');
+
+  generate(true);
+  loadNotes(data);
+  showToast('✓ Loaded — ' + data.planName);
+}
+
+// ════════════════════════ LOCALSTORAGE SAVES (unchanged) ════════════════════════
+function getSaves(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{}'); }catch(e){ return {}; } }
+function putSaves(o){ try{ localStorage.setItem(STORE,JSON.stringify(o)); }catch(e){} }
+
+function renderSavedBar(){
+  const saves=getSaves(), keys=Object.keys(saves);
+  const bar=document.getElementById('savedBar'), list=document.getElementById('savedList');
+  if(!keys.length){ bar.classList.remove('has-saves'); return; }
+  bar.classList.add('has-saves');
+  list.innerHTML=keys.sort((a,b)=>(saves[b].ts||0)-(saves[a].ts||0)).map(k=>{
+    const sv=saves[k];
+    const statusDot = {active:'🟢',complete:'🟡',hold:'🔴'}[sv.status||'active']||'🟢';
+    return `<div class="saved-item" onclick="loadSave('${k}')">
+      <div class="saved-name">${statusDot} ${esc(sv.planName||k)}</div>
+      <div class="saved-meta">${sv.caseNumber?sv.caseNumber+' · ':''}${sv.pct||0}%</div>
+      <div class="saved-del" onclick="delSave(event,'${k}')">✕</div>
+    </div>`;
+  }).join('');
+}
+
+function saveChecklist(){
+  const saves=getSaves();
+  const k=saveKey||('p_'+Date.now()); saveKey=k;
+  const done=Object.values(CS).filter(Boolean).length;
+  const total=PHASES.reduce((s,p)=>s+p.tasks.length,0);
+  saves[k]={ planName:S.planName, caseNumber:S.caseNumber, pct:total?Math.round(done/total*100):0,
+             status:planStatus, S:JSON.parse(JSON.stringify(S)), CS:JSON.parse(JSON.stringify(CS)),
+             CN:JSON.parse(JSON.stringify(CN)), chars:getChars(), ts:Date.now() };
+  putSaves(saves); showToast('⚡ Quick saved — '+S.planName);
+}
+
+function loadSave(k){
+  const saves=getSaves(), sv=saves[k]; if(!sv) return;
+  saveKey=k;
+  applyLoadedData({ ...sv, _savedAt: new Date(sv.ts||Date.now()).toISOString() });
+}
+
+function delSave(e,k){ e.stopPropagation(); const s=getSaves(); delete s[k]; putSaves(s); renderSavedBar();
+initTheme(); }
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+function getChars(){ const o={}; ['nonqual','loans','roth','autoenroll'].forEach(id=>o[id]=document.getElementById('char-'+id).classList.contains('active')); return o; }
+
+// ════════════════════════ INTAKE ════════════════════════
+function togChar(id){
+  const el=document.getElementById('char-'+id), cc=document.getElementById('cc-'+id);
+  const on=!el.classList.contains('active'); el.classList.toggle('active',on); cc.textContent=on?'✓':'';
+}
+
+function selType(t){
+  S.planType=t;
+  ['startup','conversion','merger'].forEach(x=>document.getElementById('btn-'+x).className='type-btn');
+  document.getElementById('btn-'+t).className='type-btn sel-'+t;
+  const notStart=t!=='startup';
+  document.getElementById('fieldStrat').classList.toggle('visible',notStart);
+  document.getElementById('fieldPriorVendor').classList.toggle('visible',notStart);
+  document.getElementById('fieldWireDate').classList.toggle('visible',notStart);
+  document.getElementById('mergerSub').classList.toggle('visible',t==='merger');
+  validate();
+}
+
+function selMerger(t){
+  S.mergerType=t;
+  ['internal','external'].forEach(m=>document.getElementById('mb-'+m).className='mb');
+  document.getElementById('mb-'+t).className='mb active'; validate();
+}
+
+function togStrat(s){
+  const btn=document.getElementById('strat-'+s);
+  if(S.strategies.includes(s)){ S.strategies=S.strategies.filter(x=>x!==s); btn.classList.remove('active'); }
+  else { S.strategies.push(s); btn.classList.add('active'); }
+  validate();
+}
+
+function validate(){
+  const ok = document.getElementById('planName').value.trim()
+          && document.getElementById('caseNumber').value.trim()
+          && document.getElementById('effectiveDate').value
+          && S.planType
+          && (S.planType!=='merger'||S.mergerType)
+          && (S.planType==='startup'||S.strategies.length);
+  document.getElementById('genBtn').disabled=!ok;
+}
+['planName','caseNumber','effectiveDate'].forEach(id=>document.getElementById(id).addEventListener('input',validate));
+
+// ════════════════════════ COUNTDOWN ════════════════════════
+function daysFrom(ds){ if(!ds) return null; const t=new Date(ds+'T00:00:00'),n=new Date(); n.setHours(0,0,0,0); return Math.round((t-n)/86400000); }
+function renderCountdown(){
+  const items=[];
+  const ed=daysFrom(S.effectiveDate);
+  if(ed!==null){
+    const cls=ed>30?'cv-ok':ed>14?'cv-warn':'cv-urgent';
+    const lbl=ed<0?Math.abs(ed)+'d PAST':ed===0?'TODAY':ed+'d';
+    items.push(`<div class="cdown-item"><div class="cdown-lbl">Effective Date</div><div class="cdown-val ${cls}">${lbl}</div></div>`);
+  }
+  const wd=daysFrom(S.wireDate);
+  if(wd!==null){
+    const cls=wd>14?'cv-ok':wd>7?'cv-warn':'cv-urgent';
+    const lbl=wd<0?Math.abs(wd)+'d PAST':wd===0?'TODAY':wd+'d';
+    items.push(`<div class="cdown-sep">|</div>`);
+    items.push(`<div class="cdown-item"><div class="cdown-lbl">Wire Date</div><div class="cdown-val ${cls}">${lbl}</div></div>`);
+  }
+  if(S.effectiveDate){
+    const d=new Date(S.effectiveDate+'T00:00:00');
+    items.push(`<div class="cdown-sep">|</div>`);
+    items.push(`<div class="cdown-item"><div class="cdown-lbl">Goes Live</div><div class="cdown-val cv-na">${d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div></div>`);
+  }
+  document.getElementById('cdownInner').innerHTML=items.join('');
+}
+
+// ════════════════════════ BUILD PHASES ════════════════════════
+function buildPhases(){
+  const isStart = S.planType==='startup';
+  const isMerger= S.planType==='merger';
+  const nonQual = document.getElementById('char-nonqual').classList.contains('active');
+  const isQual  = !nonQual;
+  const hasLoans= document.getElementById('char-loans').classList.contains('active');
+  const hasRoth = document.getElementById('char-roth').classList.contains('active');
+  const autoEnr = document.getElementById('char-autoenroll').classList.contains('active');
+  const isCash  = S.strategies.includes('cash')||S.strategies.includes('mixed');
+  const isMap   = S.strategies.includes('mapping')||S.strategies.includes('mixed');
+  const isTIK   = S.strategies.includes('tik')||S.strategies.includes('mixed');
+
+  const ph=[];
+  let n=1;
+
+  ph.push({id:'ph1',num:n++,color:'#2563eb',title:'Kickoff & Contacts',subtitle:'PRD, onboarding package, TOA, and establishing all contacts',tasks:[
+    {id:'p1-1',text:'Receive and review plan documents',note:'Confirm plan type, features, and effective date',tags:['critical']},
+    {id:'p1-2',text:'Complete PRD / Onboarding Package',note:'First order of business — complete and send to testing ASAP',tags:['critical']},
+    isQual&&{id:'p1-3',text:'Send PRD to testing',note:'Qualified plans require testing before template creation'},
+    isQual&&{id:'p1-4',text:'Receive and review testing results'},
+    !isQual&&{id:'p1-3nq',text:'Non-qual plan — skip testing, proceed directly to templates',note:'No testing required for non-qual plans'},
+    {id:'p1-5',text:'Confirm Client Contact',note:[S.clientName,S.clientEmail].filter(Boolean).join(' · ')||'Document plan sponsor primary contact', tags:[], emailBtn: S.clientEmail ? {label:'✉ Email Client', type:'client'} : null},
+    {id:'p1-6',text:'Confirm Payroll Contact',note:[S.payrollVendor,S.payrollName,S.payrollEmail].filter(Boolean).join(' · ')||'Document payroll vendor and contact',tags:['payroll'], emailBtn: S.payrollEmail ? {label:'✉ Email Payroll', type:'payroll'} : null},
+    !isStart&&{id:'p1-7',text:'Confirm Prior Record Keeper Contact',note:[S.priorVendorName,S.priorContactName,S.priorContactEmail].filter(Boolean).join(' · ')||'Document prior RK contact',tags:['external'], emailBtn: S.priorContactEmail ? {label:'✉ Email Prior RK', type:'priorrk'} : null},
+    !isStart&&{id:'p1-toa',text:'Obtain Transfer of Assets (TOA) document',note:'Foundation for fund mapping and transfer planning — get this early',tags:['critical','asset']},
+    isMerger&&S.mergerType==='external'&&{id:'p1-8',text:'Obtain external plan documents and merger agreement',tags:['external','critical']},
+  ].filter(Boolean)});
+
+  ph.push({id:'ph2',num:n++,color:'#7c3aed',title:'Templates & Data Collection',subtitle:'Base data and payroll templates — disseminate and collect',tasks:[
+    {id:'p2-1',text:'Complete Base Data template',note:'Plan specs, eligibility rules, vesting schedules',tags:['critical']},
+    {id:'p2-2',text:'Complete Payroll template',note:'Deferred fields, contribution codes, payroll frequency',tags:['critical']},
+    {id:'p2-3',text:'Send Base template to client with instructions', emailBtn: S.clientEmail ? {label:'✉ Email Client', type:'client', subject:`[${S.caseNumber}] ${S.planName} — Base Data Template`, body:`Hi ${S.clientName||'Team'},\n\nPlease find attached the Base Data template for your plan implementation.\n\n  Plan: ${S.planName}\n  Case: ${S.caseNumber}\n  Effective Date: ${fmtDate(S.effectiveDate)}\n\nPlease complete and return at your earliest convenience so we can stay on schedule.\n\nLet me know if you have any questions.\n\nThank you,`} : null},
+    {id:'p2-4',text:'Schedule Base Data review meeting with client',note:'Walk through data required and format'},
+    {id:'p2-5',text:'Send Payroll template to payroll contact',tags:['payroll'], emailBtn: S.payrollEmail ? {label:'✉ Email Payroll', type:'payroll', subject:`[${S.caseNumber}] ${S.planName} — Payroll Template`, body:`Hi ${S.payrollName||'Team'},\n\nPlease find attached the payroll template for the following plan:\n\n  Plan: ${S.planName}\n  Case: ${S.caseNumber}${S.payrollVendor?'\n  Payroll Vendor: '+S.payrollVendor:''}\n\nPlease review the file spec requirements and complete the template. We also want to schedule a payroll setup call to walk through the FTP connection and STP requirements.\n\nThank you,`} : null},
+    {id:'p2-6',text:'Schedule Payroll setup meeting',note:'Expectations, STP connection, file specs',tags:['payroll']},
+    {id:'p2-7',text:'Collect completed Base Data from client',tags:['critical']},
+    {id:'p2-8',text:'Collect completed Payroll specs from payroll contact',tags:['payroll','critical']},
+  ]});
+
+  if(!isStart){
+    ph.push({id:'ph3',num:n++,color:'#059669',title:'Prior Record Keeper & Asset Transfer Prep',subtitle:'Wire instructions, fund mapping, source mapping, test files',tasks:[
+      {id:'p3-1',text:'Send wire instructions to Prior Record Keeper',note:'Do this early — critical for asset transfer coordination',tags:['critical','external'], emailBtn: S.priorContactEmail ? {label:'✉ Email Prior RK', type:'priorrk', subject:`[${S.caseNumber}] ${S.planName} — Wire Instructions`, body:`Hi ${S.priorContactName||'Team'},\n\nPlease find our wire instructions for the following plan transfer:\n\n  Plan: ${S.planName}\n  Case: ${S.caseNumber}\n  Expected Wire Date: ${fmtDate(S.wireDate)}\n  Effective Date: ${fmtDate(S.effectiveDate)}\n\n[ATTACH WIRE INSTRUCTIONS]\n\nPlease confirm receipt and let us know if you need anything else to process the transfer.\n\nThank you,`} : null},
+      {id:'p3-3',text:'Confirm asset transfer date and timeline with Prior RK',tags:['external','asset']},
+      (isMap||isTIK)&&{id:'p3-4',text:'Complete Fund Mapping from TOA',note:'Send to QA, TC, and TM for review',tags:['routing','asset']},
+      (isMap||isTIK)&&{id:'p3-5',text:'Send Fund Mapping to QA / TC / TM',tags:['routing']},
+      {id:'p3-6',text:'Identify Re-Registered funds (if any)',tags:['asset']},
+      {id:'p3-7',text:"Send Re-Registered fund details to Matt O'Connell",note:'Wait for account setup confirmation before next step',tags:['routing']},
+      {id:'p3-8',text:"Receive account setup confirmation from Matt O'Connell"},
+      {id:'p3-9',text:'Forward Re-Registered account details to vendor',note:'Vendor needs to know where to send the money',tags:['external']},
+      {id:'p3-10',text:'Get first Fund Management calendar estimate',note:'Based on TOA — coordinate with all parties',tags:['asset']},
+      {id:'p3-11',text:'Coordinate Test Files from Prior Record Keeper',note:'Request as early as possible',tags:['external']},
+      hasLoans&&{id:'p3-12',text:'Complete Source Mapping from test files',note:'Send to QA / TC / TM immediately upon completion',tags:['routing']},
+      hasLoans&&{id:'p3-13',text:'Send Source Mapping to QA / TC / TM',tags:['routing']},
+      {id:'p3-14',text:'Run balance prep and workflow queries on test files',note:'Do as many tests as possible — get this done early',tags:['critical']},
+      {id:'p3-15',text:'Request and review Refresh Files from Prior RK (if applicable)',tags:['external']},
+    ].filter(Boolean)});
+  }
+
+  ph.push({id:'ph4',num:n++,color:'#be185d',title:'Payroll Setup & FTP Connection',subtitle:'FTP connection, test files, EDS testing, payroll sign-off',tasks:[
+    {id:'p4-1',text:'Identify FTP connection contact at payroll',note:'Get this info ASAP — FTP setup takes time',tags:['payroll','critical']},
+    {id:'p4-2',text:'Set up FTP connection account',tags:['payroll']},
+    {id:'p4-3',text:'Provide payroll with file specs and format requirements',tags:['payroll']},
+    {id:'p4-4',text:'Request test payroll file from payroll',tags:['payroll']},
+    {id:'p4-5',text:'Receive payroll test file',tags:['payroll']},
+    {id:'p4-6',text:'Test payroll file in EDS',note:'Validate format, fields, and contribution codes',tags:['payroll','critical']},
+    {id:'p4-7',text:'Confirm FTP connection is good',tags:['payroll']},
+    {id:'p4-8',text:'Submit to One Payroll',note:'Final sign-off before going live',tags:['payroll','critical']},
+    {id:'p4-9',text:'Receive One Payroll approval',tags:['payroll']},
+    {id:'p4-10',text:'Schedule kick-off meeting with client to begin payroll processing',tags:['payroll']},
+  ]});
+
+  ph.push({id:'ph5',num:n++,color:'#0891b2',title:'Data Loading',subtitle:isStart?'Census, investments, elections — no historical data':'Census, investments, YTD, auxiliary data, loans',tasks:[
+    autoEnr&&{id:'p5-2',text:'Configure Auto-Enrollment settings',note:'Default deferral rate, default fund, opt-out window',tags:['critical']},
+    {id:'p5-3',text:'Load Census data',note:isStart?'Current employees only — no historical data for startups':'Full census including historical participants',tags:['critical']},
+    {id:'p5-4',text:'Load Investments',note:'Select method:',tags:['critical'],investRadio:true},
+    !isStart&&{id:'p5-5',text:'Load YTD Comp, Contributions & Hours',tags:['asset']},
+    !isStart&&{id:'p5-yos',text:'Load Years of Service (YOS)',tags:['asset']},
+    !isStart&&{id:'p5-pycomp',text:'Load Prior Year Comp, Balances & Hours',tags:['asset']},
+    !isStart&&hasRoth&&{id:'p5-basis',text:'Load Basis (Roth)',tags:['asset']},
+    {id:'p5-def',text:'Load Deferrals',tags:['critical']},
+    {id:'p5-elig',text:'Load Eligibility',tags:['critical']},
+    {id:'p5-ben',text:'Load Beneficiaries',tags:[]},
+    !isStart&&hasLoans&&{id:'p5-6',text:'Load outstanding loans',note:'Loan balances, terms, and payment schedules from prior RK',tags:['asset']},
+    hasRoth&&{id:'p5-7',text:'Configure Roth contribution source',note:'Set up Roth source code, tracking, and reporting separately from pre-tax',tags:['critical']},
+    hasRoth&&!isStart&&{id:'p5-8',text:'Load Roth YTD balances from prior RK',note:'Roth basis must be tracked separately — confirm prior RK provides full Roth YTD history',tags:['asset']},
+    hasRoth&&{id:'p5-9',text:'Confirm Roth elections are loaded and displaying correctly',tags:['critical']},
+    {id:'p5-10',text:'Verify all loaded data for accuracy',note:'Cross-check against plan documents and client-provided data',tags:['critical']},
+  ].filter(Boolean)});
+
+  if(!isStart){
+    ph.push({id:'ph6',num:n++,color:'#d97706',title:'Wire Day',subtitle:'Heads-up emails, wire booking, cashiering, asset receipt',tasks:[
+      {id:'p6-1',text:'Send advance heads-up email to vendor',note:S.priorVendorName?`Notify ${S.priorVendorName} of incoming wire — confirm amounts and timing`:'Notify vendor of incoming wire — confirm amounts and timing',tags:['critical','external'],
+        emailBtn: {label:'✉ Draft Vendor Advance Email', type:'wireVendorAdvance'}},
+      {id:'p6-2',text:'Send advance heads-up to Cashiering',note:'Alert cashiering of incoming wire and expected date',tags:['critical'],
+        emailBtn: {label:'✉ Draft Cashiering Email', type:'wireCashiering'}},
+      {id:'p6-3',text:'Day of wire: Email vendor requesting wire breakdown ASAP',tags:['critical','external'],
+        emailBtn: {label:'✉ Draft Wire Breakdown Request', type:'wireDayOf'}},
+      {id:'p6-4',text:'Receive wire breakdown from vendor',tags:['external']},
+      {id:'p6-5',text:'Book wire in system',tags:['critical']},
+      {id:'p6-6',text:'Notify Cashiering — wire is booked',tags:['critical']},
+      isCash&&{id:'p6-7',text:'Process incoming assets to Advance Employer account (Cash)',note:'All assets go to advance employer account first',tags:['asset','critical']},
+      isMap&&{id:'p6-8',text:'Apply fund mapping to incoming assets (Mapping)',note:'Per QA-approved mapping document',tags:['asset','critical']},
+    ].filter(Boolean)});
+
+    ph.push({id:'ph7',num:n++,color:'#dc2626',title:'Post-Wire Processing',subtitle:'Final files, participant account processing, reconciliation',tasks:[
+      {id:'p7-2',text:'Receive final files from Prior RK — confirm completeness',tags:['critical']},
+      isCash&&{id:'p7-3',text:'Liquidate Advance Employer account',tags:['asset','critical']},
+      isCash&&{id:'p7-4',text:'Process liquidation proceeds to participant accounts',tags:['asset','critical']},
+      isMap&&{id:'p7-5',text:'Process mapping reversal',tags:['asset','critical']},
+      isMap&&{id:'p7-6',text:'Apply fund mapping to participant accounts',tags:['asset','critical']},
+      isTIK&&{id:'p7-7',text:"Process Transfer-in-Kind to participant accounts",note:"Once Matt O'Connell team confirmation received",tags:['asset','critical']},
+      {id:'p7-8',text:'Verify participant account balances post-processing',tags:['critical']},
+      {id:'p7-9',text:'Complete final balance reconciliation',note:'Reconcile total plan assets against wire amounts',tags:['critical']},
+    ].filter(Boolean)});
+  }
+
+  ph.push({id:'phFinal',num:n,color:'#059669',title:'Go-Live & Confirmation',subtitle:'First payroll, final reconciliation, client notification',tasks:[
+    {id:'pf-1',text:'Confirm all data loads are complete and verified',tags:['critical']},
+    {id:'pf-2',text:'Process first live payroll',note:'Confirm contributions hit participant accounts correctly',tags:['payroll','critical']},
+    {id:'pf-3',text:'Confirm first payroll reconciles correctly',tags:['payroll','critical']},
+    !isStart&&{id:'pf-4',text:'Confirm all prior plan assets are fully accounted for',tags:['asset','critical']},
+    {id:'pf-5',text:'Notify client — plan is live',note:'Confirmation email to sponsor and all contacts',tags:['critical'], emailBtn: S.clientEmail ? {label:'✉ Email Client — Plan Live', type:'goLive'} : null},
+    {id:'pf-6',text:'Document any outstanding items or exceptions'},
+    {id:'pf-7',text:'Schedule 30-day post-implementation review'},
+  ].filter(Boolean)});
+
+  return ph;
+}
+
+// ════════════════════════ GENERATE ════════════════════════
+function fmtDate(ds){ if(!ds) return 'TBD'; return new Date(ds+'T00:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}); }
+
+function generate(fromLoad){
+  if(!fromLoad){
+    const ids=['planName','caseNumber','effectiveDate','wireDate','spUrl','clientName','clientEmail','tmName','tmEmail','tcName','tcEmail','payrollVendor','payrollName','payrollEmail','priorVendorName','priorContactName','priorContactEmail'];
+    ids.forEach(id=>{ const el=document.getElementById(id); if(el) S[id]=el.value.trim(); });
+    CS={}; saveKey=null; planStatus='active'; sessionSavedFilename=null;
+    setStatus('active');
+  }
+
+  PHASES = buildPhases();
+
+  document.getElementById('clName').innerHTML = esc(S.planName.toUpperCase())+' <span>CHECKLIST</span>';
+  document.getElementById('clCase').textContent = 'Case No. '+S.caseNumber;
+
+  const tc={startup:'#2563eb',conversion:'#059669',merger:'#7c3aed'}[S.planType]||'#888';
+  let meta=`<span class="cl-badge" style="color:${tc};border-color:${tc}55">${S.planType.toUpperCase()}</span>`;
+  if(S.mergerType) meta+=`<span class="cl-badge" style="color:#7c3aed;border-color:#7c3aed55">${S.mergerType.toUpperCase()}</span>`;
+  S.strategies.forEach(s=>meta+=`<span class="cl-badge" style="color:#d97706;border-color:#d9740655">${s.toUpperCase()}</span>`);
+  const nonQ=document.getElementById('char-nonqual').classList.contains('active');
+  if(nonQ) meta+=`<span class="cl-badge" style="color:#6b7280;border-color:#6b728055">NON-QUAL</span>`;
+  if(document.getElementById('char-roth').classList.contains('active'))       meta+=`<span class="cl-badge" style="color:#059669;border-color:#05966955">ROTH</span>`;
+  if(document.getElementById('char-loans').classList.contains('active'))      meta+=`<span class="cl-badge" style="color:#0891b2;border-color:#0891b255">LOANS</span>`;
+  if(document.getElementById('char-autoenroll').classList.contains('active')) meta+=`<span class="cl-badge" style="color:#7c3aed;border-color:#7c3aed55">AUTO-ENROLL</span>`;
+  document.getElementById('clMeta').innerHTML=meta;
+
+  renderCountdown();
+
+  const fd=s=>s?new Date(s+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+  const rows=[
+    ['Case #',S.caseNumber],['Effective',fd(S.effectiveDate)],
+    S.wireDate&&['Wire Date',fd(S.wireDate)],
+    S.clientName&&['Client',S.clientName], S.clientEmail&&['Client Email',S.clientEmail],
+    S.tmName&&['TM',S.tmName], S.tcName&&['TC',S.tcName],
+    S.payrollVendor&&['Payroll Vendor',S.payrollVendor], S.payrollName&&['Payroll Contact',S.payrollName], S.payrollEmail&&['Payroll Email',S.payrollEmail],
+    S.priorVendorName&&['Prior Vendor',S.priorVendorName], S.priorContactName&&['Prior Contact',S.priorContactName], S.priorContactEmail&&['Prior Email',S.priorContactEmail],
+  ].filter(Boolean);
+  document.getElementById('planRows').innerHTML=rows.map(([l,v])=>`<div class="pir"><span class="pir-l">${l}</span><span class="pir-v">${esc(v)}</span></div>`).join('');
+
+  const qa=[];
+  if(S.clientEmail) qa.push(`<div class="pir-action"><span class="pir-l">Client</span><span class="pir-v">${esc(S.clientName||S.clientEmail)}</span><button class="email-btn" onclick="openEmailModal({type:'client'})">✉ Email</button></div>`);
+  if(S.payrollEmail) qa.push(`<div class="pir-action"><span class="pir-l">Payroll</span><span class="pir-v">${esc(S.payrollName||S.payrollEmail)}</span><button class="email-btn" onclick="openEmailModal({type:'payroll'})">✉ Email</button></div>`);
+  if(S.priorContactEmail) qa.push(`<div class="pir-action"><span class="pir-l">Prior RK</span><span class="pir-v">${esc(S.priorContactName||S.priorContactEmail)}</span><button class="email-btn" onclick="openEmailModal({type:'priorrk'})">✉ Email</button></div>`);
+  if(S.spUrl) qa.push(`<div class="pir-action"><span class="pir-l">SharePoint</span><span class="pir-v">Plan Folder</span><a class="sp-btn" href="${esc(S.spUrl)}" target="_blank">🔗 Open</a></div>`);
+  document.getElementById('quickActions').innerHTML = qa.length ? qa.join('') : '<div style="font-size:12px;color:var(--muted);font-style:italic;">Add contacts and SharePoint URL in intake to enable quick actions.</div>';
+
+  const cont=document.getElementById('phaseContainer'), jumps=document.getElementById('phaseJumps');
+  cont.innerHTML=''; jumps.innerHTML='';
+  let total=0;
+
+  PHASES.forEach(p=>{
+    total+=p.tasks.length;
+    const tHTML=p.tasks.map(t=>{
+      const tags=(t.tags||[]).map(tg=>`<span class="tag tag-${tg}">${tg}</span>`).join('');
+      const done=!!CS[t.id];
+      let emailBtnHTML='';
+      if(t.emailBtn){
+        if(!window._ER) window._ER={};
+        if(!window._ERi) window._ERi=0;
+        const _rk='er'+(window._ERi++);
+        window._ER[_rk]=t.emailBtn;
+        emailBtnHTML=`<div style="margin-top:8px;" onclick="event.stopPropagation()"><button class="wire-task-btn" onclick="openEmailModal(window._ER['${_rk}'])">${t.emailBtn.label}</button></div>`;
+      }
+      let radioHTML='';
+      if(t.investRadio){
+        radioHTML=`<div class="invest-radio" onclick="event.stopPropagation()">
+          <button class="ir-btn" id="ir-mapped-${t.id}" onclick="selInvest('${t.id}','Mapped')">🗺 Mapped</button>
+          <button class="ir-btn" id="ir-default-${t.id}" onclick="selInvest('${t.id}','Default')">⚙ Default</button>
+        </div>`;
+      }
+      const userNote = CN[t.id] || '';
+      const hasNote  = !!userNote;
+      return `<div class="task-item${done?' done':''}" id="ti-${t.id}" data-tags="${(t.tags||[]).join(',')}" onclick="togTask('${t.id}')">
+        <div class="task-chk" id="tc-${t.id}">${done?'✓':''}</div>
+        <div class="task-body">
+          <div class="task-txt">${esc(t.text)}</div>
+          ${t.note?`<div class="task-note" id="tn-${t.id}">${esc(t.note)}</div>`:''}
+          ${tags?`<div class="task-tags">${tags}</div>`:''}
+          ${radioHTML}${emailBtnHTML}
+          <div onclick="event.stopPropagation()">
+            <span class="task-note-toggle${hasNote?' has-note':''}" id="tnt-${t.id}" onclick="togTaskNote('${t.id}')">${hasNote?'📝 Note':'+ Note'}</span>
+            <div class="task-note-area${hasNote?' open':''}" id="tna-${t.id}">
+              <textarea class="task-note-input" id="tni-${t.id}" placeholder="Add your notes here..." oninput="saveTaskNote('${t.id}')">${esc(userNote)}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    const bl=document.createElement('div');
+    bl.className='phase-block'; bl.id=p.id;
+    bl.innerHTML=`
+      <div class="phase-hdr" onclick="togPhase('${p.id}')">
+        <div class="phase-num">${String(p.num).padStart(2,'0')}</div>
+        <div class="phase-bar" style="background:${p.color}"></div>
+        <div class="phase-tw"><div class="phase-title">${p.title}</div><div class="phase-sub">${p.subtitle}</div></div>
+        <div class="phase-stats">
+          <div><div class="phase-cnt" id="pc-${p.id}">0 / ${p.tasks.length}</div><div class="mp"><div class="mp-f" id="mp-${p.id}" style="width:0%;background:${p.color}"></div></div></div>
+          <button class="phase-bulk-btn" id="bulk-${p.id}" onclick="event.stopPropagation();bulkPhase('${p.id}')">✓ Complete All</button>
+          <div class="phase-chev">›</div>
+        </div>
+      </div>
+      <div class="phase-tasks">${tHTML}</div>
+      <div class="done-banner">✓ Phase complete!</div>`;
+    cont.appendChild(bl);
+
+    const jmp=document.createElement('div'); jmp.className='pj';
+    jmp.innerHTML=`<div class="pj-dot" style="background:${p.color}"></div><div class="pj-name">${p.title}</div><div class="pj-pct" id="jp-${p.id}">0%</div>`;
+    jmp.onclick=()=>document.getElementById(p.id).scrollIntoView({behavior:'smooth'});
+    jumps.appendChild(jmp);
+  });
+
+  document.getElementById('sTotal').textContent=total;
+  document.getElementById('sPhases').textContent=PHASES.length;
+  updProg();
+
+  document.getElementById('intakeScreen').classList.remove('active');
+  document.getElementById('checklistScreen').classList.add('active');
+  // reset filter + collapse state on new generate
+  activeTagFilter = 'all';
+  allCollapsed = false;
+  setTagFilter('all');
+  const colBtn = document.querySelector('.tfb-toggle-all');
+  if(colBtn) colBtn.textContent = 'Collapse All';
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════ INTERACTIONS ════════════════════════
+function togTask(id){
+  CS[id]=!CS[id];
+  const item=document.getElementById('ti-'+id), chk=document.getElementById('tc-'+id);
+  item.classList.toggle('done',CS[id]);
+  chk.textContent=CS[id]?'✓':'';
+  chk.style.background=CS[id]?'var(--ok)':''; chk.style.borderColor=CS[id]?'var(--ok)':''; chk.style.color=CS[id]?'#fff':'';
+  updProg();
+}
+
+function updProg(){
+  let total=0,done=0;
+  PHASES.forEach(p=>{
+    const pd=p.tasks.filter(t=>CS[t.id]).length, pt=p.tasks.length;
+    total+=pt; done+=pd;
+    const pct=pt?Math.round(pd/pt*100):0;
+    const ce=document.getElementById('pc-'+p.id), pe=document.getElementById('mp-'+p.id), je=document.getElementById('jp-'+p.id);
+    if(ce) ce.textContent=`${pd} / ${pt}`;
+    if(pe) pe.style.width=pct+'%';
+    if(je) je.textContent=pct+'%';
+    const bl=document.getElementById(p.id);
+    if(bl) bl.classList.toggle('phase-complete',pd===pt&&pt>0);
+  });
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progTxt').textContent=`${done} of ${total} tasks complete`;
+  document.getElementById('sDone').textContent=done;
+  document.getElementById('sLeft').textContent=total-done;
+}
+
+function selInvest(taskId, method){
+  ['Mapped','Default'].forEach(m=>{
+    const btn=document.getElementById('ir-'+m.toLowerCase()+'-'+taskId);
+    if(btn) btn.classList.toggle('ir-selected', m===method);
+  });
+  const note=document.getElementById('tn-'+taskId);
+  if(note) note.textContent='Method: '+method;
+}
+
+function togPhase(id){ document.getElementById(id).classList.toggle('collapsed'); }
+
+function goBack(){
+  // Restore intake fields from current S state
+  const ids=['planName','caseNumber','effectiveDate','wireDate','spUrl','clientName','clientEmail',
+             'tmName','tmEmail','tcName','tcEmail','payrollVendor','payrollName','payrollEmail',
+             'priorVendorName','priorContactName','priorContactEmail'];
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el && S[id]) el.value=S[id]; });
+  // Restore plan type
+  if(S.planType) selType(S.planType);
+  if(S.mergerType) selMerger(S.mergerType);
+  S.strategies.forEach(s=>{ const el=document.getElementById('strat-'+s); if(el) el.classList.add('active'); });
+  // Restore characteristics
+  const chars=getChars();
+  ['nonqual','loans','roth','autoenroll'].forEach(id=>{
+    // chars reflects current DOM — already correct, just re-render
+  });
+  document.getElementById('checklistScreen').classList.remove('active');
+  document.getElementById('intakeScreen').classList.add('active');
+  renderSavedBar(); window.scrollTo(0,0);
+}
+
+function toggleTheme(){
+  const dark = document.getElementById('themeToggle').checked;
+  document.documentElement.classList.toggle('dark-mode', dark);
+  document.getElementById('themeIcon').textContent = dark ? '🌙' : '☀️';
+  try { localStorage.setItem('icg_theme', dark ? 'dark' : 'light'); } catch(e){}
+}
+
+function initTheme(){
+  try {
+    const saved = localStorage.getItem('icg_theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const useDark = saved ? saved === 'dark' : prefersDark;
+    if(useDark){
+      document.documentElement.classList.add('dark-mode');
+      const tog = document.getElementById('themeToggle');
+      if(tog) tog.checked = true;
+      const icon = document.getElementById('themeIcon');
+      if(icon) icon.textContent = '🌙';
+    }
+  } catch(e){}
+}
+
+// ════════════════════════ EMAIL MODAL ════════════════════════
+function buildCc(){
+  const cc=[]; if(S.tmEmail) cc.push(S.tmEmail); if(S.tcEmail) cc.push(S.tcEmail); return cc.join(', ');
+}
+
+function getEmailConfig(btnCfg){
+  const type = typeof btnCfg === 'string' ? btnCfg : btnCfg.type;
+  const overrideSubject = btnCfg.subject || null;
+  const overrideBody   = btnCfg.body    || null;
+  const defaultSubject = `[${S.caseNumber}] ${S.planName}`;
+  const configs = {
+    client:    { title:'Email — Client',             to:S.clientEmail,      subject:overrideSubject||`[${S.caseNumber}] ${S.planName}`,              body:overrideBody||`Hi ${S.clientName||'Team'},\n\n\n\nThank you,` },
+    payroll:   { title:'Email — Payroll Contact',    to:S.payrollEmail,     subject:overrideSubject||`[${S.caseNumber}] ${S.planName} — Payroll`,    body:overrideBody||`Hi ${S.payrollName||'Team'},\n\n\n\nThank you,` },
+    priorrk:   { title:'Email — Prior Record Keeper',to:S.priorContactEmail,subject:overrideSubject||`[${S.caseNumber}] ${S.planName} — Asset Transfer`,body:overrideBody||`Hi ${S.priorContactName||'Team'},\n\n\n\nThank you,` },
+    wireVendorAdvance: { title:'Wire Day — Advance Vendor Notice', to:S.priorContactEmail, subject:`[${S.caseNumber}] ${S.planName} — Incoming Wire Notification`, body:`Hi ${S.priorContactName||'Team'},\n\nI wanted to give you an advance heads-up that we are expecting an incoming wire for the following plan:\n\n  Plan Name:     ${S.planName}\n  Case Number:   ${S.caseNumber}\n  Wire Date:     ${fmtDate(S.wireDate)}\n  Effective Date: ${fmtDate(S.effectiveDate)}\n\nPlease confirm receipt of this message and let us know if you need any additional information ahead of the wire.\n\nThank you,` },
+    wireCashiering: { title:'Wire Day — Cashiering Alert', to:'', subject:`[${S.caseNumber}] ${S.planName} — Incoming Wire Alert`, body:`Hi Cashiering,\n\nPlease be advised that we are expecting an incoming wire for the following plan:\n\n  Plan Name:     ${S.planName}\n  Case Number:   ${S.caseNumber}\n  Wire Date:     ${fmtDate(S.wireDate)}${S.priorVendorName?'\n  Sending From:  '+S.priorVendorName:''}\n\nWe will follow up on the day of the wire with the full breakdown. Please let us know if you have any questions.\n\nThank you,` },
+    wireDayOf:  { title:'Wire Day — Breakdown Request', to:S.priorContactEmail, subject:`[${S.caseNumber}] ${S.planName} — Wire Breakdown Request`, body:`Hi ${S.priorContactName||'Team'},\n\nToday is wire day for ${S.planName} (Case: ${S.caseNumber}).\n\nCould you please send us the full wire breakdown as soon as possible so we can book the wire on our end?\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}\n  Wire Date:    ${fmtDate(S.wireDate)}\n\nThank you — we appreciate the quick turnaround.` },
+    goLive:     { title:'Go-Live Notification — Client', to:S.clientEmail, subject:`[${S.caseNumber}] ${S.planName} — Plan Is Now Live`, body:`Hi ${S.clientName||'Team'},\n\nWe're pleased to confirm that your plan is now live as of ${fmtDate(S.effectiveDate)}.\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}\n  Effective Date: ${fmtDate(S.effectiveDate)}\n\nParticipants can now access their accounts. Please don't hesitate to reach out if you have any questions during the first few weeks.\n\nThank you for your partnership,` }
+  };
+  return configs[type] || { title:'Draft Email', to:'', subject:defaultSubject, body:'' };
+}
+
+function openEmailModal(btnCfg){
+  const cfg=getEmailConfig(btnCfg);
+  document.getElementById('modalTitle').textContent=cfg.title.toUpperCase();
+  document.getElementById('modalTo').value=cfg.to||'';
+  document.getElementById('modalCc').value=buildCc();
+  document.getElementById('modalSubject').value=cfg.subject;
+  document.getElementById('modalBody').value=cfg.body;
+  document.getElementById('emailModal').classList.add('open');
+}
+
+function closeEmailModal(){ document.getElementById('emailModal').classList.remove('open'); }
+function closeModal(e){ if(e.target===document.getElementById('emailModal')) closeEmailModal(); }
+
+function sendModal(){
+  const to=document.getElementById('modalTo').value.trim();
+  const cc=document.getElementById('modalCc').value.trim();
+  const subject=document.getElementById('modalSubject').value.trim();
+  const body=document.getElementById('modalBody').value;
+  let mailto=`mailto:${encodeURIComponent(to)}`;
+  const params=[];
+  if(cc)      params.push('cc='+encodeURIComponent(cc));
+  if(subject) params.push('subject='+encodeURIComponent(subject));
+  if(body)    params.push('body='+encodeURIComponent(body));
+  if(params.length) mailto+='?'+params.join('&');
+  const a=document.createElement('a');
+  a.href=mailto;
+  a.style.display='none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>document.body.removeChild(a),200);
+  closeEmailModal();
+  showToast('✉ Opening in mail app...');
+}
+
+// ════════════════════════ EXPORT CSV ════════════════════════
+function exportCSV(){
+  const rows=[['Phase','Task','System Note','Your Notes','Tags','Status']];
+  PHASES.forEach(p=>{ p.tasks.forEach(t=>{ rows.push([p.title, t.text, t.note||'', CN[t.id]||'', (t.tags||[]).join(', '), CS[t.id]?'Complete':'Pending']); }); });
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url;
+  a.download=S.planName.replace(/[^a-z0-9]/gi,'_')+'_'+S.caseNumber+'_checklist.csv';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📊 Downloaded — open in Excel');
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ════════════════════════ TAG FILTER ════════════════════════
+let activeTagFilter = 'all';
+function setTagFilter(tag){
+  activeTagFilter = tag;
+  // update button states
+  ['all','critical','payroll','external','routing','asset'].forEach(t => {
+    const el = document.getElementById('tfb-'+t);
+    if(el) el.classList.toggle('on', t === tag);
+  });
+  // show/hide tasks
+  document.querySelectorAll('.task-item').forEach(item => {
+    if(tag === 'all'){
+      item.classList.remove('tf-hidden');
+    } else {
+      const hasTags = item.dataset.tags || '';
+      item.classList.toggle('tf-hidden', !hasTags.split(',').includes(tag));
+    }
+  });
+}
+
+// ════════════════════════ COLLAPSE ALL / EXPAND ALL ════════════════════════
+let allCollapsed = false;
+function toggleAllPhases(){
+  allCollapsed = !allCollapsed;
+  PHASES.forEach(p => {
+    const bl = document.getElementById(p.id);
+    if(bl) bl.classList.toggle('collapsed', allCollapsed);
+  });
+  const btn = document.querySelector('.tfb-toggle-all');
+  if(btn) btn.textContent = allCollapsed ? 'Expand All' : 'Collapse All';
+}
+
+// ════════════════════════ BULK COMPLETE PHASE ════════════════════════
+function bulkPhase(phaseId){
+  const phase = PHASES.find(p => p.id === phaseId);
+  if(!phase) return;
+  const allDone = phase.tasks.every(t => CS[t.id]);
+  phase.tasks.forEach(t => {
+    CS[t.id] = !allDone;
+    const item = document.getElementById('ti-'+t.id);
+    const chk  = document.getElementById('tc-'+t.id);
+    if(item){ item.classList.toggle('done', !allDone); }
+    if(chk){
+      chk.textContent = !allDone ? '✓' : '';
+      chk.style.background  = !allDone ? 'var(--ok)' : '';
+      chk.style.borderColor = !allDone ? 'var(--ok)' : '';
+      chk.style.color       = !allDone ? '#fff' : '';
+    }
+  });
+  // update button label
+  const btn = document.getElementById('bulk-'+phaseId);
+  if(btn){ btn.textContent = allDone ? '✓ Complete All' : '↩ Undo'; btn.classList.toggle('undo', !allDone); }
+  updProg();
+  showToast(allDone ? 'Phase unchecked' : '✓ Phase marked complete');
+}
+
+// ════════════════════════ TASK NOTES ════════════════════════
+function togTaskNote(taskId){
+  const area   = document.getElementById('tna-'+taskId);
+  const toggle = document.getElementById('tnt-'+taskId);
+  if(!area) return;
+  const isOpen = area.classList.toggle('open');
+  if(isOpen){
+    const inp = document.getElementById('tni-'+taskId);
+    if(inp) setTimeout(()=>inp.focus(), 50);
+  }
+}
+
+function saveTaskNote(taskId){
+  const inp = document.getElementById('tni-'+taskId);
+  if(!inp) return;
+  const val = inp.value;
+  CN[taskId] = val;
+  const toggle = document.getElementById('tnt-'+taskId);
+  if(toggle){
+    toggle.classList.toggle('has-note', !!val);
+    toggle.textContent = val ? '📝 Note' : '+ Note';
+  }
+}
+
+// ════════════════════════ NOTES ════════════════════════
+function saveNotes(){
+  const notes = document.getElementById('planNotes').value;
+  try {
+    const saves = getSaves();
+    if(saveKey && saves[saveKey]){ saves[saveKey].notes = notes; putSaves(saves); }
+  } catch(e){}
+  showToast('📝 Notes saved');
+}
+
+function loadNotes(data){
+  const el = document.getElementById('planNotes');
+  if(el) el.value = data.notes || '';
+}
+
+renderSavedBar();
+</script>
+</body>
+</html>

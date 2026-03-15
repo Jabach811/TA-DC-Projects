@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage Concept 01</title>
+  <style>
+    :root{--ink:#181311;--paper:#f4efe7;--paper-3:#d8cab5;--red:#c8290a;--blue:#2a6df4;--green:#1aa96b;--orange:#e67e22;--purple:#6f4cd7;--sans:"Segoe UI",Tahoma,sans-serif;--serif:Georgia,"Times New Roman",serif;--mono:Consolas,"Courier New",monospace}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#f7f1e8 0%,#efe5d8 100%);color:var(--ink);font-family:var(--sans)}
+    .hero{display:grid;grid-template-columns:92px 1fr;min-height:420px;border-bottom:4px solid var(--red);background:linear-gradient(135deg,#1b1613 0%,#221915 60%,#3a1f17 100%)}
+    .hero-accent{background:var(--red);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    .hero-main{padding:52px 56px;color:#f6efe7}.hero-kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+    h1{margin:18px 0 14px;font:700 72px/0.95 var(--serif)} .hero-body{max-width:720px;font-size:18px;line-height:1.7;color:rgba(255,255,255,.72)}
+    .hero-meta{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}.meta{padding:12px 16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);min-width:140px}.meta strong{display:block;font-size:24px}
+    .content{padding:34px 26px 50px}.spotlight{display:grid;grid-template-columns:1.4fr .8fr;gap:22px}
+    .feature-wall,.status-rail,.sections,.footer-band{opacity:0;transform:translateY(24px);animation:rise .7s ease forwards}.status-rail{animation-delay:.15s}.sections{animation-delay:.3s}.footer-band{animation-delay:.45s}
+    .feature-wall{background:radial-gradient(circle at top left,rgba(200,41,10,.18),transparent 35%),#171210;color:#fff;border:2px solid #241b18;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:22px;position:relative;overflow:hidden}
+    .feature-wall:before{content:"INTERACTIVE FLOWS";position:absolute;right:-16px;top:18px;font:700 74px/1 var(--sans);color:rgba(255,255,255,.04);letter-spacing:.08em}
+    .flow-card{padding:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)} .flow-card .num{font:700 12px var(--mono);letter-spacing:.18em;color:rgba(255,255,255,.45)}
+    .flow-card h3{margin:10px 0 8px;font:700 24px/1.1 var(--serif)} .flow-card p{margin:0;color:rgba(255,255,255,.68);line-height:1.6;font-size:14px}
+    .flow-bar{height:4px;width:56px;margin:14px 0;background:var(--accent)} .status-rail{background:#fbf6ef;border:2px solid var(--ink);padding:24px;display:flex;flex-direction:column;gap:18px}
+    .status-rail h2{margin:0;font:700 28px/1 var(--serif)} .status-item{padding:14px 0;border-top:1px solid var(--paper-3)} .status-item:first-of-type{border-top:none;padding-top:0}
+    .status-item strong{display:block;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#6a5d54;margin-bottom:6px}.status-item span{font-size:28px;font-weight:700}
+    .sections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}.section-card{background:#fffdf9;border:1px solid var(--paper-3);padding:20px;min-height:180px;transition:transform .22s ease,box-shadow .22s ease}
+    .section-card:hover{transform:translateY(-4px);box-shadow:0 16px 30px rgba(24,19,17,.08)} .section-card .tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#86796f}
+    .section-card h3{margin:12px 0 8px;font:700 28px/1.05 var(--serif)} .section-card p{margin:0;color:#60544c;line-height:1.6}
+    .footer-band{margin-top:22px;display:grid;grid-template-columns:repeat(4,1fr) 1.2fr;background:#120f0d;color:#f4efe7;border-top:4px solid var(--red)} .foot{padding:18px 20px;border-right:1px solid rgba(255,255,255,.09)} .foot:last-child{border-right:none}
+    .foot strong{display:block;font-size:28px}.foot span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45)} @keyframes rise{to{opacity:1;transform:translateY(0)}}
+    @media (max-width:900px){.spotlight,.sections,.footer-band{grid-template-columns:1fr}h1{font-size:54px}.feature-wall{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-accent"><div>v2.10</div><div style="margin-top:14px;line-height:1.7;text-align:center">DATA<br>CONSULT</div></div>
+    <div class="hero-main"><div class="hero-kicker">Data Consulting Division · Internal Knowledge Portal</div><h1>Everything<br>our team<br><em>needs.</em></h1><div class="hero-body">One place for every walkthrough, procedure, document, tool, and checklist. Seven interactive flows. One global search. Click anything and go.</div><div class="hero-meta"><div class="meta"><strong>7</strong>Interactive Flows</div><div class="meta"><strong>11</strong>Sections</div><div class="meta"><strong>90+</strong>Indexed Resources</div><div class="meta"><strong>Mar 2026</strong>Last Updated</div></div></div>
+  </section>
+  <main class="content">
+    <section class="spotlight">
+      <div class="feature-wall">
+        <article class="flow-card" style="--accent:var(--purple)"><div class="num">01</div><div class="flow-bar"></div><h3>Payroll Integration</h3><p>Vendor setup to live run, with validation loops highlighted like a mission board.</p></article>
+        <article class="flow-card" style="--accent:var(--orange)"><div class="num">02</div><div class="flow-bar"></div><h3>Balance Import</h3><p>Method-driven guidance with a stronger visual hierarchy for high-risk decision points.</p></article>
+        <article class="flow-card" style="--accent:var(--blue)"><div class="num">03</div><div class="flow-bar"></div><h3>Loan Setup</h3><p>Dense, technical, and direct. Built to feel like an operations console instead of a brochure grid.</p></article>
+        <article class="flow-card" style="--accent:var(--green)"><div class="num">04</div><div class="flow-bar"></div><h3>Eligibility</h3><p>Adaptive flow framing with branch cues surfaced earlier in the page layout.</p></article>
+      </div>
+      <aside class="status-rail"><h2>Portal At A Glance</h2><div class="status-item"><strong>Primary Use</strong><span>Daily Ops</span></div><div class="status-item"><strong>Direction</strong><span>Editorial</span></div><div class="status-item"><strong>Goal</strong><span>Scan Speed</span></div><div class="status-item"><strong>Animation</strong><span>Vertical Rise</span></div></aside>
+    </section>
+    <section class="sections">
+      <article class="section-card"><div class="tag">Section 01</div><h3>Documents & Templates</h3><p>Raised cards with restrained depth and a gallery-like rhythm.</p></article>
+      <article class="section-card"><div class="tag">Section 02</div><h3>Walkthroughs & Procedures</h3><p>Heroic flow wall above, cleaner utility cards below.</p></article>
+      <article class="section-card"><div class="tag">Section 03</div><h3>Projects & Tools</h3><p>Designed to frame the portal as an internal operating surface.</p></article>
+    </section>
+    <section class="footer-band"><div class="foot"><strong>7</strong><span>Interactive Flows</span></div><div class="foot"><strong>11</strong><span>Sections</span></div><div class="foot"><strong>90+</strong><span>Indexed Resources</span></div><div class="foot"><strong>v2.10</strong><span>Portal Version</span></div><div class="foot"><strong style="font-size:18px">Data Consulting Division</strong><span>Internal Use Only · March 2026</span></div></section>
+  </main>
+</body>
+</html>

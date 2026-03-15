@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage Concept 02</title>
+  <style>
+    :root{--bg:#efe4d3;--ink:#1d1814;--card:#fffaf2;--red:#b62b15;--navy:#18354a;--olive:#7b8c37;--sans:"Trebuchet MS",Verdana,sans-serif;--serif:"Palatino Linotype",Georgia,serif}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(160deg,#f6ebdc,#eadac3 65%,#e4ceb1);color:var(--ink);font-family:var(--sans)}
+    .hero{display:grid;grid-template-columns:92px 1fr;min-height:420px;background:#18120f;color:#fff;border-bottom:4px solid var(--red)}
+    .hero-accent{background:var(--red);display:flex;flex-direction:column;justify-content:center;align-items:center;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    .hero-main{padding:52px 56px;background:radial-gradient(circle at right top,rgba(182,43,21,.24),transparent 36%)} .hero-kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.56)}
+    h1{margin:18px 0 14px;font:700 72px/.95 var(--serif)} .hero-body{max-width:720px;font-size:18px;line-height:1.7;color:rgba(255,255,255,.72)}
+    .hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.meta{padding:11px 14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05)} .meta strong{display:block;font-size:24px}
+    .wrap{padding:28px}.ticker{overflow:hidden;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);background:rgba(255,250,242,.75);margin-bottom:24px}
+    .ticker-track{display:flex;gap:36px;white-space:nowrap;padding:12px 0;font:700 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;animation:marquee 24s linear infinite}
+    .board{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}.panel,.cell,.footer{opacity:0;animation:fadeUp .7s ease forwards}.panel{grid-column:span 8;background:var(--card);border:2px solid var(--ink);padding:22px;position:relative;animation-delay:.1s}
+    .panel:before{content:"SECTION GRID";position:absolute;top:-13px;left:20px;background:var(--bg);padding:0 10px;font-size:11px;font-weight:700;letter-spacing:.16em}.sidebar{grid-column:span 4;display:grid;gap:18px}
+    .cell{background:rgba(255,250,242,.84);border:1px solid rgba(29,24,20,.18);padding:20px;min-height:160px}.cell:nth-child(1){animation-delay:.18s}.cell:nth-child(2){animation-delay:.26s}.cell:nth-child(3){animation-delay:.34s}
+    .row-title{font:700 34px/1 var(--serif);margin:0 0 18px}.bands{display:grid;gap:14px}
+    .band{display:grid;grid-template-columns:100px 1fr 180px;gap:16px;align-items:center;padding:16px;border-top:1px solid rgba(29,24,20,.16);background:linear-gradient(90deg,rgba(24,53,74,.03),transparent)} .band:first-child{border-top:none}
+    .band .id{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#6e5e50}.band h3{margin:0;font:700 24px/1 var(--serif)} .band p{margin:6px 0 0;color:#65584e;line-height:1.55}
+    .band .state{justify-self:end;padding:10px 12px;border:1px solid var(--ink);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:#fff}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.stat{padding:18px;background:var(--navy);color:#fff}.stat strong{display:block;font-size:34px;font-family:var(--serif)} .stat span{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.54)}
+    .notes{background:#1d1814;color:#f4ebdd;padding:20px;border-left:6px solid var(--olive)} .notes h3{margin:0 0 10px;font:700 30px/1 var(--serif)} .notes p{margin:0;color:rgba(255,255,255,.7);line-height:1.7}
+    .footer{margin-top:18px;display:grid;grid-template-columns:repeat(5,1fr);background:#15110f;color:#fff;border:2px solid #15110f;animation-delay:.5s}.footer div{padding:16px 18px;border-right:1px solid rgba(255,255,255,.09)} .footer div:last-child{border-right:none}
+    .footer strong{display:block;font-size:26px}.footer span{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.48)}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-40%)}} @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @media (max-width:920px){.board,.footer{grid-template-columns:1fr}.panel,.sidebar{grid-column:span 12}.band{grid-template-columns:1fr}h1{font-size:54px}}
+  </style>
+</head>
+<body>
+  <section class="hero"><div class="hero-accent"><div>v2.10</div><div style="margin-top:14px;line-height:1.7;text-align:center">DATA<br>CONSULT</div></div><div class="hero-main"><div class="hero-kicker">Data Consulting Division · Internal Knowledge Portal</div><h1>Everything<br>our team<br><em>needs.</em></h1><div class="hero-body">One place for every walkthrough, procedure, document, tool, and checklist. Seven interactive flows. One global search. Click anything and go.</div><div class="hero-meta"><div class="meta"><strong>7</strong>Interactive Flows</div><div class="meta"><strong>11</strong>Sections</div><div class="meta"><strong>90+</strong>Indexed Resources</div><div class="meta"><strong>Mar 2026</strong>Last Updated</div></div></div></section>
+  <main class="wrap">
+    <div class="ticker"><div class="ticker-track"><span>Payroll Integration</span><span>Transfer In-Kind</span><span>Balance Import</span><span>Loans</span><span>Eligibility</span><span>Deferrals</span><span>Roth Basis</span><span>Payroll Integration</span></div></div>
+    <section class="board">
+      <div class="panel"><h2 class="row-title">Linear Bands Instead Of Card Grid</h2><div class="bands"><div class="band"><div class="id">01 / Docs</div><div><h3>Documents & Templates</h3><p>Reads like a curated index instead of a stack of equal-weight cards.</p></div><div class="state">Reference</div></div><div class="band"><div class="id">02 / Walk</div><div><h3>Walkthroughs & Procedures</h3><p>Section body feels editorial and more intentional for high-value content.</p></div><div class="state">Primary</div></div><div class="band"><div class="id">03 / Tools</div><div><h3>Projects & Tools</h3><p>Less homepage clutter, more emphasis on category identity and scan rhythm.</p></div><div class="state">Utility</div></div><div class="band"><div class="id">04 / Teams</div><div><h3>Organization & Support</h3><p>Support paths feel built into the portal instead of pushed into a sidebar.</p></div><div class="state">Ops</div></div></div></div>
+      <div class="sidebar"><div class="stats"><div class="stat"><strong>11</strong><span>Section Lanes</span></div><div class="stat" style="background:var(--olive)"><strong>3</strong><span>Priority Views</span></div></div><div class="cell"><strong style="display:block;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#78695e">Motion</strong><h3 style="margin:10px 0 8px;font:700 28px/1 var(--serif)">Marquee + stagger</h3><p style="margin:0;color:#5f534c;line-height:1.6">Load starts with a moving ticker and then reveals the bands in sequence.</p></div><div class="notes"><h3>Design Read</h3><p>This version leans into newsroom structure: stronger horizontal segmentation, tighter labeling, less floating-card sameness.</p></div></div>
+    </section>
+    <section class="footer"><div><strong>7</strong><span>Interactive Flows</span></div><div><strong>11</strong><span>Sections</span></div><div><strong>90+</strong><span>Indexed Resources</span></div><div><strong>v2.10</strong><span>Portal Version</span></div><div><strong style="font-size:18px">Data Consulting Division</strong><span>Internal Use Only · March 2026</span></div></section>
+  </main>
+</body>
+</html>

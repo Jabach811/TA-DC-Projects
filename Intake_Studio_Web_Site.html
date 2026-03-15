@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma Intake Studio | Web Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f3ec;
+  --paper: #fffdf9;
+  --ink: #161311;
+  --muted: #6e665e;
+  --line: #ddd2c5;
+  --coffee: #4a2f21;
+  --rust: #a45633;
+  --blush: #f1e0d7;
+  --shadow: 0 28px 70px rgba(52, 35, 26, 0.12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(164,86,51,0.14), transparent 20%),
+    radial-gradient(circle at bottom right, rgba(74,47,33,0.08), transparent 24%),
+    linear-gradient(180deg, #fbf7f0 0%, #f2e9de 100%);
+}
+.shell { max-width: 1280px; margin: 0 auto; padding: 28px 22px 72px; }
+.topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:24px; }
+.toplink, .topbadge {
+  display:inline-flex; align-items:center; gap:10px; padding:11px 14px; border-radius:999px; text-decoration:none;
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+  border:1px solid var(--line); background:rgba(255,255,255,0.72); color:var(--ink);
+}
+.hero { display:grid; grid-template-columns: 0.98fr 1.02fr; gap:20px; margin-bottom:20px; }
+.hero-card, .side-card, .form-card {
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(16px);
+  border:1px solid rgba(255,255,255,0.82);
+  border-radius:30px;
+  box-shadow: var(--shadow);
+}
+.hero-card { padding: 34px; }
+.eyebrow { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--rust); margin-bottom:16px; }
+.hero h1 { margin:0; font-family:'DM Serif Display', serif; font-size: clamp(42px, 5vw, 76px); line-height:0.96; letter-spacing:-0.03em; }
+.hero h1 em { color: var(--coffee); font-style: italic; }
+.hero p { margin:18px 0 0; color:var(--muted); line-height:1.8; font-size:15px; max-width: 620px; }
+.side-card { padding:24px; display:grid; gap:14px; }
+.side-note {
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  background:linear-gradient(180deg, #ffffff, #faf4eb);
+}
+.side-note strong { display:block; font-size:24px; margin-bottom:8px; }
+.side-note span { display:block; color:var(--muted); line-height:1.7; font-size:13px; }
+.form-card { padding:24px; }
+.form-header { display:flex; justify-content:space-between; align-items:end; gap:16px; margin-bottom:18px; }
+.form-header h2 { margin:0; font-family:'DM Serif Display', serif; font-size:38px; }
+.form-header p { margin:0; color:var(--muted); max-width:680px; line-height:1.7; }
+.section-grid { display:grid; gap:18px; }
+.section {
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  background:linear-gradient(180deg, #fffdf9, #f8f1e7);
+}
+.section-head {
+  display:flex; justify-content:space-between; gap:12px; align-items:center;
+  padding:16px 18px; border-bottom:1px solid var(--line);
+  background:linear-gradient(90deg, rgba(164,86,51,0.06), rgba(183,139,47,0.05));
+}
+.section-head strong {
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--coffee);
+}
+.section-head span { color:var(--muted); font-size:12px; }
+.section-body { padding:18px; display:grid; gap:16px; }
+.grid-2, .grid-3 { display:grid; gap:14px; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.field { display:grid; gap:7px; }
+.field label {
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#554e48;
+}
+.field input, .field textarea, .field select {
+  width:100%; border:1px solid var(--line); border-radius:14px; padding:13px 14px;
+  font: inherit; color:var(--ink); background:#fffdfa; outline:none; transition:border-color .15s, box-shadow .15s;
+}
+.field textarea { min-height:120px; resize:vertical; }
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--rust);
+  box-shadow: 0 0 0 4px rgba(164,86,51,0.1);
+}
+.structure-band {
+  display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:12px;
+}
+.structure-card {
+  border:1px solid var(--line); border-radius:18px; padding:14px; background:#fff;
+}
+.structure-card strong { display:block; font-size:13px; margin-bottom:6px; }
+.structure-card span { color:var(--muted); font-size:12px; line-height:1.6; }
+.footer-actions {
+  margin-top:20px; display:flex; justify-content:space-between; gap:14px; align-items:center; flex-wrap:wrap;
+}
+.footer-note { color:var(--muted); font-size:13px; line-height:1.7; max-width:720px; }
+.cta-row { display:flex; gap:10px; flex-wrap:wrap; }
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:13px 18px; border-radius:16px; border:1px solid var(--line);
+  text-decoration:none; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.16em;
+  text-transform:uppercase; cursor:pointer; background:#fff; color:var(--ink);
+}
+.btn.primary { background:var(--coffee); border-color:var(--coffee); color:#fff; }
+.btn.secondary { background:#f4ebe1; color:var(--coffee); border-color:#ddc8b6; }
+@media (max-width: 980px) {
+  .hero, .grid-2, .grid-3, .structure-band { grid-template-columns:1fr; }
+}
+@media (max-width: 640px) {
+  .shell { padding-left:16px; padding-right:16px; }
+  .hero-card, .side-card, .form-card { border-radius:24px; }
+}
+</style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <a class="toplink" href="Intake_Studio_Landing.html">← Back to Intake Hub</a>
+      <div class="topbadge">Project Intake | Web Site</div>
+    </div>
+
+    <div class="hero">
+      <section class="hero-card">
+        <div class="eyebrow">Website Discovery Intake</div>
+        <h1>Plan the structure before the site starts <em>fragmenting</em>.</h1>
+        <p>This intake is built for websites where architecture, sections, messaging, and content hierarchy matter. Use it for consultant sites, service sites, portfolios, business websites, landing systems, and branded information hubs.</p>
+      </section>
+      <aside class="side-card">
+        <div class="side-note">
+          <strong>Use this for</strong>
+          <span>Business sites, consultant sites, service websites, multi-page marketing builds, portfolio sites, and branded online presences.</span>
+        </div>
+        <div class="side-note" style="background:linear-gradient(180deg, #fcf7f2, var(--blush));">
+          <strong>Key inputs</strong>
+          <span>Main sections, subsections, navigation, content needs, calls to action, and the kind of impression the site should leave.</span>
+        </div>
+      </aside>
+    </div>
+
+    <section class="form-card">
+      <div class="form-header">
+        <div>
+          <h2>Web Site Intake</h2>
+        </div>
+        <p>This page is focused on the structure and presentation of the site. The goal is to understand how many sections it needs, how content should be organized, and how visitors should move through the experience.</p>
+      </div>
+
+      <div class="section-grid">
+        <section class="section">
+          <div class="section-head"><strong>01 | Project Basics</strong><span>Core identity and purpose</span></div>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field"><label>Site Name</label><input type="text" placeholder="Business name or project title"></div>
+              <div class="field"><label>Brand / Business Type</label><input type="text" placeholder="Consultant, agency, service brand, studio..."></div>
+              <div class="field"><label>Main Goal</label><input type="text" placeholder="Lead generation, authority, booking, portfolio..."></div>
+              <div class="field"><label>Primary Call to Action</label><input type="text" placeholder="Book a call, contact us, apply, buy, inquire..."></div>
+            </div>
+            <div class="field"><label>Site Summary</label><textarea placeholder="Describe what the website is for, who it serves, and what someone should understand within the first few seconds."></textarea></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>02 | Structure & Navigation</strong><span>Main sections, subsections, and hierarchy</span></div>
+          <div class="section-body">
+            <div class="structure-band">
+              <div class="structure-card"><strong>How many main sections?</strong><span>Think Home, About, Services, Portfolio, Contact, Blog, FAQ, etc.</span></div>
+              <div class="structure-card"><strong>How many subsections?</strong><span>What needs to live under each major section?</span></div>
+              <div class="structure-card"><strong>Single page or multi-page?</strong><span>Clarify whether the site should scroll as one story or branch into multiple pages.</span></div>
+            </div>
+            <div class="grid-3">
+              <div class="field"><label>Main Section Count</label><input type="number" placeholder="Ex: 6"></div>
+              <div class="field"><label>Subsection Count</label><input type="number" placeholder="Ex: 12"></div>
+              <div class="field"><label>Site Type</label><select><option>Multi-Page Site</option><option>Single-Page Site</option><option>Hybrid</option></select></div>
+            </div>
+            <div class="field"><label>Main Sections</label><textarea placeholder="List the major sections/pages the website should include."></textarea></div>
+            <div class="field"><label>Subsections / Content Blocks</label><textarea placeholder="Break down what should live inside each section. Example: Services page > pricing, process, FAQ, testimonials."></textarea></div>
+            <div class="field"><label>Navigation Notes</label><textarea placeholder="Describe how visitors should move through the site. What should be easy to access? What should be highlighted in the nav?"></textarea></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>03 | Content Requirements</strong><span>What content the site needs to communicate</span></div>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field"><label>Core Messaging</label><textarea placeholder="What headlines, offers, positioning, or main messages should the site communicate?"></textarea></div>
+              <div class="field"><label>Content Needed</label><textarea placeholder="Images, testimonials, service descriptions, bios, case studies, forms, FAQs, pricing, legal pages..."></textarea></div>
+            </div>
+            <div class="grid-3">
+              <div class="field"><label>Need a Blog / Articles?</label><select><option>No</option><option>Yes</option><option>Maybe Later</option></select></div>
+              <div class="field"><label>Need a Portfolio / Case Studies?</label><select><option>Yes</option><option>No</option><option>Maybe</option></select></div>
+              <div class="field"><label>Need Contact / Lead Forms?</label><select><option>Yes</option><option>No</option><option>Multiple</option></select></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>04 | Conversion & Business Goals</strong><span>What the site needs visitors to do</span></div>
+          <div class="section-body">
+            <div class="grid-3">
+              <div class="field"><label>Primary Audience</label><input type="text" placeholder="Who is this site trying to reach?"></div>
+              <div class="field"><label>Main Conversion Goal</label><input type="text" placeholder="What action matters most?"></div>
+              <div class="field"><label>Trust Builders</label><input type="text" placeholder="Testimonials, logos, credentials, stats..."></div>
+            </div>
+            <div class="field"><label>Conversion Notes</label><textarea placeholder="Where should calls to action appear? What objections should the site answer? What needs to make visitors feel confident enough to convert?"></textarea></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><strong>05 | Design Direction</strong><span>Brand expression and visual style</span></div>
+          <div class="section-body">
+            <div class="grid-3">
+              <div class="field"><label>Visual Tone</label><input type="text" placeholder="Editorial, polished, bold, premium, friendly..."></div>
+              <div class="field"><label>Reference Sites</label><input type="text" placeholder="Sites you like or want to avoid"></div>
+              <div class="field"><label>Mobile Priority</label><select><option>Balanced</option><option>Mobile First</option><option>Desktop First</option></select></div>
+            </div>
+            <div class="field"><label>Aesthetic Notes</label><textarea placeholder="Describe colors, mood, layout style, typography, animation level, image treatment, and anything the design should absolutely not look like."></textarea></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer-actions">
+        <div class="footer-note">This intake is intentionally more architectural. The goal is to lock the structure of the website early so content, design, and navigation all move in the same direction.</div>
+        <div class="cta-row">
+          <a class="btn secondary" href="Intake_Studio_Landing.html">Back to Hub</a>
+          <a class="btn primary" href="Intake_Studio_Web_App.html">Open App Intake</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

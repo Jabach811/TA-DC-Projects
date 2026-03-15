@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payroll Setup Checklist Generator v2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg:#f5f4f0; --surface:#ffffff; --surface2:#f0efe9; --border:#e2e0d8;
+  --text:#1a1916; --muted:#7a7870; --ok:#16a34a; --critical:#dc2626; --warn:#d97706; --info:#2563eb;
+}
+/* ── DARK MODE ── */
+html.dark-mode {
+  --bg:#141210; --surface:#1c1a17; --surface2:#252320; --border:#ffffff12;
+  --text:#f0ece4; --muted:#7a7060; --ok:#4ade80; --critical:#f87171; --warn:#fbbf24; --info:#60a5fa;
+}
+html.dark-mode body { background:var(--bg); color:var(--text); }
+html.dark-mode .prog-hdr { background:var(--surface); border-bottom-color:var(--border); }
+html.dark-mode .prog-track { background:var(--surface2); }
+html.dark-mode .phase-block { background:var(--surface); border-color:var(--border); }
+html.dark-mode .phase-hdr { border-bottom-color:var(--border); }
+html.dark-mode .phase-hdr:hover { background:var(--surface2); }
+html.dark-mode .phase-num { color:var(--muted); }
+html.dark-mode .phase-title { color:var(--text); }
+html.dark-mode .phase-sub { color:var(--muted); }
+html.dark-mode .phase-cnt { color:var(--muted); }
+html.dark-mode .mp { background:var(--surface2); }
+html.dark-mode .done-banner { background:#052e16; border-color:#166534; color:var(--ok); }
+html.dark-mode .task-item { border-bottom-color:var(--border); }
+html.dark-mode .task-item:hover { background:var(--surface2); }
+html.dark-mode .task-item.done { opacity:0.42; }
+html.dark-mode .task-chk { background:var(--surface); border-color:#ffffff25; color:var(--surface); }
+html.dark-mode .task-item.done .task-chk { background:var(--ok); border-color:var(--ok); color:#0a1a0a; }
+html.dark-mode .task-txt { color:var(--text); }
+html.dark-mode .task-note { color:var(--muted); }
+html.dark-mode .sc { background:var(--surface); border-color:var(--border); }
+html.dark-mode .sc h3 { color:var(--muted); }
+html.dark-mode .ss { border-bottom-color:var(--border); color:var(--text); }
+html.dark-mode .ss-n { color:var(--text); }
+html.dark-mode .pir { border-bottom-color:var(--border); }
+html.dark-mode .pir-l { color:var(--muted); }
+html.dark-mode .pir-v { color:var(--text); }
+html.dark-mode .pir-action { border-bottom-color:var(--border); }
+html.dark-mode .pj:hover { background:var(--surface2); }
+html.dark-mode .pj-name { color:var(--text); }
+html.dark-mode .pj-pct { color:var(--muted); }
+html.dark-mode .sb-file-btn.sbfb-load { background:var(--surface2); border-color:var(--border); color:var(--muted); }
+html.dark-mode .sb-file-btn.sbfb-load:hover { border-color:var(--text); color:var(--text); }
+html.dark-mode .export-btn { background:transparent; border-color:var(--border); color:var(--muted); }
+html.dark-mode .export-btn:hover { border-color:var(--text); color:var(--text); background:var(--surface2); }
+html.dark-mode .tag-filter-bar { background:var(--surface); border-bottom-color:var(--border); }
+html.dark-mode .phase-bulk-btn { border-color:#05966955; }
+html.dark-mode .phase-bulk-btn.undo { border-color:#d9740655; }
+html.dark-mode .task-note-input { background:var(--surface2); border-color:var(--border); }
+html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--border); color:var(--text); }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle-wrap { display:flex; align-items:center; justify-content:space-between; padding:6px 0; }
+.theme-toggle-label { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:7px; }
+.theme-switch { position:relative; width:40px; height:22px; flex-shrink:0; cursor:pointer; }
+.theme-switch input { opacity:0; width:0; height:0; position:absolute; }
+.theme-slider { position:absolute; inset:0; background:#e2e0d8; border-radius:11px; transition:background .25s; }
+html.dark-mode .theme-slider { background:#3a3628; }
+.theme-slider::before { content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:transform .25s, background .25s; box-shadow:0 1px 4px #00000030; }
+html.dark-mode .theme-slider::before { transform:translateX(18px); background:#fbbf24; }
+.theme-icon { font-size:13px; line-height:1; }
+
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; }
+
+.screen { display:none; }
+.screen.active { display:block; }
+#intakeScreen.active { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; }
+
+/* ══════════════════════════════════
+   INTAKE SCREEN
+══════════════════════════════════ */
+#intakeScreen { min-height:100vh; padding:40px 20px 60px; background:#1a1916; position:relative; overflow:hidden; }
+#intakeScreen::before { content:''; position:fixed; inset:0; background:repeating-linear-gradient(-45deg,transparent,transparent 40px,#ffffff03 40px,#ffffff03 41px); pointer-events:none; }
+.intake-inner { position:relative; z-index:1; width:100%; max-width:720px; }
+.intake-eyebrow { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color:#ffffff55; margin-bottom:12px; }
+.intake-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(44px,8vw,80px); color:#fff; line-height:0.95; margin-bottom:8px; letter-spacing:0.02em; }
+.intake-title span { color:#fbbf24; }
+.intake-sub { color:#ffffff44; font-size:14px; font-weight:300; margin-bottom:28px; line-height:1.5; }
+
+/* Saved bar */
+.saved-bar { background:#ffffff08; border:1px solid #ffffff14; border-radius:10px; padding:14px 16px; margin-bottom:18px; display:none; }
+.saved-bar.has-saves { display:block; }
+.saved-bar-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff55; margin-bottom:10px; }
+.saved-list { display:flex; flex-direction:column; gap:6px; }
+.saved-item { display:flex; align-items:center; gap:10px; background:#ffffff08; border:1px solid #ffffff14; border-radius:7px; padding:10px 14px; cursor:pointer; transition:all 0.15s; }
+.saved-item:hover { background:#ffffff15; border-color:#fbbf2455; }
+.saved-name { flex:1; font-size:13px; color:#ffffffcc; font-weight:500; }
+.saved-meta { font-family:'JetBrains Mono',monospace; font-size:10px; color:#ffffff44; }
+.saved-del { font-size:14px; color:#ffffff33; cursor:pointer; padding:2px 7px; border-radius:4px; transition:all 0.15s; line-height:1; }
+.saved-del:hover { background:#dc262622; color:#dc2626; }
+
+/* Intake file actions */
+.intake-file-actions { display:flex; gap:8px; margin-bottom:16px; }
+.intake-file-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:11px 14px; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:all 0.18s; border:1px solid; }
+.ifb-load { background:#ffffff0a; border-color:#ffffff20; color:#ffffffaa; }
+.ifb-load:hover { background:#ffffff14; border-color:#fbbf2466; color:#fff; }
+
+/* Form */
+.form-card { background:#ffffff0d; border:1px solid #ffffff18; border-radius:16px; padding:28px 26px 22px; }
+.fsec { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:#fbbf2477; margin:22px 0 12px; padding-bottom:7px; border-bottom:1px solid #ffffff0f; }
+.fsec:first-child { margin-top:0; }
+.fr { margin-bottom:14px; }
+.fr2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.fr3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:14px; }
+.fl { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:#ffffff66; margin-bottom:6px; display:block; }
+.fl .opt { color:#ffffff2a; font-size:9px; margin-left:5px; }
+.fi { width:100%; background:#ffffff0a; border:1px solid #ffffff18; border-radius:8px; padding:11px 14px; color:#fff; font-family:'Outfit',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; }
+.fi::placeholder { color:#ffffff25; }
+.fi:focus { border-color:#fbbf2466; background:#ffffff0f; }
+.fi[type="date"]::-webkit-calendar-picker-indicator { filter:invert(0.4); cursor:pointer; }
+select.fi option { background:#1c1a17; color:#f0ece4; }
+
+/* FTP Toggle */
+.toggle-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+.toggle-item { background:#ffffff08; border:1px solid #ffffff18; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; transition:all 0.2s; }
+.toggle-item.on { background:#fbbf2410; border-color:#fbbf2455; }
+.toggle-label { font-size:13px; font-weight:500; color:#ffffffcc; }
+.toggle-item.on .toggle-label { color:#fbbf24; }
+.toggle-sub { font-family:'JetBrains Mono',monospace; font-size:9px; color:#ffffff44; margin-top:2px; }
+.toggle-switch { width:36px; height:20px; border-radius:10px; background:#ffffff18; position:relative; transition:background 0.2s; flex-shrink:0; }
+.toggle-switch::after { content:''; position:absolute; width:14px; height:14px; border-radius:50%; background:#fff; top:3px; left:3px; transition:transform 0.2s; }
+.toggle-item.on .toggle-switch { background:#fbbf24; }
+.toggle-item.on .toggle-switch::after { transform:translateX(16px); }
+
+.gen-btn { width:100%; padding:15px; background:#fbbf24; border:none; border-radius:10px; font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:0.08em; color:#1a1916; cursor:pointer; margin-top:22px; transition:all 0.2s; }
+.gen-btn:hover { background:#f59e0b; transform:translateY(-1px); box-shadow:0 8px 24px #fbbf2440; }
+
+/* ══════════════════════════════════
+   CHECKLIST SCREEN
+══════════════════════════════════ */
+.cl-header { background:#1a1916; color:#fff; padding:26px 32px 22px; position:relative; overflow:hidden; }
+.cl-header::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(-45deg,transparent,transparent 30px,#ffffff03 30px,#ffffff03 31px); }
+.cl-header-inner { position:relative; z-index:1; max-width:1100px; margin:0 auto; }
+.cl-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+.cl-back { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff44; cursor:pointer; transition:color 0.15s; }
+.cl-back:hover { color:#fff; }
+.hdr-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.hdr-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:8px 16px; border-radius:7px; cursor:pointer; transition:all 0.15s; }
+.btn-save-json { background:#fbbf24; color:#1a1916; border:none; font-weight:700; }
+.btn-save-json:hover { background:#f59e0b; }
+.btn-save-ls { background:transparent; color:#ffffff55; border:1px solid #ffffff22; }
+.btn-save-ls:hover { border-color:#fbbf2466; color:#fbbf24; }
+.btn-print { background:transparent; color:#ffffff55; border:1px solid #ffffff22; }
+.btn-print:hover { border-color:#fff; color:#fff; }
+.cl-plan-name { font-family:'Bebas Neue',sans-serif; font-size:clamp(26px,5vw,50px); letter-spacing:0.03em; line-height:1; margin-bottom:4px; }
+.cl-plan-name span { color:#fbbf24; }
+.cl-case { font-family:'JetBrains Mono',monospace; font-size:11px; color:#ffffff33; margin-bottom:8px; }
+.cl-meta { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+.cl-badge { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 10px; border-radius:20px; border:1px solid; }
+
+/* Status pill */
+.status-pill-wrap { display:flex; align-items:center; gap:6px; margin-top:12px; }
+.status-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff33; }
+.status-pill { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:4px 14px; border-radius:20px; border:1.5px solid; cursor:pointer; transition:all 0.18s; display:inline-flex; align-items:center; gap:6px; }
+.status-pill:hover { filter:brightness(1.15); }
+.sp-active   { color:#4ade80; border-color:#4ade8055; background:#4ade8010; }
+.sp-complete { color:#fbbf24; border-color:#fbbf2455; background:#fbbf2410; }
+.sp-hold     { color:#f87171; border-color:#f8717155; background:#f8717110; }
+.status-pill .sp-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.sp-active .sp-dot { background:#4ade80; }
+.sp-complete .sp-dot { background:#fbbf24; }
+.sp-hold .sp-dot { background:#f87171; }
+.status-menu { position:absolute; top:calc(100% + 6px); left:0; background:#1e1c18; border:1px solid #ffffff18; border-radius:9px; padding:5px; z-index:500; min-width:150px; box-shadow:0 8px 24px #00000055; }
+.status-menu-item { display:flex; align-items:center; gap:9px; padding:8px 12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; transition:background 0.12s; }
+.status-menu-item:hover { background:#ffffff10; }
+.smi-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.smi-active   { color:#4ade80; } .smi-active .smi-dot { background:#4ade80; }
+.smi-complete { color:#fbbf24; } .smi-complete .smi-dot { background:#fbbf24; }
+.smi-hold     { color:#f87171; } .smi-hold .smi-dot { background:#f87171; }
+.status-wrap  { position:relative; display:inline-block; }
+
+/* Countdown */
+.cdown-bar { background:#ffffff08; border-top:1px solid #ffffff0f; padding:11px 32px; }
+.cdown-inner { max-width:1100px; margin:0 auto; display:flex; gap:20px; flex-wrap:wrap; align-items:center; }
+.cdown-item { display:flex; align-items:center; gap:9px; }
+.cdown-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff44; }
+.cdown-val { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.05em; }
+.cv-urgent { color:#f87171; } .cv-warn { color:#fbbf24; } .cv-ok { color:#4ade80; }
+.cv-na { color:#ffffff33; font-size:15px; font-family:'Outfit',sans-serif; font-weight:300; }
+.cdown-sep { color:#ffffff15; font-size:16px; }
+
+/* Progress bar */
+.prog-hdr { background:#fff; border-bottom:1px solid var(--border); padding:12px 32px; position:sticky; top:0; z-index:100; }
+.prog-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:14px; }
+.prog-track { flex:1; height:7px; background:var(--surface2); border-radius:4px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,#fbbf24,#f59e0b); border-radius:4px; transition:width 0.4s ease; }
+.prog-pct { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--text); min-width:46px; }
+.prog-txt { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
+
+/* Body */
+.cl-body { max-width:1100px; margin:0 auto; padding:26px 32px 80px; }
+@media(min-width:900px){
+  .cl-layout { display:grid; grid-template-columns:1fr 265px; gap:26px; align-items:start; }
+  .cl-sidebar { position:sticky; top:66px; }
+}
+
+/* Sidebar cards */
+.sc { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:16px; margin-bottom:13px; }
+.sc h3 { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-bottom:11px; }
+.ss { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.ss:last-child { border-bottom:none; }
+.ss-n { font-family:'JetBrains Mono',monospace; font-weight:600; font-size:15px; }
+.pir { display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid var(--border); gap:8px; }
+.pir:last-child { border-bottom:none; }
+.pir-l { color:var(--muted); font-weight:300; white-space:nowrap; flex-shrink:0; }
+.pir-v { font-weight:600; font-family:'JetBrains Mono',monospace; font-size:11px; text-align:right; word-break:break-all; }
+.pj { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:6px; cursor:pointer; transition:background 0.15s; font-size:12px; margin-bottom:3px; }
+.pj:hover { background:var(--surface2); }
+.pj-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.pj-name { flex:1; font-weight:500; }
+.pj-pct { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
+.pir-action { display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:5px 0; border-bottom:1px solid var(--border); gap:8px; }
+.pir-action:last-child { border-bottom:none; }
+.pir-action .pir-l { color:var(--muted); font-weight:300; white-space:nowrap; flex-shrink:0; }
+.pir-action .pir-v { font-weight:600; font-family:'JetBrains Mono',monospace; font-size:11px; text-align:right; word-break:break-all; flex:1; }
+
+/* Sidebar file actions */
+.sb-file-actions { display:flex; gap:6px; margin-bottom:10px; }
+.sb-file-btn { flex:1; padding:7px 0; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; transition:all 0.15s; text-align:center; }
+.sbfb-save { background:#fbbf2415; border:1px solid #fbbf2444; color:#fbbf24; }
+.sbfb-save:hover { background:#fbbf2425; border-color:#fbbf2488; }
+.sbfb-load { background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+.sbfb-load:hover { border-color:var(--text); color:var(--text); }
+
+/* Export button */
+.export-btn { width:100%; margin-top:10px; padding:9px; background:transparent; border:1px solid var(--border); border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.export-btn:hover { border-color:var(--text); color:var(--text); background:var(--surface2); }
+
+/* Email buttons */
+.email-btn { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:3px 9px; border-radius:5px; border:1px solid #fbbf2444; background:#fbbf240a; color:#d97706; cursor:pointer; white-space:nowrap; transition:all 0.15s; text-decoration:none; display:inline-block; flex-shrink:0; }
+.email-btn:hover { background:#fbbf2418; border-color:#fbbf2488; }
+.task-email-btn { display:inline-flex; align-items:center; gap:5px; margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; padding:5px 11px; border-radius:5px; border:1px solid #fbbf2444; background:#fbbf240a; color:#d97706; cursor:pointer; transition:all 0.15s; }
+.task-email-btn:hover { background:#fbbf2418; border-color:#fbbf2488; }
+
+/* Phases */
+.phase-block { margin-bottom:20px; border-radius:11px; border:1px solid var(--border); overflow:hidden; background:var(--surface); }
+.phase-hdr { display:flex; align-items:center; gap:12px; padding:15px 18px; cursor:pointer; user-select:none; border-bottom:1px solid var(--border); transition:background 0.15s; }
+.phase-hdr:hover { background:var(--surface2); }
+.phase-num { font-family:'Bebas Neue',sans-serif; font-size:24px; line-height:1; color:var(--muted); min-width:24px; }
+.phase-bar { width:4px; height:30px; border-radius:2px; flex-shrink:0; }
+.phase-tw { flex:1; }
+.phase-title { font-weight:700; font-size:14px; margin-bottom:1px; }
+.phase-sub { font-size:11px; color:var(--muted); font-weight:300; }
+.phase-stats { display:flex; align-items:center; gap:9px; }
+.phase-cnt { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
+.mp { width:46px; height:4px; background:var(--surface2); border-radius:2px; overflow:hidden; margin-top:3px; }
+.mp-f { height:100%; border-radius:2px; transition:width 0.4s; }
+.phase-chev { color:var(--muted); font-size:17px; transition:transform 0.2s; }
+.phase-block.collapsed .phase-chev { transform:rotate(-90deg); }
+.phase-block.collapsed .phase-tasks { display:none; }
+.done-banner { display:none; background:#f0fdf4; border-top:1px solid #bbf7d0; padding:8px 18px; font-size:12px; color:var(--ok); font-weight:600; align-items:center; gap:7px; }
+.phase-block.phase-complete .done-banner { display:flex; }
+
+/* Tasks */
+.phase-tasks { padding:4px 0; }
+.task-item { display:flex; align-items:flex-start; gap:12px; padding:10px 18px; transition:background 0.1s; cursor:pointer; border-bottom:1px solid var(--border); }
+.task-item:last-child { border-bottom:none; }
+.task-item:hover { background:var(--surface2); }
+.task-item.done { opacity:0.42; }
+.task-item.done .task-txt { text-decoration:line-through; color:var(--muted); }
+.task-chk { width:18px; height:18px; border:2px solid var(--border); border-radius:4px; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; background:var(--surface); font-size:10px; font-weight:700; }
+.task-item.done .task-chk { background:var(--ok); border-color:var(--ok); color:#fff; }
+.task-body { flex:1; }
+.task-txt { font-size:13px; font-weight:500; line-height:1.4; margin-bottom:2px; }
+.task-note { font-size:11px; color:var(--muted); font-weight:300; line-height:1.4; }
+.task-tags { display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; }
+.tag { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 6px; border-radius:3px; border:1px solid; }
+.tag-critical  { color:#dc2626; border-color:#dc262628; background:#dc262606; }
+.tag-vendor    { color:#d97706; border-color:#d9740628; background:#d9740606; }
+.tag-ftp       { color:#0891b2; border-color:#0891b228; background:#0891b206; }
+.tag-testing   { color:#be185d; border-color:#be185d28; background:#be185d06; }
+.tag-loans     { color:#16a34a; border-color:#16a34a28; background:#16a34a06; }
+.tag-elections { color:#7c3aed; border-color:#7c3aed28; background:#7c3aed06; }
+
+/* Toast */
+.toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(16px); background:#1a1916; color:#fff; padding:11px 22px; border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.08em; opacity:0; transition:all 0.3s; pointer-events:none; z-index:9999; white-space:nowrap; border:1px solid #fbbf2444; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── TAG FILTER BAR ── */
+.tag-filter-bar { background:var(--surface); border-bottom:1px solid var(--border); padding:9px 32px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; position:sticky; top:52px; z-index:90; }
+.tfb-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); flex-shrink:0; }
+.tfb-tags { display:flex; gap:5px; flex-wrap:wrap; }
+.tfb-tag { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:4px 11px; border-radius:4px; border:1px solid; cursor:pointer; transition:all 0.15s; }
+.tfb-tag-all      { color:var(--muted); border-color:var(--border); background:transparent; }
+.tfb-tag-all.on   { color:var(--text); border-color:var(--text); background:var(--surface2); }
+.tfb-tag-critical { color:#dc2626; border-color:#dc262628; background:transparent; }
+.tfb-tag-critical.on { background:#dc262614; border-color:#dc2626; }
+.tfb-tag-vendor   { color:#d97706; border-color:#d9740628; background:transparent; }
+.tfb-tag-vendor.on { background:#d9740614; border-color:#d97706; }
+.tfb-tag-ftp      { color:#0891b2; border-color:#0891b228; background:transparent; }
+.tfb-tag-ftp.on   { background:#0891b214; border-color:#0891b2; }
+.tfb-tag-testing  { color:#be185d; border-color:#be185d28; background:transparent; }
+.tfb-tag-testing.on { background:#be185d14; border-color:#be185d; }
+.tfb-tag-loans    { color:#16a34a; border-color:#16a34a28; background:transparent; }
+.tfb-tag-loans.on { background:#16a34a14; border-color:#16a34a; }
+.tfb-sep { color:var(--border); font-size:14px; }
+.tfb-toggle-all { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; padding:4px 11px; border-radius:4px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; margin-left:auto; }
+.tfb-toggle-all:hover { border-color:var(--text); color:var(--text); }
+.task-item.tf-hidden { display:none !important; }
+
+/* ── PHASE BULK COMPLETE ── */
+.phase-bulk-btn { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 9px; border-radius:4px; border:1px solid #05966944; background:#05966908; color:#059669; cursor:pointer; transition:all 0.15s; white-space:nowrap; flex-shrink:0; }
+.phase-bulk-btn:hover { background:#05966920; border-color:#059669; }
+.phase-bulk-btn.undo { border-color:#d9740644; background:#d9740608; color:#d97706; }
+.phase-bulk-btn.undo:hover { background:#d9740618; border-color:#d97706; }
+
+/* ── TASK NOTES ── */
+.task-note-area { display:none; margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); }
+.task-note-area.open { display:block; }
+.task-note-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:7px 10px; font-family:'Outfit',sans-serif; font-size:11px; color:var(--text); resize:vertical; min-height:54px; outline:none; transition:border-color 0.2s; line-height:1.5; }
+.task-note-input:focus { border-color:#fbbf2466; }
+.task-note-input::placeholder { color:var(--muted); opacity:0.6; }
+.task-note-toggle { display:inline-flex; align-items:center; gap:4px; margin-top:7px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; padding:2px 7px; border-radius:4px; border:1px solid transparent; transition:all 0.15s; user-select:none; }
+.task-note-toggle:hover { color:var(--text); border-color:var(--border); background:var(--surface2); }
+.task-note-toggle.has-note { color:#fbbf24; border-color:#fbbf2433; background:#fbbf2408; }
+.task-note-toggle.has-note:hover { background:#fbbf2415; border-color:#fbbf2466; }
+
+/* ── NOTES PANEL ── */
+.notes-textarea { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:7px; padding:9px 11px; font-family:'Outfit',sans-serif; font-size:12px; color:var(--text); resize:vertical; min-height:90px; outline:none; transition:border-color 0.2s; line-height:1.5; }
+.notes-textarea:focus { border-color:#fbbf2466; }
+.notes-save-btn { width:100%; margin-top:6px; padding:7px; background:#fbbf2415; border:1px solid #fbbf2444; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#fbbf24; cursor:pointer; transition:all 0.15s; }
+.notes-save-btn:hover { background:#fbbf2425; border-color:#fbbf2488; }
+
+/* Email modal */
+.modal-overlay { position:fixed; inset:0; background:#00000088; z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box { background:#1a1916; border:1px solid #ffffff18; border-radius:16px; width:100%; max-width:600px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; transform:translateY(12px); transition:transform 0.2s; }
+.modal-overlay.open .modal-box { transform:translateY(0); }
+.modal-hdr { display:flex; align-items:center; justify-content:space-between; padding:18px 22px 14px; border-bottom:1px solid #ffffff12; }
+.modal-title { font-family:'Bebas Neue',sans-serif; font-size:20px; color:#fff; letter-spacing:0.05em; }
+.modal-close { color:#ffffff44; cursor:pointer; font-size:20px; line-height:1; padding:4px 8px; border-radius:5px; transition:all 0.15s; background:none; border:none; }
+.modal-close:hover { background:#ffffff12; color:#fff; }
+.modal-body { padding:18px 22px; overflow-y:auto; flex:1; }
+.modal-field { margin-bottom:14px; }
+.modal-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:#ffffff44; margin-bottom:6px; display:block; }
+.modal-input { width:100%; background:#ffffff0a; border:1px solid #ffffff18; border-radius:8px; padding:10px 14px; color:#fff; font-family:'Outfit',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; resize:none; }
+.modal-input:focus { border-color:#fbbf2466; background:#ffffff0f; }
+.modal-textarea { min-height:160px; line-height:1.5; }
+.modal-footer { padding:14px 22px; border-top:1px solid #ffffff12; display:flex; gap:8px; justify-content:flex-end; }
+.modal-send { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:10px 22px; border-radius:7px; background:#fbbf24; color:#1a1916; border:none; cursor:pointer; font-weight:700; transition:all 0.15s; }
+.modal-send:hover { background:#f59e0b; }
+.modal-cancel { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:10px 18px; border-radius:7px; background:transparent; color:#ffffff44; border:1px solid #ffffff18; cursor:pointer; transition:all 0.15s; }
+.modal-cancel:hover { color:#fff; border-color:#ffffff44; }
+.modal-cc-row { display:flex; gap:8px; }
+.modal-cc-row .modal-input { flex:1; }
+
+/* Load confirm */
+.load-confirm-overlay { position:fixed; inset:0; background:#00000088; z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.load-confirm-overlay.open { opacity:1; pointer-events:all; }
+.load-confirm-box { background:#1a1916; border:1px solid #ffffff18; border-radius:16px; width:100%; max-width:440px; padding:28px; transform:translateY(12px); transition:transform 0.2s; }
+.load-confirm-overlay.open .load-confirm-box { transform:translateY(0); }
+.lcb-eyebrow { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:#ffffff33; margin-bottom:10px; }
+.lcb-planname { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#fff; line-height:1.1; margin-bottom:4px; }
+.lcb-case { font-family:'JetBrains Mono',monospace; font-size:11px; color:#ffffff44; margin-bottom:14px; }
+.lcb-rows { border:1px solid #ffffff12; border-radius:8px; overflow:hidden; margin-bottom:18px; }
+.lcb-row { display:flex; align-items:center; justify-content:space-between; padding:9px 14px; border-bottom:1px solid #ffffff0a; font-size:12px; }
+.lcb-row:last-child { border-bottom:none; }
+.lcb-row-l { color:#ffffff44; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; }
+.lcb-row-v { color:#ffffffcc; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+.lcb-actions { display:flex; gap:8px; }
+.lcb-confirm { flex:1; padding:11px; background:#fbbf24; border:none; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#1a1916; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.lcb-confirm:hover { background:#f59e0b; }
+.lcb-cancel { padding:11px 16px; background:transparent; border:1px solid #ffffff18; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#ffffff44; cursor:pointer; transition:all 0.15s; }
+.lcb-cancel:hover { color:#fff; border-color:#ffffff44; }
+
+/* Overwrite confirm */
+.overwrite-overlay { position:fixed; inset:0; background:#00000088; z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.overwrite-overlay.open { opacity:1; pointer-events:all; }
+.overwrite-box { background:#1a1916; border:1px solid #f8717155; border-radius:14px; width:100%; max-width:380px; padding:24px; transform:translateY(12px); transition:transform 0.2s; }
+.overwrite-overlay.open .overwrite-box { transform:translateY(0); }
+.owb-icon { font-size:28px; margin-bottom:10px; }
+.owb-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#fff; margin-bottom:6px; }
+.owb-msg { font-size:12px; color:#ffffff55; line-height:1.6; margin-bottom:18px; }
+.owb-msg strong { color:#ffffffaa; }
+.owb-actions { display:flex; gap:8px; }
+.owb-overwrite { flex:1; padding:10px; background:#dc262618; border:1px solid #dc262655; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#f87171; cursor:pointer; transition:all 0.15s; }
+.owb-overwrite:hover { background:#dc262630; }
+.owb-new { flex:1; padding:10px; background:#fbbf24; border:none; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#1a1916; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.owb-new:hover { background:#f59e0b; }
+.owb-cancel { padding:10px 14px; background:transparent; border:1px solid #ffffff18; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#ffffff33; cursor:pointer; transition:all 0.15s; }
+.owb-cancel:hover { color:#fff; border-color:#ffffff44; }
+
+#jsonFileInput { display:none; }
+
+@media print {
+  #intakeScreen { display:none !important; }
+  .prog-hdr, .cl-back, .cl-sidebar, .hdr-actions, .cdown-bar { display:none !important; }
+  .phase-block.collapsed .phase-tasks { display:block !important; }
+  body { background:#fff; }
+  .cl-header { background:#1a1916 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+</style>
+</head>
+<body>
+
+<input type="file" id="jsonFileInput" accept=".json" onchange="handleJsonLoad(event)">
+
+<!-- ════════════════════════════════
+     INTAKE
+════════════════════════════════ -->
+<div id="intakeScreen" class="screen active">
+<div class="intake-inner">
+  <div class="intake-eyebrow">Payroll Setup</div>
+  <div class="intake-title">PAYROLL SETUP /<br><span>CHECKLIST GENERATOR</span></div>
+  <div class="intake-sub">Fill out the intake form — your payroll setup checklist is generated instantly based on vendor, FTP settings, and plan details.</div>
+
+  <div class="intake-file-actions">
+    <button class="intake-file-btn ifb-load" onclick="document.getElementById('jsonFileInput').click()">
+      <span>📂</span> Load Saved Checklist (.json)
+    </button>
+  </div>
+
+  <div class="saved-bar" id="savedBar">
+    <div class="saved-bar-title">⚡ Quick Access — browser saves</div>
+    <div class="saved-list" id="savedList"></div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="fsec">Plan Information</div>
+    <div class="fr2">
+      <div><label class="fl">Plan Name <span class="req" style="color:#fbbf24;margin-left:3px;">*</span></label><input class="fi" id="planName" type="text" placeholder="Acme Corp 401(k)"></div>
+      <div><label class="fl">Case Number</label><input class="fi" id="caseNumber" type="text" placeholder="QK1234567890"></div>
+    </div>
+    <div class="fr2">
+      <div><label class="fl">Effective Date</label><input class="fi" id="effectiveDate" type="date"></div>
+      <div><label class="fl">First Payroll Date at TA</label><input class="fi" id="firstPayrollDate" type="date"></div>
+    </div>
+
+    <div class="fsec">Payroll Vendor</div>
+    <div class="fr3">
+      <div><label class="fl">Vendor Name</label><input class="fi" id="vendorName" placeholder="ADP, Paychex, Paylocity..."></div>
+      <div><label class="fl">Contact Name</label><input class="fi" id="vendorContact" placeholder="Jane Smith"></div>
+      <div><label class="fl">Contact Email</label><input class="fi" id="vendorEmail" type="email" placeholder="jane@vendor.com"></div>
+    </div>
+
+    <div class="fsec">FTP Contact <span style="color:#ffffff25;font-size:9px;letter-spacing:0;text-transform:none;">(if different from payroll contact)</span></div>
+    <div class="fr3">
+      <div><label class="fl">FTP Contact Name <span class="opt">optional</span></label><input class="fi" id="ftpContact" placeholder="Tech contact name"></div>
+      <div><label class="fl">FTP Contact Email <span class="opt">optional</span></label><input class="fi" id="ftpEmail" type="email" placeholder="ftp@vendor.com"></div>
+      <div><label class="fl">FTP Folder / Path <span class="opt">optional</span></label><input class="fi" id="ftpPath" placeholder="/outbound/transamerica/"></div>
+    </div>
+
+    <div class="fsec">Internal Contacts</div>
+    <div class="fr2">
+      <div><label class="fl">TM Email <span class="opt">optional</span></label><input class="fi" id="tmEmail" type="email" placeholder="tm@company.com"></div>
+      <div><label class="fl">TC Email <span class="opt">optional</span></label><input class="fi" id="tcEmail" type="email" placeholder="tc@company.com"></div>
+    </div>
+
+    <div class="fsec">FTP Settings</div>
+    <div class="toggle-grid">
+      <div class="toggle-item on" id="tog-ftp" onclick="toggleFtp()">
+        <div>
+          <div class="toggle-label">Using FTP</div>
+          <div class="toggle-sub">Payroll files delivered via FTP — default on</div>
+        </div>
+        <div class="toggle-switch"></div>
+      </div>
+    </div>
+    <div id="ftp-subfields" style="margin-top:10px;">
+      <div class="fr2">
+        <div>
+          <label class="fl">FTP Direction</label>
+          <select class="fi" id="ftpDirection">
+            <option value="180">180 — Inbound only</option>
+            <option value="360">360 — Inbound + Outbound</option>
+          </select>
+        </div>
+        <div><label class="fl">Override FTP Folder <span class="opt">optional</span></label><input class="fi" id="ftpPathOverride" placeholder="/outbound/transamerica/"></div>
+      </div>
+    </div>
+
+    <button class="gen-btn" onclick="generateChecklist()">GENERATE PAYROLL CHECKLIST →</button>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════
+     CHECKLIST
+════════════════════════════════ -->
+<div id="checklistScreen" class="screen">
+  <div class="cl-header">
+    <div class="cl-header-inner">
+      <div class="cl-top">
+        <div class="cl-back" onclick="goBack()">← New Plan</div>
+        <div class="hdr-actions">
+          <button class="hdr-btn btn-save-json" onclick="saveToJson()">💾 Save to File</button>
+          <button class="hdr-btn btn-save-ls"   onclick="quickSave()">⚡ Quick Save</button>
+          <button class="hdr-btn btn-print"      onclick="window.print()">🖨 Print</button>
+        </div>
+      </div>
+      <div class="cl-plan-name" id="clName"></div>
+      <div class="cl-case" id="clCase"></div>
+      <div class="cl-meta" id="clMeta"></div>
+      <div class="status-pill-wrap">
+        <span class="status-lbl">Status</span>
+        <div class="status-wrap" id="statusWrap">
+          <div class="status-pill sp-active" id="statusPill" onclick="toggleStatusMenu()">
+            <span class="sp-dot"></span>
+            <span id="statusPillLabel">Active</span>
+            <span style="font-size:9px;opacity:0.5;">▾</span>
+          </div>
+          <div class="status-menu" id="statusMenu" style="display:none;">
+            <div class="status-menu-item smi-active"   onclick="setStatus('active')">  <span class="smi-dot"></span> Active</div>
+            <div class="status-menu-item smi-complete" onclick="setStatus('complete')"><span class="smi-dot"></span> Complete</div>
+            <div class="status-menu-item smi-hold"     onclick="setStatus('hold')">    <span class="smi-dot"></span> On Hold</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cdown-bar"><div class="cdown-inner" id="cdownInner"></div></div>
+  <div class="prog-hdr">
+    <div class="prog-inner">
+      <div class="prog-pct" id="progPct">0%</div>
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-txt" id="progTxt">0 of 0 tasks complete</div>
+    </div>
+  </div>
+  <!-- TAG FILTER BAR -->
+  <div class="tag-filter-bar" id="tagFilterBar">
+    <span class="tfb-label">Filter</span>
+    <div class="tfb-tags">
+      <span class="tfb-tag tfb-tag-all on"      id="tfb-all"      onclick="setTagFilter('all')">All</span>
+      <span class="tfb-tag tfb-tag-critical"     id="tfb-critical" onclick="setTagFilter('critical')">⚠ Critical</span>
+      <span class="tfb-tag tfb-tag-ftp"          id="tfb-ftp"      onclick="setTagFilter('ftp')">📡 FTP</span>
+      <span class="tfb-tag tfb-tag-vendor"       id="tfb-vendor"   onclick="setTagFilter('vendor')">🤝 Vendor</span>
+      <span class="tfb-tag tfb-tag-testing"      id="tfb-testing"  onclick="setTagFilter('testing')">🧪 Testing</span>
+      <span class="tfb-tag tfb-tag-loans"        id="tfb-loans"    onclick="setTagFilter('loans')">💰 Loans</span>
+    </div>
+    <span class="tfb-sep">|</span>
+    <button class="tfb-toggle-all" onclick="toggleAllPhases()">Collapse All</button>
+  </div>
+  <div class="cl-body">
+    <div class="cl-layout">
+      <div id="phaseContainer"></div>
+      <div class="cl-sidebar">
+        <div class="sc">
+          <h3>File</h3>
+          <div class="sb-file-actions">
+            <button class="sb-file-btn sbfb-save" onclick="saveToJson()">💾 Save .json</button>
+            <button class="sb-file-btn sbfb-load" onclick="document.getElementById('jsonFileInput').click()">📂 Load .json</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);font-style:italic;line-height:1.5;">Save downloads a <strong>.json</strong> file you can reload anytime.</div>
+        </div>
+        <div class="sc"><h3>Plan Details</h3><div id="planRows"></div></div>
+        <div class="sc">
+          <h3>Quick Actions</h3>
+          <div id="quickActions"></div>
+          <button class="export-btn" onclick="exportCSV()">📊 Export to Excel / CSV</button>
+        </div>
+        <div class="sc">
+          <h3>Settings</h3>
+          <div class="theme-toggle-wrap">
+            <span class="theme-toggle-label"><span class="theme-icon" id="themeIcon">☀️</span> Dark Mode</span>
+            <label class="theme-switch">
+              <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+              <span class="theme-slider"></span>
+            </label>
+          </div>
+          <div style="margin-top:8px;">
+            <button class="export-btn" style="margin-top:0;" onclick="goBack()">← Edit Intake</button>
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Progress</h3>
+          <div class="ss"><span>Total Tasks</span><span class="ss-n" id="sTotal">—</span></div>
+          <div class="ss"><span>Completed</span><span class="ss-n" style="color:var(--ok)" id="sDone">0</span></div>
+          <div class="ss"><span>Remaining</span><span class="ss-n" id="sLeft">—</span></div>
+          <div class="ss"><span>Phases</span><span class="ss-n" id="sPhases">—</span></div>
+        </div>
+        <div class="sc"><h3>Jump to Phase</h3><div id="phaseJumps"></div></div>
+        <div class="sc">
+          <h3>Notes</h3>
+          <textarea class="notes-textarea" id="planNotes" placeholder="Add notes about this plan..."></textarea>
+          <button class="notes-save-btn" onclick="saveNotes()">💾 Save Notes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="emailModal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modalTitle">DRAFT EMAIL</div>
+      <button class="modal-close" onclick="closeEmailModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field"><label class="modal-label">To</label><input class="modal-input" id="modalTo" type="email" placeholder="recipient@email.com"></div>
+      <div class="modal-field"><label class="modal-label">CC</label><div class="modal-cc-row"><input class="modal-input" id="modalCc" type="text" placeholder="cc1@email.com, cc2@email.com"></div></div>
+      <div class="modal-field"><label class="modal-label">Subject</label><input class="modal-input" id="modalSubject" type="text" placeholder="Email subject"></div>
+      <div class="modal-field"><label class="modal-label">Body</label><textarea class="modal-input modal-textarea" id="modalBody" placeholder="Email body..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeEmailModal()">Cancel</button>
+      <button class="modal-send" onclick="sendModal()">✉ Open in Mail App →</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOAD CONFIRM -->
+<div class="load-confirm-overlay" id="loadConfirmOverlay">
+  <div class="load-confirm-box">
+    <div class="lcb-eyebrow">Restore checklist from file</div>
+    <div class="lcb-planname" id="lcbPlanName">—</div>
+    <div class="lcb-case" id="lcbCase">—</div>
+    <div class="lcb-rows" id="lcbRows"></div>
+    <div class="lcb-actions">
+      <button class="lcb-cancel" onclick="cancelJsonLoad()">Cancel</button>
+      <button class="lcb-confirm" onclick="confirmJsonLoad()">✓ Load this Checklist →</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERWRITE WARNING -->
+<div class="overwrite-overlay" id="overwriteOverlay">
+  <div class="overwrite-box">
+    <div class="owb-icon">⚠️</div>
+    <div class="owb-title">File Already Saved</div>
+    <div class="owb-msg" id="owbMsg">A file for <strong id="owbPlanName">this plan</strong> was already saved this session.</div>
+    <div class="owb-actions">
+      <button class="owb-cancel"    onclick="closeOverwriteOverlay()">Cancel</button>
+      <button class="owb-overwrite" onclick="doSaveJson(true)">Overwrite</button>
+      <button class="owb-new"       onclick="doSaveJson(false)">Save New File</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════ STATE ════════════════════════
+let S = {
+  planName:'', caseNumber:'', effectiveDate:'', firstPayrollDate:'',
+  vendorName:'', vendorContact:'', vendorEmail:'',
+  ftpContact:'', ftpEmail:'', ftpPath:'',
+  tmEmail:'', tcEmail:'',
+  useFtp:true, ftpDirection:'180'
+};
+let CS = {};
+let CN = {};
+let saveKey = null;
+let PHASES = [];
+let planStatus = 'active';
+let activeTagFilter = 'all';
+let allCollapsed = false;
+let useFtp = true;
+const STORE = 'payroll_cl_v2';
+let sessionSavedFilename = null;
+let pendingJsonData = null;
+
+// ════════════════════════ FTP TOGGLE ════════════════════════
+function toggleFtp() {
+  useFtp = !useFtp;
+  document.getElementById('tog-ftp').classList.toggle('on', useFtp);
+  document.getElementById('ftp-subfields').style.display = useFtp ? 'block' : 'none';
+}
+
+// ════════════════════════ UTILS ════════════════════════
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(ds){ if(!ds) return 'TBD'; const d = new Date(ds+'T00:00:00'); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+// ════════════════════════ STATUS ════════════════════════
+function setStatus(s){
+  planStatus = s;
+  const pill  = document.getElementById('statusPill');
+  const label = document.getElementById('statusPillLabel');
+  const map   = { active:['sp-active','Active'], complete:['sp-complete','Complete'], hold:['sp-hold','On Hold'] };
+  if(!map[s]) return;
+  pill.className = 'status-pill ' + map[s][0];
+  label.textContent = map[s][1];
+  closeStatusMenu();
+}
+function toggleStatusMenu(){
+  const m = document.getElementById('statusMenu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function closeStatusMenu(){ document.getElementById('statusMenu').style.display = 'none'; }
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('statusWrap');
+  if(wrap && !wrap.contains(e.target)) closeStatusMenu();
+});
+
+// ════════════════════════ PHASE DEFINITIONS ════════════════════════
+function buildPhases(){
+  const ph = [];
+  let n = 1;
+
+  // PHASE 1: Kickoff & Setup
+  ph.push({ id:'ph1', num:n++, color:'#2563eb', title:'Kickoff & Setup', subtitle:'Initial contact, scheduling, scope confirmation', tasks:[
+    { id:'p1-1', text:'Send kickoff email to payroll vendor', note: S.vendorName ? `Introduce team to ${S.vendorName}` : 'Introduce implementation team to payroll vendor', tags:['vendor'],
+      emailBtn: S.vendorEmail ? { label:'✉ Email Vendor', type:'vendor', subject:`[${S.caseNumber}] ${S.planName} — Payroll Setup Kickoff`, body:`Hi ${S.vendorContact||'Team'},\n\nWe are writing to kick off the payroll setup process for the following plan:\n\n  Plan Name:      ${S.planName}\n  Case Number:    ${S.caseNumber}\n  Effective Date: ${fmtDate(S.effectiveDate)}\n  First Payroll:  ${fmtDate(S.firstPayrollDate)}\n\nWe will need to schedule a setup call to walk through the file spec requirements${S.useFtp ? ' and FTP connection' : ''}. Please let us know your availability.\n\nThank you,` } : null },
+    { id:'p1-2', text:'Schedule payroll setup call', note:'Confirm attendees — include FTP contact if separate from payroll contact', tags:[] },
+    { id:'p1-3', text:'Document all payroll contacts', note:'Payroll contact, technical/FTP contact, and escalation contact', tags:['vendor'] },
+    { id:'p1-4', text:'Confirm first payroll date at TA', note: S.firstPayrollDate ? `Target: ${fmtDate(S.firstPayrollDate)}` : 'Lock in the first live payroll date — work backwards for testing milestones', tags:['critical'] },
+  ]});
+
+  // PHASE 2: File Spec Configuration
+  ph.push({ id:'ph2', num:n++, color:'#7c3aed', title:'File Spec Configuration', subtitle:'STP spec review, field mapping, submission format', tasks:[
+    { id:'p2-1', text:'Obtain payroll file spec from vendor', note: S.vendorName ? `Request spec document from ${S.vendorName}` : 'Request file spec / layout document from payroll vendor', tags:['vendor'],
+      emailBtn: S.vendorEmail ? { label:'✉ Request Spec', type:'vendor', subject:`[${S.caseNumber}] ${S.planName} — File Spec Request`, body:`Hi ${S.vendorContact||'Team'},\n\nCould you please send us the payroll file spec / layout document for ${S.planName}?\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}\n\nWe need this to configure the STP setup on our end. Please include any field definitions, required formats, and sample files if available.\n\nThank you,` } : null },
+    { id:'p2-2', text:'Review and map all required fields', note:'Cross-reference vendor spec against TA required fields — flag any gaps', tags:[] },
+    { id:'p2-3', text:'Confirm file format and delimiters', note:'CSV, fixed-width, pipe-delimited — confirm exact format and encoding', tags:[] },
+    { id:'p2-4', text:'Confirm record layout and header row handling', note:'Does the file include a header row? Confirm column order matches spec', tags:[] },
+    { id:'p2-5', text:'Confirm contribution code mapping', note:'Map vendor contribution codes to TA money types', tags:[] },
+    { id:'p2-6', text:'Validate spec with payroll vendor — send confirmation', note:'Send written confirmation of agreed field mapping and file format', tags:['vendor'],
+      emailBtn: S.vendorEmail ? { label:'✉ Confirm Mapping', type:'vendor', subject:`[${S.caseNumber}] ${S.planName} — File Spec Confirmation`, body:`Hi ${S.vendorContact||'Team'},\n\nPlease find below our confirmed field mapping for ${S.planName}. Kindly review and confirm everything looks correct before we proceed to testing.\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}\n\n[INSERT FIELD MAPPING SUMMARY]\n\nPlease reply to confirm or flag any discrepancies.\n\nThank you,` } : null },
+  ]});
+
+  // PHASE 3: FTP or Manual Transmission
+  if (S.useFtp) {
+    const ftpContact = S.ftpContact || S.vendorContact;
+    const ftpEmail   = S.ftpEmail   || S.vendorEmail;
+    const ftpTasks = [
+      { id:'p3-1', text:'Send FTP connection details to vendor', note: S.ftpPath ? `Folder: ${S.ftpPath}` : 'Provide TA FTP server address, folder path, and credential instructions', tags:['ftp'],
+        emailBtn: ftpEmail ? { label:'✉ Send FTP Details', type:'ftp', subject:`[${S.caseNumber}] ${S.planName} — FTP Connection Details`, body:`Hi ${ftpContact||'Team'},\n\nPlease find below the FTP connection details for ${S.planName}.\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}${S.ftpPath ? '\n  Folder Path:  ' + S.ftpPath : ''}\n\n[INSERT FTP SERVER DETAILS / CREDENTIALS]\n\nPlease test the connection and confirm you are able to connect successfully. Let us know if you run into any issues.\n\nThank you,` } : null },
+      { id:'p3-2', text:'Confirm FTP folder structure with vendor', note:'Input folder — confirm vendor knows where to drop inbound files', tags:['ftp'] },
+      { id:'p3-3', text:'Vendor confirms successful FTP connection', note:'Get written confirmation — do not proceed to testing until this is confirmed', tags:['ftp','critical'],
+        emailBtn: ftpEmail ? { label:'✉ Request Confirmation', type:'ftp', subject:`[${S.caseNumber}] ${S.planName} — FTP Connection Confirmation Request`, body:`Hi ${ftpContact||'Team'},\n\nCould you please confirm that you have successfully connected to the FTP and can see the correct folder structure?\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}${S.ftpPath ? '\n  Expected Folder: ' + S.ftpPath : ''}\n\nPlease reply to confirm or let us know if you need any assistance.\n\nThank you,` } : null },
+      { id:'p3-4', text:'Confirm file naming convention', note:'Exact file name format expected — including date stamps, plan ID, or other required elements', tags:['ftp'] },
+      { id:'p3-5', text:'Confirm inbound file submission timing / schedule', note:'What time does the vendor submit inbound files? Same day or next day processing window?', tags:['ftp'] },
+    ];
+    if (S.ftpDirection === '360') {
+      ftpTasks.push({ id:'p3-6', text:'Coordinate outbound file transmission with TM and payroll team', note:'360 setup — confirm outbound file format, folder path, schedule, and TA delivery process with TM', tags:['ftp','critical'] });
+    }
+    ph.push({ id:'ph3', num:n++, color:'#0891b2', title:'FTP Connection Setup', subtitle: S.ftpDirection === '360' ? 'Credentials, folder structure, inbound + outbound' : 'Credentials, folder structure, test connection', tasks: ftpTasks });
+  } else {
+    ph.push({ id:'ph3', num:n++, color:'#0891b2', title:'File Transmission Setup', subtitle:'No FTP — coordinate manual file delivery with TM', tasks:[
+      { id:'p3-1', text:'Coordinate file transmission to Transamerica with TM', note:'FTP not in use — work with TM to establish the file delivery method and schedule for inbound payroll files', tags:['critical'] },
+      { id:'p3-2', text:'Confirm file delivery schedule with vendor', note:'Establish timing, format, and point of contact for file delivery on each payroll cycle', tags:['vendor'],
+        emailBtn: S.vendorEmail ? { label:'✉ Coordinate Delivery', type:'vendor', subject:`[${S.caseNumber}] ${S.planName} — File Delivery Coordination`, body:`Hi ${S.vendorContact||'Team'},\n\nWe would like to coordinate the payroll file delivery process for ${S.planName}.\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}\n\nSince FTP will not be used for this plan, we will need to confirm an alternative delivery method. Please let us know your preferred approach and we will coordinate on our end.\n\nThank you,` } : null },
+      { id:'p3-3', text:'Document agreed file delivery process', note:'Written record of delivery method, timing, contacts, and any special handling', tags:[] },
+    ]});
+  }
+
+  // PHASE 4: Parallel Testing
+  ph.push({ id:'ph4', num:n++, color:'#db2777', title:'Parallel Testing', subtitle:'Test file submission, validation, error resolution, sign-off', tasks:[
+    { id:'p4-1', text:'Send test file request to vendor', note:'Specify exact format, date range, and contribution types needed for test file', tags:['testing','vendor'],
+      emailBtn: S.vendorEmail ? { label:'✉ Request Test File', type:'vendor', subject:`[${S.caseNumber}] ${S.planName} — Test File Request`, body:`Hi ${S.vendorContact||'Team'},\n\nWe are ready to begin parallel testing for ${S.planName}. Could you please submit a test payroll file${S.useFtp ? ' via FTP' : ''} at your earliest convenience?\n\n  Plan Name:     ${S.planName}\n  Case Number:   ${S.caseNumber}\n  File Format:   Per agreed spec${S.useFtp && S.ftpPath ? '\n  Folder:        ' + S.ftpPath : ''}\n\nPlease let us know once the file has been submitted so we can begin validation.\n\nThank you,` } : null },
+    { id:'p4-2', text:`Vendor submits test file${S.useFtp ? ' via FTP' : ''}`, note:'Confirm file arrives in correct location with correct naming convention', tags:['testing'] },
+    { id:'p4-3', text:'Validate test file against spec', note:'Check all fields, formats, contribution codes, and totals', tags:['testing'] },
+    { id:'p4-4', text:'Process test file through TA system', note:'Run test file through payroll processing — verify no errors or rejections', tags:['testing'] },
+    { id:'p4-5', text:'Document any errors or discrepancies', note:'Capture exact error messages and field-level issues for vendor feedback', tags:['testing'] },
+    { id:'p4-6', text:'Send error feedback to vendor', note:'Clear, specific feedback on what needs to be corrected before go-live', tags:['testing','vendor'],
+      emailBtn: S.vendorEmail ? { label:'✉ Send Feedback', type:'vendor', subject:`[${S.caseNumber}] ${S.planName} — Test File Feedback`, body:`Hi ${S.vendorContact||'Team'},\n\nThank you for submitting the test file for ${S.planName}. We have completed our review and have the following feedback:\n\n  Plan Name:    ${S.planName}\n  Case Number:  ${S.caseNumber}\n\n[INSERT ERROR DETAILS / CORRECTIONS NEEDED]\n\nPlease make the noted corrections and resubmit at your earliest convenience. Let us know if you have any questions.\n\nThank you,` } : null },
+    { id:'p4-7', text:'Vendor resubmits corrected test file', note:'Repeat validation cycle until file processes cleanly with no errors', tags:['testing','vendor'] },
+    { id:'p4-8', text:'Test file passes validation — document sign-off', note:'Written confirmation from vendor that they are ready for go-live', tags:['testing','critical'] },
+  ]});
+
+  // PHASE 5: First Live Payroll
+  ph.push({ id:'ph5', num:n++, color:'#16a34a', title:'First Live Payroll', subtitle:'Go-live, file receipt, processing, reconciliation', tasks:[
+    { id:'p5-1', text:'Send go-live confirmation to vendor', note: S.firstPayrollDate ? `First live payroll: ${fmtDate(S.firstPayrollDate)}` : 'Confirm go-live date and any last-minute instructions', tags:['critical','vendor'],
+      emailBtn: S.vendorEmail ? { label:'✉ Send Go-Live Confirmation', type:'vendor', subject:`[${S.caseNumber}] ${S.planName} — Go-Live Confirmation`, body:`Hi ${S.vendorContact||'Team'},\n\nWe are pleased to confirm that ${S.planName} is ready to go live on payroll.\n\n  Plan Name:       ${S.planName}\n  Case Number:     ${S.caseNumber}\n  First Live Date: ${fmtDate(S.firstPayrollDate)}\n\nPlease submit the first live payroll file${S.useFtp ? ' to the FTP' : ''} on the scheduled date. We will monitor for receipt and confirm processing.\n\nThank you,` } : null },
+    { id:'p5-2', text:`Monitor${S.useFtp ? ' FTP' : ''} for first live file receipt`, note:'Confirm file arrives on time and in correct location', tags:['critical'] },
+    { id:'p5-3', text:'Validate first live file', note:'Spot-check key fields — totals, employee count, contribution codes', tags:['critical'] },
+    { id:'p5-4', text:'Process first live payroll file', note:'Run through TA processing — verify successful completion with no rejections', tags:['critical'] },
+    { id:'p5-5', text:'Verify contribution totals reconcile to payroll register', note:'Cross-check processed totals against vendor payroll register or remittance advice', tags:['critical'] },
+  ]});
+
+  // PHASE 6: Wrap-Up
+  ph.push({ id:'ph6', num:n++, color:'#d97706', title:'Ongoing & Wrap-Up', subtitle:'Recurring schedule, handoff, close out', tasks:[
+    { id:'p6-1', text:'Confirm recurring payroll schedule is established', note:`Vendor is clear on submission timing${S.useFtp ? ', folder, and naming convention' : ' and delivery method'} for all future payrolls`, tags:[] },
+    { id:'p6-2', text:'Document any plan-specific exceptions or notes', note:'Edge cases, special handling, or agreed-upon workarounds from the setup process', tags:[] },
+    { id:'p6-3', text:'Confirm escalation path with vendor', note:'Who to contact if a file is late, rejected, or has errors — and response SLA', tags:['vendor'] },
+    { id:'p6-4', text:'Internal handoff notes documented', note:'Summary of setup, contacts, file spec, and any open items for the ongoing team', tags:[] },
+    { id:'p6-5', text:'Close out payroll setup — mark complete', note:'All tasks done, first payroll processed successfully, recurring schedule confirmed', tags:['critical'] },
+  ]});
+
+  return ph;
+}
+
+// ════════════════════════ GENERATE ════════════════════════
+function readIntake(){
+  return {
+    planName: document.getElementById('planName').value.trim(),
+    caseNumber: document.getElementById('caseNumber').value.trim(),
+    effectiveDate: document.getElementById('effectiveDate').value,
+    firstPayrollDate: document.getElementById('firstPayrollDate').value,
+    vendorName: document.getElementById('vendorName').value.trim(),
+    vendorContact: document.getElementById('vendorContact').value.trim(),
+    vendorEmail: document.getElementById('vendorEmail').value.trim(),
+    ftpContact: document.getElementById('ftpContact').value.trim(),
+    ftpEmail: document.getElementById('ftpEmail').value.trim(),
+    ftpPath: document.getElementById('ftpPath').value.trim() || document.getElementById('ftpPathOverride').value.trim(),
+    tmEmail: document.getElementById('tmEmail').value.trim(),
+    tcEmail: document.getElementById('tcEmail').value.trim(),
+    useFtp: useFtp,
+    ftpDirection: document.getElementById('ftpDirection').value,
+  };
+}
+
+function generateChecklist(){
+  const intake = readIntake();
+  if(!intake.planName){ showToast('⚠ Plan name is required'); return; }
+  S = intake;
+  CS = {}; CN = {}; saveKey = null; sessionSavedFilename = null;
+  planStatus = 'active';
+  activeTagFilter = 'all'; allCollapsed = false;
+  PHASES = buildPhases();
+  renderChecklist();
+  initTheme();
+}
+
+function renderChecklist(){
+  // Header
+  document.getElementById('clName').innerHTML = esc(S.planName.toUpperCase()) + ' <span>PAYROLL</span>';
+  document.getElementById('clCase').textContent = S.caseNumber ? 'Case No. ' + S.caseNumber : 'No case number';
+
+  let meta = '';
+  if(S.useFtp) meta += `<span class="cl-badge" style="color:#0891b2;border-color:#0891b255">FTP ${S.ftpDirection||'180'}</span>`;
+  else meta += `<span class="cl-badge" style="color:#d97706;border-color:#d9740655">NO FTP</span>`;
+  if(S.vendorName) meta += `<span class="cl-badge" style="color:#fbbf24;border-color:#fbbf2455">${esc(S.vendorName.toUpperCase())}</span>`;
+  if(S.firstPayrollDate) meta += `<span class="cl-badge" style="color:#4ade80;border-color:#4ade8055">FIRST PAYROLL: ${fmtDate(S.firstPayrollDate).toUpperCase()}</span>`;
+  document.getElementById('clMeta').innerHTML = meta;
+
+  setStatus(planStatus);
+  renderCountdown();
+
+  // Sidebar plan details
+  const fd = ds => ds ? new Date(ds+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+  const rows = [
+    ['Case #', S.caseNumber],
+    S.effectiveDate && ['Effective', fd(S.effectiveDate)],
+    S.firstPayrollDate && ['First Payroll', fd(S.firstPayrollDate)],
+    S.vendorName && ['Vendor', S.vendorName],
+    S.vendorContact && ['Vendor Contact', S.vendorContact],
+    S.vendorEmail && ['Vendor Email', S.vendorEmail],
+    S.ftpContact && ['FTP Contact', S.ftpContact],
+    S.ftpEmail && ['FTP Email', S.ftpEmail],
+    S.ftpPath && ['FTP Folder', S.ftpPath],
+  ].filter(Boolean);
+  document.getElementById('planRows').innerHTML = rows.map(([l,v]) =>
+    `<div class="pir"><span class="pir-l">${l}</span><span class="pir-v">${esc(v)}</span></div>`
+  ).join('');
+
+  // Quick actions
+  const qa = [];
+  if(S.vendorEmail) qa.push(`<div class="pir-action"><span class="pir-l">Vendor</span><span class="pir-v">${esc(S.vendorContact||S.vendorEmail)}</span><button class="email-btn" onclick="openEmailModal({type:'vendor'})">✉ Email</button></div>`);
+  const ftpEM = S.ftpEmail || (S.ftpContact ? S.vendorEmail : '');
+  if(S.ftpEmail) qa.push(`<div class="pir-action"><span class="pir-l">FTP Contact</span><span class="pir-v">${esc(S.ftpContact||S.ftpEmail)}</span><button class="email-btn" onclick="openEmailModal({type:'ftp'})">✉ Email</button></div>`);
+  document.getElementById('quickActions').innerHTML = qa.length ? qa.join('') : '<div style="font-size:12px;color:var(--muted);font-style:italic;">Add contacts in intake to enable quick actions.</div>';
+
+  // Render phases
+  if(!window._ER) window._ER = {};
+  if(window._ERi === undefined) window._ERi = 0;
+
+  const cont = document.getElementById('phaseContainer');
+  const jumps = document.getElementById('phaseJumps');
+  cont.innerHTML = ''; jumps.innerHTML = '';
+  let total = 0;
+
+  PHASES.forEach(p => {
+    total += p.tasks.length;
+    const tHTML = p.tasks.map(t => {
+      const tags = (t.tags||[]).map(tg => `<span class="tag tag-${tg}">${tg}</span>`).join('');
+      const done = !!CS[t.id];
+      let emailBtnHTML = '';
+      if(t.emailBtn){
+        const rk = 'er' + (window._ERi++);
+        window._ER[rk] = t.emailBtn;
+        emailBtnHTML = `<div style="margin-top:8px;" onclick="event.stopPropagation()"><button class="task-email-btn" onclick="openEmailModal(window._ER['${rk}'])">${t.emailBtn.label||'✉ Email'}</button></div>`;
+      }
+      const userNote = CN[t.id] || '';
+      const hasNote  = !!userNote;
+      return `<div class="task-item${done?' done':''}" id="ti-${t.id}" data-tags="${(t.tags||[]).join(',')}" onclick="togTask('${t.id}')">
+        <div class="task-chk" id="tc-${t.id}">${done?'✓':''}</div>
+        <div class="task-body">
+          <div class="task-txt">${esc(t.text)}</div>
+          ${t.note?`<div class="task-note">${esc(t.note)}</div>`:''}
+          ${tags?`<div class="task-tags">${tags}</div>`:''}
+          ${emailBtnHTML}
+          <div onclick="event.stopPropagation()">
+            <span class="task-note-toggle${hasNote?' has-note':''}" id="tnt-${t.id}" onclick="togTaskNote('${t.id}')">${hasNote?'📝 Note':'+ Note'}</span>
+            <div class="task-note-area${hasNote?' open':''}" id="tna-${t.id}">
+              <textarea class="task-note-input" id="tni-${t.id}" placeholder="Add your notes here..." oninput="saveTaskNote('${t.id}')">${esc(userNote)}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    const bl = document.createElement('div');
+    bl.className = 'phase-block'; bl.id = p.id;
+    bl.innerHTML = `
+      <div class="phase-hdr" onclick="togPhase('${p.id}')">
+        <div class="phase-num">${String(p.num).padStart(2,'0')}</div>
+        <div class="phase-bar" style="background:${p.color}"></div>
+        <div class="phase-tw"><div class="phase-title">${p.title}</div><div class="phase-sub">${p.subtitle}</div></div>
+        <div class="phase-stats">
+          <div><div class="phase-cnt" id="pc-${p.id}">0 / ${p.tasks.length}</div><div class="mp"><div class="mp-f" id="mp-${p.id}" style="width:0%;background:${p.color}"></div></div></div>
+          <button class="phase-bulk-btn" id="bulk-${p.id}" onclick="event.stopPropagation();bulkPhase('${p.id}')">✓ Complete All</button>
+          <div class="phase-chev">›</div>
+        </div>
+      </div>
+      <div class="phase-tasks">${tHTML}</div>
+      <div class="done-banner">✓ Phase complete!</div>`;
+    cont.appendChild(bl);
+
+    const jmp = document.createElement('div'); jmp.className = 'pj';
+    jmp.innerHTML = `<div class="pj-dot" style="background:${p.color}"></div><div class="pj-name">${p.title}</div><div class="pj-pct" id="jp-${p.id}">0%</div>`;
+    jmp.onclick = () => document.getElementById(p.id).scrollIntoView({behavior:'smooth'});
+    jumps.appendChild(jmp);
+  });
+
+  document.getElementById('sTotal').textContent = total;
+  document.getElementById('sPhases').textContent = PHASES.length;
+  updProg();
+
+  activeTagFilter = 'all';
+  allCollapsed = false;
+  setTagFilter('all');
+  const colBtn = document.querySelector('.tfb-toggle-all');
+  if(colBtn) colBtn.textContent = 'Collapse All';
+
+  document.getElementById('intakeScreen').classList.remove('active');
+  document.getElementById('checklistScreen').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════ COUNTDOWN ════════════════════════
+function daysFrom(ds){ if(!ds) return null; const t=new Date(ds+'T00:00:00'), n=new Date(); n.setHours(0,0,0,0); return Math.round((t-n)/86400000); }
+function renderCountdown(){
+  const items = [];
+  const ed = daysFrom(S.effectiveDate);
+  if(ed !== null){
+    const cls = ed>30?'cv-ok':ed>14?'cv-warn':'cv-urgent';
+    const lbl = ed<0?Math.abs(ed)+'d PAST':ed===0?'TODAY':ed+'d';
+    items.push(`<div class="cdown-item"><div class="cdown-lbl">Effective Date</div><div class="cdown-val ${cls}">${lbl}</div></div>`);
+  }
+  const fp = daysFrom(S.firstPayrollDate);
+  if(fp !== null){
+    const cls = fp>14?'cv-ok':fp>7?'cv-warn':'cv-urgent';
+    const lbl = fp<0?Math.abs(fp)+'d PAST':fp===0?'TODAY':fp+'d';
+    items.push(`<div class="cdown-sep">|</div>`);
+    items.push(`<div class="cdown-item"><div class="cdown-lbl">First Payroll</div><div class="cdown-val ${cls}">${lbl}</div></div>`);
+  }
+  if(S.effectiveDate){
+    const d = new Date(S.effectiveDate+'T00:00:00');
+    items.push(`<div class="cdown-sep">|</div>`);
+    items.push(`<div class="cdown-item"><div class="cdown-lbl">Goes Live</div><div class="cdown-val cv-na">${d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div></div>`);
+  }
+  document.getElementById('cdownInner').innerHTML = items.join('');
+}
+
+// ════════════════════════ PROGRESS ════════════════════════
+function updProg(){
+  let total=0, done=0;
+  PHASES.forEach(p => {
+    const pd = p.tasks.filter(t => CS[t.id]).length, pt = p.tasks.length;
+    total += pt; done += pd;
+    const pct = pt ? Math.round(pd/pt*100) : 0;
+    const ce = document.getElementById('pc-'+p.id);
+    const pe = document.getElementById('mp-'+p.id);
+    const je = document.getElementById('jp-'+p.id);
+    if(ce) ce.textContent = `${pd} / ${pt}`;
+    if(pe) pe.style.width = pct+'%';
+    if(je) je.textContent = pct+'%';
+    const bl = document.getElementById(p.id);
+    if(bl) bl.classList.toggle('phase-complete', pd===pt && pt>0);
+  });
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progPct').textContent = pct+'%';
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progTxt').textContent = `${done} of ${total} tasks complete`;
+  document.getElementById('sDone').textContent = done;
+  document.getElementById('sLeft').textContent = total - done;
+}
+
+// ════════════════════════ INTERACTIONS ════════════════════════
+function togTask(id){
+  CS[id] = !CS[id];
+  const item = document.getElementById('ti-'+id), chk = document.getElementById('tc-'+id);
+  item.classList.toggle('done', CS[id]);
+  chk.textContent = CS[id] ? '✓' : '';
+  chk.style.background   = CS[id] ? 'var(--ok)' : '';
+  chk.style.borderColor  = CS[id] ? 'var(--ok)' : '';
+  chk.style.color        = CS[id] ? '#fff' : '';
+  updProg();
+  autoSave();
+}
+
+function togPhase(id){ document.getElementById(id).classList.toggle('collapsed'); }
+
+// ════════════════════════ TAG FILTER ════════════════════════
+function setTagFilter(tag){
+  activeTagFilter = tag;
+  ['all','critical','ftp','vendor','testing','loans'].forEach(t => {
+    const el = document.getElementById('tfb-'+t);
+    if(el) el.classList.toggle('on', t === tag);
+  });
+  document.querySelectorAll('.task-item').forEach(item => {
+    if(tag === 'all'){ item.classList.remove('tf-hidden'); }
+    else {
+      const hasTags = item.dataset.tags || '';
+      item.classList.toggle('tf-hidden', !hasTags.split(',').includes(tag));
+    }
+  });
+}
+
+// ════════════════════════ COLLAPSE ALL ════════════════════════
+function toggleAllPhases(){
+  allCollapsed = !allCollapsed;
+  PHASES.forEach(p => {
+    const bl = document.getElementById(p.id);
+    if(bl) bl.classList.toggle('collapsed', allCollapsed);
+  });
+  const btn = document.querySelector('.tfb-toggle-all');
+  if(btn) btn.textContent = allCollapsed ? 'Expand All' : 'Collapse All';
+}
+
+// ════════════════════════ BULK COMPLETE ════════════════════════
+function bulkPhase(phaseId){
+  const phase = PHASES.find(p => p.id === phaseId);
+  if(!phase) return;
+  const allDone = phase.tasks.every(t => CS[t.id]);
+  phase.tasks.forEach(t => {
+    CS[t.id] = !allDone;
+    const item = document.getElementById('ti-'+t.id);
+    const chk  = document.getElementById('tc-'+t.id);
+    if(item) item.classList.toggle('done', !allDone);
+    if(chk){
+      chk.textContent = !allDone ? '✓' : '';
+      chk.style.background  = !allDone ? 'var(--ok)' : '';
+      chk.style.borderColor = !allDone ? 'var(--ok)' : '';
+      chk.style.color       = !allDone ? '#fff' : '';
+    }
+  });
+  const btn = document.getElementById('bulk-'+phaseId);
+  if(btn){ btn.textContent = allDone ? '✓ Complete All' : '↩ Undo'; btn.classList.toggle('undo', !allDone); }
+  updProg();
+  autoSave();
+  showToast(allDone ? 'Phase unchecked' : '✓ Phase marked complete');
+}
+
+// ════════════════════════ TASK NOTES ════════════════════════
+function togTaskNote(taskId){
+  const area = document.getElementById('tna-'+taskId);
+  if(!area) return;
+  const isOpen = area.classList.toggle('open');
+  if(isOpen){ const inp = document.getElementById('tni-'+taskId); if(inp) setTimeout(()=>inp.focus(), 50); }
+}
+function saveTaskNote(taskId){
+  const inp = document.getElementById('tni-'+taskId);
+  if(!inp) return;
+  CN[taskId] = inp.value;
+  const toggle = document.getElementById('tnt-'+taskId);
+  if(toggle){ toggle.classList.toggle('has-note', !!inp.value); toggle.textContent = inp.value ? '📝 Note' : '+ Note'; }
+}
+
+// ════════════════════════ NOTES ════════════════════════
+function saveNotes(){
+  autoSave();
+  showToast('📝 Notes saved');
+}
+
+// ════════════════════════ EMAIL ════════════════════════
+function buildCc(){
+  const cc = [];
+  if(S.tmEmail) cc.push(S.tmEmail);
+  if(S.tcEmail) cc.push(S.tcEmail);
+  return cc.join(', ');
+}
+
+function getEmailConfig(btnCfg){
+  const type = typeof btnCfg === 'string' ? btnCfg : btnCfg.type;
+  const overrideSubject = btnCfg.subject || null;
+  const overrideBody    = btnCfg.body    || null;
+  const defaultSubject  = `[${S.caseNumber}] ${S.planName}`;
+  const ftpEmail   = S.ftpEmail   || S.vendorEmail;
+  const ftpContact = S.ftpContact || S.vendorContact;
+  const configs = {
+    vendor: { title:'Email — Payroll Vendor', to:S.vendorEmail,  subject:overrideSubject||defaultSubject, body:overrideBody||`Hi ${S.vendorContact||'Team'},\n\n\n\nThank you,` },
+    ftp:    { title:'Email — FTP Contact',    to:ftpEmail,        subject:overrideSubject||`${defaultSubject} — FTP`, body:overrideBody||`Hi ${ftpContact||'Team'},\n\n\n\nThank you,` },
+  };
+  return configs[type] || { title:'Draft Email', to:'', subject:defaultSubject, body:'' };
+}
+
+function openEmailModal(btnCfg){
+  const cfg = getEmailConfig(btnCfg);
+  document.getElementById('modalTitle').textContent = cfg.title.toUpperCase();
+  document.getElementById('modalTo').value = cfg.to || '';
+  document.getElementById('modalCc').value = buildCc();
+  document.getElementById('modalSubject').value = cfg.subject;
+  document.getElementById('modalBody').value = cfg.body;
+  document.getElementById('emailModal').classList.add('open');
+}
+function closeEmailModal(){ document.getElementById('emailModal').classList.remove('open'); }
+function closeModal(e){ if(e.target === document.getElementById('emailModal')) closeEmailModal(); }
+
+function sendModal(){
+  const to      = document.getElementById('modalTo').value.trim();
+  const cc      = document.getElementById('modalCc').value.trim();
+  const subject = document.getElementById('modalSubject').value.trim();
+  const body    = document.getElementById('modalBody').value;
+  let mailto = `mailto:${encodeURIComponent(to)}`;
+  const params = [];
+  if(cc)      params.push('cc='+encodeURIComponent(cc));
+  if(subject) params.push('subject='+encodeURIComponent(subject));
+  if(body)    params.push('body='+encodeURIComponent(body));
+  if(params.length) mailto += '?' + params.join('&');
+  const a = document.createElement('a'); a.href = mailto; a.style.display = 'none';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => document.body.removeChild(a), 200);
+  closeEmailModal();
+  showToast('✉ Opening in Outlook...');
+}
+
+// ════════════════════════ SAVE / LOAD ════════════════════════
+function getSaves(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{}'); } catch(e){ return {}; } }
+function putSaves(o){ try{ localStorage.setItem(STORE, JSON.stringify(o)); } catch(e){} }
+
+function autoSave(){
+  if(!S.planName) return;
+  const saves = getSaves();
+  const k = saveKey || ('pl_' + Date.now()); if(!saveKey) saveKey = k;
+  const done  = Object.values(CS).filter(Boolean).length;
+  const total = PHASES.reduce((s,p) => s+p.tasks.length, 0);
+  saves[k] = {
+    planName:S.planName, caseNumber:S.caseNumber,
+    pct: total ? Math.round(done/total*100) : 0,
+    status: planStatus,
+    S: JSON.parse(JSON.stringify(S)),
+    CS: JSON.parse(JSON.stringify(CS)),
+    CN: JSON.parse(JSON.stringify(CN)),
+    notes: (document.getElementById('planNotes')||{}).value || '',
+    ts: Date.now()
+  };
+  putSaves(saves);
+}
+
+function quickSave(){ autoSave(); showToast('⚡ Quick saved'); }
+
+function saveToJson(){
+  if(sessionSavedFilename){
+    document.getElementById('owbPlanName').textContent = S.planName || 'this plan';
+    document.getElementById('owbMsg').innerHTML = `A file for <strong>${esc(S.planName||'this plan')}</strong> was already saved this session. What would you like to do?`;
+    document.getElementById('overwriteOverlay').classList.add('open');
+    return;
+  }
+  doSaveJson(false);
+}
+
+function doSaveJson(overwrite){
+  closeOverwriteOverlay();
+  const done  = Object.values(CS).filter(Boolean).length;
+  const total = PHASES.reduce((s,p) => s+p.tasks.length, 0);
+  const payload = {
+    _version:  2, _savedAt: new Date().toISOString(),
+    app: 'payroll-checklist-v2',
+    planName: S.planName, caseNumber: S.caseNumber,
+    effectiveDate: S.effectiveDate, firstPayrollDate: S.firstPayrollDate,
+    status: planStatus, pct: total ? Math.round(done/total*100) : 0,
+    S:  JSON.parse(JSON.stringify(S)),
+    CS: JSON.parse(JSON.stringify(CS)),
+    CN: JSON.parse(JSON.stringify(CN)),
+    notes: (document.getElementById('planNotes')||{}).value || ''
+  };
+  const json     = JSON.stringify(payload, null, 2);
+  const dateStr  = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const safeName = (S.planName||'plan').replace(/[^a-z0-9]/gi,'_').replace(/_+/g,'_').slice(0,40);
+  const safeCase = (S.caseNumber||'').replace(/[^a-z0-9]/gi,'_').slice(0,20);
+  const filename = `${safeName}_${safeCase}_payroll_${dateStr}.json`;
+  const blob = new Blob([json], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  sessionSavedFilename = filename;
+  showToast('💾 Saved — ' + filename);
+}
+
+function closeOverwriteOverlay(){ document.getElementById('overwriteOverlay').classList.remove('open'); }
+
+// ── JSON LOAD ──
+function handleJsonLoad(event){
+  const file = event.target.files[0];
+  if(!file){ return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.S || !data.planName){ throw new Error('Invalid'); }
+      pendingJsonData = data;
+      showLoadConfirm(data);
+    } catch(err) { showToast('⚠ Could not read file — is this a valid checklist JSON?'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function showLoadConfirm(data){
+  document.getElementById('lcbPlanName').textContent = data.planName || '—';
+  document.getElementById('lcbCase').textContent = data.caseNumber ? 'Case No. ' + data.caseNumber : '';
+  const fd = ds => ds ? new Date(ds+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+  const statusLabels = { active:'Active', complete:'Complete', hold:'On Hold' };
+  const rows = [
+    ['Effective Date', fd(data.effectiveDate)],
+    ['First Payroll',  fd(data.firstPayrollDate)],
+    ['Status',         statusLabels[data.status||'active'] || 'Active'],
+    ['Progress',       (data.pct||0) + '% complete'],
+    ['Saved',          data._savedAt ? new Date(data._savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}) : '—'],
+  ];
+  document.getElementById('lcbRows').innerHTML = rows.map(([l,v]) =>
+    `<div class="lcb-row"><span class="lcb-row-l">${l}</span><span class="lcb-row-v">${esc(String(v))}</span></div>`
+  ).join('');
+  document.getElementById('loadConfirmOverlay').classList.add('open');
+}
+
+function cancelJsonLoad(){
+  pendingJsonData = null;
+  document.getElementById('loadConfirmOverlay').classList.remove('open');
+}
+
+function confirmJsonLoad(){
+  if(!pendingJsonData){ cancelJsonLoad(); return; }
+  document.getElementById('loadConfirmOverlay').classList.remove('open');
+  applyLoadedData(pendingJsonData);
+  pendingJsonData = null;
+}
+
+function applyLoadedData(data){
+  saveKey = null; sessionSavedFilename = null;
+  S  = JSON.parse(JSON.stringify(data.S));
+  CS = JSON.parse(JSON.stringify(data.CS || {}));
+  CN = JSON.parse(JSON.stringify(data.CN || {}));
+
+  // Restore intake fields
+  const fields = ['planName','caseNumber','effectiveDate','firstPayrollDate','vendorName','vendorContact','vendorEmail','ftpContact','ftpEmail','ftpPath','tmEmail','tcEmail'];
+  fields.forEach(f => { const el = document.getElementById(f); if(el && S[f]) el.value = S[f]; });
+
+  useFtp = S.useFtp !== false;
+  document.getElementById('tog-ftp').classList.toggle('on', useFtp);
+  document.getElementById('ftp-subfields').style.display = useFtp ? 'block' : 'none';
+  if(S.ftpDirection && document.getElementById('ftpDirection')) document.getElementById('ftpDirection').value = S.ftpDirection;
+
+  planStatus = data.status || 'active';
+  PHASES = buildPhases();
+  renderChecklist();
+  setStatus(planStatus);
+
+  const pn = document.getElementById('planNotes');
+  if(pn) pn.value = data.notes || '';
+  showToast('✓ Loaded — ' + data.planName);
+}
+
+// ── LOCALSTORAGE SAVES ──
+function renderSavedBar(){
+  const saves = getSaves(), keys = Object.keys(saves);
+  const bar = document.getElementById('savedBar'), list = document.getElementById('savedList');
+  if(!keys.length){ bar.classList.remove('has-saves'); return; }
+  bar.classList.add('has-saves');
+  list.innerHTML = keys.sort((a,b) => (saves[b].ts||0) - (saves[a].ts||0)).map(k => {
+    const sv = saves[k];
+    const statusDot = {active:'🟢', complete:'🟡', hold:'🔴'}[sv.status||'active'] || '🟢';
+    return `<div class="saved-item" onclick="loadSave('${k}')">
+      <div class="saved-name">${statusDot} ${esc(sv.planName||k)}</div>
+      <div class="saved-meta">${sv.caseNumber?sv.caseNumber+' · ':''}${sv.pct||0}%</div>
+      <div class="saved-del" onclick="delSave(event,'${k}')">✕</div>
+    </div>`;
+  }).join('');
+}
+
+function loadSave(k){
+  const saves = getSaves(), sv = saves[k]; if(!sv) return;
+  saveKey = k;
+  applyLoadedData({ ...sv, _savedAt: new Date(sv.ts||Date.now()).toISOString() });
+}
+
+function delSave(e, k){
+  e.stopPropagation();
+  const s = getSaves(); delete s[k]; putSaves(s); renderSavedBar();
+}
+
+// ════════════════════════ EXPORT CSV ════════════════════════
+function exportCSV(){
+  const rows = [['Phase','Task','System Note','Your Notes','Tags','Status']];
+  PHASES.forEach(p => p.tasks.forEach(t => rows.push([p.title, t.text, t.note||'', CN[t.id]||'', (t.tags||[]).join(', '), CS[t.id]?'Complete':'Pending'])));
+  const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href = url;
+  a.download = (S.planName||'Plan').replace(/[^a-z0-9]/gi,'_') + '_payroll_checklist.csv';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📊 Downloaded — open in Excel');
+}
+
+// ════════════════════════ NAVIGATION ════════════════════════
+function goBack(){
+  const ids = ['planName','caseNumber','effectiveDate','firstPayrollDate','vendorName','vendorContact','vendorEmail','ftpContact','ftpEmail','ftpPath','tmEmail','tcEmail'];
+  ids.forEach(id => { const el = document.getElementById(id); if(el && S[id]) el.value = S[id]; });
+  useFtp = S.useFtp !== false;
+  document.getElementById('tog-ftp').classList.toggle('on', useFtp);
+  document.getElementById('ftp-subfields').style.display = useFtp ? 'block' : 'none';
+  if(S.ftpDirection && document.getElementById('ftpDirection')) document.getElementById('ftpDirection').value = S.ftpDirection;
+  document.getElementById('checklistScreen').classList.remove('active');
+  document.getElementById('intakeScreen').classList.add('active');
+  renderSavedBar(); window.scrollTo(0,0);
+}
+
+// ════════════════════════ THEME ════════════════════════
+function toggleTheme(){
+  const dark = document.getElementById('themeToggle').checked;
+  document.documentElement.classList.toggle('dark-mode', dark);
+  document.getElementById('themeIcon').textContent = dark ? '🌙' : '☀️';
+  try { localStorage.setItem('pcg_v2_theme', dark ? 'dark' : 'light'); } catch(e){}
+}
+
+function initTheme(){
+  try {
+    const saved = localStorage.getItem('pcg_v2_theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const useDark = saved ? saved === 'dark' : prefersDark;
+    if(useDark){
+      document.documentElement.classList.add('dark-mode');
+      const tog = document.getElementById('themeToggle');
+      if(tog) tog.checked = true;
+      const icon = document.getElementById('themeIcon');
+      if(icon) icon.textContent = '🌙';
+    }
+  } catch(e){}
+}
+
+// ════════════════════════ INIT ════════════════════════
+renderSavedBar();
+initTheme();
+</script>
+</body>
+</html>

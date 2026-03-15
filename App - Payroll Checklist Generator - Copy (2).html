@@ -1,0 +1,2112 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payroll Setup Checklist Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#141210; --surface:#1c1a17; --surface2:#222018; --border:#ffffff0f; --border2:#ffffff18;
+  --text:#f0ece4; --muted:#7a7060; --dim:#3a3628;
+  --accent:#2563eb; --accent2:#1d4ed8;
+  --green:#16a34a; --yellow:#d97706; --red:#dc2626; --teal:#0891b2;
+  --ink:#0f0d0a;
+}
+/* â”€â”€ LIGHT MODE (when dark-mode class is absent) â”€â”€ */
+html:not(.dark-mode) {
+  --bg:#f5f3ee; --surface:#ffffff; --surface2:#f0ede6; --border:#00000010; --border2:#00000018;
+  --text:#1a1714; --muted:#6b6358; --dim:#dbd6cc;
+  --accent:#2563eb; --accent2:#1d4ed8;
+  --green:#15803d; --yellow:#b45309; --red:#b91c1c; --teal:#0891b2;
+}
+html:not(.dark-mode) body { background:var(--bg); color:var(--text); }
+/* Header stays dark in both modes â€” no override needed */
+html:not(.dark-mode) .intake-wrap { background:var(--bg); }
+html:not(.dark-mode) .is-label { color:var(--accent); }
+html:not(.dark-mode) .fl { color:var(--muted); }
+html:not(.dark-mode) .fi { background:#fff; border-color:#c8c0b4; color:var(--text); }
+html:not(.dark-mode) .fi:focus { background:#fff; border-color:var(--accent); }
+html:not(.dark-mode) .fi::placeholder { color:#b0a89c; }
+html:not(.dark-mode) select.fi option { background:#fff; color:var(--text); }
+html:not(.dark-mode) .toggle-item { background:#fff; border-color:#dbd6cc; }
+html:not(.dark-mode) .toggle-item.on { background:#2563eb08; border-color:#2563eb30; }
+html:not(.dark-mode) .toggle-label { color:var(--text); }
+html:not(.dark-mode) .toggle-sub { color:var(--muted); }
+html:not(.dark-mode) .toggle-switch { background:#c8c0b4; }
+html:not(.dark-mode) .generate-btn { background:var(--accent); color:#fff; }
+html:not(.dark-mode) .generate-btn:hover { background:var(--accent2); }
+/* Sidebar */
+html:not(.dark-mode) .sidebar { background:var(--surface); border-right-color:#dbd6cc; }
+html:not(.dark-mode) .sb-label { color:var(--muted); }
+html:not(.dark-mode) .sb-plan { background:var(--surface2); border-color:#dbd6cc; }
+html:not(.dark-mode) .sb-plan-name { color:var(--text); }
+html:not(.dark-mode) .sb-plan-case { color:var(--muted); }
+html:not(.dark-mode) .sb-stat { background:var(--surface2); border-color:#dbd6cc; }
+html:not(.dark-mode) .sb-stat-l { color:var(--muted); }
+html:not(.dark-mode) .sb-progress { background:var(--surface2); border-color:#dbd6cc; }
+html:not(.dark-mode) .sb-prog-bar-wrap { background:#dbd6cc; }
+html:not(.dark-mode) .sb-contact { background:var(--surface2); border-color:#dbd6cc; }
+html:not(.dark-mode) .sb-contact-role { color:var(--muted); }
+html:not(.dark-mode) .sb-contact-name { color:var(--text); }
+html:not(.dark-mode) .sb-contact-email { color:var(--muted); }
+html:not(.dark-mode) .status-btn { background:var(--surface2); border-color:#dbd6cc; }
+html:not(.dark-mode) .status-btn:hover { border-color:var(--text); }
+html:not(.dark-mode) .status-name { color:var(--text); }
+html:not(.dark-mode) .status-caret { color:var(--muted); }
+html:not(.dark-mode) .status-dropdown { background:var(--surface); border-color:#dbd6cc; }
+html:not(.dark-mode) .status-opt { color:var(--text); }
+html:not(.dark-mode) .status-opt:hover { background:var(--surface2); }
+html:not(.dark-mode) .jump-btn { color:var(--muted); }
+html:not(.dark-mode) .jump-btn:hover { background:var(--surface2); color:var(--text); }
+html:not(.dark-mode) .sb-action-btn { background:var(--surface2); border-color:#dbd6cc; color:var(--muted); }
+html:not(.dark-mode) .sb-action-btn:hover { border-color:var(--text); color:var(--text); }
+html:not(.dark-mode) .sb-notes-textarea { background:#faf8f4; border-color:#dbd6cc; color:var(--text); }
+html:not(.dark-mode) .sb-notes-textarea:focus { border-color:var(--accent); }
+html:not(.dark-mode) .sb-notes-btn { color:var(--accent); border-color:#2563eb44; background:#2563eb08; }
+/* Plan banner + main content */
+html:not(.dark-mode) .cl-main { background:var(--bg); }
+html:not(.dark-mode) .plan-banner { background:var(--surface); border-color:#dbd6cc; }
+html:not(.dark-mode) .plan-banner.is-sticky { box-shadow:0 4px 20px rgba(0,0,0,.09); border-color:#c8c0b4; }
+html:not(.dark-mode) .pb-title { color:var(--text); }
+html:not(.dark-mode) .pb-meta { color:var(--muted); }
+/* Mini cal light */
+html:not(.dark-mode) .mini-cal-col { background:var(--surface); border-right-color:#dbd6cc; }
+html:not(.dark-mode) .mc-section-title { color:var(--muted); border-bottom-color:#dbd6cc; }
+html:not(.dark-mode) .mc-label { color:var(--text); }
+html:not(.dark-mode) .mc-nav { color:var(--muted); }
+html:not(.dark-mode) .mc-nav:hover { background:var(--surface2); color:var(--text); }
+html:not(.dark-mode) .mc-dow span { color:var(--muted); }
+html:not(.dark-mode) .mc-day { color:var(--text); }
+html:not(.dark-mode) .mc-day.wknd { color:#94a3b8; }
+html:not(.dark-mode) .mc-day.other-mo { color:#b0a89c; }
+html:not(.dark-mode) .mc-day:not(.empty):not(.today):not(.eff-date):not(.pay-date):hover { background:#f0ede6; }
+html:not(.dark-mode) .mc-divider { background:#dbd6cc; }
+html:not(.dark-mode) .mc-legend-item { color:var(--muted); }
+/* Phases */
+html:not(.dark-mode) .phase-block { background:var(--surface); border-color:#dbd6cc; }
+html:not(.dark-mode) .phase-hdr:hover { background:var(--surface2); }
+html:not(.dark-mode) .phase-body { border-top-color:#e0dbd2; }
+html:not(.dark-mode) .phase-title { color:var(--text); }
+html:not(.dark-mode) .phase-sub { color:var(--muted); }
+html:not(.dark-mode) .phase-prog-bar { background:#dbd6cc; }
+html:not(.dark-mode) .phase-prog-txt { color:var(--muted); }
+html:not(.dark-mode) .phase-chevron { color:var(--muted); }
+/* Tasks */
+html:not(.dark-mode) .task-item { border-bottom-color:#e8e4dc; }
+html:not(.dark-mode) .task-item:hover { background:#faf8f4; }
+html:not(.dark-mode) .task-item.done { opacity:.45; }
+html:not(.dark-mode) .task-chk { background:#fff; border-color:#c8c0b4; }
+html:not(.dark-mode) .task-item.done .task-chk { background:var(--accent); border-color:var(--accent); }
+html:not(.dark-mode) .task-txt { color:var(--text); }
+html:not(.dark-mode) .task-note { color:var(--muted); }
+html:not(.dark-mode) .task-note-area { border-top-color:#dbd6cc; }
+html:not(.dark-mode) .task-note-input { background:#faf8f4; border-color:#dbd6cc; color:var(--text); }
+html:not(.dark-mode) .task-note-input::placeholder { color:#b0a89c; }
+html:not(.dark-mode) .task-note-input:focus { border-color:var(--accent); }
+html:not(.dark-mode) .task-note-toggle:hover { background:var(--surface2); border-color:#dbd6cc; color:var(--text); }
+/* Tag filter */
+html:not(.dark-mode) .tag-filter-bar { background:var(--surface); border-color:#dbd6cc; }
+html:not(.dark-mode) .tfb-label { color:var(--muted); }
+html:not(.dark-mode) .tfb-tag-all { color:var(--muted); border-color:#dbd6cc; }
+html:not(.dark-mode) .tfb-tag-all.on { color:var(--text); border-color:var(--text); background:#e8e4dc; }
+html:not(.dark-mode) .tfb-toggle-all { border-color:#dbd6cc; color:var(--muted); }
+html:not(.dark-mode) .tfb-toggle-all:hover { border-color:var(--text); color:var(--text); }
+/* Custom task */
+html:not(.dark-mode) .ct-add-btn { border-top-color:#dbd6cc; color:var(--muted); }
+html:not(.dark-mode) .ct-add-btn:hover { color:var(--yellow); background:rgba(180,83,9,.04); }
+html:not(.dark-mode) .ct-form { background:var(--surface2); border-top-color:#dbd6cc; }
+html:not(.dark-mode) .ct-input { background:var(--surface); border-color:#dbd6cc; color:var(--text); }
+html:not(.dark-mode) .ct-input:focus { border-color:var(--yellow); }
+html:not(.dark-mode) .ct-input::placeholder { color:#b0a89c; }
+html:not(.dark-mode) .ct-note { background:var(--surface); border-color:#dbd6cc; color:var(--text); }
+html:not(.dark-mode) .ct-note:focus { border-color:var(--yellow); }
+html:not(.dark-mode) .ct-note::placeholder { color:#b0a89c; }
+html:not(.dark-mode) .ct-cancel { border-color:#dbd6cc; color:var(--muted); }
+html:not(.dark-mode) .ct-cancel:hover { color:var(--text); border-color:var(--text); }
+/* Modal */
+html:not(.dark-mode) .modal-overlay .modal-box { background:var(--surface); border-color:#dbd6cc; }
+html:not(.dark-mode) .modal-hdr { border-bottom-color:#e8e4dc; }
+html:not(.dark-mode) .modal-title { color:var(--text); }
+html:not(.dark-mode) .modal-label { color:var(--muted); }
+html:not(.dark-mode) .modal-input { background:#faf8f4; border-color:#dbd6cc; color:var(--text); }
+html:not(.dark-mode) .modal-input:focus { background:#fff; border-color:var(--accent); }
+html:not(.dark-mode) .modal-input::placeholder { color:#b0a89c; }
+html:not(.dark-mode) .modal-footer { border-top-color:#e8e4dc; }
+html:not(.dark-mode) .modal-cancel { color:var(--muted); border-color:#dbd6cc; }
+html:not(.dark-mode) .modal-cancel:hover { color:var(--text); border-color:var(--text); }
+html:not(.dark-mode) .modal-close { color:var(--muted); background:transparent; }
+html:not(.dark-mode) .modal-close:hover { background:var(--surface2); color:var(--text); }
+html:not(.dark-mode) .load-card { background:var(--surface2); border-color:#dbd6cc; }
+html:not(.dark-mode) .load-card:hover { background:#e8e4dc; border-color:#2563eb44; }
+html:not(.dark-mode) .lc-name { color:var(--text); }
+html:not(.dark-mode) .lc-meta { color:var(--muted); }
+/* Toast */
+html:not(.dark-mode) #toast { background:#1a1714; color:#f5f3ee; border-color:#3a3628; }
+/* Theme toggle slider â€” light position (left) */
+html:not(.dark-mode) .theme-slider { background:#cbd5e1; }
+html:not(.dark-mode) .theme-slider::before { transform:translateX(0); background:#fff; }
+
+/* â”€â”€ DARK MODE â”€â”€ */
+html.dark-mode {
+  --bg:#141210; --surface:#1c1a17; --surface2:#252320; --border:#ffffff12;
+  --text:#f0ece4; --muted:#7a7060;
+  --accent:#3b82f6; --accent2:#2563eb;
+  --green:#4ade80; --yellow:#fbbf24; --red:#f87171; --teal:#22d3ee;
+}
+html.dark-mode body { background:var(--bg); color:var(--text); }
+html.dark-mode .app-header { background:#0f0d0a; }
+html.dark-mode .hdr-badge { background:var(--accent); }
+html.dark-mode .hdr-title { color:#fff; }
+html.dark-mode .hdr-sub { color:rgba(255,255,255,.25); }
+html.dark-mode .hdr-btn-ghost { color:#ffffff44; border-color:#ffffff18; }
+html.dark-mode .hdr-btn-ghost:hover { color:#fff; border-color:#ffffff44; }
+html.dark-mode .intake-wrap { background:var(--bg); }
+html.dark-mode .is-label { color:var(--accent); }
+html.dark-mode .fl { color:var(--muted); }
+html.dark-mode .fi { background:#ffffff07; border-color:var(--border); color:var(--text); }
+html.dark-mode .fi:focus { border-color:var(--accent); background:#ffffff0d; }
+html.dark-mode .fi::placeholder { color:#ffffff22; }
+html.dark-mode select.fi option { background:var(--surface); color:var(--text); }
+html.dark-mode .toggle-item { background:#ffffff05; border-color:var(--border); }
+html.dark-mode .toggle-item.on { background:#2563eb12; border-color:#2563eb44; }
+html.dark-mode .toggle-label { color:var(--text); }
+html.dark-mode .toggle-sub { color:var(--muted); }
+html.dark-mode .generate-btn { background:var(--accent); color:#fff; }
+html.dark-mode .generate-btn:hover { background:var(--accent2); }
+html.dark-mode .plan-banner { background:var(--surface); border-color:var(--border); }
+html.dark-mode .pb-title { color:var(--text); }
+html.dark-mode .pb-meta { color:var(--muted); }
+html.dark-mode .phase-block { background:var(--surface); border-color:var(--border); }
+html.dark-mode .phase-hdr:hover { background:var(--surface2); }
+html.dark-mode .phase-body { border-top-color:var(--border); }
+html.dark-mode .phase-title { color:var(--text); }
+html.dark-mode .phase-sub { color:var(--muted); }
+html.dark-mode .phase-prog-bar { background:#ffffff0f; }
+html.dark-mode .phase-prog-txt { color:var(--muted); }
+html.dark-mode .phase-chevron { color:var(--muted); }
+html.dark-mode .task-item { border-bottom-color:var(--border); }
+html.dark-mode .task-item:hover { background:var(--surface2); }
+html.dark-mode .task-item.done { opacity:0.42; }
+html.dark-mode .task-chk { background:var(--surface); border-color:#ffffff25; }
+html.dark-mode .task-item.done .task-chk { background:var(--accent); border-color:var(--accent); }
+html.dark-mode .task-txt { color:var(--text); }
+html.dark-mode .task-note { color:var(--muted); }
+html.dark-mode .sidebar { background:var(--surface); border-right-color:var(--border); }
+html.dark-mode .sb-label { color:var(--muted); }
+html.dark-mode .sb-plan { background:#ffffff07; border-color:var(--border); }
+html.dark-mode .sb-plan-name { color:var(--text); }
+html.dark-mode .sb-plan-case { color:var(--muted); }
+html.dark-mode .sb-stat { background:#ffffff07; border-color:var(--border); }
+html.dark-mode .sb-stat-l { color:var(--muted); }
+html.dark-mode .sb-progress { background:#ffffff07; border-color:var(--border); }
+html.dark-mode .sb-prog-bar-wrap { background:#ffffff0f; }
+html.dark-mode .sb-contact { background:#ffffff07; border-color:var(--border); }
+html.dark-mode .sb-contact-role { color:var(--muted); }
+html.dark-mode .sb-contact-name { color:var(--text); }
+html.dark-mode .sb-contact-email { color:var(--muted); }
+html.dark-mode .status-btn { background:#ffffff07; border-color:var(--border); }
+html.dark-mode .status-btn:hover { border-color:#ffffff30; }
+html.dark-mode .status-name { color:var(--text); }
+html.dark-mode .status-caret { color:var(--muted); }
+html.dark-mode .status-dropdown { background:#1c1a17; border-color:var(--border); }
+html.dark-mode .status-opt { color:var(--text); }
+html.dark-mode .status-opt:hover { background:#ffffff08; }
+html.dark-mode .jump-btn { color:var(--muted); }
+html.dark-mode .jump-btn:hover { background:#ffffff08; color:var(--text); }
+html.dark-mode .sb-action-btn { background:#ffffff07; border-color:var(--border); color:var(--muted); }
+html.dark-mode .sb-action-btn:hover { border-color:#ffffff30; color:var(--text); }
+html.dark-mode .cl-main { background:var(--bg); }
+html.dark-mode .modal-overlay .modal-box { background:#1a1916; border-color:#ffffff18; }
+html.dark-mode .modal-hdr { border-bottom-color:#ffffff12; }
+html.dark-mode .modal-title { color:#fff; }
+html.dark-mode .modal-label { color:#ffffff44; }
+html.dark-mode .modal-input { background:#ffffff0a; border-color:#ffffff18; color:#fff; }
+html.dark-mode .modal-input:focus { border-color:var(--accent); background:#ffffff0f; }
+html.dark-mode .modal-footer { border-top-color:#ffffff12; }
+html.dark-mode .modal-cancel { color:#ffffff44; border-color:#ffffff18; }
+html.dark-mode .modal-cancel:hover { color:#fff; border-color:#ffffff44; }
+html.dark-mode .load-card { background:#ffffff08; border-color:var(--border); }
+html.dark-mode .load-card:hover { background:#ffffff12; }
+html.dark-mode .lc-name { color:var(--text); }
+html.dark-mode .lc-meta { color:var(--muted); }
+html.dark-mode #toast { background:#0f0d0a; border-color:#ffffff18; }
+html.dark-mode .plan-banner.is-sticky { box-shadow:0 4px 24px rgba(0,0,0,.5); border-color:#ffffff22; }
+/* Mini cal dark */
+html.dark-mode .mini-cal-col { background:var(--surface); border-right-color:var(--border2); }
+html.dark-mode .mc-day:not(.empty):not(.today):not(.eff-date):not(.pay-date):hover { background:#ffffff0c; }
+
+/* â”€â”€ THEME TOGGLE â”€â”€ */
+.theme-toggle-wrap { display:flex; align-items:center; justify-content:space-between; padding:6px 2px 10px; border-bottom:1px solid var(--border); margin-bottom:8px; }
+.theme-toggle-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:7px; }
+.theme-switch { position:relative; width:40px; height:22px; flex-shrink:0; cursor:pointer; }
+.theme-switch input { opacity:0; width:0; height:0; position:absolute; }
+.theme-slider { position:absolute; inset:0; background:#cbd5e1; border-radius:11px; transition:background .25s; }
+html.dark-mode .theme-slider { background:#3a3628; }
+.theme-slider::before { content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:transform .25s, background .25s; box-shadow:0 1px 4px #00000030; }
+html.dark-mode .theme-slider::before { transform:translateX(18px); background:var(--accent); }
+.theme-icon { font-size:13px; line-height:1; }
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* â”€â”€ TOAST â”€â”€ */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#fff;color:#141210;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;padding:10px 20px;border-radius:8px;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* â”€â”€ HEADER â”€â”€ */
+.app-header{background:var(--ink);border-bottom:3px solid var(--accent);padding:0;}
+.hdr-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;align-items:stretch;}
+.hdr-badge{background:var(--accent);padding:18px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.hdr-badge-top{font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.hdr-badge-main{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#fff;letter-spacing:.05em;line-height:1;}
+.hdr-main{padding:16px 28px;display:flex;flex-direction:column;justify-content:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;letter-spacing:.04em;line-height:1;}
+.hdr-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:4px;}
+.hdr-actions{display:flex;align-items:center;gap:8px;padding:0 24px;border-left:1px solid #ffffff0a;}
+.hdr-btn{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:8px 14px;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;border:1px solid;}
+.hdr-btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.hdr-btn-primary:hover{background:var(--accent2);}
+.hdr-btn-ghost{background:transparent;color:rgba(255,255,255,.35);border-color:#ffffff18;}
+.hdr-btn-ghost:hover{color:#fff;border-color:#ffffff44;}
+.app-mode-note{margin:14px 28px 0;padding:12px 14px;border-radius:10px;background:#ffffff08;border:1px solid #ffffff14;color:#ffffffaa;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.app-mode-note strong{color:#fff;font-weight:600;}
+.app-mode-note button{padding:7px 12px;border-radius:7px;border:1px solid #ffffff18;background:transparent;color:#ffffffb8;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.app-mode-note button:hover{border-color:#ffffff44;color:#fff;background:#ffffff08;}
+
+/* â”€â”€ PAGES â”€â”€ */
+.page{display:none;}
+.page.active{display:block;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   INTAKE PAGE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.intake-wrap{max-width:820px;margin:0 auto;padding:40px 28px 80px;}
+.intake-section{margin-bottom:32px;}
+.is-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.is-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.form-grid{display:grid;gap:12px;}
+.form-grid.g2{grid-template-columns:1fr 1fr;}
+.form-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.fl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
+.opt{color:#ffffff18;font-size:7px;}
+.fi{width:100%;background:#ffffff07;border:1px solid var(--border2);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.fi:focus{border-color:var(--accent);background:#ffffff0d;}
+.fi::placeholder{color:#ffffff22;}
+select.fi option{background:#1c1a17;color:#f0ece4;}
+
+/* TOGGLE SWITCHES */
+.toggle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.toggle-item{background:#ffffff05;border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:all .2s;}
+.toggle-item.on{background:#2563eb12;border-color:#2563eb44;}
+.toggle-label{font-size:13px;font-weight:500;color:var(--text);}
+.toggle-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+.toggle-switch{width:36px;height:20px;border-radius:10px;background:#ffffff18;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle-switch::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;}
+.toggle-item.on .toggle-switch{background:var(--accent);}
+.toggle-item.on .toggle-switch::after{transform:translateX(16px);}
+
+/* GENERATE BTN */
+.generate-btn{width:100%;margin-top:28px;padding:16px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.12em;cursor:pointer;transition:all .15s;}
+.generate-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CHECKLIST PAGE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.cl-layout{display:grid;grid-template-columns:260px 188px 1fr;min-height:calc(100vh - 61px);}
+
+/* ── MINI CALENDAR COLUMN ── */
+.mini-cal-col{position:sticky;top:0;height:100vh;overflow-y:auto;padding:20px 14px;border-right:1px solid var(--border2);background:var(--surface);display:flex;flex-direction:column;}
+.mc-section-title{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--border2);margin-bottom:14px;flex-shrink:0;}
+.mc-head-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:4px;}
+.mc-nav{background:none;border:1px solid var(--border2);border-radius:5px;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;width:22px;height:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;padding:0;}
+.mc-nav:hover{border-color:#ffffff40;color:var(--text);}
+.mc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text);text-align:center;flex:1;white-space:nowrap;}
+.mc-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
+.mc-dow span{font-family:'JetBrains Mono',monospace;font-size:7px;text-align:center;color:var(--muted);padding:2px 0;}
+.mc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
+.mc-day{display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;height:22px;border-radius:4px;color:var(--muted);transition:background .1s;cursor:default;position:relative;}
+.mc-day.cur-mo{color:var(--text);}
+.mc-day.wknd{color:var(--muted);}
+.mc-day.other-mo{color:var(--muted);opacity:.35;}
+.mc-day.today{background:var(--accent);color:#fff;font-weight:700;border-radius:50%;}
+.mc-day.eff-date{background:#16a34a1a;color:var(--green);font-weight:700;border:1px solid #16a34a44;border-radius:4px;}
+.mc-day.pay-date{background:#d974061a;color:var(--yellow);font-weight:700;border:1px solid #d9740644;border-radius:4px;}
+.mc-day.today.eff-date{background:var(--green);color:#fff;border-color:var(--green);}
+.mc-day.today.pay-date{background:var(--yellow);color:#000;border-color:var(--yellow);}
+.mc-divider{height:1px;background:var(--border2);margin:12px 0;flex-shrink:0;}
+.mc-legend{display:flex;flex-direction:column;gap:6px;}
+.mc-legend-item{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--muted);letter-spacing:.04em;line-height:1.4;}
+.mc-legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.mc-today-dot{background:var(--accent);}
+.mc-eff-dot{background:var(--green);}
+.mc-pay-dot{background:var(--yellow);}
+.mc-go-today{width:100%;margin-top:14px;padding:6px 0;background:transparent;border:1px solid var(--border2);border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s;flex-shrink:0;}
+.mc-go-today:hover{border-color:#ffffff40;color:var(--text);}
+html:not(.dark-mode) .mc-go-today{border-color:#dbd6cc;}
+html:not(.dark-mode) .mc-go-today:hover{border-color:#94a3b8;color:var(--text);}
+
+/* ── STICKY PLAN BANNER ── */
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border2);padding:20px 16px;position:sticky;top:61px;height:calc(100vh - 61px);overflow-y:auto;display:flex;flex-direction:column;gap:16px;}
+.sb-section{display:flex;flex-direction:column;gap:6px;}
+.sb-label{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding:0 4px;margin-bottom:2px;}
+.sb-plan{background:#ffffff07;border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.sb-plan-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.3;}
+.sb-plan-case{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+
+.sb-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.sb-stat{background:#ffffff07;border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;}
+.sb-stat-n{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);line-height:1;}
+.sb-stat-l{font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
+.sb-progress{background:#ffffff07;border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.sb-prog-bar-wrap{height:6px;background:#ffffff0f;border-radius:3px;margin:8px 0 6px;overflow:hidden;}
+.sb-prog-bar{height:100%;background:var(--accent);border-radius:3px;transition:width .4s;}
+.sb-prog-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);}
+
+/* STATUS */
+.status-wrap{position:relative;}
+.status-btn{width:100%;background:#ffffff07;border:1px solid var(--border2);border-radius:8px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .15s;}
+.status-btn:hover{border-color:#ffffff30;}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.status-name{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
+.status-caret{font-size:9px;color:var(--muted);}
+.status-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;z-index:100;display:none;}
+.status-dropdown.open{display:block;}
+.status-opt{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;transition:background .1s;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text);}
+.status-opt:hover{background:#ffffff08;}
+
+/* CONTACTS */
+.sb-contact{background:#ffffff07;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
+.sb-contact-role{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.sb-contact-name{font-size:12px;font-weight:500;color:var(--text);}
+.sb-contact-email{font-size:10.5px;color:var(--muted);}
+.sb-email-btn{margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:5px;border:1px solid #2563eb44;background:#2563eb0a;color:var(--accent);cursor:pointer;transition:all .15s;width:100%;}
+.sb-email-btn:hover{background:#2563eb18;border-color:#2563eb88;}
+
+/* PHASE JUMPS */
+.jump-btn{width:100%;text-align:left;background:transparent;border:none;border-radius:6px;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
+.jump-btn:hover{background:#ffffff08;color:var(--text);}
+.jump-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* SB ACTIONS */
+.sb-action-btn{width:100%;text-align:left;background:#ffffff07;border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s;}
+.sb-action-btn:hover{border-color:#ffffff30;color:var(--text);}
+
+/* MAIN CONTENT */
+.cl-main{padding:28px 32px 80px;}
+
+/* PLAN BANNER */
+.plan-banner{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;position:sticky;top:0;z-index:40;transition:box-shadow .2s,border-color .2s,border-radius .15s;}
+.plan-banner.is-sticky{border-radius:0 0 12px 12px;border-top-color:transparent;}
+.pb-left{display:flex;flex-direction:column;gap:3px;}
+.pb-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);letter-spacing:.04em;}
+.pb-meta{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;}
+.pb-meta span{display:flex;align-items:center;gap:4px;}
+.pb-badges{display:flex;gap:6px;flex-wrap:wrap;}
+.pb-badge{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:4px;border:1px solid;}
+.pbb-freq{border-color:#2563eb44;color:var(--accent);background:#2563eb0a;}
+.pbb-loans{border-color:#d9740644;color:var(--yellow);background:#d974060a;}
+.pbb-elections{border-color:#0891b244;color:var(--teal);background:#0891b20a;}
+
+/* PHASES */
+.phase-block{background:var(--surface);border:1px solid var(--border2);border-radius:12px;margin-bottom:14px;overflow:hidden;}
+.phase-hdr{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .15s;}
+.phase-hdr:hover{background:#ffffff04;}
+.phase-num{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;min-width:32px;}
+.phase-info{flex:1;}
+.phase-title{font-size:14px;font-weight:600;color:var(--text);}
+.phase-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+.phase-prog{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.phase-prog-bar{width:80px;height:4px;background:#ffffff0f;border-radius:2px;overflow:hidden;}
+.phase-prog-fill{height:100%;border-radius:2px;transition:width .3s;}
+.phase-prog-txt{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);min-width:28px;text-align:right;}
+.phase-chevron{color:var(--muted);font-size:11px;transition:transform .2s;margin-left:8px;}
+.phase-block.collapsed .phase-chevron{transform:rotate(-90deg);}
+.phase-body{border-top:1px solid var(--border);}
+.phase-block.collapsed .phase-body{display:none;}
+
+/* TASKS */
+.task-item{display:flex;align-items:flex-start;gap:12px;padding:11px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+.task-item:last-child{border-bottom:none;}
+.task-item:hover{background:#ffffff04;}
+.task-item.done{opacity:.5;}
+.task-chk{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s;font-size:10px;color:#fff;}
+.task-item.done .task-chk{background:var(--accent);border-color:var(--accent);}
+.task-body{flex:1;}
+.task-txt{font-size:13px;color:var(--text);line-height:1.4;}
+.task-note{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5;}
+.task-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+.tag{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;}
+.tag-critical{background:#dc262618;color:#f87171;border:1px solid #dc262630;}
+.tag-ftp{background:#0891b218;color:#22d3ee;border:1px solid #0891b230;}
+.tag-vendor{background:#d9740618;color:#fbbf24;border:1px solid #d9740630;}
+.tag-loans{background:#16a34a18;color:#4ade80;border:1px solid #16a34a30;}
+.tag-elections{background:#7c3aed18;color:#a78bfa;border:1px solid #7c3aed30;}
+.tag-testing{background:#db277718;color:#f472b6;border:1px solid #db277730;}
+
+/* EMAIL BUTTONS IN TASKS */
+.task-email-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:5px;border:1px solid #2563eb44;background:#2563eb0a;color:var(--accent);cursor:pointer;transition:all .15s;}
+.task-email-btn:hover{background:#2563eb18;border-color:#2563eb88;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:#00000090;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:#1a1916;border:1px solid #ffffff18;border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(12px);transition:transform .2s;}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid #ffffff12;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;letter-spacing:.05em;}
+.modal-close{color:#ffffff44;cursor:pointer;font-size:20px;line-height:1;padding:4px 8px;border-radius:5px;transition:all .15s;background:none;border:none;}
+.modal-close:hover{background:#ffffff12;color:#fff;}
+.modal-body{padding:18px 22px;overflow-y:auto;flex:1;}
+.modal-field{margin-bottom:14px;}
+.modal-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#ffffff44;margin-bottom:6px;display:block;}
+.modal-input{width:100%;background:#ffffff0a;border:1px solid #ffffff18;border-radius:8px;padding:10px 14px;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color .2s;resize:none;}
+.modal-input:focus{border-color:#2563eb66;background:#ffffff0f;}
+.modal-textarea{min-height:160px;line-height:1.5;}
+.modal-footer{padding:14px 22px;border-top:1px solid #ffffff12;display:flex;gap:8px;justify-content:flex-end;}
+.modal-send{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:10px 22px;border-radius:7px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-weight:600;transition:all .15s;}
+.modal-send:hover{background:var(--accent2);}
+.modal-cancel{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:10px 18px;border-radius:7px;background:transparent;color:#ffffff44;border:1px solid #ffffff18;cursor:pointer;transition:all .15s;}
+.modal-cancel:hover{color:#fff;border-color:#ffffff44;}
+
+/* SAVE/LOAD MODAL */
+.load-card{background:#ffffff08;border:1px solid #ffffff18;border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .15s;}
+.load-card:hover{background:#ffffff12;border-color:#2563eb44;}
+.lc-name{font-size:13px;font-weight:600;color:#fff;margin-bottom:3px;}
+.lc-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:#ffffff44;display:flex;gap:10px;flex-wrap:wrap;}
+.lc-status{display:inline-flex;align-items:center;gap:5px;}
+
+/* â”€â”€ TAG FILTER BAR â”€â”€ */
+.tag-filter-bar{background:var(--surface);border-bottom:1px solid var(--border2);padding:9px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;border-radius:10px;}
+.tfb-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
+.tfb-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.tfb-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 11px;border-radius:4px;border:1px solid;cursor:pointer;transition:all .15s;}
+.tfb-tag-all{color:var(--muted);border-color:var(--border2);}
+.tfb-tag-all.on{color:var(--text);border-color:var(--text);background:#ffffff0a;}
+.tfb-tag-critical{color:#f87171;border-color:#dc262628;}
+.tfb-tag-critical.on{background:#dc262614;border-color:#f87171;}
+.tfb-tag-ftp{color:#22d3ee;border-color:#0891b228;}
+.tfb-tag-ftp.on{background:#0891b214;border-color:#22d3ee;}
+.tfb-tag-vendor{color:#fbbf24;border-color:#d9740628;}
+.tfb-tag-vendor.on{background:#d9740614;border-color:#fbbf24;}
+.tfb-tag-testing{color:#f472b6;border-color:#db277728;}
+.tfb-tag-testing.on{background:#db277714;border-color:#f472b6;}
+.tfb-tag-loans{color:#4ade80;border-color:#16a34a28;}
+.tfb-tag-loans.on{background:#16a34a14;border-color:#4ade80;}
+.task-item.tf-hidden{display:none!important;}
+.tfb-toggle-all{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 11px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;margin-left:auto;}
+.tfb-toggle-all:hover{border-color:var(--text);color:var(--text);}
+
+/* â”€â”€ BULK COMPLETE â”€â”€ */
+.phase-bulk-btn{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:4px;border:1px solid #16a34a44;background:#16a34a08;color:#4ade80;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.phase-bulk-btn:hover{background:#16a34a20;border-color:#4ade80;}
+.phase-bulk-btn.undo{border-color:#d9740644;background:#d9740608;color:#fbbf24;}
+.phase-bulk-btn.undo:hover{background:#d9740618;border-color:#fbbf24;}
+
+/* â”€â”€ TASK NOTES â”€â”€ */
+.task-note-area{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border2);}
+.task-note-area.open{display:block;}
+.task-note-input{width:100%;background:#ffffff07;border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--text);resize:vertical;min-height:54px;outline:none;transition:border-color .2s;line-height:1.5;}
+.task-note-input:focus{border-color:var(--accent);}
+.task-note-input::placeholder{color:var(--muted);opacity:.6;}
+.task-note-toggle{display:inline-flex;align-items:center;gap:4px;margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;padding:2px 7px;border-radius:4px;border:1px solid transparent;transition:all .15s;user-select:none;}
+.task-note-toggle:hover{color:var(--text);border-color:var(--border2);background:#ffffff08;}
+.task-note-toggle.has-note{color:var(--yellow);border-color:#d9740633;background:#d974060a;}
+.task-note-toggle.has-note:hover{background:#d9740618;border-color:#d97406aa;}
+
+/* â”€â”€ SIDEBAR NOTES â”€â”€ */
+.sb-notes-textarea{width:100%;background:#ffffff07;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Outfit',sans-serif;font-size:12px;color:var(--text);resize:vertical;min-height:80px;outline:none;transition:border-color .2s;line-height:1.5;}
+.sb-notes-textarea:focus{border-color:var(--accent);}
+.sb-notes-btn{width:100%;margin-top:6px;padding:7px;background:#2563eb15;border:1px solid #2563eb44;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);cursor:pointer;transition:all .15s;}
+.sb-notes-btn:hover{background:#2563eb25;border-color:#2563eb88;}
+/* â”€â”€ CUSTOM TASK ADD â”€â”€ */
+.ct-add-btn{display:flex;align-items:center;gap:5px;width:100%;padding:8px 18px;background:transparent;border:none;border-top:1px dashed var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .15s;text-align:left;}
+.ct-add-btn:hover{color:var(--yellow);background:rgba(217,116,6,.04);}
+.ct-form{display:none;padding:12px 18px 14px;border-top:1px dashed var(--border);background:var(--surface2);}
+.ct-form.open{display:block;}
+.ct-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color .2s;margin-bottom:7px;}
+.ct-input:focus{border-color:var(--yellow);}
+.ct-input::placeholder{color:var(--muted);opacity:.6;}
+.ct-note{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:11px;outline:none;resize:none;min-height:44px;transition:border-color .2s;margin-bottom:9px;line-height:1.5;}
+.ct-note:focus{border-color:var(--yellow);}
+.ct-note::placeholder{color:var(--muted);opacity:.6;}
+.ct-actions{display:flex;gap:7px;}
+.ct-save{padding:7px 16px;background:var(--accent);border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#fff;font-weight:700;cursor:pointer;transition:all .15s;}
+.ct-save:hover{filter:brightness(1.1);}
+.ct-cancel{padding:7px 12px;background:transparent;border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s;}
+.ct-cancel:hover{color:var(--text);border-color:var(--text);}
+.custom-task-badge{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:1px 6px;border-radius:3px;border:1px solid var(--yellow);color:var(--yellow);background:transparent;flex-shrink:0;}
+.custom-task-del{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;padding:1px 6px;border-radius:3px;border:1px solid transparent;transition:all .15s;}
+.custom-task-del:hover{color:var(--red);border-color:var(--red);background:rgba(220,38,38,.05);}
+
+/* PAGED EXTENSIONS */
+.page-action-menu{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.page-action-btn{padding:9px 13px;border-radius:8px;border:1px solid var(--border2);background:#ffffff08;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.page-action-btn:hover{border-color:var(--accent);color:var(--accent);}
+.page-action-btn.active{border-color:var(--accent);color:var(--accent);background:#2563eb12;}
+
+.dash-screen,.vault-screen,.cal-screen{min-height:100vh;background:var(--bg);}
+.dash-shell,.vault-shell,.cal-shell{max-width:1450px;margin:0 auto;padding:28px 28px 56px;}
+.dash-top,.vault-top,.cal-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:20px;}
+.page-kicker{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:54px;letter-spacing:.05em;line-height:.92;color:var(--text);}
+.page-sub{max-width:760px;margin-top:8px;color:var(--muted);font-size:13px;line-height:1.7;}
+.dash-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;}
+.dash-card,.vault-card,.cal-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 16px 36px rgba(0,0,0,.14);overflow:hidden;}
+.dash-card-hd,.vault-card-hd,.cal-card-hd{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.dash-card-title,.vault-card-title,.cal-card-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);}
+.dash-card-sub,.vault-card-sub,.cal-card-sub{font-size:11px;color:var(--muted);}
+.dash-body,.vault-body,.cal-body-wrap{padding:18px;}
+.dash-snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.dash-stat{padding:14px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);}
+.dash-stat-n{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;color:var(--text);}
+.dash-stat-l{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.dash-plan-list,.dash-deadline-list,.vault-grid{display:flex;flex-direction:column;gap:12px;}
+.dash-plan-item,.vault-item,.deadline-item{padding:14px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);}
+.dash-plan-top,.vault-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.dash-plan-name,.vault-item-name{font-size:15px;font-weight:600;color:var(--text);}
+.dash-plan-meta,.vault-item-meta,.deadline-meta{margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);line-height:1.5;}
+.dash-plan-progress,.vault-item-progress{margin-top:10px;display:flex;align-items:center;gap:8px;}
+.prog-track-sm{flex:1;height:6px;border-radius:999px;background:var(--border2);overflow:hidden;}
+.prog-fill-sm{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--green));}
+.prog-pct-sm{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);min-width:32px;text-align:right;}
+.dash-chip,.vault-chip,.deadline-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:999px;border:1px solid var(--border2);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.dash-chip.warn,.deadline-chip.warn{color:#fbbf24;border-color:#fbbf2455;background:#fbbf2410;}
+.dash-chip.danger,.deadline-chip.danger{color:#f87171;border-color:#f8717155;background:#f8717110;}
+.vault-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.vault-actions,.dash-plan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.mini-btn{padding:7px 10px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.mini-btn:hover{border-color:var(--accent);color:var(--accent);}
+.mini-btn.danger:hover{border-color:var(--red);color:var(--red);}
+.vault-empty,.dash-empty{padding:34px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7;}
+
+.cal-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.cal-nav-btn,.cal-today-btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border2);background:#ffffff08;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
+.cal-month-display{padding:8px 14px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text);min-width:150px;text-align:center;}
+.cal-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.cal-filter-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;}
+.cal-filter-btn.on{color:var(--accent);border-color:var(--accent);background:#2563eb12;}
+.cal-layout{display:grid;grid-template-columns:1.15fr .42fr;gap:18px;}
+.cal-grid-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border);}
+.cal-dow div{padding:10px 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.cal-cell{min-height:128px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 10px 8px;background:var(--surface);}
+.cal-cell:nth-child(7n){border-right:none;}
+.cal-cell.other{background:var(--surface2);}
+.cal-cell.today{box-shadow:inset 0 0 0 2px var(--accent);}
+.cal-num{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1;color:var(--text);margin-bottom:8px;}
+.cal-pill{display:block;width:100%;margin-bottom:6px;padding:5px 7px;border-radius:8px;background:#ffffff08;border-left:3px solid var(--accent);font-size:10px;line-height:1.35;color:var(--text);}
+.cal-pill.done{opacity:.68;border-left-color:var(--green);}
+.cal-pill.overdue{border-left-color:var(--red);}
+.cal-pill.soon{border-left-color:#fbbf24;}
+.cal-pill.future{border-left-color:#60a5fa;}
+.cal-side-list{display:flex;flex-direction:column;gap:10px;}
+.cal-side-item{padding:12px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);}
+.cal-side-day{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:var(--text);}
+.cal-side-date{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+@media (max-width: 1100px){
+  .dash-grid,.cal-layout{grid-template-columns:1fr;}
+  .vault-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- MODAL: Email -->
+<div class="modal-overlay" id="emailModal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modalTitle">DRAFT EMAIL</div>
+      <button class="modal-close" onclick="closeEmailModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field"><label class="modal-label">To</label><input class="modal-input" id="modalTo" type="email" placeholder="recipient@email.com"></div>
+      <div class="modal-field"><label class="modal-label">CC</label><input class="modal-input" id="modalCc" type="text" placeholder="cc1@email.com, cc2@email.com"></div>
+      <div class="modal-field"><label class="modal-label">Subject</label><input class="modal-input" id="modalSubject" type="text"></div>
+      <div class="modal-field"><label class="modal-label">Body</label><textarea class="modal-input modal-textarea" id="modalBody"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeEmailModal()">Cancel</button>
+      <button class="modal-send" onclick="sendModal()">&#9993; Open in Outlook &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Load Plan -->
+<div class="modal-overlay" id="loadModal" onclick="if(event.target===this)closeLoadModal()">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-title">LOAD PLAN</div>
+      <button class="modal-close" onclick="closeLoadModal()">&#10005;</button>
+    </div>
+    <div class="modal-body" id="loadModalBody"></div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeLoadModal()">Cancel</button>
+      <label class="modal-send" style="cursor:pointer;">&#128194; Load from File<input type="file" accept=".json" style="display:none" onchange="loadFromFile(event)"></label>
+    </div>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     HEADER
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="app-header">
+  <div class="hdr-inner">
+    <div class="hdr-badge">
+      <div class="hdr-badge-top">Data Consulting</div>
+      <div class="hdr-badge-main">PAY</div>
+    </div>
+    <div class="hdr-main">
+      <div class="hdr-title">Payroll Setup Checklist Generator</div>
+      <div class="hdr-sub">New Setup &middot; Conversion &middot; STP &middot; FTP &middot; Parallel Testing</div>
+    </div>
+    <div class="hdr-actions" id="hdrActions">
+      <button class="hdr-btn hdr-btn-ghost" onclick="copyAppLink()">&#128279; Copy Link</button>
+      <button class="hdr-btn hdr-btn-ghost" onclick="saveToFile()">&#128190; Save to File</button>
+      <button class="hdr-btn hdr-btn-ghost" onclick="quickSave()">&#9889; Quick Save</button>
+      <button class="hdr-btn hdr-btn-ghost" onclick="openChecklist()">&#9989; Checklist</button>
+      <button class="hdr-btn hdr-btn-ghost" onclick="openDashboard()">&#128202; Dashboard</button>
+      <button class="hdr-btn hdr-btn-ghost" onclick="openPlans()">&#128450; Plans Vault</button>
+      <button class="hdr-btn hdr-btn-ghost" onclick="openCalendar()">&#128197; Calendar</button>
+      <button class="hdr-btn hdr-btn-ghost" onclick="window.print()">&#128424; Print</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-mode-note">
+  <strong>Standalone App</strong>
+  <span>Open or bookmark this tool directly outside the DC site.</span>
+  <button onclick="copyAppLink()">Copy App Link</button>
+  <button onclick="openStandaloneApp()">Open Direct</button>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     INTAKE PAGE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="page active" id="pageIntake">
+  <div class="intake-wrap">
+
+    <div class="intake-section">
+      <div class="is-label">Plan Information</div>
+      <div class="form-grid g2">
+        <div><label class="fl">Plan Name</label><input class="fi" id="planName" placeholder="Acme Corp 401(k)"></div>
+        <div><label class="fl">Case Number</label><input class="fi" id="caseNumber" placeholder="QK12345   67890"></div>
+        <div><label class="fl">Effective Date</label><input class="fi" id="effectiveDate" type="date"></div>
+        <div><label class="fl">First Payroll Date at TA</label><input class="fi" id="firstPayrollDate" type="date"></div>
+      </div>
+    </div>
+
+    <div class="intake-section">
+      <div class="is-label">Payroll Vendor</div>
+      <div class="form-grid g3">
+        <div><label class="fl">Vendor Name</label><input class="fi" id="vendorName" placeholder="ADP, Paychex, Paylocity..."></div>
+        <div><label class="fl">Contact Name</label><input class="fi" id="vendorContact" placeholder="Jane Smith"></div>
+        <div><label class="fl">Contact Email</label><input class="fi" id="vendorEmail" type="email" placeholder="jane@vendor.com"></div>
+      </div>
+    </div>
+
+    <div class="intake-section">
+      <div class="is-label">FTP Contact <span style="font-size:9px;color:var(--muted);margin-left:8px;text-transform:none;letter-spacing:0;">(if different from payroll contact)</span></div>
+      <div class="form-grid g3">
+        <div><label class="fl">FTP Contact Name <span class="opt">optional</span></label><input class="fi" id="ftpContact" placeholder="Tech contact name"></div>
+        <div><label class="fl">FTP Contact Email <span class="opt">optional</span></label><input class="fi" id="ftpEmail" type="email" placeholder="ftp@vendor.com"></div>
+        <div><label class="fl">FTP Folder / Path <span class="opt">optional</span></label><input class="fi" id="ftpPath" placeholder="/outbound/transamerica/"></div>
+      </div>
+    </div>
+
+    <div class="intake-section">
+      <div class="is-label">Internal Contacts</div>
+      <div class="form-grid g2">
+        <div><label class="fl">TM Email <span class="opt">optional</span></label><input class="fi" id="tmEmail" type="email" placeholder="tm@company.com"></div>
+        <div><label class="fl">TC Email <span class="opt">optional</span></label><input class="fi" id="tcEmail" type="email" placeholder="tc@company.com"></div>
+      </div>
+    </div>
+
+    <div class="intake-section">
+      <div class="is-label">FTP Settings</div>
+      <div class="toggle-grid" style="grid-template-columns:1fr;">
+        <div class="toggle-item on" id="tog-ftp" onclick="toggleFtp()">
+          <div>
+            <div class="toggle-label">Using FTP</div>
+            <div class="toggle-sub">Payroll files delivered via FTP &mdash; default on</div>
+          </div>
+          <div class="toggle-switch"></div>
+        </div>
+      </div>
+      <div id="ftp-subfields" style="margin-top:10px;">
+        <div class="form-grid g2" style="margin-bottom:10px;">
+          <div>
+            <label class="fl">FTP Direction</label>
+            <select class="fi" id="ftpDirection">
+              <option value="180">180 &mdash; Inbound only</option>
+              <option value="360">360 &mdash; Inbound + Outbound</option>
+            </select>
+          </div>
+          <div><label class="fl">FTP Folder / Path <span class="opt">optional</span></label><input class="fi" id="ftpPath" placeholder="/outbound/transamerica/"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="generate-btn" onclick="generateChecklist()">GENERATE PAYROLL CHECKLIST &rarr;</button>
+
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     CHECKLIST PAGE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="page" id="pageChecklist">
+  <div class="cl-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <div class="sb-section">
+        <div class="theme-toggle-wrap">
+          <span class="theme-toggle-label"><span class="theme-icon" id="themeIcon">&#9728;&#65039;</span> Dark Mode</span>
+          <label class="theme-switch">
+            <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+            <span class="theme-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Plan</div>
+        <div class="sb-plan">
+          <div class="sb-plan-name" id="sb-planName">&mdash;</div>
+          <div class="sb-plan-case" id="sb-caseNum">&mdash;</div>
+        </div>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-label">Status</div>
+        <div class="status-wrap">
+          <div class="status-btn" onclick="toggleStatusDrop()">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="status-dot" id="statusDot"></div>
+              <span class="status-name" id="statusName">Active</span>
+            </div>
+            <span class="status-caret">&#9662;</span>
+          </div>
+          <div class="status-dropdown" id="statusDropdown">
+            <div class="status-opt" onclick="setStatus('Active')"><div class="status-dot" style="background:#22c55e;"></div> Active</div>
+            <div class="status-opt" onclick="setStatus('Complete')"><div class="status-dot" style="background:#eab308;"></div> Complete</div>
+            <div class="status-opt" onclick="setStatus('On Hold')"><div class="status-dot" style="background:#ef4444;"></div> On Hold</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-label">Progress</div>
+        <div class="sb-stat-grid">
+          <div class="sb-stat"><div class="sb-stat-n" id="sb-done">0</div><div class="sb-stat-l">Done</div></div>
+          <div class="sb-stat"><div class="sb-stat-n" id="sb-total">0</div><div class="sb-stat-l">Total</div></div>
+        </div>
+        <div class="sb-progress" style="margin-top:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);">Completion</span>
+            <span class="sb-prog-pct" id="sb-pct">0%</span>
+          </div>
+          <div class="sb-prog-bar-wrap"><div class="sb-prog-bar" id="sb-progBar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="sb-section" id="sb-contacts"></div>
+
+      <div class="sb-section" id="sb-phases">
+        <div class="sb-label">Jump to Phase</div>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-label">Notes</div>
+        <textarea class="sb-notes-textarea" id="planNotes" placeholder="Add notes about this plan..."></textarea>
+        <button class="sb-notes-btn" onclick="saveNotes()">&#128190; Save Notes</button>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-label">Actions</div>
+        <button class="sb-action-btn" onclick="quickSave()">&#9889; Quick Save</button>
+        <button class="sb-action-btn" onclick="saveToFile()">&#128190; Save to File</button>
+        <label class="sb-action-btn" style="cursor:pointer;display:block;text-align:left;">&#128194; Load from File<input type="file" accept=".json" style="display:none" onchange="loadFromFile(event)"></label>
+        <button class="sb-action-btn" onclick="exportCSV()">&darr; Export CSV</button>
+        <button class="sb-action-btn" onclick="backToIntake()">&larr; Edit Intake</button>
+      </div>
+
+    </div>
+
+    <!-- MINI CALENDAR -->
+    <div class="mini-cal-col" id="miniCalCol">
+      <div class="mc-section-title">Schedule</div>
+      <div class="mc-head-row">
+        <button class="mc-nav" onclick="mcNavMonth(-1)">&#8249;</button>
+        <div class="mc-label" id="mc-label">&mdash;</div>
+        <button class="mc-nav" onclick="mcNavMonth(1)">&#8250;</button>
+      </div>
+      <div class="mc-dow">
+        <span>Su</span><span>M</span><span>Tu</span><span>W</span><span>Th</span><span>F</span><span>Sa</span>
+      </div>
+      <div class="mc-grid" id="mc-grid"></div>
+      <div id="mc-legend"></div>
+      <button class="mc-go-today" onclick="mcGoToday()">&#9679; Today</button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="cl-main">
+      <div id="pb-sentinel" style="height:1px;margin-top:-1px;pointer-events:none;"></div>
+      <div class="plan-banner">
+        <div class="pb-left">
+          <div class="pb-title" id="pb-title">Plan Name</div>
+          <div class="pb-meta">
+            <span id="pb-case">â€”</span>
+            <span id="pb-freq">â€”</span>
+            <span id="pb-vendor">â€”</span>
+            <span id="pb-firstPayroll">First payroll: â€”</span>
+          </div>
+        </div>
+        <div class="pb-badges" id="pb-badges"></div>
+      </div>
+      <!-- TAG FILTER BAR -->
+      <div class="tag-filter-bar" id="tagFilterBar">
+        <span class="tfb-label">Filter</span>
+        <div class="tfb-tags">
+          <span class="tfb-tag tfb-tag-all on"      id="tfb-all"      onclick="setTagFilter('all')">All</span>
+          <span class="tfb-tag tfb-tag-critical"    id="tfb-critical" onclick="setTagFilter('critical')">&#9888; Critical</span>
+          <span class="tfb-tag tfb-tag-ftp"         id="tfb-ftp"      onclick="setTagFilter('ftp')">&#128225; FTP</span>
+          <span class="tfb-tag tfb-tag-vendor"      id="tfb-vendor"   onclick="setTagFilter('vendor')">&#129309; Vendor</span>
+          <span class="tfb-tag tfb-tag-testing"     id="tfb-testing"  onclick="setTagFilter('testing')">&#129514; Testing</span>
+          <span class="tfb-tag tfb-tag-loans"       id="tfb-loans"    onclick="setTagFilter('loans')">&#128176; Loans</span>
+        </div>
+        <button class="tfb-toggle-all" onclick="toggleAllPhases()">Collapse All</button>
+      </div>
+      <div id="phaseContainer"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="page dash-screen" id="pageDashboard">
+  <div class="dash-shell">
+    <div class="dash-top">
+      <div>
+        <div class="page-kicker">Payroll Portfolio</div>
+        <div class="page-title">Plans Dashboard</div>
+        <div class="page-sub">A live summary of the current payroll checklist session and all browser-saved payroll setups in this app. Use it to review progress, key dates, upcoming work, and saved plan status.</div>
+        <div class="page-action-menu">
+          <button class="page-action-btn" onclick="openChecklist()">&#9989; Checklist</button>
+          <button class="page-action-btn active" onclick="openDashboard()">&#128202; Dashboard</button>
+          <button class="page-action-btn" onclick="openPlans()">&#128450; Plans Vault</button>
+          <button class="page-action-btn" onclick="openCalendar()">&#128197; Calendar</button>
+          <button class="page-action-btn" onclick="copyAppLink()">&#128279; Copy App Link</button>
+          <button class="page-action-btn" onclick="saveToFile()">&#128190; Save to File</button>
+          <button class="page-action-btn" onclick="quickSave()">&#9889; Quick Save</button>
+          <button class="page-action-btn" onclick="window.print()">&#128424; Print</button>
+        </div>
+      </div>
+    </div>
+    <div id="payrollDashMount"></div>
+  </div>
+</div>
+
+<div class="page vault-screen" id="pagePlans">
+  <div class="vault-shell">
+    <div class="vault-top">
+      <div>
+        <div class="page-kicker">Saved Payroll Setups</div>
+        <div class="page-title">Plans Vault</div>
+        <div class="page-sub">All browser-saved payroll setups in one place. Open, review, and delete saved plans without going back through intake.</div>
+        <div class="page-action-menu">
+          <button class="page-action-btn" onclick="openChecklist()">&#9989; Checklist</button>
+          <button class="page-action-btn" onclick="openDashboard()">&#128202; Dashboard</button>
+          <button class="page-action-btn active" onclick="openPlans()">&#128450; Plans Vault</button>
+          <button class="page-action-btn" onclick="openCalendar()">&#128197; Calendar</button>
+          <button class="page-action-btn" onclick="copyAppLink()">&#128279; Copy App Link</button>
+          <button class="page-action-btn" onclick="saveToFile()">&#128190; Save to File</button>
+          <button class="page-action-btn" onclick="quickSave()">&#9889; Quick Save</button>
+          <button class="page-action-btn" onclick="window.print()">&#128424; Print</button>
+        </div>
+      </div>
+    </div>
+    <div id="payrollVaultMount"></div>
+  </div>
+</div>
+
+<div class="page cal-screen" id="pageCalendar">
+  <div class="cal-shell">
+    <div class="cal-top">
+      <div>
+        <div class="page-kicker">Task Scheduling</div>
+        <div class="page-title">Implementation Calendar</div>
+        <div class="page-sub">Monthly schedule view for payroll setup tasks. Open tasks stay on due dates; completed tasks move to the date they were finished.</div>
+        <div class="page-action-menu">
+          <button class="page-action-btn" onclick="openChecklist()">&#9989; Checklist</button>
+          <button class="page-action-btn" onclick="openDashboard()">&#128202; Dashboard</button>
+          <button class="page-action-btn" onclick="openPlans()">&#128450; Plans Vault</button>
+          <button class="page-action-btn active" onclick="openCalendar()">&#128197; Calendar</button>
+          <button class="page-action-btn" onclick="copyAppLink()">&#128279; Copy App Link</button>
+          <button class="page-action-btn" onclick="saveToFile()">&#128190; Save to File</button>
+          <button class="page-action-btn" onclick="quickSave()">&#9889; Quick Save</button>
+          <button class="page-action-btn" onclick="window.print()">&#128424; Print</button>
+        </div>
+      </div>
+    </div>
+    <div class="cal-controls">
+      <button class="cal-nav-btn" onclick="pcPrevMonth()">&#8249;</button>
+      <div class="cal-month-display" id="pcMonthLabel">&mdash;</div>
+      <button class="cal-nav-btn" onclick="pcNextMonth()">&#8250;</button>
+      <button class="cal-today-btn" onclick="pcGoToday()">Today</button>
+    </div>
+    <div class="cal-filter-row">
+      <button class="cal-filter-btn on" id="pcf-all" onclick="setPayrollCalFilter('all')">All</button>
+      <button class="cal-filter-btn" id="pcf-open" onclick="setPayrollCalFilter('open')">Open</button>
+      <button class="cal-filter-btn" id="pcf-done" onclick="setPayrollCalFilter('done')">Completed</button>
+      <button class="cal-filter-btn" id="pcf-overdue" onclick="setPayrollCalFilter('overdue')">Overdue</button>
+      <button class="cal-filter-btn" id="pcf-soon" onclick="setPayrollCalFilter('soon')">7 Days</button>
+    </div>
+    <div id="payrollCalendarMount"></div>
+  </div>
+</div>
+
+<script>
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// STATE
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const STORE = 'payroll_checklist_saves';
+let S = {}; // intake state
+let CS = {}; // checkbox state
+let CN = {}; // per-task user notes
+let CT = {}; // custom tasks: CT[phaseId] = [{id,text,note}]
+let planStatus = 'Active';
+let PHASES = [];
+let activeTagFilter = 'all';
+let allCollapsed = false;
+let currentPage = 'pageIntake';
+let saveKey = null;
+let payrollCalYear = 0;
+let payrollCalMonth = 0;
+let payrollCalFilter = 'all';
+
+let useFtp = true;
+let ftpDirection = '180';
+
+const PAYROLL_SCHED = {
+  'p1-1': { from:'day1', days:0 },  'p1-2': { from:'day1', days:2 },  'p1-3': { from:'day1', days:2 },  'p1-4': { from:'firstPayroll', days:-14 },
+  'p2-1': { from:'day1', days:3 },  'p2-2': { from:'day1', days:5 },  'p2-3': { from:'day1', days:5 },  'p2-4': { from:'day1', days:6 },  'p2-5': { from:'day1', days:6 },  'p2-6': { from:'day1', days:7 },
+  'p3-1': { from:'day1', days:6 },  'p3-2': { from:'day1', days:7 },  'p3-3': { from:'day1', days:10 }, 'p3-4': { from:'day1', days:9 },  'p3-5': { from:'day1', days:9 },  'p3-6': { from:'day1', days:11 },
+  'p4-1': { from:'firstPayroll', days:-14 }, 'p4-2': { from:'firstPayroll', days:-12 }, 'p4-3': { from:'firstPayroll', days:-11 }, 'p4-4': { from:'firstPayroll', days:-10 },
+  'p4-5': { from:'firstPayroll', days:-9 },  'p4-6': { from:'firstPayroll', days:-8 },  'p4-7': { from:'firstPayroll', days:-6 },  'p4-8': { from:'firstPayroll', days:-4 },
+  'p5-1': { from:'firstPayroll', days:-2 },  'p5-2': { from:'firstPayroll', days:0 },   'p5-3': { from:'firstPayroll', days:0 },   'p5-4': { from:'firstPayroll', days:0 },   'p5-5': { from:'firstPayroll', days:1 },
+  'p6-1': { from:'firstPayroll', days:2 },   'p6-2': { from:'firstPayroll', days:3 },   'p6-3': { from:'firstPayroll', days:3 },   'p6-4': { from:'firstPayroll', days:4 },   'p6-5': { from:'firstPayroll', days:5 }
+};
+
+function toggleFtp() {
+  useFtp = !useFtp;
+  document.getElementById('tog-ftp').classList.toggle('on', useFtp);
+  document.getElementById('ftp-subfields').style.display = useFtp ? 'block' : 'none';
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// UTILS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(d) {
+  if (!d) return 'â€”';
+  const dt = new Date(d + 'T12:00:00');
+  return dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+function getAppUrl() {
+  return window.location.href.split('#')[0];
+}
+function openStandaloneApp() {
+  window.open(getAppUrl(), '_blank', 'noopener');
+}
+async function copyAppLink() {
+  const url = getAppUrl();
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('🔗 App link copied');
+  } catch (e) {
+    window.prompt('Copy this app link:', url);
+  }
+}
+function readIntake() {
+  return {
+    planName: document.getElementById('planName').value.trim(),
+    caseNumber: document.getElementById('caseNumber').value.trim(),
+    effectiveDate: document.getElementById('effectiveDate').value,
+    firstPayrollDate: document.getElementById('firstPayrollDate').value,
+    vendorName: document.getElementById('vendorName').value.trim(),
+    vendorContact: document.getElementById('vendorContact').value.trim(),
+    vendorEmail: document.getElementById('vendorEmail').value.trim(),
+    ftpContact: document.getElementById('ftpContact').value.trim(),
+    ftpEmail: document.getElementById('ftpEmail').value.trim(),
+    ftpPath: document.getElementById('ftpPath').value.trim(),
+    tmEmail: document.getElementById('tmEmail').value.trim(),
+    tcEmail: document.getElementById('tcEmail').value.trim(),
+    useFtp: useFtp,
+    ftpDirection: document.getElementById('ftpDirection') ? document.getElementById('ftpDirection').value : '180',
+  };
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// STATUS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const STATUS_COLORS = { 'Active': '#22c55e', 'Complete': '#eab308', 'On Hold': '#ef4444' };
+function setStatus(s) {
+  planStatus = s;
+  document.getElementById('statusName').textContent = s;
+  document.getElementById('statusDot').style.background = STATUS_COLORS[s];
+  document.getElementById('statusDropdown').classList.remove('open');
+  showToast('Status: ' + s);
+}
+function toggleStatusDrop() {
+  document.getElementById('statusDropdown').classList.toggle('open');
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// PHASE DEFINITIONS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function buildPhases(s) {
+  const ph = [];
+  let n = 1;
+
+  // PHASE 1: Kickoff & Setup
+  ph.push({ id:'ph1', num:n++, color:'#2563eb', title:'Kickoff & Setup', subtitle:'Initial contact, scheduling, scope confirmation', tasks:[
+    { id:'p1-1', text:'Send kickoff email to payroll vendor', note: s.vendorName ? `Introduce team to ${s.vendorName}` : 'Introduce implementation team to payroll vendor', tags:['vendor'],
+      emailBtn: s.vendorEmail ? { type:'vendor', subject:`[${s.caseNumber}] ${s.planName} â€” Payroll Setup Kickoff`, body:`Hi ${s.vendorContact||'Team'},\n\nWe are writing to kick off the payroll setup process for the following plan:\n\n  Plan Name:      ${s.planName}\n  Case Number:    ${s.caseNumber}\n  Effective Date: ${fmtDate(s.effectiveDate)}\n  First Payroll:  ${fmtDate(s.firstPayrollDate)}\n\nWe will need to schedule a setup call to walk through the file spec requirements${s.useFtp ? ' and FTP connection' : ''}. Please let us know your availability.\n\nThank you,` } : null },
+    { id:'p1-2', text:'Schedule payroll setup call', note:'Confirm attendees â€” include FTP contact if separate from payroll contact', tags:[] },
+    { id:'p1-3', text:'Document all payroll contacts', note:'Payroll contact, technical/FTP contact, and escalation contact', tags:['vendor'] },
+    { id:'p1-4', text:'Confirm first payroll date at TA', note: s.firstPayrollDate ? `Target: ${fmtDate(s.firstPayrollDate)}` : 'Lock in the first live payroll date â€” work backwards for testing milestones', tags:['critical'] },
+  ]});
+
+  // PHASE 2: File Spec Configuration
+  ph.push({ id:'ph2', num:n++, color:'#7c3aed', title:'File Spec Configuration', subtitle:'STP spec review, field mapping, submission format', tasks:[
+    { id:'p2-1', text:'Obtain payroll file spec from vendor', note: s.vendorName ? `Request spec document from ${s.vendorName}` : 'Request file spec / layout document from payroll vendor', tags:['vendor'],
+      emailBtn: s.vendorEmail ? { type:'vendor', subject:`[${s.caseNumber}] ${s.planName} â€” File Spec Request`, body:`Hi ${s.vendorContact||'Team'},\n\nCould you please send us the payroll file spec / layout document for ${s.planName}?\n\n  Plan Name:    ${s.planName}\n  Case Number:  ${s.caseNumber}\n\nWe need this to configure the STP setup on our end. Please include any field definitions, required formats, and sample files if available.\n\nThank you,` } : null },
+    { id:'p2-2', text:'Review and map all required fields', note:'Cross-reference vendor spec against TA required fields â€” flag any gaps', tags:[] },
+    { id:'p2-3', text:'Confirm file format and delimiters', note:'CSV, fixed-width, pipe-delimited â€” confirm exact format and encoding', tags:[] },
+    { id:'p2-4', text:'Confirm record layout and header row handling', note:'Does the file include a header row? Confirm column order matches spec', tags:[] },
+    { id:'p2-5', text:'Confirm contribution code mapping', note:'Map vendor contribution codes to TA money types', tags:[] },
+    { id:'p2-6', text:'Validate spec with payroll vendor â€” send confirmation', note:'Send written confirmation of agreed field mapping and file format', tags:['vendor'],
+      emailBtn: s.vendorEmail ? { type:'vendor', subject:`[${s.caseNumber}] ${s.planName} â€” File Spec Confirmation`, body:`Hi ${s.vendorContact||'Team'},\n\nPlease find below our confirmed field mapping for ${s.planName}. Kindly review and confirm everything looks correct before we proceed to testing.\n\n  Plan Name:    ${s.planName}\n  Case Number:  ${s.caseNumber}\n\n[INSERT FIELD MAPPING SUMMARY]\n\nPlease reply to confirm or flag any discrepancies.\n\nThank you,` } : null },
+  ]});
+
+  // PHASE 3: FTP or Manual Transmission
+  if (s.useFtp) {
+    const ftpContact = s.ftpContact || s.vendorContact;
+    const ftpEmail = s.ftpEmail || s.vendorEmail;
+    const ftpTasks = [
+      { id:'p3-1', text:'Send FTP connection details to vendor', note: s.ftpPath ? `Folder: ${s.ftpPath}` : 'Provide TA FTP server address, folder path, and credential instructions', tags:['ftp'],
+        emailBtn: ftpEmail ? { type:'ftp', subject:`[${s.caseNumber}] ${s.planName} â€” FTP Connection Details`, body:`Hi ${ftpContact||'Team'},\n\nPlease find below the FTP connection details for ${s.planName}.\n\n  Plan Name:    ${s.planName}\n  Case Number:  ${s.caseNumber}${s.ftpPath ? '\n  Folder Path:  ' + s.ftpPath : ''}\n\n[INSERT FTP SERVER DETAILS / CREDENTIALS]\n\nPlease test the connection and confirm you are able to connect successfully. Let us know if you run into any issues.\n\nThank you,` } : null },
+      { id:'p3-2', text:'Confirm FTP folder structure with vendor', note:'Input folder â€” confirm vendor knows where to drop inbound files', tags:['ftp'] },
+      { id:'p3-3', text:'Vendor confirms successful FTP connection', note:'Get written confirmation â€” do not proceed to testing until this is confirmed', tags:['ftp','critical'],
+        emailBtn: ftpEmail ? { type:'ftp', subject:`[${s.caseNumber}] ${s.planName} â€” FTP Connection Confirmation Request`, body:`Hi ${ftpContact||'Team'},\n\nCould you please confirm that you have successfully connected to the FTP and can see the correct folder structure?\n\n  Plan Name:    ${s.planName}\n  Case Number:  ${s.caseNumber}${s.ftpPath ? '\n  Expected Folder: ' + s.ftpPath : ''}\n\nPlease reply to confirm or let us know if you need any assistance.\n\nThank you,` } : null },
+      { id:'p3-4', text:'Confirm file naming convention', note:'Exact file name format expected â€” including date stamps, plan ID, or other required elements', tags:['ftp'] },
+      { id:'p3-5', text:'Confirm inbound file submission timing / schedule', note:'What time does the vendor submit inbound files? Same day or next day processing window?', tags:['ftp'] },
+    ];
+    if (s.ftpDirection === '360') {
+      ftpTasks.push({ id:'p3-6', text:'Coordinate outbound file transmission with TM and payroll team', note:'360 setup â€” confirm outbound file format, folder path, schedule, and TA delivery process with TM', tags:['ftp','critical'] });
+    }
+    ph.push({ id:'ph3', num:n++, color:'#0891b2', title:'FTP Connection Setup', subtitle: s.ftpDirection === '360' ? 'Credentials, folder structure, inbound + outbound' : 'Credentials, folder structure, test connection', tasks: ftpTasks });
+  } else {
+    ph.push({ id:'ph3', num:n++, color:'#0891b2', title:'File Transmission Setup', subtitle:'No FTP â€” coordinate manual file delivery with TM', tasks:[
+      { id:'p3-1', text:'Coordinate file transmission to Transamerica with TM', note:'FTP not in use â€” work with TM to establish the file delivery method and schedule for inbound payroll files', tags:['critical'] },
+      { id:'p3-2', text:'Confirm file delivery schedule with vendor', note:'Establish timing, format, and point of contact for file delivery on each payroll cycle', tags:['vendor'],
+        emailBtn: s.vendorEmail ? { type:'vendor', subject:`[${s.caseNumber}] ${s.planName} â€” File Delivery Coordination`, body:`Hi ${s.vendorContact||'Team'},\n\nWe would like to coordinate the payroll file delivery process for ${s.planName}.\n\n  Plan Name:    ${s.planName}\n  Case Number:  ${s.caseNumber}\n\nSince FTP will not be used for this plan, we will need to confirm an alternative delivery method. Please let us know your preferred approach and we will coordinate on our end.\n\nThank you,` } : null },
+      { id:'p3-3', text:'Document agreed file delivery process', note:'Written record of delivery method, timing, contacts, and any special handling', tags:[] },
+    ]});
+  }
+
+  // PHASE 4: Parallel Testing
+  const testFolderNote = s.useFtp ? `File Format: Per agreed spec\nFolder: ${s.ftpPath||'TBD'}` : 'File Format: Per agreed spec';
+  ph.push({ id:'ph4', num:n++, color:'#db2777', title:'Parallel Testing', subtitle:'Test file submission, validation, error resolution, sign-off', tasks:[
+    { id:'p4-1', text:'Send test file request to vendor', note:'Specify exact format, date range, and contribution types needed for test file', tags:['testing','vendor'],
+      emailBtn: s.vendorEmail ? { type:'vendor', subject:`[${s.caseNumber}] ${s.planName} â€” Test File Request`, body:`Hi ${s.vendorContact||'Team'},\n\nWe are ready to begin parallel testing for ${s.planName}. Could you please submit a test payroll file${s.useFtp ? ' via FTP' : ''} at your earliest convenience?\n\n  Plan Name:     ${s.planName}\n  Case Number:   ${s.caseNumber}\n  File Format:   Per agreed spec${s.useFtp && s.ftpPath ? '\n  Folder:        ' + s.ftpPath : ''}\n\nPlease let us know once the file has been submitted so we can begin validation.\n\nThank you,` } : null },
+    { id:'p4-2', text:`Vendor submits test file${s.useFtp ? ' via FTP' : ''}`, note:'Confirm file arrives in correct location with correct naming convention', tags:['testing'] },
+    { id:'p4-3', text:'Validate test file against spec', note:'Check all fields, formats, contribution codes, and totals', tags:['testing'] },
+    { id:'p4-4', text:'Process test file through TA system', note:'Run test file through payroll processing â€” verify no errors or rejections', tags:['testing'] },
+    { id:'p4-5', text:'Document any errors or discrepancies', note:'Capture exact error messages and field-level issues for vendor feedback', tags:['testing'] },
+    { id:'p4-6', text:'Send error feedback to vendor', note:'Clear, specific feedback on what needs to be corrected before go-live', tags:['testing','vendor'],
+      emailBtn: s.vendorEmail ? { type:'vendor', subject:`[${s.caseNumber}] ${s.planName} â€” Test File Feedback`, body:`Hi ${s.vendorContact||'Team'},\n\nThank you for submitting the test file for ${s.planName}. We have completed our review and have the following feedback:\n\n  Plan Name:    ${s.planName}\n  Case Number:  ${s.caseNumber}\n\n[INSERT ERROR DETAILS / CORRECTIONS NEEDED]\n\nPlease make the noted corrections and resubmit at your earliest convenience. Let us know if you have any questions.\n\nThank you,` } : null },
+    { id:'p4-7', text:'Vendor resubmits corrected test file', note:'Repeat validation cycle until file processes cleanly with no errors', tags:['testing','vendor'] },
+    { id:'p4-8', text:'Test file passes validation â€” document sign-off', note:'Written confirmation from vendor that they are ready for go-live', tags:['testing','critical'] },
+  ]});
+
+  // PHASE 5: First Live Payroll
+  ph.push({ id:'ph5', num:n++, color:'#16a34a', title:'First Live Payroll', subtitle:'Go-live, file receipt, processing, reconciliation', tasks:[
+    { id:'p5-1', text:'Send go-live confirmation to vendor', note: s.firstPayrollDate ? `First live payroll: ${fmtDate(s.firstPayrollDate)}` : 'Confirm go-live date and any last-minute instructions', tags:['critical','vendor'],
+      emailBtn: s.vendorEmail ? { type:'vendor', subject:`[${s.caseNumber}] ${s.planName} â€” Go-Live Confirmation`, body:`Hi ${s.vendorContact||'Team'},\n\nWe are pleased to confirm that ${s.planName} is ready to go live on payroll.\n\n  Plan Name:       ${s.planName}\n  Case Number:     ${s.caseNumber}\n  First Live Date: ${fmtDate(s.firstPayrollDate)}\n\nPlease submit the first live payroll file${s.useFtp ? ' to the FTP' : ''} on the scheduled date. We will monitor for receipt and confirm processing.\n\nThank you,` } : null },
+    { id:'p5-2', text:`Monitor${s.useFtp ? ' FTP' : ''} for first live file receipt`, note:'Confirm file arrives on time and in correct location', tags:['critical'] },
+    { id:'p5-3', text:'Validate first live file', note:'Spot-check key fields â€” totals, employee count, contribution codes', tags:['critical'] },
+    { id:'p5-4', text:'Process first live payroll file', note:'Run through TA processing â€” verify successful completion with no rejections', tags:['critical'] },
+    { id:'p5-5', text:'Verify contribution totals reconcile to payroll register', note:'Cross-check processed totals against vendor payroll register or remittance advice', tags:['critical'] },
+  ]});
+
+  // PHASE 6: Wrap-Up
+  ph.push({ id:'ph6', num:n++, color:'#d97706', title:'Ongoing & Wrap-Up', subtitle:'Recurring schedule, handoff, close out', tasks:[
+    { id:'p6-1', text:'Confirm recurring payroll schedule is established', note:`Vendor is clear on submission timing${s.useFtp ? ', folder, and naming convention' : ' and delivery method'} for all future payrolls`, tags:[] },
+    { id:'p6-2', text:'Document any plan-specific exceptions or notes', note:'Edge cases, special handling, or agreed-upon workarounds from the setup process', tags:[] },
+    { id:'p6-3', text:'Confirm escalation path with vendor', note:'Who to contact if a file is late, rejected, or has errors â€” and response SLA', tags:['vendor'] },
+    { id:'p6-4', text:'Internal handoff notes documented', note:'Summary of setup, contacts, file spec, and any open items for the ongoing team', tags:[] },
+    { id:'p6-5', text:'Close out payroll setup â€” mark complete', note:'All tasks done, first payroll processed successfully, recurring schedule confirmed', tags:['critical'] },
+  ]});
+
+  return ph;
+}
+
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// GENERATE
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function generateChecklist() {
+  S = readIntake();
+  if (!S.planName) { showToast('âš  Plan name is required'); return; }
+  CS = {}; CN = {}; CT = {};
+  activeTagFilter = 'all'; allCollapsed = false;
+  planStatus = 'Active';
+  saveKey = null;
+  PHASES = buildPhases(S);
+  renderChecklist();
+  showPage('pageChecklist');
+  setStatus('Active');
+  initTheme();
+  buildMiniCal();
+  setupStickyBanner();
+}
+
+function renderChecklist() {
+  // Banner
+  document.getElementById('pb-title').textContent = S.planName || '\u2014';
+  document.getElementById('pb-case').textContent = S.caseNumber || '\u2014';
+  document.getElementById('pb-freq').textContent = S.vendorName ? `Vendor: ${S.vendorName}` : '\u2014';
+  document.getElementById('pb-vendor').textContent = '';
+  document.getElementById('pb-firstPayroll').textContent = S.firstPayrollDate ? `First payroll: ${fmtDate(S.firstPayrollDate)}` : 'First payroll: TBD';
+
+  const badges = [];
+  if (S.useFtp) badges.push(`<span class="pb-badge pbb-freq">FTP ${S.ftpDirection||'180'}</span>`);
+  if (!S.useFtp) badges.push(`<span class="pb-badge" style="border-color:#d9740644;color:#fbbf24;background:#d974060a;">No FTP</span>`);
+  document.getElementById('pb-badges').innerHTML = badges.join('');
+
+  // Sidebar plan
+  document.getElementById('sb-planName').textContent = S.planName || '\u2014';
+  document.getElementById('sb-caseNum').textContent = S.caseNumber || '\u2014';
+
+  // Sidebar contacts
+  const contacts = [];
+  if (S.vendorEmail) contacts.push({ role:'Payroll Vendor', name: S.vendorContact || S.vendorName, email: S.vendorEmail, type:'vendor' });
+  if (S.ftpEmail) contacts.push({ role:'FTP Contact', name: S.ftpContact, email: S.ftpEmail, type:'ftp' });
+  const sbC = document.getElementById('sb-contacts');
+  if (contacts.length) {
+    sbC.innerHTML = '<div class="sb-label">Contacts</div>' + contacts.map(c =>
+      `<div class="sb-contact">
+        <div class="sb-contact-role">${c.role}</div>
+        <div class="sb-contact-name">${esc(c.name||c.email)}</div>
+        <div class="sb-contact-email">${esc(c.email)}</div>
+        <button class="sb-email-btn" onclick="openEmailModal({type:'${c.type}'})">âœ‰ Email</button>
+      </div>`
+    ).join('');
+  } else sbC.innerHTML = '';
+
+  // Phase jump
+  const sbPh = document.getElementById('sb-phases');
+  sbPh.innerHTML = '<div class="sb-label">Jump to Phase</div>' + PHASES.map(p =>
+    `<button class="jump-btn" onclick="document.getElementById('${p.id}').scrollIntoView({behavior:'smooth'})">
+      <div class="jump-dot" style="background:${p.color}"></div>${p.title}
+    </button>`
+  ).join('');
+
+  // Render phases
+  if (!window._ER) window._ER = {};
+  if (window._ERi === undefined) window._ERi = 0;
+
+  const cont = document.getElementById('phaseContainer');
+  cont.innerHTML = '';
+  let total = 0;
+
+  PHASES.forEach(p => {
+    total += p.tasks.length;
+    const tHTML = p.tasks.map(t => {
+      const tags = (t.tags||[]).map(tg => `<span class="tag tag-${tg}">${tg}</span>`).join('');
+      const done = !!CS[t.id];
+      let emailBtnHTML = '';
+      if (t.emailBtn) {
+        const rk = 'er' + (window._ERi++);
+        window._ER[rk] = t.emailBtn;
+        emailBtnHTML = `<div onclick="event.stopPropagation()"><button class="task-email-btn" onclick="openEmailModal(window._ER['${rk}'])">${t.emailBtn.label || 'âœ‰ Email Vendor'}</button></div>`;
+      }
+      const userNote = CN[t.id] || '';
+      const hasNote  = !!userNote;
+      return `<div class="task-item${done?' done':''}" id="ti-${t.id}" data-tags="${(t.tags||[]).join(',')}" onclick="togTask('${t.id}')">
+        <div class="task-chk" id="tc-${t.id}">${done?'âœ“':''}</div>
+        <div class="task-body">
+          <div class="task-txt">${esc(t.text)}</div>
+          ${t.note?`<div class="task-note">${esc(t.note)}</div>`:''}
+          ${tags?`<div class="task-tags">${tags}</div>`:''}
+          ${emailBtnHTML}
+          <div onclick="event.stopPropagation()">
+            <span class="task-note-toggle${hasNote?' has-note':''}" id="tnt-${t.id}" onclick="togTaskNote('${t.id}')">${hasNote?'&#128221; Note':'+ Note'}</span>
+            <div class="task-note-area${hasNote?' open':''}" id="tna-${t.id}">
+              <textarea class="task-note-input" id="tni-${t.id}" placeholder="Add your notes here..." oninput="saveTaskNote('${t.id}')">${esc(userNote)}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    const bl = document.createElement('div');
+    bl.className = 'phase-block';
+    bl.id = p.id;
+    bl.innerHTML = `
+      <div class="phase-hdr" onclick="togPhase('${p.id}')">
+        <div class="phase-num" style="color:${p.color}">${String(p.num).padStart(2,'0')}</div>
+        <div class="phase-info">
+          <div class="phase-title">${p.title}</div>
+          <div class="phase-sub">${p.subtitle}</div>
+        </div>
+        <div class="phase-prog">
+          <div class="phase-prog-bar"><div class="phase-prog-fill" id="ppf-${p.id}" style="background:${p.color};width:0%"></div></div>
+          <div class="phase-prog-txt" id="ppt-${p.id}">0/${p.tasks.length}</div>
+        </div>
+        <button class="phase-bulk-btn" id="bulk-${p.id}" onclick="event.stopPropagation();bulkPhase('${p.id}')">&#10003; Complete All</button>
+        <div class="phase-chevron">&#9662;</div>
+      </div>
+      <div class="phase-body" id="pt-${p.id}">${tHTML}</div>
+      <button class="ct-add-btn" onclick="event.stopPropagation();openCtForm('${p.id}')">&plus; Add Task</button>
+      <div class="ct-form" id="ctf-${p.id}">
+        <input class="ct-input" id="cti-${p.id}" type="text" placeholder="Task description...">
+        <textarea class="ct-note" id="ctn-${p.id}" placeholder="Note (optional)..." rows="2"></textarea>
+        <div class="ct-actions">
+          <button class="ct-save" onclick="saveCustomTask('${p.id}')">Add Task</button>
+          <button class="ct-cancel" onclick="closeCtForm('${p.id}')">Cancel</button>
+        </div>
+      </div>`;
+    cont.appendChild(bl);
+  });
+
+  updateProgress(total);
+}
+
+function togTask(id) {
+  CS[id] = !CS[id];
+  const item = document.getElementById('ti-' + id);
+  const chk = document.getElementById('tc-' + id);
+  item.classList.toggle('done', CS[id]);
+  chk.textContent = CS[id] ? '\u2713' : '';
+  updateProgress();
+  autoSave();
+}
+
+function togPhase(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+function updateProgress(tot) {
+  let total = 0, done = 0;
+  PHASES.forEach(p => {
+    const all = [...p.tasks, ...(CT[p.id]||[])];
+    const pdone = all.filter(t => CS[t.id]).length;
+    total += all.length;
+    done += pdone;
+    const pct = all.length ? Math.round(pdone / all.length * 100) : 0;
+    const pfEl = document.getElementById('ppf-' + p.id);
+    const ptEl = document.getElementById('ppt-' + p.id);
+    if (pfEl) pfEl.style.width = pct + '%';
+    if (ptEl) ptEl.textContent = `${pdone}/${all.length}`;
+  });
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('sb-done').textContent = done;
+  document.getElementById('sb-total').textContent = total;
+  document.getElementById('sb-pct').textContent = pct + '%';
+  document.getElementById('sb-progBar').style.width = pct + '%';
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// EMAIL
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function buildCc() {
+  const cc = [];
+  if (S.tmEmail) cc.push(S.tmEmail);
+  if (S.tcEmail) cc.push(S.tcEmail);
+  return cc.join(', ');
+}
+
+function getEmailConfig(btnCfg) {
+  const type = typeof btnCfg === 'string' ? btnCfg : btnCfg.type;
+  const overrideSubject = btnCfg.subject || null;
+  const overrideBody = btnCfg.body || null;
+  const defaultSubject = `[${S.caseNumber}] ${S.planName}`;
+  const ftpEmail = S.ftpEmail || S.vendorEmail;
+  const ftpContact = S.ftpContact || S.vendorContact;
+  const configs = {
+    vendor: { title:'Email â€” Payroll Vendor', to: S.vendorEmail, subject: overrideSubject || defaultSubject, body: overrideBody || `Hi ${S.vendorContact||'Team'},\n\n\n\nThank you,` },
+    ftp:    { title:'Email â€” FTP Contact',    to: ftpEmail,      subject: overrideSubject || `${defaultSubject} â€” FTP`, body: overrideBody || `Hi ${ftpContact||'Team'},\n\n\n\nThank you,` },
+  };
+  return configs[type] || { title:'Draft Email', to:'', subject: defaultSubject, body:'' };
+}
+
+function openEmailModal(btnCfg) {
+  const cfg = getEmailConfig(btnCfg);
+  document.getElementById('modalTitle').textContent = cfg.title.toUpperCase();
+  document.getElementById('modalTo').value = cfg.to || '';
+  document.getElementById('modalCc').value = buildCc();
+  document.getElementById('modalSubject').value = cfg.subject;
+  document.getElementById('modalBody').value = cfg.body;
+  document.getElementById('emailModal').classList.add('open');
+}
+function closeEmailModal() { document.getElementById('emailModal').classList.remove('open'); }
+function closeModal(e) { if (e.target === document.getElementById('emailModal')) closeEmailModal(); }
+
+function sendModal() {
+  const to = document.getElementById('modalTo').value.trim();
+  const cc = document.getElementById('modalCc').value.trim();
+  const subject = document.getElementById('modalSubject').value.trim();
+  const body = document.getElementById('modalBody').value;
+  let mailto = `mailto:${encodeURIComponent(to)}`;
+  const params = [];
+  if (cc) params.push('cc=' + encodeURIComponent(cc));
+  if (subject) params.push('subject=' + encodeURIComponent(subject));
+  if (body) params.push('body=' + encodeURIComponent(body));
+  if (params.length) mailto += '?' + params.join('&');
+  const a = document.createElement('a');
+  a.href = mailto; a.style.display = 'none';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => document.body.removeChild(a), 200);
+  closeEmailModal();
+  showToast('âœ‰ Opening in Outlook...');
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SAVE / LOAD
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const STORE_KEY = 'payroll_cl_saves';
+
+function getSaves() { try { return JSON.parse(localStorage.getItem(STORE_KEY)||'{}'); } catch(e) { return {}; } }
+function putSaves(o) { try { localStorage.setItem(STORE_KEY, JSON.stringify(o)); } catch(e) {} }
+
+function autoSave() {
+  if (!S.planName) return;
+  const saves = getSaves();
+  const key = saveKey || (S.planName + '_' + S.caseNumber).replace(/\s+/g,'_');
+  saveKey = key;
+  saves[key] = {
+    S: JSON.parse(JSON.stringify(S)),
+    CS: JSON.parse(JSON.stringify(CS)),
+    CN: JSON.parse(JSON.stringify(CN)),
+    CT: JSON.parse(JSON.stringify(CT)),
+    notes: (document.getElementById('planNotes')||{}).value||'',
+    status: planStatus,
+    pct: getProgressSnapshot().pct,
+    doneTasks: getProgressSnapshot().done,
+    totalTasks: getProgressSnapshot().total,
+    phases: getPhaseSnapshot(),
+    timelineSummary: buildTimelineSummary(),
+    ts: new Date().toISOString()
+  };
+  putSaves(saves);
+}
+
+function quickSave() { autoSave(); showToast('âš¡ Saved'); }
+
+function saveToFile() {
+  const payload = {
+    app:'payroll-checklist', v:2,
+    S: JSON.parse(JSON.stringify(S)),
+    CS: JSON.parse(JSON.stringify(CS)),
+    CN: JSON.parse(JSON.stringify(CN)),
+    CT: JSON.parse(JSON.stringify(CT)),
+    notes: (document.getElementById('planNotes')||{}).value||'',
+    status: planStatus,
+    ts: new Date().toISOString()
+  };
+  const json = JSON.stringify(payload, null, 2);
+  const blob = new Blob([json], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const d = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  a.download = (S.planName||'Plan').replace(/[^a-z0-9]/gi,'_') + '_' + (S.caseNumber||'').replace(/\s/g,'') + '_' + d + '.json';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('ðŸ’¾ Saved to file');
+}
+
+function loadFromFile(evt) {
+  const file = evt.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.S) { showToast('âš  Invalid file'); return; }
+      S = data.S; CS = data.CS || {}; CN = data.CN || {}; CT = data.CT || {};
+      planStatus = data.status || 'Active';
+      saveKey = null;
+      useFtp = S.useFtp !== false;
+      PHASES = buildPhases(S);
+      renderChecklist(); showPage('pageChecklist'); setStatus(planStatus);
+      Object.entries(CT).forEach(([pid,tasks]) => tasks.forEach(t => renderCustomTask(pid,t)));
+      updateProgress();
+      const pn = document.getElementById('planNotes'); if(pn) pn.value = data.notes||'';
+      buildMiniCal(); setupStickyBanner();
+      closeLoadModal();
+      showToast('ðŸ”‚ Plan loaded');
+    } catch(err) { showToast('âš  Could not read file'); }
+  };
+  reader.readAsText(file);
+}
+
+function openLoadModal() {
+  const saves = getSaves();
+  const keys = Object.keys(saves);
+  const body = document.getElementById('loadModalBody');
+  if (!keys.length) {
+    body.innerHTML = '<div style="font-size:13px;color:var(--muted);font-style:italic;padding:8px 0;">No saved plans found. Use Save to File to create a portable save.</div>';
+  } else {
+    body.innerHTML = keys.map(k => {
+      const sv = saves[k];
+      const sc = STATUS_COLORS[sv.status||'Active'];
+      return `<div class="load-card" onclick="loadFromQuickSave('${k}')">
+        <div class="lc-name">${esc(sv.S.planName||k)}</div>
+        <div class="lc-meta">
+          <span>${esc(sv.S.caseNumber||'')}</span>
+          <span class="lc-status"><div class="status-dot" style="background:${sc};width:7px;height:7px;border-radius:50%;display:inline-block;"></div>${sv.status||'Active'}</span>
+          <span>${sv.ts ? new Date(sv.ts).toLocaleDateString() : ''}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('loadModal').classList.add('open');
+}
+
+function loadFromQuickSave(key) {
+  const saves = getSaves();
+  const data = saves[key]; if (!data) return;
+  S = data.S; CS = data.CS || {}; CN = data.CN || {}; CT = data.CT || {};
+  planStatus = data.status || 'Active';
+  saveKey = key;
+  useFtp = S.useFtp !== false;
+  PHASES = buildPhases(S);
+  renderChecklist(); showPage('pageChecklist'); setStatus(planStatus);
+  Object.entries(CT).forEach(([pid,tasks]) => tasks.forEach(t => renderCustomTask(pid,t)));
+  updateProgress();
+  const pn = document.getElementById('planNotes'); if(pn) pn.value = data.notes||'';
+  buildMiniCal(); setupStickyBanner();
+  closeLoadModal();
+  showToast('ðŸ”‚ Plan loaded');
+}
+
+function closeLoadModal() { document.getElementById('loadModal').classList.remove('open'); }
+
+function exportCSV() {
+  const rows = [['Phase','Task','System Note','Your Notes','Tags','Status','Custom']];
+  PHASES.forEach(p => {
+    p.tasks.forEach(t => rows.push([p.title, t.text, t.note||'', CN[t.id]||'', (t.tags||[]).join(', '), CS[t.id]?'Complete':'Pending','No']));
+    (CT[p.id]||[]).forEach(t => rows.push([p.title, t.text, t.note||'', CN[t.id]||'', 'custom', CS[t.id]?'Complete':'Pending','Yes']));
+  });
+  const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = (S.planName||'Plan').replace(/[^a-z0-9]/gi,'_') + '_payroll_checklist.csv';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('â†“ CSV exported');
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// NAVIGATION
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  currentPage = id;
+}
+
+// ── STICKY BANNER ──────────────────────────────────────────────────────────
+function setupStickyBanner() {
+  const banner   = document.querySelector('.plan-banner');
+  const sentinel = document.getElementById('pb-sentinel');
+  if (!banner || !sentinel) return;
+  new IntersectionObserver(([entry]) => {
+    banner.classList.toggle('is-sticky', !entry.isIntersecting);
+  }, { threshold: 0 }).observe(sentinel);
+}
+
+// ── MINI CALENDAR ──────────────────────────────────────────────────────────
+const MC_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let mcYear = 0, mcMonth = 0;
+
+function buildMiniCal() {
+  const today = new Date();
+  // Jump to effective date's month if available, otherwise current month
+  const seed = S.effectiveDate ? new Date(S.effectiveDate + 'T00:00:00') : today;
+  mcYear  = seed.getFullYear();
+  mcMonth = seed.getMonth();
+  renderMiniCal();
+}
+
+function renderMiniCal() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const effDate  = S.effectiveDate      ? new Date(S.effectiveDate      + 'T00:00:00') : null;
+  const payDate  = S.firstPayrollDate   ? new Date(S.firstPayrollDate   + 'T00:00:00') : null;
+
+  document.getElementById('mc-label').textContent = MC_MONTHS[mcMonth].slice(0,3).toUpperCase() + ' ' + mcYear;
+
+  const firstDow   = new Date(mcYear, mcMonth, 1).getDay();
+  const daysInMo   = new Date(mcYear, mcMonth + 1, 0).getDate();
+  const daysInPrev = new Date(mcYear, mcMonth, 0).getDate();
+
+  const cells = [];
+  // Leading overflow from previous month
+  for (let i = 0; i < firstDow; i++) {
+    cells.push({ n: daysInPrev - firstDow + 1 + i, cls: 'other-mo' });
+  }
+  // Current month
+  for (let d = 1; d <= daysInMo; d++) {
+    const date = new Date(mcYear, mcMonth, d);
+    let cls = 'cur-mo';
+    if (date.getDay() === 0 || date.getDay() === 6) cls += ' wknd';
+    if (date.getTime() === today.getTime())                               cls += ' today';
+    if (effDate  && date.getTime() === effDate.getTime())                 cls += ' eff-date';
+    if (payDate  && date.getTime() === payDate.getTime())                 cls += ' pay-date';
+    cells.push({ n: d, cls });
+  }
+  // Trailing overflow
+  const trail = (7 - (cells.length % 7)) % 7;
+  for (let i = 1; i <= trail; i++) cells.push({ n: i, cls: 'other-mo' });
+
+  document.getElementById('mc-grid').innerHTML =
+    cells.map(c => `<div class="mc-day ${c.cls}">${c.n}</div>`).join('');
+
+  // Legend
+  let leg = '<div class="mc-divider"></div><div class="mc-legend">';
+  leg += `<div class="mc-legend-item"><div class="mc-legend-dot mc-today-dot"></div>Today</div>`;
+  if (effDate)  leg += `<div class="mc-legend-item"><div class="mc-legend-dot mc-eff-dot"></div>Eff: ${fmtDate(S.effectiveDate)}</div>`;
+  if (payDate)  leg += `<div class="mc-legend-item"><div class="mc-legend-dot mc-pay-dot"></div>1st Pay: ${fmtDate(S.firstPayrollDate)}</div>`;
+  leg += '</div>';
+  document.getElementById('mc-legend').innerHTML = leg;
+}
+
+function mcNavMonth(dir) {
+  mcMonth += dir;
+  if (mcMonth > 11) { mcMonth = 0; mcYear++; }
+  if (mcMonth < 0)  { mcMonth = 11; mcYear--; }
+  renderMiniCal();
+}
+
+function mcGoToday() {
+  const today = new Date();
+  mcYear  = today.getFullYear();
+  mcMonth = today.getMonth();
+  renderMiniCal();
+}
+
+function toggleTheme(){
+  const dark = document.getElementById('themeToggle').checked;
+  document.documentElement.classList.toggle('dark-mode', dark);
+  document.getElementById('themeIcon').innerHTML = dark ? '&#127769;' : '&#9728;&#65039;';
+  try { localStorage.setItem('pcg_theme', dark ? 'dark' : 'light'); } catch(e){}
+}
+
+function initTheme(){
+  try {
+    const saved = localStorage.getItem('pcg_theme');
+    // Default to dark if no preference saved â€” this app was designed dark-first
+    const useDark = saved ? saved === 'dark' : true;
+    document.documentElement.classList.toggle('dark-mode', useDark);
+    const tog  = document.getElementById('themeToggle');
+    const icon = document.getElementById('themeIcon');
+    if(tog)  tog.checked = useDark;
+    if(icon) icon.innerHTML = useDark ? '&#127769;' : '&#9728;&#65039;';
+  } catch(e){}
+}
+
+function backToIntake() {
+  showPage('pageIntake');
+  // Restore intake fields from S
+  if (S.planName) {
+    const fields = ['planName','caseNumber','effectiveDate','firstPayrollDate','vendorName','vendorContact','vendorEmail','ftpContact','ftpEmail','ftpPath','tmEmail','tcEmail'];
+    fields.forEach(f => { const el = document.getElementById(f); if (el && S[f]) el.value = S[f]; });
+    useFtp = S.useFtp !== false;
+    document.getElementById('tog-ftp').classList.toggle('on', useFtp);
+    document.getElementById('ftp-subfields').style.display = useFtp ? 'block' : 'none';
+    if (S.ftpDirection && document.getElementById('ftpDirection')) document.getElementById('ftpDirection').value = S.ftpDirection;
+  }
+}
+
+function openChecklist(){ if (S.planName) showPage('pageChecklist'); else showPage('pageIntake'); }
+function openDashboard(){ renderPayrollDashboard(); showPage('pageDashboard'); }
+function openPlans(){ renderPayrollVault(); showPage('pagePlans'); }
+function openCalendar(){
+  const seed = getPayrollAnchorDate('firstPayroll') || getPayrollAnchorDate('effective') || new Date();
+  payrollCalYear = seed.getFullYear();
+  payrollCalMonth = seed.getMonth();
+  renderPayrollCalendar();
+  showPage('pageCalendar');
+}
+
+function getProgressSnapshot(){
+  let total = 0, done = 0;
+  PHASES.forEach(p => {
+    const all = [...p.tasks, ...(CT[p.id]||[])];
+    total += all.length;
+    done += all.filter(t => !!CS[t.id]).length;
+  });
+  return { total, done, pct: total ? Math.round(done / total * 100) : 0 };
+}
+
+function getPhaseSnapshot(){
+  return PHASES.map(p => {
+    const all = [...p.tasks, ...(CT[p.id]||[])];
+    const done = all.filter(t => !!CS[t.id]).length;
+    return { id:p.id, title:p.title, color:p.color, done, total:all.length };
+  });
+}
+
+function getPayrollAnchorDate(kind, source){
+  const src = source || S || {};
+  if (kind === 'firstPayroll' && src.firstPayrollDate) return new Date(src.firstPayrollDate + 'T00:00:00');
+  if (kind === 'effective' && src.effectiveDate) return new Date(src.effectiveDate + 'T00:00:00');
+  const fallback = src.effectiveDate ? new Date(src.effectiveDate + 'T00:00:00') : new Date();
+  fallback.setDate(fallback.getDate() - 21);
+  return fallback;
+}
+
+function addDays(base, days){
+  const d = new Date(base);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function toYmd(date){
+  if (!date) return '';
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  return d.toISOString().split('T')[0];
+}
+
+function getPayrollTaskDueDate(taskId, source){
+  const rule = PAYROLL_SCHED[taskId];
+  const src = source || S || {};
+  if (!rule) return '';
+  const anchor = getPayrollAnchorDate(rule.from === 'effective' ? 'effective' : 'firstPayroll', src);
+  if (!anchor) return '';
+  if (rule.from === 'day1') {
+    const day1 = src.effectiveDate ? addDays(new Date(src.effectiveDate + 'T00:00:00'), -21) : new Date();
+    return toYmd(addDays(day1, rule.days));
+  }
+  return toYmd(addDays(anchor, rule.days));
+}
+
+function buildTimelineSummary(source, checks){
+  const src = source || S || {};
+  const cks = checks || CS || {};
+  const today = toYmd(new Date());
+  const tasks = PHASES.flatMap(p => {
+    const all = [...p.tasks, ...((CT[p.id]||[]))];
+    return all.map(t => {
+      const due = getPayrollTaskDueDate(t.id, src);
+      const doneVal = cks[t.id];
+      const doneDate = doneVal && typeof doneVal === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(doneVal) ? doneVal : (doneVal ? today : '');
+      return { id:t.id, text:t.text, phaseId:p.id, phaseName:p.title, due, done:!!doneVal, doneDate };
+    });
+  });
+  const open = tasks.filter(t => !t.done && t.due);
+  const overdue = open.filter(t => t.due < today).length;
+  const dueSoon = open.filter(t => t.due >= today && t.due <= toYmd(addDays(new Date(), 7))).length;
+  const activeNow = open.filter(t => t.due <= today).length;
+  const nextTask = open.sort((a,b) => (a.due||'').localeCompare(b.due||''))[0] || null;
+  return { overdue, dueSoon, activeNow, nextTask, effectiveDate: src.effectiveDate||'', firstPayrollDate: src.firstPayrollDate||'' };
+}
+
+function getCurrentPayrollRecord(){
+  if (!S || !S.planName) return null;
+  const prog = getProgressSnapshot();
+  return {
+    key: saveKey || '__current__',
+    source: 'current',
+    planName: S.planName,
+    caseNumber: S.caseNumber || '',
+    vendorName: S.vendorName || '',
+    status: planStatus,
+    pct: prog.pct,
+    doneTasks: prog.done,
+    totalTasks: prog.total,
+    effectiveDate: S.effectiveDate || '',
+    firstPayrollDate: S.firstPayrollDate || '',
+    timelineSummary: buildTimelineSummary()
+  };
+}
+
+function getSavedPayrollRecords(){
+  const saves = getSaves();
+  return Object.keys(saves).map(key => {
+    const sv = saves[key];
+    const summary = sv.timelineSummary || { overdue:0, dueSoon:0, activeNow:0 };
+    return {
+      key,
+      source: 'save',
+      planName: sv.S?.planName || key,
+      caseNumber: sv.S?.caseNumber || '',
+      vendorName: sv.S?.vendorName || '',
+      status: sv.status || 'Active',
+      pct: sv.pct || 0,
+      doneTasks: sv.doneTasks || 0,
+      totalTasks: sv.totalTasks || 0,
+      effectiveDate: sv.S?.effectiveDate || '',
+      firstPayrollDate: sv.S?.firstPayrollDate || '',
+      timelineSummary: summary,
+      ts: sv.ts || ''
+    };
+  }).sort((a,b) => String(b.ts).localeCompare(String(a.ts)));
+}
+
+function renderPayrollDashboard(){
+  const mount = document.getElementById('payrollDashMount');
+  if (!mount) return;
+  const current = getCurrentPayrollRecord();
+  const plans = [...(current ? [current] : []), ...getSavedPayrollRecords()];
+  if (!plans.length) {
+    mount.innerHTML = '<div class="dash-card"><div class="dash-empty">Generate or load a payroll checklist first. Once a plan exists, the dashboard will summarize saved payroll setups, progress, and upcoming dates.</div></div>';
+    return;
+  }
+  const openTasks = plans.reduce((s,p) => s + Math.max((p.totalTasks||0) - (p.doneTasks||0), 0), 0);
+  const avgPct = Math.round(plans.reduce((s,p) => s + (p.pct||0), 0) / plans.length);
+  const overdue = plans.reduce((s,p) => s + (p.timelineSummary?.overdue||0), 0);
+  const dueSoon = plans.reduce((s,p) => s + (p.timelineSummary?.dueSoon||0), 0);
+  const active = plans.filter(p => (p.status||'Active') === 'Active').length;
+  const planCards = plans.map(plan => `
+    <div class="dash-plan-item">
+      <div class="dash-plan-top">
+        <div>
+          <div class="dash-plan-name">${esc(plan.planName)}</div>
+          <div class="dash-plan-meta">${esc(plan.caseNumber || 'No Case')} · ${esc(plan.vendorName || 'No Vendor')} · ${(plan.status||'Active').toUpperCase()}</div>
+        </div>
+        <span class="dash-chip ${(plan.timelineSummary?.overdue||0)>0?'danger':((plan.timelineSummary?.dueSoon||0)>0?'warn':'')}">${plan.timelineSummary?.overdue||0} overdue</span>
+      </div>
+      <div class="dash-plan-progress"><div class="prog-track-sm"><div class="prog-fill-sm" style="width:${plan.pct||0}%"></div></div><div class="prog-pct-sm">${plan.pct||0}%</div></div>
+      <div class="dash-plan-meta">First Payroll: ${fmtDate(plan.firstPayrollDate)} · Effective: ${fmtDate(plan.effectiveDate)}</div>
+      <div class="dash-plan-actions">
+        <button class="mini-btn" onclick="${plan.source==='current' ? 'openChecklist()' : `loadFromQuickSave('${plan.key}')`}">Open Checklist</button>
+      </div>
+    </div>`).join('');
+  const deadlineItems = plans.flatMap(plan => {
+    const next = plan.timelineSummary?.nextTask;
+    return next ? [{ plan, next }] : [];
+  }).sort((a,b) => (a.next.due||'').localeCompare(b.next.due||'')).slice(0,8).map(item => `
+    <div class="deadline-item">
+      <div class="dash-plan-top">
+        <div class="dash-plan-name">${esc(item.next.text)}</div>
+        <span class="deadline-chip ${(item.next.due < toYmd(new Date())) ? 'danger' : 'warn'}">${fmtDate(item.next.due)}</span>
+      </div>
+      <div class="deadline-meta">${esc(item.plan.planName)} · ${esc(item.plan.caseNumber||'No Case')} · ${esc(item.next.phaseName)}</div>
+    </div>`).join('');
+  mount.innerHTML = `
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-hd"><div><div class="dash-card-title">Portfolio Snapshot</div><div class="dash-card-sub">Current payroll checklist session plus browser-saved payroll setups</div></div></div>
+        <div class="dash-body"><div class="dash-snapshot">
+          <div class="dash-stat"><div class="dash-stat-n">${plans.length}</div><div class="dash-stat-l">Plans</div></div>
+          <div class="dash-stat"><div class="dash-stat-n">${avgPct}%</div><div class="dash-stat-l">Avg Complete</div></div>
+          <div class="dash-stat"><div class="dash-stat-n">${active}</div><div class="dash-stat-l">Active</div></div>
+          <div class="dash-stat"><div class="dash-stat-n">${openTasks}</div><div class="dash-stat-l">Open Tasks</div></div>
+          <div class="dash-stat"><div class="dash-stat-n">${overdue}</div><div class="dash-stat-l">Overdue</div></div>
+          <div class="dash-stat"><div class="dash-stat-n">${dueSoon}</div><div class="dash-stat-l">Due in 7d</div></div>
+        </div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-hd"><div><div class="dash-card-title">Upcoming Deadlines</div><div class="dash-card-sub">Next dated tasks across visible payroll plans</div></div></div>
+        <div class="dash-body"><div class="dash-deadline-list">${deadlineItems || '<div class="dash-empty">No upcoming dated tasks yet.</div>'}</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-hd"><div><div class="dash-card-title">Plan Breakdown</div><div class="dash-card-sub">Open any payroll setup directly from this list</div></div></div>
+        <div class="dash-body"><div class="dash-plan-list">${planCards}</div></div>
+      </div>
+    </div>`;
+}
+
+function renderPayrollVault(){
+  const mount = document.getElementById('payrollVaultMount');
+  if (!mount) return;
+  const plans = getSavedPayrollRecords();
+  if (!plans.length) {
+    mount.innerHTML = '<div class="vault-card"><div class="vault-empty">Quick Save a payroll checklist to populate the Payroll Plans Vault.</div></div>';
+    return;
+  }
+  mount.innerHTML = `<div class="vault-grid">${plans.map(plan => `
+    <div class="vault-item">
+      <div class="vault-item-top">
+        <div>
+          <div class="vault-item-name">${esc(plan.planName)}</div>
+          <div class="vault-item-meta">${esc(plan.caseNumber || 'No Case')} · ${(plan.status||'Active').toUpperCase()} · ${esc(plan.vendorName || 'No Vendor')}</div>
+        </div>
+        <span class="vault-chip ${(plan.timelineSummary?.overdue||0)>0?'danger':''}">${plan.timelineSummary?.overdue||0} overdue</span>
+      </div>
+      <div class="vault-item-progress"><div class="prog-track-sm"><div class="prog-fill-sm" style="width:${plan.pct||0}%"></div></div><div class="prog-pct-sm">${plan.pct||0}%</div></div>
+      <div class="vault-item-meta">First Payroll: ${fmtDate(plan.firstPayrollDate)} · Effective: ${fmtDate(plan.effectiveDate)}</div>
+      <div class="vault-actions">
+        <button class="mini-btn" onclick="loadFromQuickSave('${plan.key}')">Open</button>
+        <button class="mini-btn danger" onclick="deletePayrollSave('${plan.key}')">Delete</button>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function deletePayrollSave(key){
+  const saves = getSaves();
+  const name = saves[key]?.S?.planName || key;
+  if (!confirm(`Delete "${name}"?\n\nThis cannot be undone.`)) return;
+  delete saves[key];
+  putSaves(saves);
+  renderPayrollVault();
+  renderPayrollDashboard();
+  showToast('Plan deleted');
+}
+
+function getPayrollCalendarTasks(){
+  const today = toYmd(new Date());
+  return PHASES.flatMap(p => {
+    const all = [...p.tasks, ...(CT[p.id]||[])];
+    return all.map(t => {
+      const doneVal = CS[t.id];
+      const due = getPayrollTaskDueDate(t.id);
+      const doneDate = doneVal ? today : '';
+      const date = doneVal ? doneDate : due;
+      const isDone = !!doneVal;
+      let cls = 'future';
+      if (isDone) cls = 'done';
+      else if (due && due < today) cls = 'overdue';
+      else if (due && due <= toYmd(addDays(new Date(), 7))) cls = 'soon';
+      return { id:t.id, text:t.text, date, due, isDone, cls, phaseName:p.title };
+    }).filter(t => !!t.date);
+  });
+}
+
+function setPayrollCalFilter(mode){
+  payrollCalFilter = mode;
+  ['all','open','done','overdue','soon'].forEach(id => {
+    const el = document.getElementById('pcf-' + id);
+    if (el) el.classList.toggle('on', id === mode);
+  });
+  renderPayrollCalendar();
+}
+
+function renderPayrollCalendar(){
+  const mount = document.getElementById('payrollCalendarMount');
+  if (!mount) return;
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('pcMonthLabel').textContent = `${monthNames[payrollCalMonth].toUpperCase()} ${payrollCalYear}`;
+  const allTasks = getPayrollCalendarTasks().filter(t => {
+    if (payrollCalFilter === 'open') return !t.isDone;
+    if (payrollCalFilter === 'done') return t.isDone;
+    if (payrollCalFilter === 'overdue') return t.cls === 'overdue';
+    if (payrollCalFilter === 'soon') return ['overdue','soon'].includes(t.cls);
+    return true;
+  });
+  const selectedDate = toYmd(new Date(payrollCalYear, payrollCalMonth, 1));
+  const first = new Date(payrollCalYear, payrollCalMonth, 1);
+  const startDow = first.getDay();
+  const totalDays = new Date(payrollCalYear, payrollCalMonth + 1, 0).getDate();
+  const prevDays = new Date(payrollCalYear, payrollCalMonth, 0).getDate();
+  let grid = '';
+  for (let i = 0; i < 42; i++) {
+    const dayOffset = i - startDow + 1;
+    let cellDate, num, other = false;
+    if (dayOffset <= 0) { num = prevDays + dayOffset; cellDate = new Date(payrollCalYear, payrollCalMonth - 1, num); other = true; }
+    else if (dayOffset > totalDays) { num = dayOffset - totalDays; cellDate = new Date(payrollCalYear, payrollCalMonth + 1, num); other = true; }
+    else { num = dayOffset; cellDate = new Date(payrollCalYear, payrollCalMonth, num); }
+    const ymd = toYmd(cellDate);
+    const pills = allTasks.filter(t => t.date === ymd).slice(0,3).map(t => `<span class="cal-pill ${t.cls}">${esc(t.text)}</span>`).join('');
+    const todayCls = ymd === toYmd(new Date()) ? ' today' : '';
+    grid += `<div class="cal-cell${other?' other':''}${todayCls}"><div class="cal-num">${num}</div>${pills}</div>`;
+  }
+  const upcoming = allTasks.filter(t => t.date >= toYmd(new Date())).sort((a,b) => a.date.localeCompare(b.date)).slice(0,8).map(t => `
+    <div class="cal-side-item">
+      <div class="dash-plan-name">${esc(t.text)}</div>
+      <div class="cal-side-date">${fmtDate(t.date)} · ${esc(t.phaseName)}</div>
+    </div>`).join('');
+  mount.innerHTML = `
+    <div class="cal-layout">
+      <div class="cal-grid-wrap">
+        <div class="cal-dow"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+        <div class="cal-grid">${grid}</div>
+      </div>
+      <div class="cal-card">
+        <div class="cal-card-hd"><div><div class="cal-card-title">Upcoming</div><div class="cal-card-sub">Next payroll setup tasks on the calendar</div></div></div>
+        <div class="cal-body-wrap"><div class="cal-side-list">${upcoming || '<div class="dash-empty">No dated tasks for this filter.</div>'}</div></div>
+      </div>
+    </div>`;
+}
+
+function pcPrevMonth(){ payrollCalMonth--; if (payrollCalMonth < 0) { payrollCalMonth = 11; payrollCalYear--; } renderPayrollCalendar(); }
+function pcNextMonth(){ payrollCalMonth++; if (payrollCalMonth > 11) { payrollCalMonth = 0; payrollCalYear++; } renderPayrollCalendar(); }
+function pcGoToday(){ const d = new Date(); payrollCalYear = d.getFullYear(); payrollCalMonth = d.getMonth(); renderPayrollCalendar(); }
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// TAG FILTER
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function setTagFilter(tag) {
+  activeTagFilter = tag;
+  ['all','critical','ftp','vendor','testing','loans'].forEach(t => {
+    const el = document.getElementById('tfb-'+t);
+    if (el) el.classList.toggle('on', t === tag);
+  });
+  document.querySelectorAll('.task-item').forEach(item => {
+    if (tag === 'all') { item.classList.remove('tf-hidden'); }
+    else {
+      const tags = item.dataset.tags || '';
+      item.classList.toggle('tf-hidden', !tags.split(',').includes(tag));
+    }
+  });
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// COLLAPSE ALL / EXPAND ALL
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function toggleAllPhases() {
+  allCollapsed = !allCollapsed;
+  PHASES.forEach(p => {
+    const bl = document.getElementById(p.id);
+    if (bl) bl.classList.toggle('collapsed', allCollapsed);
+  });
+  const btn = document.querySelector('.tfb-toggle-all');
+  if (btn) btn.textContent = allCollapsed ? 'Expand All' : 'Collapse All';
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// BULK COMPLETE PHASE
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function bulkPhase(phaseId) {
+  const phase = PHASES.find(p => p.id === phaseId);
+  if (!phase) return;
+  const all = [...phase.tasks, ...(CT[phaseId]||[])];
+  const allDone = all.every(t => CS[t.id]);
+  all.forEach(t => {
+    CS[t.id] = !allDone;
+    const item = document.getElementById('ti-'+t.id);
+    const chk  = document.getElementById('tc-'+t.id);
+    if (item) item.classList.toggle('done', !allDone);
+    if (chk)  { chk.textContent = !allDone ? '\u2713' : ''; }
+  });
+  const btn = document.getElementById('bulk-'+phaseId);
+  if (btn) { btn.innerHTML = allDone ? '&#10003; Complete All' : '&#8617; Undo'; btn.classList.toggle('undo', !allDone); }
+  updateProgress();
+  autoSave();
+  showToast(allDone ? 'Phase unchecked' : '\u2713 Phase marked complete');
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// TASK NOTES
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function togTaskNote(taskId) {
+  const area   = document.getElementById('tna-'+taskId);
+  const toggle = document.getElementById('tnt-'+taskId);
+  if (!area) return;
+  const isOpen = area.classList.toggle('open');
+  if (isOpen) { const inp = document.getElementById('tni-'+taskId); if (inp) setTimeout(() => inp.focus(), 50); }
+}
+
+function saveTaskNote(taskId) {
+  const inp = document.getElementById('tni-'+taskId);
+  if (!inp) return;
+  CN[taskId] = inp.value;
+  const toggle = document.getElementById('tnt-'+taskId);
+  if (toggle) { toggle.classList.toggle('has-note', !!inp.value); toggle.textContent = inp.value ? 'ðŸ“ Note' : '+ Note'; }
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SIDEBAR NOTES
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function saveNotes() {
+  autoSave();
+  showToast('ðŸ“ Notes saved');
+}
+
+// init status dot
+setStatus('Active');
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// CUSTOM TASKS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function openCtForm(phaseId) {
+  document.querySelectorAll('.ct-form.open').forEach(f => f.classList.remove('open'));
+  const form = document.getElementById('ctf-'+phaseId);
+  if (form) { form.classList.add('open'); const inp = document.getElementById('cti-'+phaseId); if (inp) setTimeout(() => inp.focus(), 50); }
+}
+
+function closeCtForm(phaseId) {
+  const form = document.getElementById('ctf-'+phaseId);
+  if (form) form.classList.remove('open');
+  const inp = document.getElementById('cti-'+phaseId); if (inp) inp.value = '';
+  const note = document.getElementById('ctn-'+phaseId); if (note) note.value = '';
+}
+
+function saveCustomTask(phaseId) {
+  const inp = document.getElementById('cti-'+phaseId);
+  if (!inp || !inp.value.trim()) { showToast('âš  Enter a task description'); return; }
+  const text = inp.value.trim();
+  const noteEl = document.getElementById('ctn-'+phaseId);
+  const note = noteEl ? noteEl.value.trim() : '';
+  const task = { id: 'ct_'+phaseId+'_'+Date.now(), text, note };
+  if (!CT[phaseId]) CT[phaseId] = [];
+  CT[phaseId].push(task);
+  CS[task.id] = false;
+  renderCustomTask(phaseId, task);
+  closeCtForm(phaseId);
+  updateProgress();
+  autoSave();
+  showToast('âœ“ Task added');
+}
+
+function renderCustomTask(phaseId, task) {
+  const tasksEl = document.getElementById('pt-'+phaseId);
+  if (!tasksEl) return;
+  if (CS[task.id] === undefined) CS[task.id] = false;
+  const done = !!CS[task.id];
+  const userNote = CN[task.id] || '';
+  const hasNote = !!userNote;
+  const div = document.createElement('div');
+  div.className = 'task-item custom-task' + (done ? ' done' : '');
+  div.id = 'ti-'+task.id;
+  div.dataset.tags = 'custom';
+  div.onclick = () => togTask(task.id);
+  div.innerHTML = `
+    <div class="task-chk" id="tc-${task.id}">${done ? 'âœ“' : ''}</div>
+    <div class="task-body">
+      <div class="task-txt">${esc(task.text)}</div>
+      ${task.note ? `<div class="task-note">${esc(task.note)}</div>` : ''}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:5px;" onclick="event.stopPropagation()">
+        <span class="custom-task-badge">Custom</span>
+        <span class="task-note-toggle${hasNote ? ' has-note' : ''}" id="tnt-${task.id}" onclick="togTaskNote('${task.id}')">${hasNote ? '&#128221; Note' : '+ Note'}</span>
+        <span class="custom-task-del" onclick="deleteCustomTask('${task.id}','${phaseId}')">âœ• Remove</span>
+      </div>
+      <div class="task-note-area${hasNote ? ' open' : ''}" id="tna-${task.id}" onclick="event.stopPropagation()">
+        <textarea class="task-note-input" id="tni-${task.id}" placeholder="Add your notes hereâ€¦" oninput="saveTaskNote('${task.id}')">${esc(userNote)}</textarea>
+      </div>
+    </div>`;
+  tasksEl.appendChild(div);
+}
+
+function deleteCustomTask(taskId, phaseId) {
+  if (CT[phaseId]) CT[phaseId] = CT[phaseId].filter(t => t.id !== taskId);
+  delete CS[taskId];
+  delete CN[taskId];
+  const el = document.getElementById('ti-'+taskId);
+  if (el) el.remove();
+  updateProgress();
+  autoSave();
+  showToast('Task removed');
+}
+</script>
+</body>
+</html>
+

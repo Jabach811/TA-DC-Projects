@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage Concept 04</title>
+  <style>
+    :root{--ink:#17120f;--brick:#a93520;--mustard:#c8942d;--night:#211714;--sans:Tahoma,Verdana,sans-serif;--serif:Cambria,Georgia,serif}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#f9f2e9,#eedec9);color:var(--ink);font-family:var(--sans)}
+    .hero{display:grid;grid-template-columns:92px 1fr;min-height:420px;background:#15100d;color:#fff;border-bottom:4px solid var(--brick)} .hero-accent{background:var(--brick);display:flex;flex-direction:column;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.16em;font-weight:700}
+    .hero-main{padding:52px 56px;background:linear-gradient(135deg,transparent,rgba(201,148,45,.12))} .hero-kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+    h1{margin:18px 0 14px;font:700 72px/.95 var(--serif)} .hero-body{max-width:720px;font-size:18px;line-height:1.7;color:rgba(255,255,255,.72)} .hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+    .meta{padding:11px 14px;border:1px solid rgba(255,255,255,.12)} .meta strong{display:block;font-size:24px}.stack{padding:28px}
+    .lead,.blocks,.footer{opacity:0;transform:scale(.98) translateY(18px);animation:pop .7s cubic-bezier(.2,.8,.2,1) forwards}.blocks{animation-delay:.14s}.footer{animation-delay:.28s}
+    .lead{background:#fffaf2;border-left:8px solid var(--mustard);padding:22px 24px;display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:center}.lead h2{margin:0 0 8px;font:700 36px/1 var(--serif)} .lead p{margin:0;color:#695b51;line-height:1.7}
+    .stamp{padding:18px;background:var(--night);color:#fff;text-align:center}.stamp strong{display:block;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.56)} .stamp span{display:block;margin-top:12px;font:700 40px/1 var(--serif)}
+    .blocks{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:18px}.block{padding:20px;min-height:260px}.block:nth-child(1){background:#201613;color:#fff}.block:nth-child(2){background:#fff7eb;border:1px solid rgba(23,18,15,.12)}
+    .block:nth-child(3){background:#253a2d;color:#eff5f0}.block:nth-child(4){background:#fff;border:1px solid rgba(23,18,15,.12)} .block strong{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+    .block h3{margin:12px 0 10px;font:700 30px/1.02 var(--serif)} .block p{margin:0;line-height:1.65}.block ul{margin:16px 0 0;padding-left:18px;line-height:1.8}
+    .footer{margin-top:18px;display:grid;grid-template-columns:repeat(5,1fr);background:#17120f;color:#fff}.footer div{padding:16px 18px;border-right:1px solid rgba(255,255,255,.09)} .footer div:last-child{border-right:none}
+    .footer strong{display:block;font-size:26px}.footer span{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.48)} @keyframes pop{to{opacity:1;transform:scale(1) translateY(0)}}
+    @media (max-width:940px){.lead,.blocks,.footer{grid-template-columns:1fr}h1{font-size:54px}}
+  </style>
+</head>
+<body>
+  <section class="hero"><div class="hero-accent"><div>v2.10</div><div style="margin-top:14px;line-height:1.7;text-align:center">DATA<br>CONSULT</div></div><div class="hero-main"><div class="hero-kicker">Data Consulting Division · Internal Knowledge Portal</div><h1>Everything<br>our team<br><em>needs.</em></h1><div class="hero-body">One place for every walkthrough, procedure, document, tool, and checklist. Seven interactive flows. One global search. Click anything and go.</div><div class="hero-meta"><div class="meta"><strong>7</strong>Interactive Flows</div><div class="meta"><strong>11</strong>Sections</div><div class="meta"><strong>90+</strong>Indexed Resources</div><div class="meta"><strong>Mar 2026</strong>Last Updated</div></div></div></section>
+  <main class="stack"><section class="lead"><div><h2>Big Section Blocks, Poster-Like Rhythm</h2><p>This direction is more graphic and high-contrast. The homepage body reads like a sequence of editorial panels rather than a dashboard.</p></div><div class="stamp"><strong>Load Motion</strong><span>Scale In</span></div></section><section class="blocks"><article class="block"><strong>Section Group A</strong><h3>Flows First</h3><p style="color:rgba(255,255,255,.72)">The strongest visual weight sits under the hero so interactive content stays dominant.</p><ul><li>Payroll</li><li>Balance Import</li><li>Loans</li><li>Eligibility</li></ul></article><article class="block"><strong>Section Group B</strong><h3>Documents</h3><p>Reference content gets a cleaner archival treatment with less visual noise and more confidence.</p></article><article class="block"><strong>Section Group C</strong><h3>Projects & Tools</h3><p style="color:rgba(255,255,255,.72)">The body can carry more mood if the information hierarchy stays blunt and readable.</p></article><article class="block"><strong>Section Group D</strong><h3>Knowledge Layer</h3><p>Resources, org charts, and requests can feel like the same system without using the same card shape.</p></article></section><section class="footer"><div><strong>7</strong><span>Interactive Flows</span></div><div><strong>11</strong><span>Sections</span></div><div><strong>90+</strong><span>Indexed Resources</span></div><div><strong>v2.10</strong><span>Portal Version</span></div><div><strong style="font-size:18px">Data Consulting Division</strong><span>Internal Use Only · March 2026</span></div></section></main>
+</body>
+</html>

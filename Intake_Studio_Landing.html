@@ -1,0 +1,450 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma Intake Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f3efe7;
+  --paper: #fffdf8;
+  --ink: #171411;
+  --muted: #6f675e;
+  --line: #d8d0c5;
+  --line-strong: #b7ad9f;
+  --navy: #0d2545;
+  --gold: #b78b2f;
+  --sage: #ccd8cc;
+  --rose: #f1ded8;
+  --shadow: 0 24px 60px rgba(16, 22, 30, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(183, 139, 47, 0.18), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(13, 37, 69, 0.1), transparent 26%),
+    linear-gradient(180deg, #f6f2ea 0%, #efe8dd 100%);
+}
+.hero-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 22px 64px;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 34px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--navy), #1d3f72);
+  color: #fff;
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  box-shadow: var(--shadow);
+}
+.brand-copy strong {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.brand-copy span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+.top-pill {
+  border: 1px solid var(--line-strong);
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.64);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: 22px;
+  align-items: stretch;
+}
+.hero-panel,
+.side-panel {
+  background: rgba(255,255,255,0.76);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.68);
+  border-radius: 32px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: rise 0.65s ease forwards;
+}
+.side-panel { animation-delay: 0.14s; }
+.hero-panel-inner {
+  padding: 42px 40px 36px;
+}
+.kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+.hero-title {
+  margin: 0;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(46px, 6vw, 86px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+}
+.hero-title em { color: var(--navy); font-style: italic; }
+.hero-sub {
+  max-width: 690px;
+  margin: 20px 0 28px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.hero-bands {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.hero-band {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(244,239,232,0.8));
+}
+.hero-band strong {
+  display: block;
+  font-size: 28px;
+  line-height: 1;
+}
+.hero-band span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.side-panel-inner {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.side-card {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(243,239,231,0.9));
+}
+.side-card h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+.side-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+.side-list {
+  display: grid;
+  gap: 10px;
+}
+.side-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.side-item span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.side-item strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--navy);
+}
+.selector {
+  max-width: 1240px;
+  margin: 26px auto 0;
+  padding: 0 22px 70px;
+}
+.selector-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+.selector-head h2 {
+  margin: 0;
+  font-family: 'DM Serif Display', serif;
+  font-size: 42px;
+  line-height: 1;
+}
+.selector-head p {
+  margin: 0;
+  max-width: 620px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.choice-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  padding: 28px;
+  border-radius: 28px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: var(--shadow);
+  transform: translateY(16px);
+  opacity: 0;
+  animation: rise 0.7s ease forwards;
+}
+.choice-card:nth-child(2) { animation-delay: 0.12s; }
+.choice-card.app { background: linear-gradient(145deg, #0e1f3b 0%, #17355f 100%); color: #fff; }
+.choice-card.site { background: linear-gradient(145deg, #fbf8f1 0%, #efe6d8 100%); }
+.choice-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.choice-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.choice-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 58px;
+  line-height: 1;
+  opacity: 0.9;
+}
+.choice-card h3 {
+  margin: 28px 0 10px;
+  font-size: 38px;
+  line-height: 0.95;
+}
+.choice-card p {
+  margin: 0;
+  max-width: 460px;
+  line-height: 1.8;
+  font-size: 15px;
+  color: inherit;
+  opacity: 0.88;
+}
+.choice-features {
+  margin-top: auto;
+  display: grid;
+  gap: 10px;
+}
+.choice-feature {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.08);
+  font-size: 13px;
+}
+.choice-card.site .choice-feature {
+  border-color: rgba(23,20,17,0.08);
+  background: rgba(255,255,255,0.58);
+}
+.choice-cta {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 220px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+.choice-card::after {
+  content: '';
+  position: absolute;
+  inset: auto -80px -80px auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+.choice-card.site::after { background: rgba(183,139,47,0.14); }
+.footer-note {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 22px 54px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+@keyframes rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 980px) {
+  .hero-grid,
+  .choice-grid { grid-template-columns: 1fr; }
+  .hero-bands { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .hero-shell,
+  .selector,
+  .footer-note { padding-left: 16px; padding-right: 16px; }
+  .hero-panel-inner,
+  .side-panel-inner,
+  .choice-card { padding: 22px; }
+  .hero-title { font-size: 42px; }
+  .selector-head { display: block; }
+  .selector-head p { margin-top: 10px; }
+}
+</style>
+</head>
+<body>
+  <div class="hero-shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">F</div>
+        <div class="brand-copy">
+          <strong>Forma Intake Studio</strong>
+          <span>Project Intake Portal</span>
+        </div>
+      </div>
+      <div class="top-pill">Official Intake | Discovery First</div>
+    </div>
+
+    <div class="hero-grid">
+      <section class="hero-panel">
+        <div class="hero-panel-inner">
+          <div class="kicker">Creative & Technical Intake</div>
+          <h1 class="hero-title">Choose the right build path <em>before</em> design starts.</h1>
+          <p class="hero-sub">This intake site is built to capture the structure, scope, content, and experience details needed to move a project into production cleanly. Start by choosing whether you need a web app or a web site, then fill in the intake specific to that build type.</p>
+          <div class="hero-bands">
+            <div class="hero-band">
+              <strong>2</strong>
+              <span>Build paths: app or site</span>
+            </div>
+            <div class="hero-band">
+              <strong>Official</strong>
+              <span>Structured prompts for cleaner handoff</span>
+            </div>
+            <div class="hero-band">
+              <strong>Fast</strong>
+              <span>Separate pages with focused intake sections</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="side-panel-inner">
+          <div class="side-card">
+            <h3>What this captures</h3>
+            <p>Business goals, users, sections, features, content needs, integrations, launch priorities, and the visual direction you want the build to follow.</p>
+          </div>
+          <div class="side-list">
+            <div class="side-item"><span>Web App Intake</span><strong>workflow + features</strong></div>
+            <div class="side-item"><span>Web Site Intake</span><strong>sections + content map</strong></div>
+            <div class="side-item"><span>Design Direction</span><strong>tone + aesthetic</strong></div>
+            <div class="side-item"><span>Delivery Inputs</span><strong>scope + deadlines</strong></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section class="selector">
+    <div class="selector-head">
+      <div>
+        <h2>Select Your Intake</h2>
+      </div>
+      <p>Each path is structured differently. Web apps focus on workflows, permissions, data, and repeated use. Web sites focus on architecture, sections, content hierarchy, messaging, and user navigation.</p>
+    </div>
+
+    <div class="choice-grid">
+      <a class="choice-card app" href="Intake_Studio_Web_App.html">
+        <div class="choice-top">
+          <div class="choice-tag">Build Type</div>
+          <div class="choice-num">01</div>
+        </div>
+        <h3>Web App</h3>
+        <p>Choose this if you need tools, generators, dashboards, calculators, portals, workflows, uploads, filters, or repeat-use utility features.</p>
+        <div class="choice-features">
+          <div class="choice-feature">Focuses on user roles, core workflows, saved data, integrations, app pages, and repeated operational use.</div>
+          <div class="choice-feature">Best for internal tools, client portals, trackers, generators, dashboards, and process apps.</div>
+        </div>
+        <div class="choice-cta">Open App Intake</div>
+      </a>
+
+      <a class="choice-card site" href="Intake_Studio_Web_Site.html">
+        <div class="choice-top">
+          <div class="choice-tag">Build Type</div>
+          <div class="choice-num">02</div>
+        </div>
+        <h3>Web Site</h3>
+        <p>Choose this if you need a branded presence, marketing site, portfolio, business site, landing page system, or structured information hub.</p>
+        <div class="choice-features">
+          <div class="choice-feature">Focuses on sections, subsections, navigation architecture, messaging hierarchy, content needs, and conversion goals.</div>
+          <div class="choice-feature">Best for business sites, consultant sites, service websites, marketing funnels, and multi-page branded experiences.</div>
+        </div>
+        <div class="choice-cta">Open Site Intake</div>
+      </a>
+    </div>
+  </section>
+
+  <div class="footer-note">Forma Intake Studio | Separate intake experience | Built for official project discovery</div>
+</body>
+</html>

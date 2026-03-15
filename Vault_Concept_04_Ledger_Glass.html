@@ -1,0 +1,689 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ledger Glass - Plans Vault Concept</title>
+  <style>:root{
+  --bg:#111111;
+  --bg2:#171717;
+  --panel:#1d1d1d;
+  --panel-2:#232323;
+  --panel-3:#2a2a2a;
+  --line:rgba(255,255,255,.10);
+  --text:#f5f1e8;
+  --muted:#b8ad99;
+  --soft:#8a8071;
+  --gold:#f3bc3c;
+  --blue:#5c8bff;
+  --green:#34d399;
+  --orange:#fb923c;
+  --red:#f87171;
+  --violet:#a78bfa;
+  --radius-xl:30px;
+  --radius-lg:20px;
+  --radius-md:14px;
+  --shadow:0 24px 60px rgba(0,0,0,.28);
+  --card-shadow:0 18px 40px rgba(0,0,0,.18);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(243,188,60,.13), transparent 28%),
+    radial-gradient(circle at top right, rgba(92,139,255,.12), transparent 24%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  color:var(--text);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+.shell{
+  width:min(1480px, calc(100vw - 48px));
+  margin:26px auto 50px;
+  animation:shellIn .7s ease both;
+}
+@keyframes shellIn{
+  from{opacity:0; transform:translateY(18px)}
+  to{opacity:1; transform:translateY(0)}
+}
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:30px 34px 28px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  background:linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.01));
+  box-shadow:var(--shadow);
+  isolation:isolate;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(115deg, transparent 0%, rgba(255,255,255,.06) 40%, transparent 70%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.03) 0 1px, transparent 1px 28px);
+  pointer-events:none;
+  z-index:-1;
+}
+.top-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:28px;
+}
+.kicker{
+  font-size:11px;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:10px;
+}
+.title{
+  font-size:62px;
+  line-height:.88;
+  font-weight:800;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  margin:0;
+}
+.title span{color:var(--gold)}
+.sub{
+  max-width:720px;
+  margin-top:10px;
+  font-size:14px;
+  line-height:1.75;
+  color:var(--muted);
+}
+.menu{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:flex-end;
+  max-width:540px;
+}
+.menu button,.sort-tabs button,.mini-btn,.chip,.action-btn{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  color:var(--text);
+  border-radius:999px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  padding:11px 16px;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.menu button:hover,.sort-tabs button:hover,.mini-btn:hover,.action-btn:hover{
+  border-color:rgba(255,255,255,.28);
+  transform:translateY(-1px);
+}
+.menu .active{background:var(--gold); color:#1a1406; border-color:transparent}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:16px;
+  margin-top:24px;
+}
+.stat{
+  padding:18px 18px 16px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+}
+.stat-value{
+  font-size:38px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+.stat-label{
+  margin-top:8px;
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--soft);
+}
+.body{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:22px;
+  margin-top:22px;
+  align-items:start;
+}
+.side-stack{
+  display:grid;
+  gap:18px;
+  position:sticky;
+  top:24px;
+}
+.panel{
+  padding:22px;
+  border-radius:24px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  box-shadow:var(--card-shadow);
+}
+.panel h3{
+  margin:0 0 14px;
+  font-size:12px;
+  letter-spacing:.26em;
+  text-transform:uppercase;
+  color:var(--soft);
+}
+.metric-list,.legend{display:grid; gap:10px}
+.metric{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px;
+  color:var(--muted);
+}
+.metric strong{color:var(--text)}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:13px;
+  color:var(--muted);
+}
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.sort-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.count{
+  font-size:11px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--soft);
+}
+.sort-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.sort-tabs .on{
+  background:var(--blue);
+  color:#fff;
+  border-color:transparent;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:18px;
+}
+.card{
+  position:relative;
+  overflow:hidden;
+  border-radius:24px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  min-height:320px;
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  animation:cardIn .45s ease both;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,255,255,.24);
+  box-shadow:0 24px 46px rgba(0,0,0,.22);
+}
+@keyframes cardIn{
+  from{opacity:0; transform:translateY(14px)}
+  to{opacity:1; transform:translateY(0)}
+}
+.accent{
+  position:absolute;
+  inset:0 auto 0 0;
+  width:5px;
+  border-radius:24px 0 0 24px;
+  background:var(--blue);
+}
+.card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:9px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  border:1px solid currentColor;
+}
+.fav{
+  font-size:20px;
+  color:var(--gold);
+}
+.name{
+  font-size:29px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+.case{
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--soft);
+  margin-top:4px;
+}
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.chip{
+  padding:6px 10px;
+  font-size:9px;
+  background:rgba(255,255,255,.04);
+}
+.dates{
+  display:grid;
+  gap:7px;
+  color:var(--muted);
+  font-size:12px;
+}
+.phase-wrap{
+  display:grid;
+  gap:10px;
+  margin-top:auto;
+}
+.phase-title{
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--soft);
+}
+.phase-list{
+  display:grid;
+  gap:8px;
+}
+.phase{
+  display:grid;
+  grid-template-columns:86px 1fr 40px;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  color:var(--muted);
+}
+.bar{
+  height:8px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+}
+.bar > span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+}
+.progress-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.progress-track{
+  flex:1;
+  height:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  border-radius:999px;
+}
+.pct{
+  min-width:42px;
+  text-align:right;
+  font-size:14px;
+  font-weight:700;
+}
+.card-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+.saved{
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--soft);
+}
+.actions{
+  display:flex;
+  gap:8px;
+}
+.action-btn{
+  padding:9px 12px;
+  font-size:9px;
+}
+.empty{
+  padding:70px 24px;
+  text-align:center;
+  border:1px dashed var(--line);
+  border-radius:24px;
+  color:var(--soft);
+  display:none;
+}
+.empty.show{display:block}
+.empty strong{
+  display:block;
+  color:var(--text);
+  font-size:30px;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.theme-atlas{
+  --bg:#0f1012;
+  --bg2:#151821;
+  --panel:#171a20;
+  --gold:#f0b53c;
+  --blue:#5b8cff;
+  --green:#2dd4bf;
+  --muted:#afb6c3;
+  --soft:#7f8797;
+}
+.theme-gallery{
+  --bg:#ece5d8;
+  --bg2:#ddd4c4;
+  --panel:#f6f0e6;
+  --panel-2:#ffffff;
+  --panel-3:#f0eadf;
+  --line:rgba(49,34,16,.10);
+  --text:#1d150c;
+  --muted:#6c5a46;
+  --soft:#907a62;
+  --gold:#c8851e;
+  --blue:#2458d8;
+  --green:#14866d;
+  --orange:#d26e15;
+  --red:#c04d4d;
+  --violet:#7449d8;
+  --shadow:0 28px 60px rgba(67,42,12,.10);
+  --card-shadow:0 18px 36px rgba(67,42,12,.08);
+  background:
+    radial-gradient(circle at top left, rgba(200,133,30,.14), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(36,88,216,.10), transparent 24%),
+    linear-gradient(180deg,#ece5d8,#ddd4c4);
+}
+.theme-gallery .hero,
+.theme-gallery .panel,
+.theme-gallery .card{background:rgba(255,255,255,.68)}
+.theme-gallery .menu .active{color:#fff}
+.theme-relay{
+  --bg:#0d0e14;
+  --bg2:#131624;
+  --gold:#f97316;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --muted:#a7afc7;
+  --soft:#69708a;
+}
+.theme-relay .hero{
+  background:
+    linear-gradient(145deg, rgba(18,22,38,.9), rgba(11,13,20,.96));
+}
+.theme-ledger{
+  --bg:#131313;
+  --bg2:#191919;
+  --gold:#d4aa5f;
+  --blue:#6ea8ff;
+  --green:#5fd5b1;
+  --muted:#cdc4b8;
+  --soft:#908473;
+}
+.theme-ledger .hero,
+.theme-ledger .panel,
+.theme-ledger .card{
+  backdrop-filter:blur(16px);
+  background:rgba(255,255,255,.045);
+}
+.theme-signal{
+  --bg:#0c0f10;
+  --bg2:#181419;
+  --gold:#ffb648;
+  --blue:#6c86ff;
+  --green:#3ee0b4;
+  --muted:#bab0a4;
+  --soft:#877a6e;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,182,72,.18), transparent 24%),
+    radial-gradient(circle at 100% 20%, rgba(108,134,255,.16), transparent 24%),
+    linear-gradient(180deg,#0c0f10,#181419);
+}
+@media (max-width: 1160px){
+  .body{grid-template-columns:1fr}
+  .side-stack{position:static; grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 760px){
+  .shell{width:min(100vw - 22px, 100%)}
+  .hero{padding:22px}
+  .title{font-size:48px}
+  .top-row{flex-direction:column}
+  .menu{justify-content:flex-start}
+  .stats,.side-stack{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+}</style>
+</head>
+<body class="theme-ledger">
+  <div class="shell">
+    <section class="hero">
+      <div class="top-row">
+        <div>
+          <div class="kicker">Implementation Ledger</div>
+          <h1 class="title">Plans <span>Vault</span></h1>
+          <div class="sub">A glass-panel design with cleaner spacing and a more formal internal product aesthetic.</div>
+        </div>
+        <div class="menu">
+          <button>← Back</button>
+          <button>🔗 Copy App Link</button>
+          <button>💾 Save to File</button>
+          <button>⚡ Quick Save</button>
+          <button>✅ Checklist</button>
+          <button>📊 Dashboard</button>
+          <button class="active">🗂 Plans Vault</button>
+          <button>📅 Calendar</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Plans</div></div>
+        <div class="stat"><div class="stat-value" id="statActive">0</div><div class="stat-label">Active</div></div>
+        <div class="stat"><div class="stat-value" id="statFavs">0</div><div class="stat-label">Favorited</div></div>
+        <div class="stat"><div class="stat-value" id="statAvg">—</div><div class="stat-label">Avg Complete</div></div>
+      </div>
+    </section>
+    <section class="body">
+      <aside class="side-stack">
+        <div class="panel">
+          <h3>Current Lens</h3>
+          <div class="metric-list">
+            <div class="metric"><span>Sort Mode</span><strong id="lensSort">Favorites First</strong></div>
+            <div class="metric"><span>Highest Progress</span><strong id="lensTop">—</strong></div>
+            <div class="metric"><span>Needs Attention</span><strong id="lensAttention">—</strong></div>
+            <div class="metric"><span>Complete Plans</span><strong id="lensComplete">—</strong></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Status Legend</h3>
+          <div class="legend">
+            <div class="legend-item"><span class="dot" style="background:var(--green)"></span>Active plans stay in motion and should be easy to reopen.</div>
+            <div class="legend-item"><span class="dot" style="background:var(--gold)"></span>Favorites stay visually prioritized in the shell.</div>
+            <div class="legend-item"><span class="dot" style="background:var(--red)"></span>On hold plans remain visible without reading like failures.</div>
+            <div class="legend-item"><span class="dot" style="background:var(--blue)"></span>Phase bars still represent the same progress logic as the live app.</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Design Note</h3>
+          <div class="sub" style="margin:0; font-size:13px;">Ledger Glass keeps the same vault signals as the live app: total plans, active count, favorited count, average completion, sort modes, status states, and phase-level progress bars.</div>
+        </div>
+      </aside>
+      <main class="panel">
+        <div class="sort-row">
+          <div class="count" id="countLabel">0 plans saved</div>
+          <div class="sort-tabs">
+            <button class="on" data-sort="fav">★ Favorites First</button>
+            <button data-sort="recent">Recent</button>
+            <button data-sort="alpha">A–Z</button>
+            <button data-sort="pct">% Complete</button>
+          </div>
+        </div>
+        <div class="grid" id="grid"></div>
+        <div class="empty" id="empty">
+          <strong>No Saved Plans</strong>
+          Quick Save a checklist to see it here. These concept files keep the same vault logic, just with alternate shells.
+        </div>
+      </main>
+    </section>
+  </div>
+  <script>
+    const plans = [{"key": "northwind", "planName": "Northwind Components 401(k)", "caseNumber": "CASE-24018", "planType": "conversion", "status": "active", "pct": 38, "fav": true, "strategies": ["cash", "mapping"], "chars": ["roth", "loans"], "effectiveDate": "May 1, 2026", "wireDate": "Apr 24, 2026", "saved": "Saved Mar 14, 2026", "phases": [["Kickoff", 75, "#2563eb"], ["Data", 40, "#f59e0b"], ["Assets", 20, "#10b981"], ["Go-Live", 0, "#ef4444"]]}, {"key": "apex", "planName": "Apex Fabrication 401(k)", "caseNumber": "CASE-24027", "planType": "startup", "status": "active", "pct": 62, "fav": false, "strategies": [], "chars": ["roth"], "effectiveDate": "Jun 1, 2026", "wireDate": "", "saved": "Saved Mar 13, 2026", "phases": [["Kickoff", 100, "#2563eb"], ["Contacts", 80, "#7c3aed"], ["Payroll", 45, "#f59e0b"], ["Launch", 18, "#10b981"]]}, {"key": "harbor", "planName": "Harbor Logistics 401(k)", "caseNumber": "CASE-24031", "planType": "merger", "status": "hold", "pct": 21, "fav": false, "strategies": ["asset"], "chars": [], "effectiveDate": "Jul 1, 2026", "wireDate": "Jun 20, 2026", "saved": "Saved Mar 12, 2026", "phases": [["Kickoff", 100, "#2563eb"], ["Asset Prep", 35, "#10b981"], ["Routing", 10, "#f59e0b"], ["Merge", 0, "#ef4444"]]}, {"key": "summit", "planName": "Summit Electric 401(k)", "caseNumber": "CASE-24034", "planType": "conversion", "status": "complete", "pct": 100, "fav": true, "strategies": ["cash"], "chars": ["auto-enroll"], "effectiveDate": "Mar 1, 2026", "wireDate": "Feb 24, 2026", "saved": "Saved Mar 10, 2026", "phases": [["Kickoff", 100, "#2563eb"], ["Data", 100, "#f59e0b"], ["Assets", 100, "#10b981"], ["Closeout", 100, "#7c3aed"]]}, {"key": "evergreen", "planName": "Evergreen Health 403(b)", "caseNumber": "CASE-24036", "planType": "conversion", "status": "active", "pct": 57, "fav": false, "strategies": ["mapping"], "chars": ["non-qual"], "effectiveDate": "Aug 1, 2026", "wireDate": "Jul 24, 2026", "saved": "Saved Mar 11, 2026", "phases": [["Kickoff", 100, "#2563eb"], ["Testing", 60, "#7c3aed"], ["Source Map", 35, "#10b981"], ["Launch", 15, "#ef4444"]]}, {"key": "granite", "planName": "Granite Works 401(k)", "caseNumber": "CASE-24041", "planType": "startup", "status": "active", "pct": 44, "fav": false, "strategies": [], "chars": ["roth", "loans"], "effectiveDate": "Sep 1, 2026", "wireDate": "", "saved": "Saved Mar 9, 2026", "phases": [["Kickoff", 100, "#2563eb"], ["Payroll", 70, "#f59e0b"], ["Testing", 25, "#7c3aed"], ["Launch", 0, "#ef4444"]]}];
+    let sortMode = 'fav';
+    const statusOrder = { active: 'Active', complete: 'Complete', hold: 'On Hold' };
+    const typeColor = { startup: 'var(--blue)', conversion: 'var(--green)', merger: 'var(--violet)' };
+    const progressGradient = pct => pct >= 80
+      ? 'linear-gradient(90deg,var(--green),#86efac)'
+      : pct >= 50
+        ? 'linear-gradient(90deg,var(--blue),var(--violet))'
+        : pct >= 25
+          ? 'linear-gradient(90deg,var(--gold),var(--orange))'
+          : 'linear-gradient(90deg,var(--red),#fca5a5)';
+
+    function computeStats(list) {
+      const total = list.length;
+      const active = list.filter(p => p.status === 'active').length;
+      const favs = list.filter(p => p.fav).length;
+      const avg = total ? Math.round(list.reduce((sum, p) => sum + p.pct, 0) / total) : 0;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statActive').textContent = active;
+      document.getElementById('statFavs').textContent = favs;
+      document.getElementById('statAvg').textContent = total ? avg + '%' : '—';
+      document.getElementById('countLabel').textContent = `${total} plan${total === 1 ? '' : 's'} saved`;
+      document.getElementById('lensSort').textContent =
+        sortMode === 'fav' ? 'Favorites First' :
+        sortMode === 'recent' ? 'Recent' :
+        sortMode === 'alpha' ? 'Alphabetical' : 'Completion';
+      const top = [...list].sort((a,b) => b.pct - a.pct)[0];
+      document.getElementById('lensTop').textContent = top ? `${top.planName} · ${top.pct}%` : '—';
+      const attention = [...list].filter(p => p.status !== 'complete').sort((a,b) => a.pct - b.pct)[0];
+      document.getElementById('lensAttention').textContent = attention ? `${attention.planName} · ${attention.pct}%` : '—';
+      document.getElementById('lensComplete').textContent = list.filter(p => p.status === 'complete').length;
+    }
+
+    function sortPlans(list) {
+      const clone = [...list];
+      if(sortMode === 'fav') {
+        clone.sort((a,b) => {
+          if(a.fav !== b.fav) return a.fav ? -1 : 1;
+          return b.saved.localeCompare(a.saved);
+        });
+      } else if(sortMode === 'recent') {
+        clone.sort((a,b) => b.saved.localeCompare(a.saved));
+      } else if(sortMode === 'alpha') {
+        clone.sort((a,b) => a.planName.localeCompare(b.planName));
+      } else if(sortMode === 'pct') {
+        clone.sort((a,b) => b.pct - a.pct);
+      }
+      return clone;
+    }
+
+    function renderCard(plan, idx) {
+      const chips = [
+        `<span class="chip">${plan.planType.toUpperCase()}</span>`,
+        ...plan.strategies.map(s => `<span class="chip">${s.toUpperCase()}</span>`),
+        ...plan.chars.map(c => `<span class="chip">${c.toUpperCase()}</span>`)
+      ].join('');
+      const phases = plan.phases.map(([label, pct, color]) => `
+        <div class="phase">
+          <div>${label}</div>
+          <div class="bar"><span style="width:${pct}%; background:${color}"></span></div>
+          <div>${pct}%</div>
+        </div>`).join('');
+      return `
+        <article class="card" style="animation-delay:${idx * 40}ms">
+          <div class="accent" style="background:${typeColor[plan.planType] || 'var(--blue)'}"></div>
+          <div class="card-top">
+            <div class="status" style="color:${plan.status === 'active' ? 'var(--green)' : plan.status === 'complete' ? 'var(--gold)' : 'var(--red)'}">
+              <span class="dot" style="background:currentColor"></span>${statusOrder[plan.status] || plan.status}
+            </div>
+            <div class="fav">${plan.fav ? '★' : '☆'}</div>
+          </div>
+          <div>
+            <div class="name">${plan.planName}</div>
+            <div class="case">Case No. ${plan.caseNumber}</div>
+          </div>
+          <div class="chips">${chips}</div>
+          <div class="dates">
+            <div>Effective Date: <strong>${plan.effectiveDate || '—'}</strong></div>
+            <div>Wire Date: <strong>${plan.wireDate || '—'}</strong></div>
+          </div>
+          <div class="phase-wrap">
+            <div class="phase-title">Phase Progress</div>
+            <div class="phase-list">${phases}</div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-track"><div class="progress-fill" style="width:${plan.pct}%; background:${progressGradient(plan.pct)}"></div></div>
+            <div class="pct">${plan.pct}%</div>
+          </div>
+          <div class="card-footer">
+            <div class="saved">${plan.saved}</div>
+            <div class="actions">
+              <button class="action-btn">Delete</button>
+              <button class="action-btn">Open →</button>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function render() {
+      const sorted = sortPlans(plans);
+      computeStats(sorted);
+      const grid = document.getElementById('grid');
+      const empty = document.getElementById('empty');
+      if(!sorted.length) {
+        grid.innerHTML = '';
+        empty.classList.add('show');
+        return;
+      }
+      empty.classList.remove('show');
+      grid.innerHTML = sorted.map(renderCard).join('');
+    }
+
+    document.querySelectorAll('[data-sort]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sortMode = btn.dataset.sort;
+        document.querySelectorAll('[data-sort]').forEach(other => other.classList.remove('on'));
+        btn.classList.add('on');
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Query Extractor — VBA Project 02</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0f0d0a;
+  --paper:  #f2ede4;
+  --paper2: #e8e2d6;
+  --paper3: #ddd7c9;
+  --red:    #c8290a;
+  --dim:    #7a7060;
+  --serif:  'Playfair Display', Georgia, serif;
+  --sans:   'IBM Plex Sans', sans-serif;
+  --brut:   'Bebas Neue', sans-serif;
+  --mono:   'IBM Plex Mono', monospace;
+  --fd-bg:      #f5f7fb;
+  --fd-surface: #ffffff;
+  --fd-border:  #cfd6e3;
+  --fd-text:    #1b2533;
+  --fd-muted:   #6c7a90;
+  --fd-blue:    #2a6df4;
+  --fd-green:   #1aa96b;
+  --fd-yellow:  #d4a017;
+  --fd-red:     #c0392b;
+  --fd-purple:  #6f4cd7;
+  --fd-orange:  #e67e22;
+  --fd-teal:    #0e9aa0;
+  --node-w: 210px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh; }
+
+.proj-hero { background: var(--ink); border-bottom: 4px solid var(--red); display: grid; grid-template-columns: 120px 1fr auto; }
+.proj-hero-num { background: var(--red); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 36px 0; min-width: 120px; }
+.proj-hero-num-val { font-family: var(--brut); font-size: 64px; color: #fff; line-height: .85; }
+.proj-hero-num-label { font-family: var(--sans); font-size: 7px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.45); margin-top: 10px; }
+.proj-hero-main { padding: 36px 48px; }
+.proj-hero-kicker { font-family: var(--sans); font-size: 8.5px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.proj-hero-kicker::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--red); flex-shrink: 0; }
+.proj-hero-title { font-family: var(--serif); font-size: 42px; font-weight: 900; color: var(--paper); line-height: 1.05; margin-bottom: 14px; }
+.proj-hero-title em { color: var(--red); font-style: italic; }
+.proj-hero-desc { font-family: var(--serif); font-size: 14px; font-style: italic; color: rgba(255,255,255,.32); line-height: 1.75; max-width: 540px; }
+.proj-hero-meta { display: flex; flex-direction: column; border-left: 2px solid #1e1a16; }
+.proj-meta-block { flex: 1; padding: 22px 34px; border-bottom: 1px solid #1e1a16; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.proj-meta-block:last-child { border-bottom: none; }
+.proj-meta-n { font-family: var(--brut); font-size: 38px; color: var(--red); line-height: 1; display: block; }
+.proj-meta-l { font-family: var(--sans); font-size: 7.5px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.18); margin-top: 3px; display: block; }
+
+.tag-strip { background: var(--paper2); border-bottom: 2px solid var(--ink); padding: 10px 28px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tag { font-family: var(--mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border: 1.5px solid var(--paper3); color: var(--dim); background: var(--paper); }
+.tag.red   { border-color: var(--red); color: var(--red); background: #fdf0ed; }
+.tag.green { border-color: #1e6b3c;   color: #1e6b3c;   background: #f0fbf5; }
+.tag.blue  { border-color: #1f4b8e;   color: #1f4b8e;   background: #f0f5ff; }
+.tag-sep   { color: var(--paper3); font-size: 14px; }
+
+.sec-rule { display: flex; align-items: center; border-bottom: 2px solid var(--ink); border-top: 1px solid var(--paper3); background: var(--paper2); }
+.sec-rule-label { font-family: var(--brut); font-size: 16px; letter-spacing: 3px; color: var(--ink); padding: 10px 22px; border-right: 2px solid var(--ink); flex-shrink: 0; }
+.sec-rule-sub { font-family: var(--serif); font-size: 12px; font-style: italic; color: var(--dim); padding: 0 22px; flex: 1; }
+.sec-rule-n { font-family: var(--brut); font-size: 24px; color: var(--red); padding: 0 22px; border-left: 2px solid var(--ink); align-self: stretch; display: flex; align-items: center; }
+
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 3px solid var(--ink); }
+.ov-card { padding: 28px; border-right: 2px solid var(--ink); background: var(--paper); }
+.ov-card:last-child { border-right: none; }
+.ov-card-kicker { font-family: var(--sans); font-size: 7.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+.ov-card-title { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+.ov-card-body { font-family: var(--serif); font-size: 13px; color: var(--dim); line-height: 1.7; }
+.ov-card-list { list-style: none; margin-top: 10px; }
+.ov-card-list li { font-family: var(--sans); font-size: 11px; color: var(--dim); padding: 5px 0; border-bottom: 1px solid var(--paper3); display: flex; align-items: flex-start; gap: 8px; }
+.ov-card-list li:last-child { border-bottom: none; }
+.ov-card-list li::before { content: '→'; color: var(--red); flex-shrink: 0; font-size: 10px; margin-top: 1px; }
+
+.flow-panel-hd { display: flex; align-items: center; border-bottom: 2px solid var(--fd-border); background: var(--fd-surface); }
+.flow-panel-hd-main { padding: 20px 28px; flex: 1; }
+.flow-panel-hd h3 { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--fd-text); margin-bottom: 4px; }
+.flow-panel-hd p { font-family: var(--mono); font-size: 10px; color: var(--fd-muted); letter-spacing: .05em; }
+.flow-stats { display: flex; border-left: 2px solid var(--fd-border); }
+.flow-stat { padding: 20px 22px; border-right: 1px solid var(--fd-border); text-align: center; }
+.flow-stat:last-child { border-right: none; }
+.flow-stat-n { font-size: 22px; font-weight: 700; display: block; line-height: 1; }
+.flow-stat-l { font-family: var(--mono); font-size: 8px; letter-spacing: .15em; text-transform: uppercase; color: var(--fd-muted); margin-top: 3px; display: block; }
+.scroll-hint { text-align: center; font-family: var(--mono); font-size: 9px; letter-spacing: .18em; color: var(--fd-muted); padding: 6px 0 10px; opacity: .55; background: var(--fd-bg); border-bottom: 1px solid var(--fd-border); }
+.flow-wrap { overflow-x: auto; padding: 24px 20px 36px; background: var(--fd-bg); border-bottom: 3px solid var(--ink); }
+
+.section-band-fd { border: 2px solid var(--fd-border); border-radius: 8px; padding: 20px 16px 16px; margin: 0 auto 10px; background: var(--fd-surface); position: relative; }
+.section-band-fd::before { content: attr(data-section); position: absolute; top: -11px; left: 16px; font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; padding: 0 10px; background: var(--fd-bg); color: var(--fd-muted); }
+.section-band-fd.b-blue   { border-color: var(--fd-blue);   } .section-band-fd.b-blue::before   { color: var(--fd-blue);   }
+.section-band-fd.b-green  { border-color: var(--fd-green);  } .section-band-fd.b-green::before  { color: var(--fd-green);  }
+.section-band-fd.b-yellow { border-color: var(--fd-yellow); } .section-band-fd.b-yellow::before { color: var(--fd-yellow); }
+.section-band-fd.b-purple { border-color: var(--fd-purple); } .section-band-fd.b-purple::before { color: var(--fd-purple); }
+.section-band-fd.b-orange { border-color: var(--fd-orange); } .section-band-fd.b-orange::before { color: var(--fd-orange); }
+.section-band-fd.b-teal   { border-color: var(--fd-teal);   } .section-band-fd.b-teal::before   { color: var(--fd-teal);   }
+.section-band-fd.b-red    { border-color: var(--fd-red);    } .section-band-fd.b-red::before    { color: var(--fd-red);    }
+
+.fd-node { width: var(--node-w); background: var(--fd-surface); border: 2px solid var(--fd-border); border-radius: 6px; padding: 13px 15px; position: relative; transition: .15s; cursor: default; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+.fd-node:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.09); }
+.fd-node-type  { font-family: var(--mono); font-size: 8px; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 5px; color: var(--fd-muted); }
+.fd-node-title { font-size: 13px; font-weight: 500; line-height: 1.35; color: var(--fd-text); }
+.fd-node-sub   { font-size: 11px; color: var(--fd-muted); margin-top: 4px; font-style: italic; line-height: 1.45; }
+.fd-node-icon  { position: absolute; top: 9px; right: 11px; font-size: 14px; opacity: .4; }
+.fd-node.start    { border-color: #aab4c8; background: #f9fbff; }
+.fd-node.end-nd   { background: #eaf7ef; border-color: var(--fd-green); }
+.fd-node.branch-nd { border-style: dashed; }
+.fd-node.b-blue   { border-color: var(--fd-blue);   background: #f0f5ff; }
+.fd-node.b-green  { border-color: var(--fd-green);  background: #f0fbf5; }
+.fd-node.b-yellow { border-color: var(--fd-yellow); background: #fdf8ec; }
+.fd-node.b-red    { border-color: var(--fd-red);    background: #fdf0f0; }
+.fd-node.b-orange { border-color: var(--fd-orange); background: #fdf5ec; }
+.fd-node.b-purple { border-color: var(--fd-purple); background: #f5f0fd; }
+.fd-node.b-teal   { border-color: var(--fd-teal);   background: #f0fbfc; }
+.fd-choices { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.fd-chip { font-family: var(--mono); font-size: 8px; letter-spacing: .1em; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--fd-border); background: #fafbfd; display: inline-block; width: fit-content; }
+.fd-chip.b-blue   { border-color: var(--fd-blue);   color: var(--fd-blue);   background: #eef3ff; }
+.fd-chip.b-green  { border-color: var(--fd-green);  color: var(--fd-green);  background: #eaf7ef; }
+.fd-chip.b-yellow { border-color: var(--fd-yellow); color: var(--fd-yellow); background: #fffbe8; }
+.fd-chip.b-red    { border-color: var(--fd-red);    color: var(--fd-red);    background: #fff0f0; }
+.fd-chip.b-orange { border-color: var(--fd-orange); color: var(--fd-orange); background: #fff4ea; }
+.fd-chip.b-purple { border-color: var(--fd-purple); color: var(--fd-purple); background: #f4f0ff; }
+.fd-chip.b-teal   { border-color: var(--fd-teal);   color: var(--fd-teal);   background: #f0fbfc; }
+.fd-flow  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.fd-paths { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+.fd-path  { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.fd-path-label { font-family: var(--mono); font-size: 8.5px; letter-spacing: .12em; padding: 4px 10px; border-radius: 3px; border: 1px solid var(--fd-border); background: #f7f9fc; white-space: nowrap; }
+.fd-path-label.b-blue   { border-color: var(--fd-blue);   color: var(--fd-blue);   background: #eef3ff; }
+.fd-path-label.b-green  { border-color: var(--fd-green);  color: var(--fd-green);  background: #eaf7ef; }
+.fd-path-label.b-yellow { border-color: var(--fd-yellow); color: var(--fd-yellow); background: #fffbe8; }
+.fd-path-label.b-orange { border-color: var(--fd-orange); color: var(--fd-orange); background: #fff4ea; }
+.fd-path-label.b-purple { border-color: var(--fd-purple); color: var(--fd-purple); background: #f4f0ff; }
+.fd-arrow { width: 2px; height: 22px; background: var(--fd-border); position: relative; margin: 0 auto; }
+.fd-arrow::after { content: ''; position: absolute; bottom: -6px; left: -4px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--fd-border); }
+.fd-arrow.blue   { background: var(--fd-blue);   } .fd-arrow.blue::after   { border-top-color: var(--fd-blue);   }
+.fd-arrow.green  { background: var(--fd-green);  } .fd-arrow.green::after  { border-top-color: var(--fd-green);  }
+.fd-arrow.yellow { background: var(--fd-yellow); } .fd-arrow.yellow::after { border-top-color: var(--fd-yellow); }
+.fd-arrow.purple { background: var(--fd-purple); } .fd-arrow.purple::after { border-top-color: var(--fd-purple); }
+.fd-arrow.orange { background: var(--fd-orange); } .fd-arrow.orange::after { border-top-color: var(--fd-orange); }
+.fd-arrow.teal   { background: var(--fd-teal);   } .fd-arrow.teal::after   { border-top-color: var(--fd-teal);   }
+.fd-note { background: #f9fbff; border: 1px dashed var(--fd-border); border-radius: 6px; padding: 11px 14px; font-size: 12px; color: var(--fd-muted); max-width: 860px; margin: 0 auto 14px; line-height: 1.55; }
+.fd-note strong { color: var(--fd-text); }
+.fd-note.warn { background: #fff8f8; border-color: #e0b4b4; }
+.c-blue   { color: var(--fd-blue)   !important; } .c-green  { color: var(--fd-green)  !important; }
+.c-yellow { color: var(--fd-yellow) !important; } .c-red    { color: var(--fd-red)    !important; }
+.c-purple { color: var(--fd-purple) !important; } .c-orange { color: var(--fd-orange) !important; }
+.c-teal   { color: var(--fd-teal)   !important; }
+
+.arch-wrap { background: var(--fd-bg); padding: 28px; border-bottom: 3px solid var(--ink); overflow-x: auto; }
+.arch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 960px; margin: 0 auto; }
+.arch-col-hd { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--fd-muted); text-align: center; padding: 0 0 16px; border-bottom: 2px solid var(--fd-border); margin-bottom: 16px; }
+.arch-col { padding: 0 12px; border-right: 1px dashed var(--fd-border); display: flex; flex-direction: column; gap: 10px; }
+.arch-col:first-child { padding-left: 0; }
+.arch-col:last-child  { border-right: none; padding-right: 0; }
+.arch-item { background: var(--fd-surface); border: 2px solid var(--fd-border); border-radius: 6px; padding: 12px 14px; transition: .15s; }
+.arch-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.arch-item-type { font-family: var(--mono); font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--fd-muted); margin-bottom: 4px; }
+.arch-item-name { font-size: 12px; font-weight: 600; color: var(--fd-text); line-height: 1.3; margin-bottom: 4px; }
+.arch-item-desc { font-size: 10.5px; color: var(--fd-muted); font-style: italic; line-height: 1.4; }
+.arch-item.ui   { border-color: var(--fd-blue);   background: #f0f5ff; } .arch-item.ui .arch-item-type   { color: var(--fd-blue);   }
+.arch-item.data { border-color: var(--fd-orange); background: #fdf5ec; } .arch-item.data .arch-item-type { color: var(--fd-orange); }
+.arch-item.fn   { border-color: var(--fd-green);  background: #f0fbf5; } .arch-item.fn .arch-item-type   { color: var(--fd-green);  }
+.arch-item.proc { border-color: var(--fd-purple); background: #f5f0fd; } .arch-item.proc .arch-item-type { color: var(--fd-purple); }
+
+.code-section { border-bottom: 3px solid var(--ink); }
+.module-hd { display: flex; align-items: center; background: var(--paper2); border-bottom: 2px solid var(--ink); cursor: pointer; transition: background .15s; user-select: none; }
+.module-hd:hover { background: var(--paper3); }
+.module-hd-num { font-family: var(--brut); font-size: 28px; color: var(--paper3); width: 60px; text-align: center; padding: 0 16px; flex-shrink: 0; border-right: 2px solid var(--ink); align-self: stretch; display: flex; align-items: center; justify-content: center; }
+.module-hd:hover .module-hd-num { color: var(--red); }
+.module-hd-body { flex: 1; padding: 14px 20px; }
+.module-hd-tag   { font-family: var(--sans); font-size: 7.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--red); margin-bottom: 3px; }
+.module-hd-title { font-family: var(--serif); font-size: 17px; font-weight: 700; color: var(--ink); }
+.module-hd-desc  { font-family: var(--serif); font-size: 12px; font-style: italic; color: var(--dim); margin-top: 2px; }
+.module-hd-toggle { font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--dim); padding: 0 24px; flex-shrink: 0; }
+.module-body { display: none; background: #13111a; }
+.module-body.open { display: block; }
+.module-toolbar { background: #1d1b2a; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2a2840; }
+.module-toolbar-label { font-family: var(--mono); font-size: 9px; letter-spacing: .15em; color: #7a6fa8; text-transform: uppercase; }
+.copy-btn { font-family: var(--sans); font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border: 1.5px solid #3a3560; background: transparent; color: #7a6fa8; cursor: pointer; transition: all .15s; }
+.copy-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.copy-btn.ok { background: #1a6b3c !important; border-color: #1a6b3c !important; color: #fff !important; }
+pre.vba { margin: 0; padding: 20px 24px; overflow-x: auto; font-family: var(--mono); font-size: 12px; line-height: 1.75; color: #c8c0e8; }
+pre.vba .kw  { color: #7fa8f4; } pre.vba .fn  { color: #7dd3aa; }
+pre.vba .str { color: #d4a060; } pre.vba .cm  { color: #5a5370; font-style: italic; }
+pre.vba .num { color: #f4b06a; } pre.vba .tok { color: #f48cb0; }
+pre.vba .ph  { color: #666080; font-style: italic; }
+
+.setup-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 3px solid var(--ink); }
+.setup-col { padding: 28px; border-right: 2px solid var(--ink); background: var(--paper); }
+.setup-col:last-child { border-right: none; }
+.setup-col-title { font-family: var(--brut); font-size: 16px; letter-spacing: 2px; color: var(--dim); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+.setup-step { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--paper3); }
+.setup-step:last-child { border-bottom: none; }
+.setup-num { font-family: var(--brut); font-size: 24px; color: var(--paper3); flex-shrink: 0; width: 32px; line-height: 1; }
+.setup-title { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.setup-desc  { font-family: var(--sans); font-size: 11px; color: var(--dim); line-height: 1.55; }
+.setup-code  { font-family: var(--mono); font-size: 10px; color: var(--red); background: var(--paper2); border: 1px solid var(--paper3); padding: 2px 6px; margin-top: 4px; display: inline-block; }
+
+.proj-footer { background: var(--ink); display: flex; border-top: 4px solid var(--red); }
+.pf-block { flex: 1; padding: 22px 24px; border-right: 1px solid #1e1a16; text-align: center; }
+.pf-block:last-child { border-right: none; }
+.pf-n { font-family: var(--brut); font-size: 34px; color: var(--red); display: block; line-height: 1; }
+.pf-l { font-family: var(--serif); font-size: 11px; font-style: italic; color: rgba(255,255,255,.2); display: block; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="proj-hero">
+  <div class="proj-hero-num">
+    <div class="proj-hero-num-val">02</div>
+    <div class="proj-hero-num-label">Project</div>
+  </div>
+  <div class="proj-hero-main">
+    <div class="proj-hero-kicker">VBA + Power Query · AQT Integration · Data Consulting Division</div>
+    <div class="proj-hero-title">SQL <em>Query Extractor</em></div>
+    <div class="proj-hero-desc">Enter a case number once — the workbook validates the format, builds every query variant automatically, and refreshes all Power Query tables in one shot. Navigate tab to tab, extract and transform data without touching AQT directly.</div>
+  </div>
+  <div class="proj-hero-meta">
+    <div class="proj-meta-block"><span class="proj-meta-n">4+</span><span class="proj-meta-l">Query Tabs</span></div>
+    <div class="proj-meta-block"><span class="proj-meta-n">2</span><span class="proj-meta-l">Plan Formats</span></div>
+    <div class="proj-meta-block"><span class="proj-meta-n">1</span><span class="proj-meta-l">Click Refresh</span></div>
+  </div>
+</div>
+
+<!-- ═══ TAG STRIP ═══ -->
+<div class="tag-strip">
+  <span class="tag red">VBA</span>
+  <span class="tag red">Power Query</span>
+  <span class="tag-sep">·</span>
+  <span class="tag blue">UserForm</span>
+  <span class="tag blue">AQT Integration</span>
+  <span class="tag-sep">·</span>
+  <span class="tag green">Case # Validation</span>
+  <span class="tag green">Format Normalization</span>
+  <span class="tag green">Auto Refresh</span>
+  <span class="tag-sep">·</span>
+  <span class="tag">Plan Conversions</span>
+  <span class="tag">Data Extraction</span>
+</div>
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">OVERVIEW</div>
+  <div class="sec-rule-sub">What this workbook does, the problem it solves, and how it's structured</div>
+</div>
+<div class="overview-grid">
+  <div class="ov-card">
+    <div class="ov-card-kicker">The Problem It Solves</div>
+    <div class="ov-card-title">No more manual query editing between plans</div>
+    <div class="ov-card-body">Every time you move to a new plan you'd have to open AQT, find the query, highlight the case number, type the new one in the right format, hope there's no trailing space, and re-run. This workbook eliminates all of that. Enter the case number once, every query updates and refreshes automatically.</div>
+  </div>
+  <div class="ov-card">
+    <div class="ov-card-kicker">What It Does</div>
+    <div class="ov-card-title">One entry point, all tables refreshed</div>
+    <ul class="ov-card-list">
+      <li>UserForm accepts raw case number input</li>
+      <li>Validator detects prefix type (Q/N vs T/J) and enforces spacing rules</li>
+      <li>Builds all required query format variants automatically</li>
+      <li>Injects formatted values into each Power Query connection string</li>
+      <li>Refreshes all tables — data lands pre-formatted in Excel</li>
+      <li>Navigate tab by tab — each sheet is its own extraction table</li>
+    </ul>
+  </div>
+  <div class="ov-card">
+    <div class="ov-card-kicker">Tables Covered</div>
+    <div class="ov-card-title">One sheet per query type</div>
+    <ul class="ov-card-list">
+      <li>Employee table</li>
+      <li>Deferral elections</li>
+      <li>Deferrals table</li>
+      <li>[Additional query tabs — add as needed]</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ EXECUTION FLOW ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">EXECUTION FLOW</div>
+  <div class="sec-rule-sub">From case number entry to refreshed Excel tables — full execution path</div>
+  <div class="sec-rule-n">11</div>
+</div>
+<div class="flow-panel-hd">
+  <div class="flow-panel-hd-main">
+    <h3>SQL Query Extractor — Full Execution Flow</h3>
+    <p>4 stages · 11 steps · 2 branch points · 1 output (refreshed Power Query tables)</p>
+  </div>
+  <div class="flow-stats">
+    <div class="flow-stat"><span class="flow-stat-n c-blue">4</span><span class="flow-stat-l">Stages</span></div>
+    <div class="flow-stat"><span class="flow-stat-n c-green">11</span><span class="flow-stat-l">Steps</span></div>
+    <div class="flow-stat"><span class="flow-stat-n" style="color:var(--fd-yellow);">2</span><span class="flow-stat-l">Branches</span></div>
+  </div>
+</div>
+<div class="scroll-hint">← SCROLL HORIZONTALLY IF NEEDED →</div>
+<div class="flow-wrap">
+  <div class="fd-flow" style="max-width:680px;margin:0 auto;">
+
+    <!-- Stage I: Entry -->
+    <div class="section-band-fd b-blue" data-section="Stage I · Case Number Entry (UserForm)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node start" style="width:100%;max-width:380px;"><span class="fd-node-icon">▶</span><div class="fd-node-type">Entry Point · Sheet Button</div><div class="fd-node-title">User clicks "Enter Case Number" button on any sheet</div><div class="fd-node-sub">Button present on every tab — any sheet can trigger a new case number entry.</div></div>
+        <div class="fd-arrow blue"></div>
+        <div class="fd-node b-blue" style="width:100%;max-width:380px;"><span class="fd-node-icon">📋</span><div class="fd-node-type">Step 01 · UserForm Launch</div><div class="fd-node-title">Custom UserForm opens for case number input</div><div class="fd-node-sub">frmCaseEntry loads — single input field, submit/cancel. Pre-populates with current case number if one is already set.</div></div>
+        <div class="fd-arrow blue"></div>
+        <div class="fd-node b-blue" style="width:100%;max-width:380px;"><span class="fd-node-icon">✏️</span><div class="fd-node-type">Step 02 · Raw Input</div><div class="fd-node-title">User types the case number as-is</div><div class="fd-node-sub">No manual formatting required — user enters the raw value. Validation and normalization happen in the next stage.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage II: Validation + Format -->
+    <div class="section-band-fd b-yellow" data-section="Stage II · Validation + Format Normalization (mod_CaseValidator)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔍</span><div class="fd-node-type">Step 03 · Prefix Detection</div><div class="fd-node-title">Read first character — determine plan type</div><div class="fd-node-sub">Checks leading letter(s) to classify the plan format before applying spacing rules.</div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node branch-nd b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">⚡</span><div class="fd-node-type c-yellow">Step 04 · Branch: Which format rule applies?</div><div class="fd-node-title">Two spacing rules based on prefix type</div><div class="fd-choices"><span class="fd-chip b-blue">Q / N prefix → 2 letters + 5 digits + 3 spaces + 5 digits</span><span class="fd-chip b-orange">T / J prefix → 2 letters + 6 digits + 2 spaces + 5 digits</span></div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">✔️</span><div class="fd-node-type">Step 05 · Format Validation</div><div class="fd-node-title">Validate structure matches expected pattern for prefix type</div><div class="fd-node-sub">Checks digit counts and spacing. If invalid — MsgBox with expected format shown, form stays open for correction.</div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔧</span><div class="fd-node-type">Step 06 · Build Format Variants</div><div class="fd-node-title">Generate all query-specific format variants from validated input</div><div class="fd-node-sub">Each query may need a different slice of the case number — full string, partial, with wildcard %, underscore, or other formatting. All variants built here.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage III: Query Injection -->
+    <div class="section-band-fd b-purple" data-section="Stage III · Query Injection + Refresh (mod_QueryBuilder)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">💉</span><div class="fd-node-type">Step 07 · Inject Into Power Query Connections</div><div class="fd-node-title">Each connection string updated with the correct format variant</div><div class="fd-node-sub">Loops through all Power Query connections in the workbook. Each gets the appropriate pre-formatted case number value for its query.</div></div>
+        <div class="fd-arrow purple"></div>
+        <div class="fd-node b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔄</span><div class="fd-node-type">Step 08 · Refresh All Tables</div><div class="fd-node-title">ActiveWorkbook.RefreshAll — all Power Query tables re-execute</div><div class="fd-node-sub">Single refresh call pulls fresh data from AQT through all connections simultaneously. Tables land pre-formatted in Excel — no copy/paste from AQT needed.</div></div>
+        <div class="fd-arrow purple"></div>
+        <div class="fd-node branch-nd b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">⚡</span><div class="fd-node-type c-purple">Step 09 · Refresh Complete?</div><div class="fd-node-title">Check for errors after refresh</div><div class="fd-choices"><span class="fd-chip b-green">Success → update stored case number, proceed</span><span class="fd-chip b-red">Error → show connection error message with details</span></div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage IV: Output -->
+    <div class="section-band-fd b-green" data-section="Stage IV · Output (All Sheets)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-green" style="width:100%;max-width:380px;"><span class="fd-node-icon">📊</span><div class="fd-node-type">Step 10 · Case Number Stored + Displayed</div><div class="fd-node-title">Current case number written to a named cell on each sheet</div><div class="fd-node-sub">Named range (e.g. rng_CurrentCase) updated on every tab — always visible, always current.</div></div>
+        <div class="fd-arrow green"></div>
+        <div class="fd-node end-nd" style="width:100%;max-width:380px;"><span class="fd-node-icon">✅</span><div class="fd-node-type">Step 11 · Ready to Extract</div><div class="fd-node-title">All tables refreshed — navigate tab by tab</div><div class="fd-node-sub">Employee table, deferral elections, deferrals, and all other query tabs are populated and formatted. Copy out, paste into output reports.</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div style="max-width:640px;margin:16px auto 32px;padding:0 20px;">
+  <div class="fd-note"><strong>Key design:</strong> The format normalization layer is fully decoupled from the query injection layer. Adding a new query tab only requires adding one connection and one format variant — the validation and refresh logic stays unchanged.</div>
+  <div class="fd-note warn" style="margin-top:10px;"><strong>Format rules:</strong> Q/N prefix → 2 letters + 5 digits + 3 spaces + 5 digits &nbsp;|&nbsp; T/J prefix → 2 letters + 6 digits + 2 spaces + 5 digits. Wrong spacing = broken query — the validator enforces this before any injection occurs.</div>
+</div>
+
+<!-- ═══ CODE ARCHITECTURE ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">CODE ARCHITECTURE</div>
+  <div class="sec-rule-sub">Module layout — VBA components and Power Query connection structure</div>
+  <div class="sec-rule-n">4</div>
+</div>
+<div class="arch-wrap">
+  <div class="arch-grid">
+    <div>
+      <div class="arch-col-hd">UserForm</div>
+      <div class="arch-col">
+        <div class="arch-item ui">
+          <div class="arch-item-type">UI · Form</div>
+          <div class="arch-item-name">frmCaseEntry</div>
+          <div class="arch-item-desc">Single text input + submit/cancel. Pre-populates with current stored case number. Calls mod_CaseValidator on submit.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Validation</div>
+      <div class="arch-col">
+        <div class="arch-item fn">
+          <div class="arch-item-type">Module · Validator</div>
+          <div class="arch-item-name">mod_CaseValidator</div>
+          <div class="arch-item-desc">DetectPrefixType() — classifies Q/N vs T/J.<br>ValidateFormat() — enforces spacing + digit rules.<br>BuildFormatVariants() — returns all query-specific format strings.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Query Engine</div>
+      <div class="arch-col">
+        <div class="arch-item proc">
+          <div class="arch-item-type">Module · Orchestration</div>
+          <div class="arch-item-name">mod_QueryBuilder</div>
+          <div class="arch-item-desc">InjectCaseNumber() — loops Power Query connections, injects correct format variant per connection.<br>RefreshAllTables() — triggers workbook-wide refresh.<br>StoreCaseNumber() — writes to named range on all sheets.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Power Query</div>
+      <div class="arch-col">
+        <div class="arch-item data">
+          <div class="arch-item-type">Connections · M Code</div>
+          <div class="arch-item-name">PQ Connections (per tab)</div>
+          <div class="arch-item-desc">One connection per sheet/table. Each M query reads the injected case number parameter. Column renaming and formatting handled entirely within Power Query — no post-load cleanup needed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CODE MODULES ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">CODE MODULES</div>
+  <div class="sec-rule-sub">Click any module to expand — paste code directly into your VBE</div>
+  <div class="sec-rule-n">3</div>
+</div>
+<div class="code-section">
+
+  <!-- MODULE 1: UserForm -->
+  <div class="module-hd" onclick="toggleModule('mod1')">
+    <div class="module-hd-num">01</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">UserForm · frmCaseEntry · Code-Behind</div>
+      <div class="module-hd-title">Case Entry Form — Initialize &amp; Submit</div>
+      <div class="module-hd-desc">Loads with current case number pre-filled, calls validator on submit</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod1">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod1">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">frmCaseEntry (code-behind)</span>
+      <button class="copy-btn" onclick="copyCode('code-mod1', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod1"><span class="cm">' ============================================================
+' frmCaseEntry — UserForm code-behind
+'
+' Controls needed:
+'   txtCaseNum   — TextBox  (case number input)
+'   btnSubmit    — CommandButton
+'   btnCancel    — CommandButton
+'   lblCurrent   — Label (shows current active case number)
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Private Sub</span> <span class="fn">UserForm_Initialize</span>()
+    <span class="cm">' Pre-populate with current stored case number if available</span>
+    <span class="ph">' TODO: read from named range or module-level variable</span>
+    <span class="cm">' lblCurrent.Caption = "Current: " &amp; GetStoredCaseNumber()</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnSubmit_Click</span>()
+    <span class="kw">Dim</span> rawInput <span class="kw">As String</span>
+    rawInput = <span class="fn">Trim</span>(txtCaseNum.Value)
+
+    <span class="kw">If</span> rawInput = <span class="str">""</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> <span class="str">"Please enter a case number."</span>, vbExclamation
+        <span class="kw">Exit Sub</span>
+    <span class="kw">End If</span>
+
+    <span class="cm">' Hand off to validator — it handles format checking and injection</span>
+    <span class="ph">' TODO: call mod_CaseValidator.ProcessCaseNumber(rawInput)</span>
+
+    <span class="kw">Me.Hide</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnCancel_Click</span>()
+    <span class="kw">Me.Hide</span>
+<span class="kw">End Sub</span></pre>
+  </div>
+
+  <!-- MODULE 2: Validator -->
+  <div class="module-hd" onclick="toggleModule('mod2')">
+    <div class="module-hd-num">02</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_CaseValidator · Format Detection + Normalization</div>
+      <div class="module-hd-title">Case Number Validator &amp; Format Builder</div>
+      <div class="module-hd-desc">Detects Q/N vs T/J prefix, enforces spacing rules, builds all query format variants</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod2">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod2">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_CaseValidator.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod2', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod2"><span class="cm">' ============================================================
+' mod_CaseValidator
+'
+' Plan number format rules:
+'   Q / N prefix → 2 letters + 5 digits + 3 spaces + 5 digits
+'                  e.g. "QK12345   67890"
+'   T / J prefix → 2 letters + 6 digits + 2 spaces + 5 digits
+'                  e.g. "TA123456  67890"
+'
+' BuildFormatVariants returns a Collection of named format strings
+' for use by mod_QueryBuilder when injecting into connections.
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Public Function</span> <span class="fn">DetectPrefixType</span>(<span class="kw">ByVal</span> caseNum <span class="kw">As String</span>) <span class="kw">As String</span>
+    <span class="kw">Dim</span> prefix <span class="kw">As String</span>
+    prefix = <span class="fn">UCase</span>(<span class="fn">Left</span>(caseNum, <span class="num">1</span>))
+
+    <span class="kw">Select Case</span> prefix
+        <span class="kw">Case</span> <span class="str">"Q"</span>, <span class="str">"N"</span> : <span class="fn">DetectPrefixType</span> = <span class="str">"QN"</span>
+        <span class="kw">Case</span> <span class="str">"T"</span>, <span class="str">"J"</span> : <span class="fn">DetectPrefixType</span> = <span class="str">"TJ"</span>
+        <span class="kw">Case Else</span>       : <span class="fn">DetectPrefixType</span> = <span class="str">"UNKNOWN"</span>
+    <span class="kw">End Select</span>
+<span class="kw">End Function</span>
+
+<span class="kw">Public Function</span> <span class="fn">ValidateFormat</span>(<span class="kw">ByVal</span> caseNum <span class="kw">As String</span>) <span class="kw">As Boolean</span>
+    <span class="kw">Dim</span> planType <span class="kw">As String</span>
+    planType = <span class="fn">DetectPrefixType</span>(caseNum)
+
+    <span class="kw">Select Case</span> planType
+        <span class="kw">Case</span> <span class="str">"QN"</span>
+            <span class="ph">' TODO: validate 2 letters + 5 digits + 3 spaces + 5 digits</span>
+            <span class="ph">' Expected length: 20 characters total</span>
+            <span class="ph">' ValidateFormat = (Len(caseNum) = 20 And Mid(caseNum,8,3) = "   ")</span>
+        <span class="kw">Case</span> <span class="str">"TJ"</span>
+            <span class="ph">' TODO: validate 2 letters + 6 digits + 2 spaces + 5 digits</span>
+            <span class="ph">' Expected length: 15 characters total</span>
+            <span class="ph">' ValidateFormat = (Len(caseNum) = 15 And Mid(caseNum,9,2) = "  ")</span>
+        <span class="kw">Case Else</span>
+            <span class="fn">MsgBox</span> <span class="str">"Unrecognized plan prefix. Expected Q, N, T, or J."</span>, vbExclamation
+            <span class="fn">ValidateFormat</span> = <span class="kw">False</span>
+            <span class="kw">Exit Function</span>
+    <span class="kw">End Select</span>
+
+    <span class="fn">ValidateFormat</span> = <span class="kw">True</span> <span class="cm">' update when validation logic is filled in</span>
+<span class="kw">End Function</span>
+
+<span class="kw">Public Function</span> <span class="fn">BuildFormatVariants</span>(<span class="kw">ByVal</span> caseNum <span class="kw">As String</span>) <span class="kw">As Collection</span>
+    <span class="kw">Dim</span> variants <span class="kw">As New</span> Collection
+
+    <span class="ph">' TODO: build all query-specific format variants from validated caseNum
+    ' Examples (placeholders — fill in actual formats per query):
+    '   variants.Add caseNum,           "Full"        ' full formatted string
+    '   variants.Add Left(caseNum, 4),  "First4"      ' first 4 chars only
+    '   variants.Add ...,               "WithPercent"  ' for LIKE queries
+    '   variants.Add ...,               "Underscore"   ' for underscore variant
+    ' Each query connection will look up its own key from this collection.</span>
+
+    <span class="kw">Set</span> <span class="fn">BuildFormatVariants</span> = variants
+<span class="kw">End Function</span>
+
+<span class="kw">Public Sub</span> <span class="fn">ProcessCaseNumber</span>(<span class="kw">ByVal</span> rawInput <span class="kw">As String</span>)
+    <span class="kw">If Not</span> <span class="fn">ValidateFormat</span>(rawInput) <span class="kw">Then Exit Sub</span>
+
+    <span class="kw">Dim</span> variants <span class="kw">As Collection</span>
+    <span class="kw">Set</span> variants = <span class="fn">BuildFormatVariants</span>(rawInput)
+
+    <span class="fn">InjectAndRefresh</span> variants
+<span class="kw">End Sub</span></pre>
+  </div>
+
+  <!-- MODULE 3: Query Builder -->
+  <div class="module-hd" onclick="toggleModule('mod3')">
+    <div class="module-hd-num">03</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_QueryBuilder · Injection + Refresh</div>
+      <div class="module-hd-title">Power Query Injection &amp; Table Refresh</div>
+      <div class="module-hd-desc">Loops all connections, injects the right format variant per query, triggers workbook-wide refresh</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod3">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod3">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_QueryBuilder.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod3', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod3"><span class="cm">' ============================================================
+' mod_QueryBuilder
+' InjectAndRefresh() — updates all Power Query connections
+'   with the correct case number format variant and refreshes.
+' StoreCaseNumber()  — writes current case # to all sheets.
+' LaunchCaseEntry()  — entry point wired to sheet buttons.
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Public Sub</span> <span class="fn">InjectAndRefresh</span>(<span class="kw">ByVal</span> variants <span class="kw">As Collection</span>)
+    <span class="kw">Dim</span> conn <span class="kw">As</span> WorkbookConnection
+
+    <span class="kw">For Each</span> conn <span class="kw">In</span> ActiveWorkbook.Connections
+        <span class="ph">' TODO: for each connection, determine which format variant it needs
+        ' and update its M query formula string accordingly.
+        '
+        ' Pattern (example):
+        '   If conn.Name = "Query - EmployeeTable" Then
+        '       UpdateConnectionParam conn, variants("Full")
+        '   ElseIf conn.Name = "Query - DeferralsTable" Then
+        '       UpdateConnectionParam conn, variants("WithPercent")
+        '   End If</span>
+    <span class="kw">Next</span> conn
+
+    <span class="cm">' Refresh all Power Query tables</span>
+    ActiveWorkbook.RefreshAll
+
+    <span class="ph">' TODO: optionally wait for refresh to complete before storing
+    ' Application.CalculateUntilAsyncQueriesDone</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">UpdateConnectionParam</span>(<span class="kw">ByRef</span> conn <span class="kw">As</span> WorkbookConnection, _
+                                    newValue <span class="kw">As String</span>)
+    <span class="ph">' TODO: update the connection's M query formula to inject newValue
+    ' This typically involves modifying the OLEDBConnection.CommandText
+    ' or the Power Query formula via conn.OLEDBConnection.CommandText</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Sub</span> <span class="fn">StoreCaseNumber</span>(<span class="kw">ByVal</span> caseNum <span class="kw">As String</span>)
+    <span class="ph">' TODO: write caseNum to a named range visible on every sheet
+    ' e.g. ThisWorkbook.Names("rng_CurrentCase").RefersToRange.Value = caseNum</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Sub</span> <span class="fn">LaunchCaseEntry</span>()
+    <span class="cm">' Entry point — wire all sheet buttons to this sub</span>
+    frmCaseEntry.Show
+<span class="kw">End Sub</span></pre>
+  </div>
+
+</div><!-- /code-section -->
+
+<!-- ═══ SETUP GUIDE ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">SETUP GUIDE</div>
+  <div class="sec-rule-sub">How to configure this workbook from scratch</div>
+</div>
+<div class="setup-grid">
+  <div class="setup-col">
+    <div class="setup-col-title">WORKBOOK SETUP</div>
+    <div class="setup-step">
+      <div class="setup-num">01</div>
+      <div class="setup-body">
+        <div class="setup-title">Create one sheet per query</div>
+        <div class="setup-desc">Each extraction target (Employee, Deferral Elections, Deferrals, etc.) gets its own tab. Name them clearly — the connection names should match.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">02</div>
+      <div class="setup-body">
+        <div class="setup-title">Add Power Query connections via AQT</div>
+        <div class="setup-desc">Set up each Power Query connection pointing to AQT. Leave a placeholder case number value in each query — the VBA will replace it at runtime.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">03</div>
+      <div class="setup-body">
+        <div class="setup-title">Add "Enter Case Number" button to each sheet</div>
+        <div class="setup-desc">Insert a Form Control button on every tab. Wire each one to <span class="setup-code">LaunchCaseEntry</span> in <span class="setup-code">mod_QueryBuilder</span>.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">04</div>
+      <div class="setup-body">
+        <div class="setup-title">Create the VBE modules and UserForm</div>
+        <div class="setup-desc">Insert modules named <span class="setup-code">mod_CaseValidator</span> and <span class="setup-code">mod_QueryBuilder</span>. Insert a UserForm named <span class="setup-code">frmCaseEntry</span> with the controls listed in Module 01.</div>
+      </div>
+    </div>
+  </div>
+  <div class="setup-col">
+    <div class="setup-col-title">FORMAT RULES REFERENCE</div>
+    <div class="setup-step">
+      <div class="setup-num">Q/N</div>
+      <div class="setup-body">
+        <div class="setup-title">Q-prefix and N-prefix plans</div>
+        <div class="setup-desc">Format: 2 letters + 5 digits + 3 spaces + 5 digits<br>Example: <span class="setup-code">QK12345   67890</span></div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">T/J</div>
+      <div class="setup-body">
+        <div class="setup-title">T-prefix and J-prefix plans</div>
+        <div class="setup-desc">Format: 2 letters + 6 digits + 2 spaces + 5 digits<br>Example: <span class="setup-code">TA123456  67890</span></div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">→</div>
+      <div class="setup-body">
+        <div class="setup-title">Fill in format variants in mod_CaseValidator</div>
+        <div class="setup-desc">The <span class="setup-code">BuildFormatVariants()</span> function has placeholder TODOs for each query-specific format. Fill these in with the actual slices each query needs.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">→</div>
+      <div class="setup-body">
+        <div class="setup-title">Map connections to variants in mod_QueryBuilder</div>
+        <div class="setup-desc">In <span class="setup-code">InjectAndRefresh()</span>, add a case per connection name mapping it to its required format variant key from the collection.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="proj-footer">
+  <div class="pf-block"><span class="pf-n">02</span><span class="pf-l">Project number</span></div>
+  <div class="pf-block"><span class="pf-n">3</span><span class="pf-l">VBA modules</span></div>
+  <div class="pf-block"><span class="pf-n">2</span><span class="pf-l">Plan format types</span></div>
+  <div class="pf-block"><span class="pf-n">4+</span><span class="pf-l">Query tabs</span></div>
+  <div class="pf-block"><span class="pf-n">1</span><span class="pf-l">Click to refresh all</span></div>
+</div>
+
+<script>
+function toggleModule(id) {
+  const body = document.getElementById(id);
+  const tog  = document.getElementById('tog-' + id);
+  const open = body.classList.toggle('open');
+  tog.textContent = open ? 'COLLAPSE ↑' : 'EXPAND ↓';
+}
+function copyCode(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('ok'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✓ Copied'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

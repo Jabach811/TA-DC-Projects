@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plans Vault — 5 Redesign Concepts</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#0c0b09; font-family:'Outfit',sans-serif; }
+
+/* ── CONCEPT NAV ── */
+.cnav {
+  position:sticky; top:0; z-index:999;
+  background:#070605; border-bottom:1px solid #1e1c18;
+  display:flex; align-items:stretch;
+}
+.cnav-brand {
+  font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:3px;
+  color:rgba(255,255,255,.2); padding:0 20px;
+  border-right:1px solid #1e1c18; display:flex; align-items:center;
+  white-space:nowrap;
+}
+.cnav-btn {
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:rgba(255,255,255,.28);
+  padding:14px 16px; cursor:pointer; border:none; background:none;
+  transition:color .15s; white-space:nowrap;
+}
+.cnav-btn:hover { color:rgba(255,255,255,.75); }
+.cnav-btn.here { color:#fbbf24; }
+
+.concept { display:none; }
+.concept.active { display:block; }
+.concept-tag {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.2em;
+  text-transform:uppercase; text-align:center; padding:9px;
+  background:#070605; color:rgba(255,255,255,.15);
+  border-bottom:1px solid #1e1c18;
+}
+
+/* ═══════════════════════════════════════════
+   CONCEPT 1 — NOIR CASE FILES
+   Black bg, amber/gold accents, case-file feel
+═══════════════════════════════════════════ */
+.n1 { background:#0a0906; }
+
+.n1-hero {
+  background:
+    radial-gradient(ellipse 55% 100% at 90% 0%, rgba(251,191,36,.06) 0%, transparent 60%),
+    linear-gradient(180deg, #0e0c09 0%, #0a0906 100%);
+  padding:36px 40px 28px;
+  border-bottom:1px solid #211e18;
+}
+.n1-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.28em;
+  text-transform:uppercase; color:#fbbf2455; margin-bottom:10px;
+  display:flex; align-items:center; gap:10px;
+}
+.n1-eyebrow::before { content:'◆'; color:#fbbf24; font-size:7px; }
+.n1-title {
+  font-family:'Bebas Neue',sans-serif; font-size:64px; letter-spacing:.06em;
+  line-height:.88; color:#f5f0e5; margin-bottom:16px;
+}
+.n1-title em { color:#fbbf24; font-style:normal; }
+.n1-sub { font-size:12px; color:#7a7060; max-width:520px; line-height:1.65; }
+.n1-stats {
+  display:flex; gap:0; margin-top:22px;
+  border-top:1px solid #211e18; padding-top:18px;
+}
+.n1-stat {
+  padding-right:32px; margin-right:32px;
+  border-right:1px solid #211e18;
+}
+.n1-stat:last-child { border-right:none; }
+.n1-stat-n { font-family:'Bebas Neue',sans-serif; font-size:38px; color:#fbbf24; line-height:1; display:block; }
+.n1-stat-l { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:#4a4438; }
+
+.n1-bar {
+  background:#0e0c09; border-bottom:1px solid #211e18;
+  display:flex; align-items:center; gap:8px; padding:12px 40px;
+}
+.n1-bar-label {
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.2em;
+  text-transform:uppercase; color:#4a4438; margin-right:4px;
+}
+.n1-tab {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:#4a4438; padding:6px 14px;
+  border:1px solid #211e18; background:transparent; cursor:pointer;
+  transition:all .15s; border-radius:3px;
+}
+.n1-tab:hover { color:#f5f0e5; border-color:#3a3428; }
+.n1-tab.on { background:#fbbf24; border-color:#fbbf24; color:#0a0906; }
+
+.n1-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:1px; background:#211e18; padding:1px;
+  margin:24px 40px 48px;
+  background:transparent;
+  gap:16px;
+}
+.n1-card {
+  background:#0e0c09; border:1px solid #211e18;
+  position:relative; overflow:hidden;
+  transition:border-color .18s, transform .18s;
+}
+.n1-card:hover { border-color:#fbbf2444; transform:translateY(-2px); }
+.n1-card-stripe {
+  height:3px;
+  background:linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+}
+.n1-card-stripe.startup { background:linear-gradient(90deg,#3b82f6,#2563eb); }
+.n1-card-stripe.conversion { background:linear-gradient(90deg,#10b981,#059669); }
+.n1-card-stripe.merger { background:linear-gradient(90deg,#8b5cf6,#7c3aed); }
+.n1-card-body { padding:18px 20px 16px; }
+.n1-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.n1-status {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.12em;
+  text-transform:uppercase; padding:4px 10px;
+  border:1px solid; border-radius:2px;
+}
+.n1-status.active { color:#4ade80; border-color:#4ade8033; background:#4ade8008; }
+.n1-status.complete { color:#fbbf24; border-color:#fbbf2433; background:#fbbf2408; }
+.n1-status.hold { color:#f87171; border-color:#f8717133; background:#f8717108; }
+.n1-status-dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+.n1-star { color:#211e18; font-size:18px; cursor:pointer; line-height:1; }
+.n1-star.fav { color:#fbbf24; }
+.n1-card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:.04em; color:#f5f0e5; line-height:1.05; margin-bottom:4px; }
+.n1-card-case { font-family:'JetBrains Mono',monospace; font-size:9px; color:#4a4438; letter-spacing:.14em; text-transform:uppercase; margin-bottom:12px; }
+.n1-chips { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
+.n1-chip {
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.1em;
+  text-transform:uppercase; padding:3px 9px; border-radius:2px; border:1px solid;
+}
+.n1-chip.startup { color:#60a5fa; border-color:#3b82f633; background:#3b82f60d; }
+.n1-chip.conversion { color:#34d399; border-color:#10b98133; background:#10b9810d; }
+.n1-chip.merger { color:#a78bfa; border-color:#8b5cf633; background:#8b5cf60d; }
+.n1-chip.plain { color:#4a4438; border-color:#211e18; background:transparent; }
+.n1-dates {
+  display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  font-family:'JetBrains Mono',monospace; font-size:9px; color:#4a4438;
+}
+.n1-date-dot { width:4px; height:4px; border-radius:50%; background:#4a4438; display:inline-block; margin-right:5px; vertical-align:middle; }
+.n1-phase-lbl { font-family:'JetBrains Mono',monospace; font-size:7px; letter-spacing:.18em; text-transform:uppercase; color:#4a4438; margin-bottom:5px; }
+.n1-phases { display:flex; gap:3px; margin-bottom:12px; }
+.n1-phase-seg { flex:1; height:24px; background:#1a1714; border-radius:2px; overflow:hidden; }
+.n1-phase-fill { height:100%; border-radius:2px; }
+.n1-prog { display:flex; align-items:center; gap:10px; }
+.n1-prog-track { flex:1; height:5px; background:#1a1714; border-radius:99px; overflow:hidden; }
+.n1-prog-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#fbbf24,#f59e0b); }
+.n1-prog-pct { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:#f5f0e5; min-width:36px; text-align:right; }
+.n1-card-foot { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid #211e18; margin-top:10px; }
+.n1-card-ts { font-family:'JetBrains Mono',monospace; font-size:8px; color:#302c24; }
+.n1-foot-actions { display:flex; gap:6px; }
+.n1-del { width:28px; height:28px; border:1px solid #211e18; background:none; color:#4a4438; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; border-radius:2px; transition:all .15s; }
+.n1-del:hover { border-color:#f87171; color:#f87171; }
+.n1-open { padding:7px 14px; background:#fbbf24; border:none; color:#0a0906; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; border-radius:2px; font-weight:600; transition:background .15s; }
+.n1-open:hover { background:#f59e0b; }
+
+
+/* ═══════════════════════════════════════════
+   CONCEPT 2 — BLUEPRINT GRID
+   Technical blueprint feel, monochrome blues
+═══════════════════════════════════════════ */
+.n2 {
+  background:#0a0f1a;
+  background-image:
+    linear-gradient(rgba(37,99,235,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.n2-hero {
+  background:rgba(10,15,26,.96); padding:40px 44px 30px;
+  border-bottom:1px solid #1a2540;
+  backdrop-filter:blur(0);
+}
+.n2-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.3em;
+  text-transform:uppercase; color:#3b82f6; margin-bottom:12px;
+}
+.n2-title {
+  font-family:'Bebas Neue',sans-serif; font-size:56px; letter-spacing:.06em;
+  line-height:.9; color:#e2e8f8; margin-bottom:14px;
+}
+.n2-title em { color:#3b82f6; font-style:normal; }
+.n2-sub { font-size:12px; color:#6b7fa0; max-width:540px; line-height:1.65; }
+.n2-stats {
+  display:flex; gap:0; margin-top:20px;
+  border-top:1px solid #1a2540; padding-top:16px;
+}
+.n2-stat { padding-right:28px; margin-right:28px; border-right:1px solid #1a2540; }
+.n2-stat:last-child { border-right:none; }
+.n2-stat-n { font-family:'Bebas Neue',sans-serif; font-size:36px; color:#60a5fa; line-height:1; }
+.n2-stat-l { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.2em; text-transform:uppercase; color:#2d4070; }
+
+.n2-bar {
+  background:rgba(10,15,26,.96); border-bottom:1px solid #1a2540;
+  display:flex; align-items:center; gap:8px; padding:12px 44px;
+}
+.n2-tab {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:#2d4070; padding:5px 14px;
+  border:1px solid #1a2540; background:transparent; cursor:pointer;
+  transition:all .15s;
+}
+.n2-tab:hover { color:#e2e8f8; border-color:#2d4070; }
+.n2-tab.on { background:#2563eb; border-color:#2563eb; color:#fff; }
+
+.n2-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; padding:28px 44px 52px; }
+.n2-card {
+  background:rgba(15,22,40,.9); border:1px solid #1a2540;
+  position:relative; overflow:hidden;
+  transition:border-color .2s, transform .2s;
+  backdrop-filter:blur(4px);
+}
+.n2-card:hover { border-color:#2563eb55; transform:translateY(-2px); box-shadow:0 12px 40px rgba(37,99,235,.12); }
+/* blueprint corner marks */
+.n2-card::before {
+  content:''; position:absolute; top:6px; left:6px; right:6px; bottom:6px;
+  border:1px solid rgba(37,99,235,.08); pointer-events:none;
+}
+.n2-card-accent { height:3px; }
+.n2-card-accent.startup { background:#3b82f6; }
+.n2-card-accent.conversion { background:#10b981; }
+.n2-card-accent.merger { background:#8b5cf6; }
+.n2-card-body { padding:20px 20px 16px; }
+.n2-card-ref {
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.2em;
+  text-transform:uppercase; color:#2d4070; margin-bottom:10px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.n2-card-ref-tag { color:#3b82f6; border:1px solid #2563eb33; padding:2px 7px; }
+.n2-card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:.04em; color:#e2e8f8; line-height:1.05; margin-bottom:3px; }
+.n2-card-case { font-family:'JetBrains Mono',monospace; font-size:8px; color:#2d4070; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+.n2-chips { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px; }
+.n2-chip {
+  font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.1em;
+  text-transform:uppercase; padding:2px 8px; border:1px solid;
+}
+.n2-chip.startup { color:#60a5fa; border-color:#3b82f633; }
+.n2-chip.conversion { color:#34d399; border-color:#10b98133; }
+.n2-chip.merger { color:#a78bfa; border-color:#8b5cf633; }
+.n2-chip.plain { color:#2d4070; border-color:#1a2540; }
+.n2-divider { border:none; border-top:1px solid #1a2540; margin:12px 0; }
+.n2-phase-lbl { font-family:'JetBrains Mono',monospace; font-size:7px; letter-spacing:.2em; text-transform:uppercase; color:#2d4070; margin-bottom:4px; }
+.n2-phases { display:flex; gap:3px; margin-bottom:10px; }
+.n2-phase-seg { flex:1; height:22px; background:#0a1020; overflow:hidden; }
+.n2-phase-fill { height:100%; }
+.n2-prog { display:flex; align-items:center; gap:10px; }
+.n2-prog-track { flex:1; height:4px; background:#0a1020; overflow:hidden; }
+.n2-prog-fill { height:100%; background:linear-gradient(90deg,#2563eb,#60a5fa); }
+.n2-prog-pct { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:#60a5fa; min-width:34px; text-align:right; }
+.n2-card-foot { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid #1a2540; margin-top:10px; }
+.n2-card-ts { font-family:'JetBrains Mono',monospace; font-size:8px; color:#1a2540; }
+.n2-del { width:28px; height:28px; border:1px solid #1a2540; background:none; color:#2d4070; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; transition:all .15s; }
+.n2-del:hover { border-color:#f87171; color:#f87171; }
+.n2-open { padding:7px 14px; background:#2563eb; border:none; color:#fff; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; transition:background .15s; }
+.n2-open:hover { background:#1d4ed8; }
+
+
+/* ═══════════════════════════════════════════
+   CONCEPT 3 — COMMAND CENTER
+   Dense data table/row layout, tight + info-rich
+═══════════════════════════════════════════ */
+.n3 { background:#f5f4f0; }
+
+.n3-hero {
+  background:#1a1916; padding:32px 40px 26px;
+  border-bottom:4px solid #f59e0b;
+}
+.n3-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.28em;
+  text-transform:uppercase; color:rgba(255,255,255,.25); margin-bottom:10px;
+}
+.n3-title {
+  font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.06em;
+  line-height:.9; color:#f5f0e5;
+}
+.n3-title em { color:#f59e0b; font-style:normal; }
+.n3-hero-bottom {
+  display:flex; align-items:flex-end; justify-content:space-between;
+  margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,.06);
+  flex-wrap:wrap; gap:16px;
+}
+.n3-stats { display:flex; gap:24px; }
+.n3-stat-n { font-family:'Bebas Neue',sans-serif; font-size:32px; color:#f5f0e5; line-height:1; }
+.n3-stat-l { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.2); }
+.n3-search {
+  display:flex; align-items:center; gap:0;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+}
+.n3-search-prefix { font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,.3); padding:9px 12px; border-right:1px solid rgba(255,255,255,.1); }
+.n3-search input { background:none; border:none; outline:none; padding:9px 14px; font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,.6); width:200px; }
+.n3-search input::placeholder { color:rgba(255,255,255,.18); }
+
+/* table-style layout */
+.n3-table-wrap { margin:0; }
+.n3-table-hdr {
+  display:grid;
+  grid-template-columns: 22px 1fr 90px 110px 90px 130px 80px 130px;
+  gap:0; padding:9px 20px; background:#e8e6e0;
+  border-bottom:2px solid #1a1916;
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.18em;
+  text-transform:uppercase; color:#7a7060; align-items:center;
+}
+.n3-row {
+  display:grid;
+  grid-template-columns: 22px 1fr 90px 110px 90px 130px 80px 130px;
+  gap:0; padding:0 20px; background:#ffffff;
+  border-bottom:1px solid #e8e6e0; align-items:center;
+  min-height:62px; transition:background .12s; cursor:pointer;
+}
+.n3-row:hover { background:#fafaf7; }
+.n3-row.done { opacity:.55; }
+.n3-row-accent { width:4px; height:36px; border-radius:2px; flex-shrink:0; }
+.n3-row-name { padding:0 16px 0 12px; }
+.n3-row-plan-name { font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:.03em; color:#1a1916; line-height:1.1; }
+.n3-row-case { font-family:'JetBrains Mono',monospace; font-size:8px; color:#b0a898; letter-spacing:.12em; text-transform:uppercase; }
+.n3-status-pill {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.1em;
+  text-transform:uppercase; padding:4px 9px; border-radius:2px; border:1px solid;
+}
+.n3-status-dot { width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; }
+.n3-status-pill.active { color:#16a34a; border-color:#16a34a33; background:#16a34a0a; }
+.n3-status-pill.complete { color:#d97706; border-color:#d9770633; background:#d977060a; }
+.n3-type-chip {
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.08em;
+  text-transform:uppercase; padding:3px 9px; border:1px solid; display:inline-block;
+}
+.n3-type-chip.startup { color:#2563eb; border-color:#2563eb33; }
+.n3-type-chip.conversion { color:#059669; border-color:#05966933; }
+.n3-type-chip.merger { color:#7c3aed; border-color:#7c3aed33; }
+.n3-phases-mini { display:flex; gap:2px; }
+.n3-phase-mini { height:18px; width:28px; border-radius:2px; overflow:hidden; background:#f0efe9; }
+.n3-phase-mini-fill { height:100%; }
+.n3-prog-row { display:flex; align-items:center; gap:8px; }
+.n3-prog-track { flex:1; height:5px; background:#f0efe9; border-radius:99px; overflow:hidden; }
+.n3-prog-fill { height:100%; border-radius:99px; }
+.n3-prog-pct { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:#1a1916; min-width:32px; text-align:right; }
+.n3-date-cell { font-family:'JetBrains Mono',monospace; font-size:9px; color:#7a7060; }
+.n3-open-row { padding:7px 14px; background:#1a1916; border:none; color:#fff; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; transition:background .15s; white-space:nowrap; }
+.n3-open-row:hover { background:#f59e0b; color:#0a0800; }
+
+.n3-toolbar {
+  display:flex; align-items:center; gap:8px; padding:12px 20px;
+  background:#f5f4f0; border-bottom:1px solid #e8e6e0; flex-wrap:wrap;
+}
+.n3-toolbar-label { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:#b0a898; margin-right:4px; }
+.n3-tb-tab {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:#b0a898; padding:5px 12px;
+  border:1px solid #e8e6e0; background:transparent; cursor:pointer; transition:all .15s;
+}
+.n3-tb-tab:hover { color:#1a1916; border-color:#b0a898; }
+.n3-tb-tab.on { background:#1a1916; border-color:#1a1916; color:#fff; }
+.n3-count { font-family:'JetBrains Mono',monospace; font-size:9px; color:#b0a898; margin-left:auto; }
+
+
+/* ═══════════════════════════════════════════
+   CONCEPT 4 — MINIMAL CLEAN LIGHT
+   White cards, soft shadows, clean product UI
+═══════════════════════════════════════════ */
+.n4 { background:#f0efe9; }
+
+.n4-hero {
+  background:linear-gradient(135deg, #1a1916 0%, #2a2720 100%);
+  padding:40px 44px 32px;
+}
+.n4-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.28em;
+  text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:12px;
+}
+.n4-title {
+  font-family:'Bebas Neue',sans-serif; font-size:56px; letter-spacing:.05em;
+  line-height:.9; color:#f5f0e5; margin-bottom:14px;
+}
+.n4-title em { color:#a78bfa; font-style:normal; }
+.n4-sub { font-size:12px; color:rgba(255,255,255,.35); max-width:500px; line-height:1.65; }
+.n4-stats {
+  display:flex; gap:32px; margin-top:20px;
+  padding-top:18px; border-top:1px solid rgba(255,255,255,.07);
+}
+.n4-stat-n { font-family:'Bebas Neue',sans-serif; font-size:34px; color:#a78bfa; line-height:1; }
+.n4-stat-l { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.18); }
+
+.n4-bar {
+  background:#fff; border-bottom:1px solid #e2e0d8;
+  display:flex; align-items:center; gap:8px; padding:14px 44px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.n4-tab {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:#b0a898; padding:6px 14px;
+  border:1px solid #e2e0d8; background:#fff; cursor:pointer;
+  border-radius:6px; transition:all .15s;
+}
+.n4-tab:hover { color:#1a1916; border-color:#b0a898; }
+.n4-tab.on { background:#7c3aed; border-color:#7c3aed; color:#fff; }
+
+.n4-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; padding:28px 44px 52px; }
+.n4-card {
+  background:#fff; border-radius:14px; border:1px solid #e8e6e0;
+  overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.04);
+  transition:transform .18s, box-shadow .18s, border-color .18s;
+}
+.n4-card:hover { transform:translateY(-3px); box-shadow:0 16px 48px rgba(0,0,0,.1); border-color:#c4c0b8; }
+.n4-card-stripe { height:4px; }
+.n4-card-stripe.startup { background:#3b82f6; }
+.n4-card-stripe.conversion { background:#10b981; }
+.n4-card-stripe.merger { background:#7c3aed; }
+.n4-card-body { padding:20px 20px 16px; }
+.n4-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.n4-status {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.1em;
+  text-transform:uppercase; padding:4px 10px; border-radius:99px; border:1px solid;
+}
+.n4-status.active { color:#16a34a; border-color:#16a34a33; background:#16a34a0d; }
+.n4-status.complete { color:#d97706; border-color:#d9770633; background:#d977060d; }
+.n4-status-dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+.n4-star { color:#e2e0d8; font-size:18px; cursor:pointer; }
+.n4-star.fav { color:#fbbf24; }
+.n4-card-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.04em; color:#1a1916; line-height:1.1; margin-bottom:3px; }
+.n4-card-case { font-family:'JetBrains Mono',monospace; font-size:8px; color:#b0a898; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+.n4-chips { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px; }
+.n4-chip {
+  font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.08em;
+  text-transform:uppercase; padding:3px 9px; border-radius:99px; border:1px solid;
+}
+.n4-chip.startup { color:#2563eb; border-color:#2563eb33; background:#2563eb0a; }
+.n4-chip.conversion { color:#059669; border-color:#05966933; background:#0596690a; }
+.n4-chip.merger { color:#7c3aed; border-color:#7c3aed33; background:#7c3aed0a; }
+.n4-chip.plain { color:#b0a898; border-color:#e8e6e0; }
+.n4-dates { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9px; color:#b0a898; }
+.n4-phase-lbl { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.18em; text-transform:uppercase; color:#b0a898; margin-bottom:5px; }
+.n4-phases { display:flex; gap:3px; margin-bottom:10px; }
+.n4-phase-seg { flex:1; height:24px; border-radius:6px; background:#f0efe9; overflow:hidden; }
+.n4-phase-fill { height:100%; border-radius:6px; opacity:.85; }
+.n4-prog { display:flex; align-items:center; gap:10px; }
+.n4-prog-track { flex:1; height:6px; border-radius:99px; background:#f0efe9; overflow:hidden; }
+.n4-prog-fill { height:100%; border-radius:99px; }
+.n4-prog-pct { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:#1a1916; min-width:34px; text-align:right; }
+.n4-card-foot { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid #f0efe9; margin-top:10px; }
+.n4-card-ts { font-family:'JetBrains Mono',monospace; font-size:8px; color:#d0cdc4; }
+.n4-del { width:28px; height:28px; border:1px solid #e8e6e0; background:none; color:#c0b8b0; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; border-radius:7px; transition:all .15s; }
+.n4-del:hover { border-color:#f87171; color:#f87171; }
+.n4-open { padding:7px 14px; border-radius:8px; background:#7c3aed; border:none; color:#fff; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; transition:background .15s; }
+.n4-open:hover { background:#6d28d9; }
+
+
+/* ═══════════════════════════════════════════
+   CONCEPT 5 — BRUTALIST PAPER
+   Ink on paper — matches portal aesthetic
+═══════════════════════════════════════════ */
+.n5 { background:#f2ede4; }
+
+.n5-hero {
+  background:#0f0d0a; border-bottom:4px solid #c8290a;
+  display:grid; grid-template-columns:100px 1fr;
+}
+.n5-hero-spine {
+  background:#c8290a; display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:4px;
+  color:rgba(255,255,255,.6); writing-mode:vertical-rl;
+  border-right:3px solid #0f0d0a;
+}
+.n5-hero-body { padding:40px 48px; }
+.n5-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.28em;
+  text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:12px;
+  display:flex; align-items:center; gap:10px;
+}
+.n5-eyebrow::after { content:''; display:block; width:40px; height:1px; background:rgba(255,255,255,.1); }
+.n5-title {
+  font-family:'Bebas Neue',sans-serif; font-size:72px; letter-spacing:.05em;
+  line-height:.88; color:#f2ede4; margin-bottom:16px;
+}
+.n5-title em { color:#c8290a; font-style:normal; }
+.n5-sub { font-family:'JetBrains Mono',monospace; font-size:11px; font-style:italic; color:rgba(255,255,255,.3); max-width:500px; line-height:1.7; }
+.n5-stats {
+  display:flex; gap:0; margin-top:22px;
+  border-top:1px solid rgba(255,255,255,.06); padding-top:16px;
+}
+.n5-stat { padding-right:28px; margin-right:28px; border-right:1px solid rgba(255,255,255,.08); }
+.n5-stat:last-child { border-right:none; }
+.n5-stat-n { font-family:'Bebas Neue',sans-serif; font-size:40px; color:#f2ede4; line-height:1; }
+.n5-stat-l { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.18); }
+
+.n5-bar {
+  background:#f2ede4; border-bottom:3px solid #0f0d0a;
+  display:flex; align-items:center; gap:0;
+}
+.n5-tab {
+  font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:2px;
+  color:#7a7060; padding:14px 20px; cursor:pointer;
+  border-right:1px solid #ddd7c9; background:transparent; transition:all .15s;
+  white-space:nowrap;
+}
+.n5-tab:hover { color:#0f0d0a; background:#e8e2d6; }
+.n5-tab.on { background:#0f0d0a; color:#f2ede4; border-color:#0f0d0a; }
+.n5-bar-count {
+  font-family:'Bebas Neue',sans-serif; font-size:24px; color:#c8290a;
+  margin-left:auto; padding:0 22px; border-left:1px solid #ddd7c9;
+  align-self:stretch; display:flex; align-items:center;
+}
+
+.n5-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:0; border-top:1px solid #ddd7c9; }
+.n5-card {
+  background:#f2ede4; border-right:2px solid #0f0d0a;
+  border-bottom:2px solid #0f0d0a;
+  position:relative; overflow:hidden;
+  transition:background .15s;
+}
+.n5-card:hover { background:#e8e2d6; }
+.n5-card-inner { padding:22px 22px 18px; }
+.n5-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+.n5-status {
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.15em;
+  text-transform:uppercase; padding:4px 10px;
+  border:1px solid; display:inline-flex; align-items:center; gap:5px;
+}
+.n5-status.active { color:#166534; border-color:#16653433; }
+.n5-status.complete { color:#92400e; border-color:#92400e33; }
+.n5-status-dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+.n5-star { color:#ddd7c9; font-size:18px; cursor:pointer; }
+.n5-star.fav { color:#c8290a; }
+.n5-card-num {
+  font-family:'Bebas Neue',sans-serif; font-size:48px; color:#e8e2d6;
+  line-height:1; position:absolute; right:16px; bottom:14px;
+  pointer-events:none; user-select:none;
+}
+.n5-card-name { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:.04em; color:#0f0d0a; line-height:1.05; margin-bottom:4px; }
+.n5-card-case { font-family:'JetBrains Mono',monospace; font-size:8px; color:#7a7060; letter-spacing:.14em; text-transform:uppercase; margin-bottom:12px; }
+.n5-chips { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:12px; }
+.n5-chip {
+  font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.08em;
+  text-transform:uppercase; padding:3px 9px; border:1px solid;
+}
+.n5-chip.startup { color:#1e40af; border-color:#1e40af44; }
+.n5-chip.conversion { color:#065f46; border-color:#065f4644; }
+.n5-chip.merger { color:#5b21b6; border-color:#5b21b644; }
+.n5-chip.plain { color:#7a7060; border-color:#cfc8b5; }
+.n5-divider { border:none; border-top:1px solid #ddd7c9; margin:12px 0; }
+.n5-phase-lbl { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.18em; text-transform:uppercase; color:#7a7060; margin-bottom:5px; }
+.n5-phases { display:flex; gap:2px; margin-bottom:10px; }
+.n5-phase-seg { flex:1; height:22px; background:#ddd7c9; overflow:hidden; }
+.n5-phase-fill { height:100%; }
+.n5-prog { display:flex; align-items:center; gap:10px; }
+.n5-prog-track { flex:1; height:5px; background:#ddd7c9; overflow:hidden; }
+.n5-prog-fill { height:100%; background:#0f0d0a; }
+.n5-prog-pct { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:#0f0d0a; min-width:34px; text-align:right; }
+.n5-card-foot { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid #ddd7c9; margin-top:10px; }
+.n5-card-ts { font-family:'JetBrains Mono',monospace; font-size:8px; color:#cfc8b5; }
+.n5-del { width:28px; height:28px; border:1px solid #ddd7c9; background:none; color:#b0a898; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; transition:all .15s; }
+.n5-del:hover { border-color:#c8290a; color:#c8290a; }
+.n5-open { padding:7px 14px; background:#0f0d0a; border:none; color:#f2ede4; font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:2px; cursor:pointer; transition:background .15s; }
+.n5-open:hover { background:#c8290a; }
+
+/* ── SHARED HELPERS ── */
+.pad { padding:0 40px; }
+.pad-l { padding:28px 40px 52px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="cnav">
+  <div class="cnav-brand">PLANS VAULT · 5 CONCEPTS</div>
+  <button class="cnav-btn here" onclick="show(1)">1 · NOIR CASE FILES</button>
+  <button class="cnav-btn" onclick="show(2)">2 · BLUEPRINT</button>
+  <button class="cnav-btn" onclick="show(3)">3 · COMMAND CENTER</button>
+  <button class="cnav-btn" onclick="show(4)">4 · MINIMAL LIGHT</button>
+  <button class="cnav-btn" onclick="show(5)">5 · BRUTALIST PAPER</button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     C1 — NOIR CASE FILES
+═══════════════════════════════════════════ -->
+<div class="concept active" id="c1">
+  <div class="concept-tag">CONCEPT 01 — NOIR CASE FILES · Dark / Amber accents</div>
+  <div class="n1">
+
+    <div class="n1-hero" style="max-width:1260px;margin:0 auto;padding:36px 40px 28px">
+      <div class="n1-eyebrow">Implementation Plans</div>
+      <div class="n1-title">PLANS<br><em>VAULT</em></div>
+      <div class="n1-sub">All browser-saved implementation plans — organize by favorites, track phase progress, and launch directly into any plan.</div>
+      <div class="n1-stats">
+        <div class="n1-stat"><span class="n1-stat-n">8</span><div class="n1-stat-l">Total Plans</div></div>
+        <div class="n1-stat"><span class="n1-stat-n">5</span><div class="n1-stat-l">Active</div></div>
+        <div class="n1-stat"><span class="n1-stat-n">3</span><div class="n1-stat-l">Favorited</div></div>
+        <div class="n1-stat"><span class="n1-stat-n">62%</span><div class="n1-stat-l">Avg Complete</div></div>
+      </div>
+    </div>
+
+    <div class="n1-bar" style="max-width:1260px;margin:0 auto;padding:12px 40px">
+      <span class="n1-bar-label">Sort:</span>
+      <button class="n1-tab on">★ Favorites First</button>
+      <button class="n1-tab">Recent</button>
+      <button class="n1-tab">A–Z</button>
+      <button class="n1-tab">% Complete</button>
+    </div>
+
+    <div class="n1-grid" style="max-width:1260px;margin:0 auto;padding:24px 40px 52px">
+
+      <!-- Card 1 -->
+      <div class="n1-card">
+        <div class="n1-card-stripe startup"></div>
+        <div class="n1-card-body">
+          <div class="n1-card-top">
+            <span class="n1-status active"><span class="n1-status-dot"></span>Active</span>
+            <span class="n1-star fav">★</span>
+          </div>
+          <div class="n1-card-name">Acme Corp 401(k)</div>
+          <div class="n1-card-case">CASE-2026-0142</div>
+          <div class="n1-chips">
+            <span class="n1-chip startup">Startup</span>
+            <span class="n1-chip plain">Loans</span>
+            <span class="n1-chip plain">Roth</span>
+          </div>
+          <div class="n1-dates">
+            <span><span class="n1-date-dot"></span>Go-Live: Apr 1, 2026</span>
+            <span><span class="n1-date-dot"></span>Wire: Mar 28</span>
+          </div>
+          <div class="n1-phase-lbl">Phase Progress</div>
+          <div class="n1-phases">
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:80%;background:#10b981;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:55%;background:#f59e0b;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:20%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n1-prog">
+            <div class="n1-prog-track"><div class="n1-prog-fill" style="width:68%;"></div></div>
+            <span class="n1-prog-pct">68%</span>
+          </div>
+          <div class="n1-card-foot">
+            <span class="n1-card-ts">Saved Mar 12, 2026</span>
+            <div class="n1-foot-actions">
+              <button class="n1-del">🗑</button>
+              <button class="n1-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="n1-card">
+        <div class="n1-card-stripe conversion"></div>
+        <div class="n1-card-body">
+          <div class="n1-card-top">
+            <span class="n1-status active"><span class="n1-status-dot"></span>Active</span>
+            <span class="n1-star fav">★</span>
+          </div>
+          <div class="n1-card-name">Bridgewater Pension</div>
+          <div class="n1-card-case">CASE-2026-0138</div>
+          <div class="n1-chips">
+            <span class="n1-chip conversion">Conversion</span>
+            <span class="n1-chip plain">Auto-Enroll</span>
+          </div>
+          <div class="n1-dates">
+            <span><span class="n1-date-dot"></span>Go-Live: Apr 15, 2026</span>
+            <span><span class="n1-date-dot"></span>Wire: Apr 11</span>
+          </div>
+          <div class="n1-phase-lbl">Phase Progress</div>
+          <div class="n1-phases">
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:45%;background:#10b981;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:0%;background:#f59e0b;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:0%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n1-prog">
+            <div class="n1-prog-track"><div class="n1-prog-fill" style="width:38%;"></div></div>
+            <span class="n1-prog-pct">38%</span>
+          </div>
+          <div class="n1-card-foot">
+            <span class="n1-card-ts">Saved Mar 10, 2026</span>
+            <div class="n1-foot-actions">
+              <button class="n1-del">🗑</button>
+              <button class="n1-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="n1-card">
+        <div class="n1-card-stripe merger"></div>
+        <div class="n1-card-body">
+          <div class="n1-card-top">
+            <span class="n1-status complete"><span class="n1-status-dot"></span>Complete</span>
+            <span class="n1-star">☆</span>
+          </div>
+          <div class="n1-card-name">Nexus Industries</div>
+          <div class="n1-card-case">CASE-2026-0121</div>
+          <div class="n1-chips">
+            <span class="n1-chip merger">Merger</span>
+            <span class="n1-chip plain">Loans</span>
+          </div>
+          <div class="n1-dates">
+            <span><span class="n1-date-dot"></span>Go-Live: Feb 1, 2026</span>
+          </div>
+          <div class="n1-phase-lbl">Phase Progress</div>
+          <div class="n1-phases">
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:100%;background:#10b981;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:100%;background:#f59e0b;"></div></div>
+            <div class="n1-phase-seg"><div class="n1-phase-fill" style="width:100%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n1-prog">
+            <div class="n1-prog-track"><div class="n1-prog-fill" style="width:100%;"></div></div>
+            <span class="n1-prog-pct">100%</span>
+          </div>
+          <div class="n1-card-foot">
+            <span class="n1-card-ts">Saved Jan 28, 2026</span>
+            <div class="n1-foot-actions">
+              <button class="n1-del">🗑</button>
+              <button class="n1-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     C2 — BLUEPRINT
+═══════════════════════════════════════════ -->
+<div class="concept" id="c2">
+  <div class="concept-tag">CONCEPT 02 — BLUEPRINT · Technical / Gridline Dark Blue</div>
+  <div class="n2">
+
+    <div class="n2-hero" style="max-width:1260px;margin:0 auto;padding:40px 44px 30px">
+      <div class="n2-eyebrow">// plans_vault.index ——————————————————</div>
+      <div class="n2-title">PLANS<br><em>VAULT</em></div>
+      <div class="n2-sub">All browser-saved implementation plans — organize by favorites, track phase progress, and launch directly into any plan.</div>
+      <div class="n2-stats">
+        <div class="n2-stat"><div class="n2-stat-n">8</div><div class="n2-stat-l">Total Plans</div></div>
+        <div class="n2-stat"><div class="n2-stat-n">5</div><div class="n2-stat-l">Active</div></div>
+        <div class="n2-stat"><div class="n2-stat-n">3</div><div class="n2-stat-l">Favorited</div></div>
+        <div class="n2-stat"><div class="n2-stat-n">62%</div><div class="n2-stat-l">Avg Complete</div></div>
+      </div>
+    </div>
+
+    <div class="n2-bar" style="max-width:1260px;margin:0 auto;padding:12px 44px">
+      <button class="n2-tab on">★ Favorites First</button>
+      <button class="n2-tab">Recent</button>
+      <button class="n2-tab">A–Z</button>
+      <button class="n2-tab">% Complete</button>
+    </div>
+
+    <div class="n2-grid" style="max-width:1260px;margin:0 auto;">
+
+      <div class="n2-card">
+        <div class="n2-card-accent startup"></div>
+        <div class="n2-card-body">
+          <div class="n2-card-ref">
+            <span>CASE-2026-0142</span>
+            <span class="n2-card-ref-tag">★ FAV</span>
+          </div>
+          <div class="n2-card-name">Acme Corp 401(k)</div>
+          <div class="n2-card-case">Startup · Go-Live Apr 1, 2026</div>
+          <div class="n2-chips">
+            <span class="n2-chip startup">Startup</span>
+            <span class="n2-chip plain">Loans</span>
+            <span class="n2-chip plain">Roth</span>
+          </div>
+          <hr class="n2-divider">
+          <div class="n2-phase-lbl">Phase Progress</div>
+          <div class="n2-phases">
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:80%;background:#10b981;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:55%;background:#f59e0b;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:20%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n2-prog">
+            <div class="n2-prog-track"><div class="n2-prog-fill" style="width:68%;"></div></div>
+            <span class="n2-prog-pct">68%</span>
+          </div>
+          <div class="n2-card-foot">
+            <span class="n2-card-ts">Mar 12, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n2-del">🗑</button>
+              <button class="n2-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="n2-card">
+        <div class="n2-card-accent conversion"></div>
+        <div class="n2-card-body">
+          <div class="n2-card-ref">
+            <span>CASE-2026-0138</span>
+            <span class="n2-card-ref-tag">★ FAV</span>
+          </div>
+          <div class="n2-card-name">Bridgewater Pension</div>
+          <div class="n2-card-case">Conversion · Go-Live Apr 15, 2026</div>
+          <div class="n2-chips">
+            <span class="n2-chip conversion">Conversion</span>
+            <span class="n2-chip plain">Auto-Enroll</span>
+          </div>
+          <hr class="n2-divider">
+          <div class="n2-phase-lbl">Phase Progress</div>
+          <div class="n2-phases">
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:45%;background:#10b981;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:0%;background:#f59e0b;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:0%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n2-prog">
+            <div class="n2-prog-track"><div class="n2-prog-fill" style="width:38%;"></div></div>
+            <span class="n2-prog-pct">38%</span>
+          </div>
+          <div class="n2-card-foot">
+            <span class="n2-card-ts">Mar 10, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n2-del">🗑</button>
+              <button class="n2-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="n2-card">
+        <div class="n2-card-accent merger"></div>
+        <div class="n2-card-body">
+          <div class="n2-card-ref"><span>CASE-2026-0121</span></div>
+          <div class="n2-card-name">Nexus Industries</div>
+          <div class="n2-card-case">Merger · Completed Feb 1, 2026</div>
+          <div class="n2-chips">
+            <span class="n2-chip merger">Merger</span>
+            <span class="n2-chip plain">Loans</span>
+          </div>
+          <hr class="n2-divider">
+          <div class="n2-phase-lbl">Phase Progress</div>
+          <div class="n2-phases">
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:100%;background:#10b981;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:100%;background:#f59e0b;"></div></div>
+            <div class="n2-phase-seg"><div class="n2-phase-fill" style="width:100%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n2-prog">
+            <div class="n2-prog-track"><div class="n2-prog-fill" style="width:100%;"></div></div>
+            <span class="n2-prog-pct">100%</span>
+          </div>
+          <div class="n2-card-foot">
+            <span class="n2-card-ts">Jan 28, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n2-del">🗑</button>
+              <button class="n2-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     C3 — COMMAND CENTER (table rows)
+═══════════════════════════════════════════ -->
+<div class="concept" id="c3">
+  <div class="concept-tag">CONCEPT 03 — COMMAND CENTER · Dense table layout</div>
+  <div class="n3">
+
+    <div class="n3-hero">
+      <div class="n3-eyebrow">Implementation Plans · Browser Storage</div>
+      <div class="n3-title">PLANS<br><em>VAULT</em></div>
+      <div class="n3-hero-bottom">
+        <div class="n3-stats">
+          <div><div class="n3-stat-n">8</div><div class="n3-stat-l">Plans</div></div>
+          <div><div class="n3-stat-n">5</div><div class="n3-stat-l">Active</div></div>
+          <div><div class="n3-stat-n">3</div><div class="n3-stat-l">Favs</div></div>
+          <div><div class="n3-stat-n">62%</div><div class="n3-stat-l">Avg</div></div>
+        </div>
+        <div class="n3-search">
+          <span class="n3-search-prefix">🔍</span>
+          <input type="text" placeholder="Filter plans…">
+        </div>
+      </div>
+    </div>
+
+    <div class="n3-toolbar">
+      <span class="n3-toolbar-label">Sort:</span>
+      <button class="n3-tb-tab on">★ Favorites</button>
+      <button class="n3-tb-tab">Recent</button>
+      <button class="n3-tb-tab">A–Z</button>
+      <button class="n3-tb-tab">% Complete</button>
+      <span class="n3-count">8 plans</span>
+    </div>
+
+    <div class="n3-table-wrap">
+      <div class="n3-table-hdr">
+        <span></span>
+        <span style="padding-left:12px;">Plan Name</span>
+        <span>Status</span>
+        <span>Type</span>
+        <span>Go-Live</span>
+        <span>Phase Progress</span>
+        <span>Complete</span>
+        <span></span>
+      </div>
+
+      <div class="n3-row">
+        <div class="n3-row-accent" style="background:#3b82f6;"></div>
+        <div class="n3-row-name">
+          <div class="n3-row-plan-name">Acme Corp 401(k)</div>
+          <div class="n3-row-case">CASE-2026-0142 · ★ Favorite</div>
+        </div>
+        <div><span class="n3-status-pill active"><span class="n3-status-dot"></span>Active</span></div>
+        <div><span class="n3-type-chip startup">Startup</span></div>
+        <div class="n3-date-cell">Apr 1, 2026</div>
+        <div class="n3-phases-mini">
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:100%;background:#3b82f6;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:80%;background:#10b981;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:55%;background:#f59e0b;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:20%;background:#8b5cf6;"></div></div>
+        </div>
+        <div class="n3-prog-row">
+          <div class="n3-prog-track"><div class="n3-prog-fill" style="width:68%;background:#2563eb;"></div></div>
+          <span class="n3-prog-pct">68%</span>
+        </div>
+        <div><button class="n3-open-row">Open →</button></div>
+      </div>
+
+      <div class="n3-row">
+        <div class="n3-row-accent" style="background:#10b981;"></div>
+        <div class="n3-row-name">
+          <div class="n3-row-plan-name">Bridgewater Pension</div>
+          <div class="n3-row-case">CASE-2026-0138 · ★ Favorite</div>
+        </div>
+        <div><span class="n3-status-pill active"><span class="n3-status-dot"></span>Active</span></div>
+        <div><span class="n3-type-chip conversion">Conversion</span></div>
+        <div class="n3-date-cell">Apr 15, 2026</div>
+        <div class="n3-phases-mini">
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:100%;background:#3b82f6;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:45%;background:#10b981;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:0%;background:#f59e0b;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:0%;background:#8b5cf6;"></div></div>
+        </div>
+        <div class="n3-prog-row">
+          <div class="n3-prog-track"><div class="n3-prog-fill" style="width:38%;background:#2563eb;"></div></div>
+          <span class="n3-prog-pct">38%</span>
+        </div>
+        <div><button class="n3-open-row">Open →</button></div>
+      </div>
+
+      <div class="n3-row done">
+        <div class="n3-row-accent" style="background:#8b5cf6;"></div>
+        <div class="n3-row-name">
+          <div class="n3-row-plan-name">Nexus Industries</div>
+          <div class="n3-row-case">CASE-2026-0121</div>
+        </div>
+        <div><span class="n3-status-pill complete"><span class="n3-status-dot"></span>Complete</span></div>
+        <div><span class="n3-type-chip merger">Merger</span></div>
+        <div class="n3-date-cell">Feb 1, 2026</div>
+        <div class="n3-phases-mini">
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:100%;background:#3b82f6;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:100%;background:#10b981;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:100%;background:#f59e0b;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:100%;background:#8b5cf6;"></div></div>
+        </div>
+        <div class="n3-prog-row">
+          <div class="n3-prog-track"><div class="n3-prog-fill" style="width:100%;background:#16a34a;"></div></div>
+          <span class="n3-prog-pct">100%</span>
+        </div>
+        <div><button class="n3-open-row">Open →</button></div>
+      </div>
+
+      <div class="n3-row">
+        <div class="n3-row-accent" style="background:#3b82f6;"></div>
+        <div class="n3-row-name">
+          <div class="n3-row-plan-name">Summit Financial</div>
+          <div class="n3-row-case">CASE-2026-0155</div>
+        </div>
+        <div><span class="n3-status-pill active"><span class="n3-status-dot"></span>Active</span></div>
+        <div><span class="n3-type-chip startup">Startup</span></div>
+        <div class="n3-date-cell">May 1, 2026</div>
+        <div class="n3-phases-mini">
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:60%;background:#3b82f6;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:0%;background:#10b981;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:0%;background:#f59e0b;"></div></div>
+          <div class="n3-phase-mini"><div class="n3-phase-mini-fill" style="width:0%;background:#8b5cf6;"></div></div>
+        </div>
+        <div class="n3-prog-row">
+          <div class="n3-prog-track"><div class="n3-prog-fill" style="width:15%;background:#2563eb;"></div></div>
+          <span class="n3-prog-pct">15%</span>
+        </div>
+        <div><button class="n3-open-row">Open →</button></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     C4 — MINIMAL CLEAN LIGHT
+═══════════════════════════════════════════ -->
+<div class="concept" id="c4">
+  <div class="concept-tag">CONCEPT 04 — MINIMAL CLEAN LIGHT · White cards / Purple accent</div>
+  <div class="n4">
+
+    <div class="n4-hero">
+      <div class="n4-eyebrow">Implementation Plans</div>
+      <div class="n4-title">PLANS<br><em>VAULT</em></div>
+      <div class="n4-sub">All browser-saved implementation plans — organize by favorites, track phase progress, and launch directly into any plan.</div>
+      <div class="n4-stats">
+        <div><div class="n4-stat-n">8</div><div class="n4-stat-l">Total Plans</div></div>
+        <div><div class="n4-stat-n">5</div><div class="n4-stat-l">Active</div></div>
+        <div><div class="n4-stat-n">3</div><div class="n4-stat-l">Favorited</div></div>
+        <div><div class="n4-stat-n">62%</div><div class="n4-stat-l">Avg Complete</div></div>
+      </div>
+    </div>
+
+    <div class="n4-bar">
+      <button class="n4-tab on">★ Favorites First</button>
+      <button class="n4-tab">Recent</button>
+      <button class="n4-tab">A–Z</button>
+      <button class="n4-tab">% Complete</button>
+    </div>
+
+    <div class="n4-grid">
+
+      <div class="n4-card">
+        <div class="n4-card-stripe startup"></div>
+        <div class="n4-card-body">
+          <div class="n4-card-top">
+            <span class="n4-status active"><span class="n4-status-dot"></span>Active</span>
+            <span class="n4-star fav">★</span>
+          </div>
+          <div class="n4-card-name">Acme Corp 401(k)</div>
+          <div class="n4-card-case">CASE-2026-0142</div>
+          <div class="n4-chips">
+            <span class="n4-chip startup">Startup</span>
+            <span class="n4-chip plain">Loans</span>
+            <span class="n4-chip plain">Roth</span>
+          </div>
+          <div class="n4-dates">
+            <span>Go-Live: Apr 1, 2026</span>
+            <span>Wire: Mar 28</span>
+          </div>
+          <div class="n4-phase-lbl">Phase Progress</div>
+          <div class="n4-phases">
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:80%;background:#10b981;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:55%;background:#f59e0b;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:20%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n4-prog">
+            <div class="n4-prog-track"><div class="n4-prog-fill" style="width:68%;background:#7c3aed;"></div></div>
+            <span class="n4-prog-pct">68%</span>
+          </div>
+          <div class="n4-card-foot">
+            <span class="n4-card-ts">Mar 12, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n4-del">🗑</button>
+              <button class="n4-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="n4-card">
+        <div class="n4-card-stripe conversion"></div>
+        <div class="n4-card-body">
+          <div class="n4-card-top">
+            <span class="n4-status active"><span class="n4-status-dot"></span>Active</span>
+            <span class="n4-star fav">★</span>
+          </div>
+          <div class="n4-card-name">Bridgewater Pension</div>
+          <div class="n4-card-case">CASE-2026-0138</div>
+          <div class="n4-chips">
+            <span class="n4-chip conversion">Conversion</span>
+            <span class="n4-chip plain">Auto-Enroll</span>
+          </div>
+          <div class="n4-dates">
+            <span>Go-Live: Apr 15, 2026</span>
+            <span>Wire: Apr 11</span>
+          </div>
+          <div class="n4-phase-lbl">Phase Progress</div>
+          <div class="n4-phases">
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:45%;background:#10b981;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:0%;background:#f59e0b;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:0%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n4-prog">
+            <div class="n4-prog-track"><div class="n4-prog-fill" style="width:38%;background:#7c3aed;"></div></div>
+            <span class="n4-prog-pct">38%</span>
+          </div>
+          <div class="n4-card-foot">
+            <span class="n4-card-ts">Mar 10, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n4-del">🗑</button>
+              <button class="n4-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="n4-card">
+        <div class="n4-card-stripe merger"></div>
+        <div class="n4-card-body">
+          <div class="n4-card-top">
+            <span class="n4-status complete"><span class="n4-status-dot"></span>Complete</span>
+            <span class="n4-star">☆</span>
+          </div>
+          <div class="n4-card-name">Nexus Industries</div>
+          <div class="n4-card-case">CASE-2026-0121</div>
+          <div class="n4-chips">
+            <span class="n4-chip merger">Merger</span>
+            <span class="n4-chip plain">Loans</span>
+          </div>
+          <div class="n4-dates">
+            <span>Go-Live: Feb 1, 2026</span>
+          </div>
+          <div class="n4-phase-lbl">Phase Progress</div>
+          <div class="n4-phases">
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:100%;background:#10b981;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:100%;background:#f59e0b;"></div></div>
+            <div class="n4-phase-seg"><div class="n4-phase-fill" style="width:100%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n4-prog">
+            <div class="n4-prog-track"><div class="n4-prog-fill" style="width:100%;background:#16a34a;"></div></div>
+            <span class="n4-prog-pct">100%</span>
+          </div>
+          <div class="n4-card-foot">
+            <span class="n4-card-ts">Jan 28, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n4-del">🗑</button>
+              <button class="n4-open">Open →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     C5 — BRUTALIST PAPER
+═══════════════════════════════════════════ -->
+<div class="concept" id="c5">
+  <div class="concept-tag">CONCEPT 05 — BRUTALIST PAPER · Matches portal ink/paper palette</div>
+  <div class="n5">
+
+    <div class="n5-hero">
+      <div class="n5-hero-spine">DATA CONSULTING DIVISION</div>
+      <div class="n5-hero-body">
+        <div class="n5-eyebrow">Implementation Plans</div>
+        <div class="n5-title">PLANS<br><em>VAULT</em></div>
+        <div class="n5-sub">All browser-saved implementation plans — organize by favorites, track phase progress, and launch directly into any plan.</div>
+        <div class="n5-stats">
+          <div class="n5-stat"><div class="n5-stat-n">8</div><div class="n5-stat-l">Total Plans</div></div>
+          <div class="n5-stat"><div class="n5-stat-n">5</div><div class="n5-stat-l">Active</div></div>
+          <div class="n5-stat"><div class="n5-stat-n">3</div><div class="n5-stat-l">Favorited</div></div>
+          <div class="n5-stat"><div class="n5-stat-n">62%</div><div class="n5-stat-l">Avg Complete</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="n5-bar">
+      <button class="n5-tab on">★ Favorites First</button>
+      <button class="n5-tab">Recent</button>
+      <button class="n5-tab">A–Z</button>
+      <button class="n5-tab">% Complete</button>
+      <span class="n5-bar-count">8</span>
+    </div>
+
+    <div class="n5-grid">
+
+      <div class="n5-card">
+        <div class="n5-card-inner">
+          <div class="n5-card-top">
+            <span class="n5-status active"><span class="n5-status-dot"></span>Active</span>
+            <span class="n5-star fav">★</span>
+          </div>
+          <div class="n5-card-name">Acme Corp 401(k)</div>
+          <div class="n5-card-case">CASE-2026-0142</div>
+          <div class="n5-chips">
+            <span class="n5-chip startup">Startup</span>
+            <span class="n5-chip plain">Loans</span>
+            <span class="n5-chip plain">Roth</span>
+          </div>
+          <hr class="n5-divider">
+          <div class="n5-phase-lbl">Phase Progress</div>
+          <div class="n5-phases">
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:80%;background:#10b981;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:55%;background:#f59e0b;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:20%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n5-prog">
+            <div class="n5-prog-track"><div class="n5-prog-fill" style="width:68%;"></div></div>
+            <span class="n5-prog-pct">68%</span>
+          </div>
+          <div class="n5-card-foot">
+            <span class="n5-card-ts">Mar 12, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n5-del">🗑</button>
+              <button class="n5-open">Open →</button>
+            </div>
+          </div>
+        </div>
+        <div class="n5-card-num">01</div>
+      </div>
+
+      <div class="n5-card">
+        <div class="n5-card-inner">
+          <div class="n5-card-top">
+            <span class="n5-status active"><span class="n5-status-dot"></span>Active</span>
+            <span class="n5-star fav">★</span>
+          </div>
+          <div class="n5-card-name">Bridgewater Pension</div>
+          <div class="n5-card-case">CASE-2026-0138</div>
+          <div class="n5-chips">
+            <span class="n5-chip conversion">Conversion</span>
+            <span class="n5-chip plain">Auto-Enroll</span>
+          </div>
+          <hr class="n5-divider">
+          <div class="n5-phase-lbl">Phase Progress</div>
+          <div class="n5-phases">
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:45%;background:#10b981;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:0%;background:#f59e0b;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:0%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n5-prog">
+            <div class="n5-prog-track"><div class="n5-prog-fill" style="width:38%;"></div></div>
+            <span class="n5-prog-pct">38%</span>
+          </div>
+          <div class="n5-card-foot">
+            <span class="n5-card-ts">Mar 10, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n5-del">🗑</button>
+              <button class="n5-open">Open →</button>
+            </div>
+          </div>
+        </div>
+        <div class="n5-card-num">02</div>
+      </div>
+
+      <div class="n5-card">
+        <div class="n5-card-inner">
+          <div class="n5-card-top">
+            <span class="n5-status complete"><span class="n5-status-dot"></span>Complete</span>
+            <span class="n5-star">☆</span>
+          </div>
+          <div class="n5-card-name">Nexus Industries</div>
+          <div class="n5-card-case">CASE-2026-0121</div>
+          <div class="n5-chips">
+            <span class="n5-chip merger">Merger</span>
+            <span class="n5-chip plain">Loans</span>
+          </div>
+          <hr class="n5-divider">
+          <div class="n5-phase-lbl">Phase Progress</div>
+          <div class="n5-phases">
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:100%;background:#3b82f6;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:100%;background:#10b981;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:100%;background:#f59e0b;"></div></div>
+            <div class="n5-phase-seg"><div class="n5-phase-fill" style="width:100%;background:#8b5cf6;"></div></div>
+          </div>
+          <div class="n5-prog">
+            <div class="n5-prog-track"><div class="n5-prog-fill" style="width:100%;"></div></div>
+            <span class="n5-prog-pct">100%</span>
+          </div>
+          <div class="n5-card-foot">
+            <span class="n5-card-ts">Jan 28, 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="n5-del">🗑</button>
+              <button class="n5-open">Open →</button>
+            </div>
+          </div>
+        </div>
+        <div class="n5-card-num">03</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+function show(n) {
+  document.querySelectorAll('.concept').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.cnav-btn').forEach(el => el.classList.remove('here'));
+  document.getElementById('c' + n).classList.add('active');
+  document.querySelectorAll('.cnav-btn')[n - 1].classList.add('here');
+  window.scrollTo(0, 0);
+}
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '5') show(parseInt(e.key));
+});
+</script>
+</body>
+</html>

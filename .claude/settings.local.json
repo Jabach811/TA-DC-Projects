@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"c:\\\\Users\\\\mabac\\\\OneDrive\\\\Desktop\\\\Joel\\\\intake-form.html\")",
+      "Bash(find /c/Users/mabac/OneDrive/Desktop/Joel -name *payroll* -o -name *checklist*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\mabac\\OneDrive\\Desktop\\Joel"
+    ]
+  }
+}

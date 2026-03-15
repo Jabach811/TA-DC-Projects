@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance Import Extractor — VBA + Power Query Project 03</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0f0d0a;
+  --paper:  #f2ede4;
+  --paper2: #e8e2d6;
+  --paper3: #ddd7c9;
+  --red:    #c8290a;
+  --dim:    #7a7060;
+  --serif:  'Playfair Display', Georgia, serif;
+  --sans:   'IBM Plex Sans', sans-serif;
+  --brut:   'Bebas Neue', sans-serif;
+  --mono:   'IBM Plex Mono', monospace;
+  --fd-bg:      #f5f7fb;
+  --fd-surface: #ffffff;
+  --fd-border:  #cfd6e3;
+  --fd-text:    #1b2533;
+  --fd-muted:   #6c7a90;
+  --fd-blue:    #2a6df4;
+  --fd-green:   #1aa96b;
+  --fd-yellow:  #d4a017;
+  --fd-red:     #c0392b;
+  --fd-purple:  #6f4cd7;
+  --fd-orange:  #e67e22;
+  --fd-teal:    #0e9aa0;
+  --node-w: 210px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh; }
+
+.proj-hero { background: var(--ink); border-bottom: 4px solid var(--red); display: grid; grid-template-columns: 120px 1fr auto; }
+.proj-hero-num { background: var(--red); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 36px 0; min-width: 120px; }
+.proj-hero-num-val { font-family: var(--brut); font-size: 64px; color: #fff; line-height: .85; }
+.proj-hero-num-label { font-family: var(--sans); font-size: 7px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.45); margin-top: 10px; }
+.proj-hero-main { padding: 36px 48px; }
+.proj-hero-kicker { font-family: var(--sans); font-size: 8.5px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.proj-hero-kicker::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--red); flex-shrink: 0; }
+.proj-hero-title { font-family: var(--serif); font-size: 42px; font-weight: 900; color: var(--paper); line-height: 1.05; margin-bottom: 14px; }
+.proj-hero-title em { color: var(--red); font-style: italic; }
+.proj-hero-desc { font-family: var(--serif); font-size: 14px; font-style: italic; color: rgba(255,255,255,.32); line-height: 1.75; max-width: 540px; }
+.proj-hero-meta { display: flex; flex-direction: column; border-left: 2px solid #1e1a16; }
+.proj-meta-block { flex: 1; padding: 22px 34px; border-bottom: 1px solid #1e1a16; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.proj-meta-block:last-child { border-bottom: none; }
+.proj-meta-n { font-family: var(--brut); font-size: 38px; color: var(--red); line-height: 1; display: block; }
+.proj-meta-l { font-family: var(--sans); font-size: 7.5px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.18); margin-top: 3px; display: block; }
+
+.tag-strip { background: var(--paper2); border-bottom: 2px solid var(--ink); padding: 10px 28px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tag { font-family: var(--mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border: 1.5px solid var(--paper3); color: var(--dim); background: var(--paper); }
+.tag.red   { border-color: var(--red); color: var(--red); background: #fdf0ed; }
+.tag.green { border-color: #1e6b3c;   color: #1e6b3c;   background: #f0fbf5; }
+.tag.blue  { border-color: #1f4b8e;   color: #1f4b8e;   background: #f0f5ff; }
+.tag-sep   { color: var(--paper3); font-size: 14px; }
+
+.sec-rule { display: flex; align-items: center; border-bottom: 2px solid var(--ink); border-top: 1px solid var(--paper3); background: var(--paper2); }
+.sec-rule-label { font-family: var(--brut); font-size: 16px; letter-spacing: 3px; color: var(--ink); padding: 10px 22px; border-right: 2px solid var(--ink); flex-shrink: 0; }
+.sec-rule-sub { font-family: var(--serif); font-size: 12px; font-style: italic; color: var(--dim); padding: 0 22px; flex: 1; }
+.sec-rule-n { font-family: var(--brut); font-size: 24px; color: var(--red); padding: 0 22px; border-left: 2px solid var(--ink); align-self: stretch; display: flex; align-items: center; }
+
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 3px solid var(--ink); }
+.ov-card { padding: 28px; border-right: 2px solid var(--ink); background: var(--paper); }
+.ov-card:last-child { border-right: none; }
+.ov-card-kicker { font-family: var(--sans); font-size: 7.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+.ov-card-title { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+.ov-card-body { font-family: var(--serif); font-size: 13px; color: var(--dim); line-height: 1.7; }
+.ov-card-list { list-style: none; margin-top: 10px; }
+.ov-card-list li { font-family: var(--sans); font-size: 11px; color: var(--dim); padding: 5px 0; border-bottom: 1px solid var(--paper3); display: flex; align-items: flex-start; gap: 8px; }
+.ov-card-list li:last-child { border-bottom: none; }
+.ov-card-list li::before { content: '→'; color: var(--red); flex-shrink: 0; font-size: 10px; margin-top: 1px; }
+
+.flow-panel-hd { display: flex; align-items: center; border-bottom: 2px solid var(--fd-border); background: var(--fd-surface); }
+.flow-panel-hd-main { padding: 20px 28px; flex: 1; }
+.flow-panel-hd h3 { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--fd-text); margin-bottom: 4px; }
+.flow-panel-hd p { font-family: var(--mono); font-size: 10px; color: var(--fd-muted); letter-spacing: .05em; }
+.flow-stats { display: flex; border-left: 2px solid var(--fd-border); }
+.flow-stat { padding: 20px 22px; border-right: 1px solid var(--fd-border); text-align: center; }
+.flow-stat:last-child { border-right: none; }
+.flow-stat-n { font-size: 22px; font-weight: 700; display: block; line-height: 1; }
+.flow-stat-l { font-family: var(--mono); font-size: 8px; letter-spacing: .15em; text-transform: uppercase; color: var(--fd-muted); margin-top: 3px; display: block; }
+.scroll-hint { text-align: center; font-family: var(--mono); font-size: 9px; letter-spacing: .18em; color: var(--fd-muted); padding: 6px 0 10px; opacity: .55; background: var(--fd-bg); border-bottom: 1px solid var(--fd-border); }
+.flow-wrap { overflow-x: auto; padding: 24px 20px 36px; background: var(--fd-bg); border-bottom: 3px solid var(--ink); }
+
+.section-band-fd { border: 2px solid var(--fd-border); border-radius: 8px; padding: 20px 16px 16px; margin: 0 auto 10px; background: var(--fd-surface); position: relative; }
+.section-band-fd::before { content: attr(data-section); position: absolute; top: -11px; left: 16px; font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; padding: 0 10px; background: var(--fd-bg); color: var(--fd-muted); }
+.section-band-fd.b-blue   { border-color: var(--fd-blue);   } .section-band-fd.b-blue::before   { color: var(--fd-blue);   }
+.section-band-fd.b-green  { border-color: var(--fd-green);  } .section-band-fd.b-green::before  { color: var(--fd-green);  }
+.section-band-fd.b-yellow { border-color: var(--fd-yellow); } .section-band-fd.b-yellow::before { color: var(--fd-yellow); }
+.section-band-fd.b-purple { border-color: var(--fd-purple); } .section-band-fd.b-purple::before { color: var(--fd-purple); }
+.section-band-fd.b-orange { border-color: var(--fd-orange); } .section-band-fd.b-orange::before { color: var(--fd-orange); }
+.section-band-fd.b-teal   { border-color: var(--fd-teal);   } .section-band-fd.b-teal::before   { color: var(--fd-teal);   }
+.section-band-fd.b-red    { border-color: var(--fd-red);    } .section-band-fd.b-red::before    { color: var(--fd-red);    }
+
+.fd-node { width: var(--node-w); background: var(--fd-surface); border: 2px solid var(--fd-border); border-radius: 6px; padding: 13px 15px; position: relative; transition: .15s; cursor: default; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+.fd-node:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.09); }
+.fd-node-type  { font-family: var(--mono); font-size: 8px; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 5px; color: var(--fd-muted); }
+.fd-node-title { font-size: 13px; font-weight: 500; line-height: 1.35; color: var(--fd-text); }
+.fd-node-sub   { font-size: 11px; color: var(--fd-muted); margin-top: 4px; font-style: italic; line-height: 1.45; }
+.fd-node-icon  { position: absolute; top: 9px; right: 11px; font-size: 14px; opacity: .4; }
+.fd-node.start    { border-color: #aab4c8; background: #f9fbff; }
+.fd-node.end-nd   { background: #eaf7ef; border-color: var(--fd-green); }
+.fd-node.branch-nd { border-style: dashed; }
+.fd-node.b-blue   { border-color: var(--fd-blue);   background: #f0f5ff; }
+.fd-node.b-green  { border-color: var(--fd-green);  background: #f0fbf5; }
+.fd-node.b-yellow { border-color: var(--fd-yellow); background: #fdf8ec; }
+.fd-node.b-red    { border-color: var(--fd-red);    background: #fdf0f0; }
+.fd-node.b-orange { border-color: var(--fd-orange); background: #fdf5ec; }
+.fd-node.b-purple { border-color: var(--fd-purple); background: #f5f0fd; }
+.fd-node.b-teal   { border-color: var(--fd-teal);   background: #f0fbfc; }
+.fd-choices { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.fd-chip { font-family: var(--mono); font-size: 8px; letter-spacing: .1em; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--fd-border); background: #fafbfd; display: inline-block; width: fit-content; }
+.fd-chip.b-blue   { border-color: var(--fd-blue);   color: var(--fd-blue);   background: #eef3ff; }
+.fd-chip.b-green  { border-color: var(--fd-green);  color: var(--fd-green);  background: #eaf7ef; }
+.fd-chip.b-yellow { border-color: var(--fd-yellow); color: var(--fd-yellow); background: #fffbe8; }
+.fd-chip.b-red    { border-color: var(--fd-red);    color: var(--fd-red);    background: #fff0f0; }
+.fd-chip.b-orange { border-color: var(--fd-orange); color: var(--fd-orange); background: #fff4ea; }
+.fd-chip.b-purple { border-color: var(--fd-purple); color: var(--fd-purple); background: #f4f0ff; }
+.fd-chip.b-teal   { border-color: var(--fd-teal);   color: var(--fd-teal);   background: #f0fbfc; }
+.fd-flow  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.fd-paths { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+.fd-path  { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.fd-path-label { font-family: var(--mono); font-size: 8.5px; letter-spacing: .12em; padding: 4px 10px; border-radius: 3px; border: 1px solid var(--fd-border); background: #f7f9fc; white-space: nowrap; }
+.fd-path-label.b-blue   { border-color: var(--fd-blue);   color: var(--fd-blue);   background: #eef3ff; }
+.fd-path-label.b-green  { border-color: var(--fd-green);  color: var(--fd-green);  background: #eaf7ef; }
+.fd-path-label.b-orange { border-color: var(--fd-orange); color: var(--fd-orange); background: #fff4ea; }
+.fd-arrow { width: 2px; height: 22px; background: var(--fd-border); position: relative; margin: 0 auto; }
+.fd-arrow::after { content: ''; position: absolute; bottom: -6px; left: -4px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--fd-border); }
+.fd-arrow.blue   { background: var(--fd-blue);   } .fd-arrow.blue::after   { border-top-color: var(--fd-blue);   }
+.fd-arrow.green  { background: var(--fd-green);  } .fd-arrow.green::after  { border-top-color: var(--fd-green);  }
+.fd-arrow.yellow { background: var(--fd-yellow); } .fd-arrow.yellow::after { border-top-color: var(--fd-yellow); }
+.fd-arrow.purple { background: var(--fd-purple); } .fd-arrow.purple::after { border-top-color: var(--fd-purple); }
+.fd-arrow.orange { background: var(--fd-orange); } .fd-arrow.orange::after { border-top-color: var(--fd-orange); }
+.fd-arrow.teal   { background: var(--fd-teal);   } .fd-arrow.teal::after   { border-top-color: var(--fd-teal);   }
+.fd-note { background: #f9fbff; border: 1px dashed var(--fd-border); border-radius: 6px; padding: 11px 14px; font-size: 12px; color: var(--fd-muted); max-width: 860px; margin: 0 auto 14px; line-height: 1.55; }
+.fd-note strong { color: var(--fd-text); }
+.fd-note.warn { background: #fff8f8; border-color: #e0b4b4; }
+.c-blue   { color: var(--fd-blue)   !important; } .c-green  { color: var(--fd-green)  !important; }
+.c-yellow { color: var(--fd-yellow) !important; } .c-red    { color: var(--fd-red)    !important; }
+.c-purple { color: var(--fd-purple) !important; } .c-orange { color: var(--fd-orange) !important; }
+.c-teal   { color: var(--fd-teal)   !important; }
+
+.arch-wrap { background: var(--fd-bg); padding: 28px; border-bottom: 3px solid var(--ink); overflow-x: auto; }
+.arch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 960px; margin: 0 auto; }
+.arch-col-hd { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--fd-muted); text-align: center; padding: 0 0 16px; border-bottom: 2px solid var(--fd-border); margin-bottom: 16px; }
+.arch-col { padding: 0 12px; border-right: 1px dashed var(--fd-border); display: flex; flex-direction: column; gap: 10px; }
+.arch-col:first-child { padding-left: 0; }
+.arch-col:last-child  { border-right: none; padding-right: 0; }
+.arch-item { background: var(--fd-surface); border: 2px solid var(--fd-border); border-radius: 6px; padding: 12px 14px; transition: .15s; }
+.arch-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.arch-item-type { font-family: var(--mono); font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--fd-muted); margin-bottom: 4px; }
+.arch-item-name { font-size: 12px; font-weight: 600; color: var(--fd-text); line-height: 1.3; margin-bottom: 4px; }
+.arch-item-desc { font-size: 10.5px; color: var(--fd-muted); font-style: italic; line-height: 1.4; }
+.arch-item.ui   { border-color: var(--fd-blue);   background: #f0f5ff; } .arch-item.ui .arch-item-type   { color: var(--fd-blue);   }
+.arch-item.data { border-color: var(--fd-orange); background: #fdf5ec; } .arch-item.data .arch-item-type { color: var(--fd-orange); }
+.arch-item.fn   { border-color: var(--fd-green);  background: #f0fbf5; } .arch-item.fn .arch-item-type   { color: var(--fd-green);  }
+.arch-item.proc { border-color: var(--fd-purple); background: #f5f0fd; } .arch-item.proc .arch-item-type { color: var(--fd-purple); }
+
+.code-section { border-bottom: 3px solid var(--ink); }
+.module-hd { display: flex; align-items: center; background: var(--paper2); border-bottom: 2px solid var(--ink); cursor: pointer; transition: background .15s; user-select: none; }
+.module-hd:hover { background: var(--paper3); }
+.module-hd-num { font-family: var(--brut); font-size: 28px; color: var(--paper3); width: 60px; text-align: center; padding: 0 16px; flex-shrink: 0; border-right: 2px solid var(--ink); align-self: stretch; display: flex; align-items: center; justify-content: center; }
+.module-hd:hover .module-hd-num { color: var(--red); }
+.module-hd-body { flex: 1; padding: 14px 20px; }
+.module-hd-tag   { font-family: var(--sans); font-size: 7.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--red); margin-bottom: 3px; }
+.module-hd-title { font-family: var(--serif); font-size: 17px; font-weight: 700; color: var(--ink); }
+.module-hd-desc  { font-family: var(--serif); font-size: 12px; font-style: italic; color: var(--dim); margin-top: 2px; }
+.module-hd-toggle { font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--dim); padding: 0 24px; flex-shrink: 0; }
+.module-body { display: none; background: #13111a; }
+.module-body.open { display: block; }
+.module-toolbar { background: #1d1b2a; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2a2840; }
+.module-toolbar-label { font-family: var(--mono); font-size: 9px; letter-spacing: .15em; color: #7a6fa8; text-transform: uppercase; }
+.copy-btn { font-family: var(--sans); font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border: 1.5px solid #3a3560; background: transparent; color: #7a6fa8; cursor: pointer; transition: all .15s; }
+.copy-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.copy-btn.ok { background: #1a6b3c !important; border-color: #1a6b3c !important; color: #fff !important; }
+pre.vba { margin: 0; padding: 20px 24px; overflow-x: auto; font-family: var(--mono); font-size: 12px; line-height: 1.75; color: #c8c0e8; }
+pre.vba .kw  { color: #7fa8f4; } pre.vba .fn  { color: #7dd3aa; }
+pre.vba .str { color: #d4a060; } pre.vba .cm  { color: #5a5370; font-style: italic; }
+pre.vba .num { color: #f4b06a; } pre.vba .tok { color: #f48cb0; }
+pre.vba .ph  { color: #666080; font-style: italic; }
+
+.setup-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 3px solid var(--ink); }
+.setup-col { padding: 28px; border-right: 2px solid var(--ink); background: var(--paper); }
+.setup-col:last-child { border-right: none; }
+.setup-col-title { font-family: var(--brut); font-size: 16px; letter-spacing: 2px; color: var(--dim); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+.setup-step { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--paper3); }
+.setup-step:last-child { border-bottom: none; }
+.setup-num { font-family: var(--brut); font-size: 24px; color: var(--paper3); flex-shrink: 0; width: 32px; line-height: 1; }
+.setup-title { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.setup-desc  { font-family: var(--sans); font-size: 11px; color: var(--dim); line-height: 1.55; }
+.setup-code  { font-family: var(--mono); font-size: 10px; color: var(--red); background: var(--paper2); border: 1px solid var(--paper3); padding: 2px 6px; margin-top: 4px; display: inline-block; }
+
+.proj-footer { background: var(--ink); display: flex; border-top: 4px solid var(--red); }
+.pf-block { flex: 1; padding: 22px 24px; border-right: 1px solid #1e1a16; text-align: center; }
+.pf-block:last-child { border-right: none; }
+.pf-n { font-family: var(--brut); font-size: 34px; color: var(--red); display: block; line-height: 1; }
+.pf-l { font-family: var(--serif); font-size: 11px; font-style: italic; color: rgba(255,255,255,.2); display: block; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="proj-hero">
+  <div class="proj-hero-num">
+    <div class="proj-hero-num-val">03</div>
+    <div class="proj-hero-num-label">Project</div>
+  </div>
+  <div class="proj-hero-main">
+    <div class="proj-hero-kicker">VBA + Power Query · Balance Import Processing · Data Consulting Division</div>
+    <div class="proj-hero-title">Balance Import <em>Extractor</em></div>
+    <div class="proj-hero-desc">A dedicated extraction and analysis workbook for balance import processing. Enter a case number and one or more ref numbers — the workbook routes to the correct server region, injects all parameters, refreshes every query table, and runs automatic summarization by ref, social, source, and fund. One-click copy exports the full table plus summary together.</div>
+  </div>
+  <div class="proj-hero-meta">
+    <div class="proj-meta-block"><span class="proj-meta-n">2</span><span class="proj-meta-l">Server Regions</span></div>
+    <div class="proj-meta-block"><span class="proj-meta-n">4+</span><span class="proj-meta-l">Summary Views</span></div>
+    <div class="proj-meta-block"><span class="proj-meta-n">1</span><span class="proj-meta-l">Click Export</span></div>
+  </div>
+</div>
+
+<!-- ═══ TAG STRIP ═══ -->
+<div class="tag-strip">
+  <span class="tag red">VBA</span>
+  <span class="tag red">Power Query</span>
+  <span class="tag-sep">·</span>
+  <span class="tag blue">UserForm</span>
+  <span class="tag blue">Multi Ref# Entry</span>
+  <span class="tag blue">Server Region Routing</span>
+  <span class="tag-sep">·</span>
+  <span class="tag green">Auto Summarization</span>
+  <span class="tag green">One-Click Copy Export</span>
+  <span class="tag-sep">·</span>
+  <span class="tag">Balance Imports</span>
+  <span class="tag">Cash · Mapping · TIK</span>
+</div>
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">OVERVIEW</div>
+  <div class="sec-rule-sub">What this workbook does, the problem it solves, and how it's structured</div>
+</div>
+<div class="overview-grid">
+  <div class="ov-card">
+    <div class="ov-card-kicker">The Problem It Solves</div>
+    <div class="ov-card-title">No more manual server switching or ref# typos</div>
+    <div class="ov-card-body">Wrong server region (TD vs CoreTV) is invisible until something breaks — and you can lose a lot of time chasing it. Manual ref number entry in queries means trailing spaces and typos that are impossible to see. This workbook eliminates both: server routing is automatic based on case number, and ref numbers are validated and injected cleanly every time.</div>
+  </div>
+  <div class="ov-card">
+    <div class="ov-card-kicker">What It Does</div>
+    <div class="ov-card-title">Entry → routing → refresh → summarize → export</div>
+    <ul class="ov-card-list">
+      <li>UserForms for case number and ref number entry — no raw input box</li>
+      <li>Detects server region from case number prefix automatically</li>
+      <li>Supports single ref# (cash) or multiple ref#s (mapping/TIK, one per fund)</li>
+      <li>Injects all parameters into Power Query connections and refreshes</li>
+      <li>Auto-runs summarization by ref#, social, source, and fund</li>
+      <li>One-click copy: table + summary exported together in one paste</li>
+    </ul>
+  </div>
+  <div class="ov-card">
+    <div class="ov-card-kicker">Ref Number Rules</div>
+    <div class="ov-card-title">Varies by conversion type</div>
+    <ul class="ov-card-list">
+      <li>Cash conversion → 1 ref number total</li>
+      <li>Mapping → 1 ref number per fund</li>
+      <li>Transfer In-Kind → 1 ref number per fund</li>
+      <li>Left sidebar panel handles entry for all scenarios</li>
+      <li>[Additional ref# rules — fill in as needed]</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ EXECUTION FLOW ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">EXECUTION FLOW</div>
+  <div class="sec-rule-sub">From parameter entry to summarized, export-ready output</div>
+  <div class="sec-rule-n">15</div>
+</div>
+<div class="flow-panel-hd">
+  <div class="flow-panel-hd-main">
+    <h3>Balance Import Extractor — Full Execution Flow</h3>
+    <p>5 stages · 15 steps · 3 branch points · 2 outputs (refreshed tables + summary)</p>
+  </div>
+  <div class="flow-stats">
+    <div class="flow-stat"><span class="flow-stat-n c-blue">5</span><span class="flow-stat-l">Stages</span></div>
+    <div class="flow-stat"><span class="flow-stat-n c-green">15</span><span class="flow-stat-l">Steps</span></div>
+    <div class="flow-stat"><span class="flow-stat-n" style="color:var(--fd-yellow);">3</span><span class="flow-stat-l">Branches</span></div>
+    <div class="flow-stat"><span class="flow-stat-n" style="color:var(--fd-teal);">2</span><span class="flow-stat-l">Outputs</span></div>
+  </div>
+</div>
+<div class="scroll-hint">← SCROLL HORIZONTALLY IF NEEDED →</div>
+<div class="flow-wrap">
+  <div class="fd-flow" style="max-width:680px;margin:0 auto;">
+
+    <!-- Stage I: Entry -->
+    <div class="section-band-fd b-blue" data-section="Stage I · Parameter Entry (UserForms — left sidebar)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node start" style="width:100%;max-width:380px;"><span class="fd-node-icon">▶</span><div class="fd-node-type">Entry Point · Sidebar Panel Buttons</div><div class="fd-node-title">User clicks "Enter Case #" or "Enter Ref #(s)" from the left sidebar</div><div class="fd-node-sub">Two separate entry buttons on the sidebar — case number and ref numbers managed independently so either can be updated without re-entering the other.</div></div>
+        <div class="fd-arrow blue"></div>
+        <div class="fd-node b-blue" style="width:100%;max-width:380px;"><span class="fd-node-icon">📋</span><div class="fd-node-type">Step 01 · frmCaseEntry</div><div class="fd-node-title">Case number UserForm — same validation as Project 02</div><div class="fd-node-sub">Q/N or T/J prefix detected and format validated. Pre-populates with current stored value.</div></div>
+        <div class="fd-arrow blue"></div>
+        <div class="fd-node b-blue" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔢</span><div class="fd-node-type">Step 02 · frmRefEntry</div><div class="fd-node-title">Ref number UserForm — supports single or multiple entries</div><div class="fd-node-sub">User enters one ref number (cash) or a list of ref numbers (mapping/TIK, one per fund). Displayed in the sidebar after entry for easy reference.</div></div>
+        <div class="fd-arrow blue"></div>
+        <div class="fd-node branch-nd b-blue" style="width:100%;max-width:380px;"><span class="fd-node-icon">⚡</span><div class="fd-node-type c-blue">Step 03 · Branch: Ref Number Count</div><div class="fd-node-title">How many ref numbers for this conversion?</div><div class="fd-choices"><span class="fd-chip b-green">Cash → 1 ref number total</span><span class="fd-chip b-orange">Mapping / TIK → 1 per fund, entered as a list</span></div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage II: Validation + Region Routing -->
+    <div class="section-band-fd b-yellow" data-section="Stage II · Validation + Server Region Routing (mod_ParamValidator)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔍</span><div class="fd-node-type">Step 04 · Case Number Validation</div><div class="fd-node-title">Format validated — prefix type determined</div><div class="fd-node-sub">Same Q/N vs T/J spacing rules as Project 02. Invalid format → MsgBox with expected pattern, form stays open.</div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node branch-nd b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">⚡</span><div class="fd-node-type c-yellow">Step 05 · Branch: Server Region Routing</div><div class="fd-node-title">Which server region does this case number belong to?</div><div class="fd-choices"><span class="fd-chip b-blue">TD region → route connections to TD server</span><span class="fd-chip b-purple">CoreTV region → route connections to CoreTV server</span></div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">✔️</span><div class="fd-node-type">Step 06 · Ref Number Validation</div><div class="fd-node-title">Each ref number validated — no leading/trailing spaces</div><div class="fd-node-sub">Trim and format check applied to every ref number in the list. Blanks and duplicates flagged before any injection occurs.</div></div>
+        <div class="fd-arrow yellow"></div>
+        <div class="fd-node b-yellow" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔧</span><div class="fd-node-type">Step 07 · Build Parameter Set</div><div class="fd-node-title">Case number variants + ref list + region packaged together</div><div class="fd-node-sub">All parameters assembled into a single structure passed to the query injection layer. Date fields collected here too if any queries require them.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage III: Injection + Refresh -->
+    <div class="section-band-fd b-purple" data-section="Stage III · Query Injection + Refresh (mod_QueryEngine)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">💉</span><div class="fd-node-type">Step 08 · Inject Into Power Query Connections</div><div class="fd-node-title">All connections updated — case #, ref #(s), server region, dates</div><div class="fd-node-sub">Each connection gets the parameters it needs. Server region sets the correct connection string. Ref numbers injected as a list or individually depending on the query.</div></div>
+        <div class="fd-arrow purple"></div>
+        <div class="fd-node b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">🔄</span><div class="fd-node-type">Step 09 · Refresh All Tables</div><div class="fd-node-title">ActiveWorkbook.RefreshAll — all Power Query tables re-execute</div><div class="fd-node-sub">All tabs refresh simultaneously. Data lands in Excel pre-formatted — column names, types, and layout controlled entirely in Power Query M code.</div></div>
+        <div class="fd-arrow purple"></div>
+        <div class="fd-node branch-nd b-purple" style="width:100%;max-width:380px;"><span class="fd-node-icon">⚡</span><div class="fd-node-type c-purple">Step 10 · Refresh Complete?</div><div class="fd-node-title">Check for connection errors after refresh</div><div class="fd-choices"><span class="fd-chip b-green">Success → proceed to calculations + summarization</span><span class="fd-chip b-red">Error → show connection/region error with details</span></div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage IV: Calculations + Summarization -->
+    <div class="section-band-fd b-teal" data-section="Stage IV · Auto-Calculations + Summarization (mod_Summary)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-teal" style="width:100%;max-width:380px;"><span class="fd-node-icon">🧮</span><div class="fd-node-type">Step 11 · Auto-Calculations</div><div class="fd-node-title">Calculated fields applied to refreshed table data</div><div class="fd-node-sub">Any derived columns or computed values run automatically after refresh. No manual calculation steps needed.</div></div>
+        <div class="fd-arrow teal"></div>
+        <div class="fd-node b-teal" style="width:100%;max-width:380px;"><span class="fd-node-icon">📊</span><div class="fd-node-type">Step 12 · Run Summarization</div><div class="fd-node-title">Automatic breakdown across multiple dimensions</div><div class="fd-node-sub">Summary tables generated for: by Ref Number · by Social · by Source · by Fund · [additional breakdowns as configured]</div></div>
+        <div class="fd-arrow teal"></div>
+        <div class="fd-node b-teal" style="width:100%;max-width:380px;"><span class="fd-node-icon">📌</span><div class="fd-node-type">Step 13 · Write Summary to Sheet</div><div class="fd-node-title">Summary written to designated area on the sheet</div><div class="fd-node-sub">Summary output lands adjacent to or below the main extraction table — positioned so a single copy operation captures both together.</div></div>
+      </div>
+    </div>
+
+    <div class="fd-arrow"></div>
+
+    <!-- Stage V: Export -->
+    <div class="section-band-fd b-green" data-section="Stage V · Copy Export (mod_Export)" style="width:100%;max-width:640px;">
+      <div class="fd-flow">
+        <div class="fd-node b-green" style="width:100%;max-width:380px;"><span class="fd-node-icon">📋</span><div class="fd-node-type">Step 14 · One-Click Copy Button</div><div class="fd-node-title">User clicks "Copy" — table + summary copied to clipboard together</div><div class="fd-node-sub">Macro selects the full extraction table and the summary block in one operation and copies. One paste gives you the complete output for your report.</div></div>
+        <div class="fd-arrow green"></div>
+        <div class="fd-node end-nd" style="width:100%;max-width:380px;"><span class="fd-node-icon">✅</span><div class="fd-node-type">Step 15 · Export Ready</div><div class="fd-node-title">Paste directly into output report — formatted, consistent, complete</div><div class="fd-node-sub">Beautiful Excel table every time. Same layout, same column structure, same formatting. Ready to go.</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div style="max-width:640px;margin:16px auto 32px;padding:0 20px;">
+  <div class="fd-note"><strong>Key design:</strong> Case number and ref numbers are entered and stored independently. Either can be updated and re-refreshed without touching the other — useful when processing multiple plans with the same ref structure or vice versa.</div>
+  <div class="fd-note warn" style="margin-top:10px;"><strong>Server region:</strong> TD vs CoreTV routing is determined automatically from the case number prefix. Wrong region = silent failure. The routing logic in mod_ParamValidator handles this so it can never be manually forgotten.</div>
+</div>
+
+<!-- ═══ CODE ARCHITECTURE ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">CODE ARCHITECTURE</div>
+  <div class="sec-rule-sub">Module layout — VBA + Power Query components</div>
+  <div class="sec-rule-n">5</div>
+</div>
+<div class="arch-wrap">
+  <div class="arch-grid">
+    <div>
+      <div class="arch-col-hd">UserForms</div>
+      <div class="arch-col">
+        <div class="arch-item ui">
+          <div class="arch-item-type">UI · Form</div>
+          <div class="arch-item-name">frmCaseEntry</div>
+          <div class="arch-item-desc">Case number input with prefix validation. Pre-populates current value. Shared pattern with Project 02.</div>
+        </div>
+        <div class="arch-item ui">
+          <div class="arch-item-type">UI · Form</div>
+          <div class="arch-item-name">frmRefEntry</div>
+          <div class="arch-item-desc">Ref number entry — supports single value (cash) or multi-value list (mapping/TIK). Displays entered values in sidebar after submit.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Validation + Routing</div>
+      <div class="arch-col">
+        <div class="arch-item fn">
+          <div class="arch-item-type">Module · Validator</div>
+          <div class="arch-item-name">mod_ParamValidator</div>
+          <div class="arch-item-desc">ValidateCaseNumber() — prefix + format check.<br>DetectServerRegion() — TD vs CoreTV routing from case # prefix.<br>ValidateRefNumbers() — trim, blank, and duplicate checks.<br>BuildParamSet() — assembles full parameter package.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Query Engine + Summary</div>
+      <div class="arch-col">
+        <div class="arch-item proc">
+          <div class="arch-item-type">Module · Orchestration</div>
+          <div class="arch-item-name">mod_QueryEngine</div>
+          <div class="arch-item-desc">InjectParams() — injects case #, ref #(s), region, dates into each connection.<br>RefreshAll() — workbook-wide refresh.<br>RunCalculations() — post-refresh derived fields.</div>
+        </div>
+        <div class="arch-item fn">
+          <div class="arch-item-type">Module · Summarization</div>
+          <div class="arch-item-name">mod_Summary</div>
+          <div class="arch-item-desc">BuildSummary() — generates breakdown tables by ref #, social, source, fund, and additional dimensions.<br>WriteSummaryToSheet() — outputs to designated summary area.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="arch-col-hd">Export + Power Query</div>
+      <div class="arch-col">
+        <div class="arch-item proc">
+          <div class="arch-item-type">Module · Export</div>
+          <div class="arch-item-name">mod_Export</div>
+          <div class="arch-item-desc">CopyTableAndSummary() — selects full extraction table + summary block and copies to clipboard in one operation. Wired to the Copy button on each sheet.</div>
+        </div>
+        <div class="arch-item data">
+          <div class="arch-item-type">Connections · M Code</div>
+          <div class="arch-item-name">PQ Connections (per tab)</div>
+          <div class="arch-item-desc">One per extraction table. M queries parameterized for case #, ref #(s), and server region. All column naming and formatting in PQ — no post-load cleanup.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CODE MODULES ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">CODE MODULES</div>
+  <div class="sec-rule-sub">Click any module to expand — paste directly into your VBE</div>
+  <div class="sec-rule-n">4</div>
+</div>
+<div class="code-section">
+
+  <!-- MODULE 1: UserForms -->
+  <div class="module-hd" onclick="toggleModule('mod1')">
+    <div class="module-hd-num">01</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">UserForms · frmCaseEntry + frmRefEntry · Code-Behind</div>
+      <div class="module-hd-title">Case Number &amp; Ref Number Entry Forms</div>
+      <div class="module-hd-desc">Two UserForms — case number validation on submit, ref number list management</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod1">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod1">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">frmCaseEntry + frmRefEntry (code-behind)</span>
+      <button class="copy-btn" onclick="copyCode('code-mod1', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod1"><span class="cm">' ============================================================
+' frmCaseEntry — same structure as Project 02
+'
+' Controls: txtCaseNum, btnSubmit, btnCancel, lblCurrent
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Private Sub</span> <span class="fn">UserForm_Initialize</span>()
+    <span class="ph">' TODO: pre-populate with stored case number</span>
+    <span class="cm">' lblCurrent.Caption = "Current: " &amp; GetStoredCaseNumber()</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnSubmit_Click</span>()
+    <span class="kw">Dim</span> rawInput <span class="kw">As String</span>
+    rawInput = <span class="fn">Trim</span>(txtCaseNum.Value)
+    <span class="kw">If</span> rawInput = <span class="str">""</span> <span class="kw">Then</span>
+        <span class="fn">MsgBox</span> <span class="str">"Please enter a case number."</span>, vbExclamation : <span class="kw">Exit Sub</span>
+    <span class="kw">End If</span>
+    <span class="ph">' TODO: call mod_ParamValidator.ProcessCaseNumber(rawInput)</span>
+    <span class="kw">Me.Hide</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnCancel_Click</span>() : <span class="kw">Me.Hide</span> : <span class="kw">End Sub</span>
+
+<span class="cm">' ============================================================
+' frmRefEntry
+'
+' Controls: txtRefNumbers (multiline TextBox or ListBox),
+'           btnAdd, btnRemove, btnSubmit, btnCancel,
+'           lblRefCount (shows how many refs entered)
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Private Sub</span> <span class="fn">UserForm_Initialize</span>()
+    <span class="ph">' TODO: pre-populate list with any currently stored ref numbers</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnAdd_Click</span>()
+    <span class="ph">' TODO: validate and add a ref number to the list
+    ' Trim, check for blanks and duplicates before adding</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnRemove_Click</span>()
+    <span class="ph">' TODO: remove selected ref number from the list</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnSubmit_Click</span>()
+    <span class="ph">' TODO: collect all ref numbers from the list into an array
+    ' Call mod_ParamValidator.StoreRefNumbers(refArray)</span>
+    <span class="kw">Me.Hide</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">btnCancel_Click</span>() : <span class="kw">Me.Hide</span> : <span class="kw">End Sub</span></pre>
+  </div>
+
+  <!-- MODULE 2: Param Validator -->
+  <div class="module-hd" onclick="toggleModule('mod2')">
+    <div class="module-hd-num">02</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_ParamValidator · Validation + Server Region Routing</div>
+      <div class="module-hd-title">Parameter Validator &amp; Server Region Router</div>
+      <div class="module-hd-desc">Case # format check, TD vs CoreTV routing from prefix, ref # validation, parameter assembly</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod2">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod2">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_ParamValidator.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod2', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod2"><span class="cm">' ============================================================
+' mod_ParamValidator
+' Validates case number and ref numbers, determines server
+' region, and assembles the full parameter set for injection.
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="ph">' Module-level storage for current session parameters</span>
+<span class="kw">Private</span> m_CaseNumber  <span class="kw">As String</span>
+<span class="kw">Private</span> m_RefNumbers  <span class="kw">As Variant</span>   <span class="cm">' array of ref number strings</span>
+<span class="kw">Private</span> m_ServerRegion <span class="kw">As String</span>  <span class="cm">' "TD" or "CoreTV"</span>
+
+<span class="kw">Public Function</span> <span class="fn">DetectServerRegion</span>(<span class="kw">ByVal</span> caseNum <span class="kw">As String</span>) <span class="kw">As String</span>
+    <span class="ph">' TODO: determine TD vs CoreTV from case number prefix/format
+    ' Pattern will be based on the leading characters or number range
+    ' Example structure:
+    '   If Left(UCase(caseNum), 1) = "T" Or Left(UCase(caseNum), 1) = "J" Then
+    '       DetectServerRegion = "CoreTV"
+    '   Else
+    '       DetectServerRegion = "TD"
+    '   End If</span>
+    <span class="fn">DetectServerRegion</span> = <span class="str">"TD"</span> <span class="cm">' placeholder — update with actual routing logic</span>
+<span class="kw">End Function</span>
+
+<span class="kw">Public Function</span> <span class="fn">ValidateCaseNumber</span>(<span class="kw">ByVal</span> caseNum <span class="kw">As String</span>) <span class="kw">As Boolean</span>
+    <span class="ph">' TODO: same validation logic as Project 02 mod_CaseValidator
+    ' Q/N prefix → 2 letters + 5 digits + 3 spaces + 5 digits
+    ' T/J prefix → 2 letters + 6 digits + 2 spaces + 5 digits</span>
+    <span class="fn">ValidateCaseNumber</span> = <span class="kw">True</span> <span class="cm">' placeholder</span>
+<span class="kw">End Function</span>
+
+<span class="kw">Public Function</span> <span class="fn">ValidateRefNumbers</span>(<span class="kw">ByVal</span> refs <span class="kw">As Variant</span>) <span class="kw">As Boolean</span>
+    <span class="ph">' TODO: for each ref number in refs array:
+    '   - Trim leading/trailing spaces
+    '   - Check not blank
+    '   - Check for duplicates
+    '   - Apply any format rules specific to ref numbers</span>
+    <span class="fn">ValidateRefNumbers</span> = <span class="kw">True</span> <span class="cm">' placeholder</span>
+<span class="kw">End Function</span>
+
+<span class="kw">Public Sub</span> <span class="fn">ProcessCaseNumber</span>(<span class="kw">ByVal</span> rawInput <span class="kw">As String</span>)
+    <span class="kw">If Not</span> <span class="fn">ValidateCaseNumber</span>(rawInput) <span class="kw">Then Exit Sub</span>
+    m_CaseNumber   = rawInput
+    m_ServerRegion = <span class="fn">DetectServerRegion</span>(rawInput)
+    <span class="fn">UpdateSidebarDisplay</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Sub</span> <span class="fn">StoreRefNumbers</span>(<span class="kw">ByVal</span> refs <span class="kw">As Variant</span>)
+    <span class="kw">If Not</span> <span class="fn">ValidateRefNumbers</span>(refs) <span class="kw">Then Exit Sub</span>
+    m_RefNumbers = refs
+    <span class="fn">UpdateSidebarDisplay</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Sub</span> <span class="fn">UpdateSidebarDisplay</span>()
+    <span class="ph">' TODO: write current case # and ref #(s) to sidebar named ranges
+    ' so the user always sees what's currently loaded</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Function</span> <span class="fn">GetParamSet</span>() <span class="kw">As Collection</span>
+    <span class="kw">Dim</span> params <span class="kw">As New</span> Collection
+    params.Add m_CaseNumber,   <span class="str">"CaseNumber"</span>
+    params.Add m_RefNumbers,   <span class="str">"RefNumbers"</span>
+    params.Add m_ServerRegion, <span class="str">"ServerRegion"</span>
+    <span class="ph">' TODO: add date fields and case # format variants as needed</span>
+    <span class="kw">Set</span> <span class="fn">GetParamSet</span> = params
+<span class="kw">End Function</span></pre>
+  </div>
+
+  <!-- MODULE 3: Query Engine -->
+  <div class="module-hd" onclick="toggleModule('mod3')">
+    <div class="module-hd-num">03</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_QueryEngine · Injection + Refresh + Calculations</div>
+      <div class="module-hd-title">Query Injection, Refresh &amp; Post-Load Calculations</div>
+      <div class="module-hd-desc">Injects all parameters into connections, refreshes, runs auto-calculations</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod3">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod3">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_QueryEngine.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod3', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod3"><span class="cm">' ============================================================
+' mod_QueryEngine
+' Injects validated parameters into all Power Query connections,
+' triggers refresh, and runs post-load calculations.
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Public Sub</span> <span class="fn">InjectAndRefresh</span>()
+    <span class="kw">Dim</span> params  <span class="kw">As Collection</span>
+    <span class="kw">Dim</span> conn    <span class="kw">As</span> WorkbookConnection
+
+    params = <span class="fn">GetParamSet</span>() <span class="cm">' from mod_ParamValidator</span>
+
+    <span class="kw">For Each</span> conn <span class="kw">In</span> ActiveWorkbook.Connections
+        <span class="ph">' TODO: for each connection, inject the appropriate parameters.
+        ' Each query will need a specific combination of:
+        '   - Case number (possibly a format variant)
+        '   - One or more ref numbers
+        '   - Server region (sets the connection string endpoint)
+        '   - Date fields if required by that query
+        '
+        ' Example pattern:
+        '   Select Case conn.Name
+        '     Case "Query - BalanceTable"
+        '         InjectParams conn, params("CaseNumber"), params("RefNumbers"), params("ServerRegion")
+        '     Case "Query - SourceSummary"
+        '         InjectParams conn, params("CaseNumber"), params("RefNumbers"), params("ServerRegion")
+        '   End Select</span>
+    <span class="kw">Next</span> conn
+
+    ActiveWorkbook.RefreshAll
+
+    <span class="ph">' TODO: optionally wait for async queries before running calculations
+    ' Application.CalculateUntilAsyncQueriesDone</span>
+
+    <span class="fn">RunCalculations</span>
+    <span class="fn">BuildAndWriteSummary</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">InjectParams</span>(<span class="kw">ByRef</span> conn <span class="kw">As</span> WorkbookConnection, _
+                           caseNum      <span class="kw">As String</span>, _
+                           refs         <span class="kw">As Variant</span>, _
+                           serverRegion <span class="kw">As String</span>)
+    <span class="ph">' TODO: update conn.OLEDBConnection.CommandText or PQ formula
+    ' with the provided parameters for this specific connection</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Sub</span> <span class="fn">RunCalculations</span>()
+    <span class="ph">' TODO: apply any derived/calculated columns after refresh
+    ' These run on the refreshed table data before summarization</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Sub</span> <span class="fn">LaunchCaseEntry</span>()
+    frmCaseEntry.Show
+<span class="kw">End Sub</span>
+
+<span class="kw">Public Sub</span> <span class="fn">LaunchRefEntry</span>()
+    frmRefEntry.Show
+<span class="kw">End Sub</span></pre>
+  </div>
+
+  <!-- MODULE 4: Summary + Export -->
+  <div class="module-hd" onclick="toggleModule('mod4')">
+    <div class="module-hd-num">04</div>
+    <div class="module-hd-body">
+      <div class="module-hd-tag">Module · mod_Summary + mod_Export · Summarization + Copy Export</div>
+      <div class="module-hd-title">Auto-Summarization &amp; One-Click Copy Export</div>
+      <div class="module-hd-desc">Breakdown by ref#, social, source, fund — plus the one-click copy that grabs table + summary together</div>
+    </div>
+    <div class="module-hd-toggle" id="tog-mod4">EXPAND ↓</div>
+  </div>
+  <div class="module-body" id="mod4">
+    <div class="module-toolbar">
+      <span class="module-toolbar-label">mod_Summary.bas + mod_Export.bas</span>
+      <button class="copy-btn" onclick="copyCode('code-mod4', this)">Copy Code</button>
+    </div>
+    <pre class="vba" id="code-mod4"><span class="cm">' ============================================================
+' mod_Summary
+' Builds breakdown summary tables from refreshed data.
+' Runs automatically after every refresh.
+' ============================================================</span>
+
+<span class="kw">Option Explicit</span>
+
+<span class="kw">Public Sub</span> <span class="fn">BuildAndWriteSummary</span>()
+    <span class="ph">' TODO: generate summary breakdowns from the main table data
+    ' and write them to the designated summary area on each sheet.
+    '
+    ' Breakdown dimensions (add/remove as needed):
+    '   - By Ref Number  → sum of balances per ref #
+    '   - By Social      → participant-level summary
+    '   - By Source      → money type breakdown
+    '   - By Fund        → fund allocation summary
+    '   - [Additional dimensions as configured]</span>
+
+    <span class="fn">SummarizeByRefNumber</span>
+    <span class="fn">SummarizeBySocial</span>
+    <span class="fn">SummarizeBySource</span>
+    <span class="fn">SummarizeByFund</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">SummarizeByRefNumber</span>()
+    <span class="ph">' TODO: aggregate table data grouped by ref number</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">SummarizeBySocial</span>()
+    <span class="ph">' TODO: aggregate table data grouped by participant SSN/social</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">SummarizeBySource</span>()
+    <span class="ph">' TODO: aggregate table data grouped by money source type</span>
+<span class="kw">End Sub</span>
+
+<span class="kw">Private Sub</span> <span class="fn">SummarizeByFund</span>()
+    <span class="ph">' TODO: aggregate table data grouped by fund</span>
+<span class="kw">End Sub</span>
+
+<span class="cm">' ============================================================
+' mod_Export
+' One-click copy: grabs the full extraction table AND the
+' summary block together so one paste captures everything.
+' Wire the Copy button on each sheet to CopyTableAndSummary().
+' ============================================================</span>
+
+<span class="kw">Public Sub</span> <span class="fn">CopyTableAndSummary</span>()
+    <span class="ph">' TODO: determine the range that covers both the extraction
+    ' table and the summary area on the active sheet, then copy.
+    '
+    ' Example pattern:
+    '   Dim tableRange   As Range
+    '   Dim summaryRange As Range
+    '   Set tableRange   = ActiveSheet.ListObjects("tbl_Extract").Range
+    '   Set summaryRange = ActiveSheet.Range("rng_Summary")
+    '   Union(tableRange, summaryRange).Copy
+    '   MsgBox "Copied — ready to paste.", vbInformation</span>
+<span class="kw">End Sub</span></pre>
+  </div>
+
+</div><!-- /code-section -->
+
+<!-- ═══ SETUP GUIDE ═══ -->
+<div class="sec-rule">
+  <div class="sec-rule-label">SETUP GUIDE</div>
+  <div class="sec-rule-sub">How to configure this workbook from scratch</div>
+</div>
+<div class="setup-grid">
+  <div class="setup-col">
+    <div class="setup-col-title">WORKBOOK SETUP</div>
+    <div class="setup-step">
+      <div class="setup-num">01</div>
+      <div class="setup-body">
+        <div class="setup-title">Create the left sidebar panel</div>
+        <div class="setup-desc">Reserve a fixed column range on the left of each sheet for the sidebar. Add "Enter Case #" and "Enter Ref #(s)" buttons wired to <span class="setup-code">LaunchCaseEntry</span> and <span class="setup-code">LaunchRefEntry</span>.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">02</div>
+      <div class="setup-body">
+        <div class="setup-title">Add named ranges for sidebar display</div>
+        <div class="setup-desc">Create named ranges (e.g. <span class="setup-code">rng_CurrentCase</span>, <span class="setup-code">rng_RefList</span>) in the sidebar area. <span class="setup-code">UpdateSidebarDisplay()</span> writes to these after every entry.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">03</div>
+      <div class="setup-body">
+        <div class="setup-title">Set up Power Query connections per tab</div>
+        <div class="setup-desc">One connection per extraction table. Leave placeholder values for case #, ref #(s), and server region in each M query. The injection layer replaces these at runtime.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">04</div>
+      <div class="setup-body">
+        <div class="setup-title">Add Copy button to each sheet</div>
+        <div class="setup-desc">Insert a button on every tab wired to <span class="setup-code">CopyTableAndSummary</span> in <span class="setup-code">mod_Export</span>. Position it near the summary area for easy access.</div>
+      </div>
+    </div>
+  </div>
+  <div class="setup-col">
+    <div class="setup-col-title">KEY CONFIGURATION POINTS</div>
+    <div class="setup-step">
+      <div class="setup-num">→</div>
+      <div class="setup-body">
+        <div class="setup-title">Fill in server region routing logic</div>
+        <div class="setup-desc">In <span class="setup-code">DetectServerRegion()</span> in mod_ParamValidator, add the actual prefix-to-region mapping. This is the critical piece that eliminates the TD/CoreTV switching error.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">→</div>
+      <div class="setup-body">
+        <div class="setup-title">Wire connections to parameters in mod_QueryEngine</div>
+        <div class="setup-desc">In <span class="setup-code">InjectAndRefresh()</span>, add a Select Case block mapping each connection name to the parameters it needs — case #, ref #(s), region, and any dates.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">→</div>
+      <div class="setup-body">
+        <div class="setup-title">Define summary output ranges</div>
+        <div class="setup-desc">In <span class="setup-code">BuildAndWriteSummary()</span>, set the target ranges for each breakdown table. The Copy export in mod_Export relies on knowing where the summary ends.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">→</div>
+      <div class="setup-body">
+        <div class="setup-title">Ref number count — cash vs mapping/TIK</div>
+        <div class="setup-desc">Cash conversions use a single ref number. Mapping and TIK conversions use one ref per fund. The <span class="setup-code">frmRefEntry</span> form handles both — update the list UI to match how many refs your most complex plans will have.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="proj-footer">
+  <div class="pf-block"><span class="pf-n">03</span><span class="pf-l">Project number</span></div>
+  <div class="pf-block"><span class="pf-n">4</span><span class="pf-l">VBA modules</span></div>
+  <div class="pf-block"><span class="pf-n">2</span><span class="pf-l">UserForms</span></div>
+  <div class="pf-block"><span class="pf-n">2</span><span class="pf-l">Server regions</span></div>
+  <div class="pf-block"><span class="pf-n">4+</span><span class="pf-l">Summary views</span></div>
+  <div class="pf-block"><span class="pf-n">1</span><span class="pf-l">Click to export all</span></div>
+</div>
+
+<script>
+function toggleModule(id) {
+  const body = document.getElementById(id);
+  const tog  = document.getElementById('tog-' + id);
+  const open = body.classList.toggle('open');
+  tog.textContent = open ? 'COLLAPSE ↑' : 'EXPAND ↓';
+}
+function copyCode(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('ok'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✓ Copied'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
