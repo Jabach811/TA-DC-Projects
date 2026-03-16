@@ -33,6 +33,34 @@ Do not use this skill for:
 5. When adding dashboards or summaries, use the app's actual saved data and current state instead of inventing placeholder metrics.
 6. When doing any kind of design work, use Front End Skills to guide layout, styling, motion, and visual polish.
 
+## Folder Standard
+
+For this workspace, new projects should be organized using this structure unless the user explicitly wants something else:
+
+- `site/`
+  Active launcher pages, the main portal, and live site-facing HTML files.
+- `site/intake/`
+  Site-style intake pages or multi-page site companions.
+- `apps/`
+  Standalone tools and internal web apps. Each app gets its own folder.
+- `guides/`
+  Word guides and other formal documentation outputs.
+- `guides/assets/`
+  Screenshot sets and supporting assets for guides.
+- `assets/`
+  Shared non-guide assets such as logos or reused images.
+- `archive/`
+  Old versions, backups, redesign explorations, copies, and retired files.
+
+Project folder rules:
+
+- Do not leave new active apps as loose root files.
+- Give each new app its own folder inside `apps/`, even if it is a single standalone HTML file.
+- Keep app-specific helper files beside that app inside the same app folder.
+- Put active guides in `guides/`, not beside app files.
+- Put temporary copies and backup variants in `archive/`, not in active folders.
+- When reorganizing existing work, update all affected relative links immediately so the moved files still launch correctly.
+
 ## Design Rules
 
 - Use Front End Skills for any design-related work.

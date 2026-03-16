@@ -8891,11 +8891,11 @@ const PROJECTS = [
     status: 'live',
     statusLabel: 'Live — v2.0',
     updated: 'Mar 2026',
-    toolFile: 'App - Main Checklist Generator.html',
+    toolFile: '../apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html',
     toolLabel: 'Implementation Checklist Generator',
     delivery: 'app',
     // ── Add the Word guide filename here (relative path, same folder as portal) ──
-    guideFile: 'Implementation_Checklist_Generator_Guide.docx',  // e.g. 'Guides/Implementation Checklist Guide.docx'
+    guideFile: '../guides/Implementation_Checklist_Generator_Guide.docx',
     features: [
       'Startup, Conversion, and Merger plan types with full conditional task logic',
       'Auto-generates wire day email drafts for vendor, cashiering, and go-live',
@@ -8946,10 +8946,10 @@ Use it to learn, copy, tweak, or just spark new automation ideas. And the best p
     status: 'live',
     statusLabel: 'Live — v2.0',
     updated: 'Mar 2026',
-    toolFile: 'Breakdown - Outlook Email Generator.html',
+    toolFile: '../apps/outlook-email-generator/Breakdown - Outlook Email Generator.html',
     toolLabel: 'Outlook Email Gen',
     delivery: 'breakdown',
-    guideFile: 'Outlook_Email_Generator_Guide.docx',  // e.g. 'Guides/Outlook Email Generator Guide.docx'
+    guideFile: '../guides/Outlook_Email_Generator_Guide.docx',
     features: [
       'Auto‑generate polished emails from templates',
       'Plug in plan details and optional fields',
@@ -8973,10 +8973,10 @@ Use it to learn, copy, tweak, or just spark new automation ideas. And the best p
     status: 'live',
     statusLabel: 'Live — v2.0',
     updated: 'Mar 2026',
-    toolFile: 'Breakdown - SQL to Excel.html',
+    toolFile: '../apps/sql-to-excel/Breakdown - SQL to Excel.html',
     toolLabel: 'SQL to Excel',
     delivery: 'breakdown',
-    guideFile: 'SQL_Query_Extractor_Guide.docx',  // e.g. 'Guides/SQL to Excel Guide.docx'
+    guideFile: '../guides/SQL_Query_Extractor_Guide.docx',
     features: [
       'Pull SQL queries from AQT directly into Excel',
       'Output results as clean, pre‑formatted tables',
@@ -9003,10 +9003,10 @@ Use it to learn, copy, tweak, or just spark new automation ideas. And the best p
     status: 'live',
     statusLabel: 'Live — v2.0',
     updated: 'Mar 2026',
-    toolFile: 'App - Payroll Checklist Generator.html',
+    toolFile: '../apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html',
     toolLabel: 'Payroll Checklist Gen',
     delivery: 'app',
-    guideFile: 'Payroll_Checklist_Generator_Guide.docx',  // e.g. 'Guides/Payroll Checklist Generator Guide.docx'
+    guideFile: '../guides/Payroll_Checklist_Generator_Guide.docx',
     features: [
       'Generate customized payroll emails instantly',
       'Enter once, populate everything automatically',
@@ -9210,8 +9210,8 @@ function openProject(id) {
 // TOOL LAUNCHER
 // ════════════════════════════════════════════════════════
 const standaloneToolFiles = new Set([
-  'App - Main Checklist Generator.html',
-  'App - Payroll Checklist Generator.html'
+  '../apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html',
+  '../apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html'
 ]);
 
 function launchTool(file, label, guideFile) {
