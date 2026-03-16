@@ -10186,67 +10186,165 @@ function infaScrollTo(cat) {
   <div class="eds-panel" id="eds-panel-fields">
     <div class="sec-layout">
       <div>
-        <div class="group-hd"><div class="group-hd-name">ELIGIBILITY FILE — FIELD LAYOUT</div><div class="group-hd-rule"></div></div>
-        <div style="padding:16px 24px 8px;background:var(--paper2);border-bottom:1px solid var(--paper3);">
-          <p style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.7;">Fields are pipe-delimited and position-sensitive. Add your actual field specs below — position number, field name, format, required/optional, and any notes. This is a shell ready to be filled in.</p>
-        </div>
-        <!-- Field spec table header -->
-        <div style="display:grid;grid-template-columns:48px 1fr 120px 100px 80px 1fr;background:var(--ink);padding:10px 24px;gap:0;border-bottom:2px solid var(--red);">
-          <div style="font-family:var(--brut);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.4);">POS</div>
-          <div style="font-family:var(--brut);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.4);">FIELD NAME</div>
-          <div style="font-family:var(--brut);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.4);">FORMAT</div>
-          <div style="font-family:var(--brut);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.4);">LENGTH</div>
-          <div style="font-family:var(--brut);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.4);">REQ</div>
-          <div style="font-family:var(--brut);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.4);">NOTES</div>
-        </div>
-        <!-- Field rows — shell entries -->
-        <div class="eds-field-row">
-          <div class="efr-pos">01</div><div class="efr-name">SSN</div><div class="efr-fmt">Numeric</div><div class="efr-len">9</div><div class="efr-req yes">Y</div><div class="efr-note">9-digit, no dashes. Zero-padded.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">02</div><div class="efr-name">Last Name</div><div class="efr-fmt">Alpha</div><div class="efr-len">30</div><div class="efr-req yes">Y</div><div class="efr-note">As it appears in the plan record.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">03</div><div class="efr-name">First Name</div><div class="efr-fmt">Alpha</div><div class="efr-len">20</div><div class="efr-req yes">Y</div><div class="efr-note"></div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">04</div><div class="efr-name">Date of Birth</div><div class="efr-fmt">MMDDYYYY</div><div class="efr-len">8</div><div class="efr-req yes">Y</div><div class="efr-note">No slashes or dashes.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">05</div><div class="efr-name">Date of Hire</div><div class="efr-fmt">MMDDYYYY</div><div class="efr-len">8</div><div class="efr-req yes">Y</div><div class="efr-note">Original hire date.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">06</div><div class="efr-name">Eligibility Date</div><div class="efr-fmt">MMDDYYYY</div><div class="efr-len">8</div><div class="efr-req yes">Y</div><div class="efr-note">Date participant becomes eligible to participate.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">07</div><div class="efr-name">Plan Entry Date</div><div class="efr-fmt">MMDDYYYY</div><div class="efr-len">8</div><div class="efr-req yes">Y</div><div class="efr-note">First date participant can make contributions.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">08</div><div class="efr-name">Participant Status</div><div class="efr-fmt">Alpha (1)</div><div class="efr-len">1</div><div class="efr-req yes">Y</div><div class="efr-note">A=Active, T=Terminated, E=Eligible Not Contributing</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">09</div><div class="efr-name">Deferral %</div><div class="efr-fmt">Decimal</div><div class="efr-len">6</div><div class="efr-req no">N</div><div class="efr-note">As decimal — 5% = 0.0500. Blank if no election.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">10</div><div class="efr-name">Deferral Flat Amt</div><div class="efr-fmt">Decimal</div><div class="efr-len">10</div><div class="efr-req no">N</div><div class="efr-note">Flat dollar deferral. Blank if % election used.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">11</div><div class="efr-name">Roth Deferral %</div><div class="efr-fmt">Decimal</div><div class="efr-len">6</div><div class="efr-req no">N</div><div class="efr-note">Roth portion only. Blank if no Roth election.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">12</div><div class="efr-name">YTD Pre-Tax</div><div class="efr-fmt">Decimal (2)</div><div class="efr-len">12</div><div class="efr-req no">N</div><div class="efr-note">Year-to-date pre-tax contributions. 2 decimal places.</div>
-        </div>
-        <div class="eds-field-row">
-          <div class="efr-pos">13</div><div class="efr-name">YTD Roth</div><div class="efr-fmt">Decimal (2)</div><div class="efr-len">12</div><div class="efr-req no">N</div><div class="efr-note">Year-to-date Roth contributions. 2 decimal places.</div>
-        </div>
-        <div class="eds-field-row" style="background:var(--paper2);">
-          <div class="efr-pos" style="color:var(--paper4);">14+</div><div class="efr-name" style="color:var(--dim);font-style:italic;">[ Add fields here ]</div><div class="efr-fmt"></div><div class="efr-len"></div><div class="efr-req"></div><div class="efr-note" style="color:var(--dim);font-style:italic;">Fill in remaining plan-specific fields as needed.</div>
+        <div class="group-hd"><div class="group-hd-name">ELIGIBILITY — WALKTHROUGH / PROCEDURE</div><div class="group-hd-rule"></div></div>
+        <div style="padding:20px 24px;background:var(--paper);border-bottom:1px solid var(--paper3);">
+          <p style="font-family:var(--serif);font-size:14px;color:var(--ink);line-height:1.85;max-width:760px;margin-bottom:16px;">
+            Eligibility rules are defined in <strong>P3</strong> and determine <strong>who can enter the plan and when</strong>. These rules include factors such as <strong>age requirements, service requirements, class exclusions, and entry timing</strong> (immediate, next payroll period, first of month, etc.).
+          </p>
+          <div style="background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;padding:16px 18px;margin-bottom:16px;">
+            <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1aa96b;margin-bottom:8px;">Data Source</div>
+            <div style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.8;">
+              Eligibility data should <strong style="color:var(--ink);">always be requested from the client or recordkeeper first</strong>. The base template typically includes:
+              <br><br>
+              • Eligibility status<br>
+              • Entry date<br>
+              • Eligibility date<br>
+              • Source associated with the contribution
+              <br><br>
+              Eligibility is <strong style="color:var(--ink);">only tracked for sources that receive contributions</strong>. Sources such as <strong style="color:var(--ink);">QNEC or frozen sources are excluded</strong>.
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:8px;">When Data Is Not Provided</div>
+              <div style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.8;">
+                If the client or vendor does not supply eligibility data, it must be calculated using the rules defined in <strong style="color:var(--ink);">P3</strong>. The system can determine eligibility automatically using factors such as:
+                <br><br>
+                • Age<br>
+                • Years of service<br>
+                • Hours worked<br>
+                • Elapsed service time
+                <br><br>
+                When eligibility information is incomplete or uncertain, participants can be loaded with:
+                <br><br>
+                • <strong style="color:var(--ink);">Status = 0</strong><br>
+                • <strong style="color:var(--ink);">No eligibility or entry dates</strong>
+                <br><br>
+                The system will then calculate eligibility automatically and activate the participant when the conditions are met.
+              </div>
+            </div>
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2a6df4;margin-bottom:8px;">Loading Process</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2;">
+                <div>01  Send a notification email to <strong>Operations, TC, and TM</strong> indicating eligibility will be loaded.</div>
+                <div>02  Wait for confirmation that the system is ready.</div>
+                <div>03  Enable the relevant contribution sources in <strong>P3</strong>.</div>
+                <div>04  Run the eligibility process.</div>
+                <div>05  Load the data through <strong>EDS</strong> and perform standard validation queries.</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#1a1614;border-left:4px solid #d4a017;padding:16px 20px;">
+            <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d4a017;margin-bottom:8px;">Control Point</div>
+            <div style="font-family:var(--serif);font-size:12px;color:#d4c9b8;line-height:1.8;">Only enable sources that will actually receive contributions.</div>
+          </div>
         </div>
 
-        <div class="group-hd" style="margin-top:0;"><div class="group-hd-name">DEFERRAL ELECTION FILE — FIELD LAYOUT</div><div class="group-hd-rule"></div></div>
+        <div class="group-hd" style="margin-top:0;"><div class="group-hd-name">DEFERRALS — WALKTHROUGH / PROCEDURE</div><div class="group-hd-rule"></div></div>
         <div style="padding:20px 24px;background:var(--paper);border-bottom:1px solid var(--paper3);">
-          <div style="background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #2a6df4;padding:14px 18px;font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.75;">
-            <strong style="color:var(--ink);">Shell — add actual field layout here.</strong> Deferral election files carry the participant's contribution elections separately from eligibility. Key fields typically include SSN, election type (pre-tax/Roth/after-tax), election amount or percentage, effective date, and source code. Add your plan-specific layout below.
+          <p style="font-family:var(--serif);font-size:14px;color:var(--ink);line-height:1.85;max-width:760px;margin-bottom:16px;">
+            Deferral elections determine <strong>how much participants contribute to the plan</strong>.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2a6df4;margin-bottom:8px;">Data Source</div>
+              <div style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.8;">Deferral information should be requested from the <strong style="color:var(--ink);">client or vendor</strong>. Some clients rely entirely on their recordkeeper to maintain this data.</div>
+            </div>
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d4a017;margin-bottom:8px;">Required Identification</div>
+              <div style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.8;">
+                The dataset must allow identification of:
+                <br><br>
+                • Participants with active deferrals<br>
+                • Participants without deferrals<br>
+                • Terminated participants with existing deferral records
+                <br><br>
+                Terminated participants should still be flagged if deferral data exists so the <strong style="color:var(--ink);">TC can validate termination status or rehire information later</strong>.
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;margin-bottom:16px;">
+            <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Validation Rules</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2;">
+              <div>• Participants may have <strong>either dollar or percent elections</strong>, not both.</div>
+              <div>• When both <strong>pre-tax and Roth deferrals</strong> exist, the format must match (both dollars or both percent).</div>
+              <div>• Percentage elections must fall within the plan’s allowed limits.</div>
+              <div>• Bonus elections occasionally exceed normal ranges and must be checked.</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6f4cd7;margin-bottom:8px;">Auto-Enrollment / Default Status</div>
+              <div style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.8;">
+                Participants must be identified as either:
+                <br><br>
+                • <strong style="color:var(--ink);">Defaulted (auto-enrolled)</strong><br>
+                • <strong style="color:var(--ink);">Participant-elected</strong>
+                <br><br>
+                Plans often escalate default percentages over time. If a participant’s deferral rate exceeds the plan’s escalation range, they are no longer considered defaulted.
+                <br><br>
+                Participants within the range may still be participant-elected, so confirmation from the vendor is required whenever possible.
+              </div>
+            </div>
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1aa96b;margin-bottom:8px;">Processing Order</div>
+              <div style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.8;">
+                Deferrals should be <strong style="color:var(--ink);">loaded before eligibility</strong>.
+                <br><br>
+                Running eligibility first can trigger system processes that automatically enroll participants or modify rates incorrectly. Loading deferrals first prevents those overrides.
+              </div>
+            </div>
+          </div>
+          <div style="background:#1a1614;border-left:4px solid #2a6df4;padding:16px 20px;">
+            <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7ec8c8;margin-bottom:8px;">Transmission Codes</div>
+            <div style="font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:2;">
+              <div><strong>A</strong> → Auto-enrolled new participants</div>
+              <div><strong>T</strong> → Existing participants</div>
+              <div style="margin-top:4px;color:#bdb4a8;">Only new participants need to be included in outbound transmissions.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-hd" style="margin-top:0;"><div class="group-hd-name">ROTH / BASIS — WALKTHROUGH / PROCEDURE</div><div class="group-hd-rule"></div></div>
+        <div style="padding:20px 24px;background:var(--paper);border-bottom:1px solid var(--paper3);">
+          <p style="font-family:var(--serif);font-size:14px;color:var(--ink);line-height:1.85;max-width:760px;margin-bottom:16px;">
+            Roth tracking is only required <strong>if the plan supports Roth contributions</strong>. If Roth is not enabled, no Roth processing is required.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6f4cd7;margin-bottom:8px;">Basis and Hardship Tracking</div>
+              <div style="font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.8;">
+                The <strong style="color:var(--ink);">P3 plan configuration</strong> determines whether basis and hardship tracking must be maintained separately.
+                <br><br>
+                If the plan <strong style="color:var(--ink);">does not require separate tracking</strong>, hardship and basis values may be combined.
+                <br>
+                If the plan <strong style="color:var(--ink);">requires basis tracking</strong>, both values must be maintained independently.
+              </div>
+            </div>
+            <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;">
+              <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d4a017;margin-bottom:8px;">Required Fields</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2;">
+                <div>• First contribution year</div>
+                <div>• Roth basis balance</div>
+                <div>• Hardship indicators (if required)</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--paper2);border:1.5px solid var(--paper3);padding:16px 18px;margin-bottom:16px;">
+            <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Validation Rules</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2;">
+              <div>• If a participant has <strong>basis but no contribution year</strong>, the year must be obtained.</div>
+              <div>• A participant may have a <strong>year with no basis</strong> if the balance was distributed.</div>
+              <div>• Any mismatched or missing data should be flagged and reviewed.</div>
+            </div>
+          </div>
+          <div style="background:#1a1614;border-left:4px solid #6f4cd7;padding:16px 20px;">
+            <div style="font-family:var(--sans);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#c678dd;margin-bottom:8px;">Loading</div>
+            <div style="font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:2;">
+              <div>01  Configure the <strong>EDS layout</strong> for the required fields.</div>
+              <div>02  Load the Roth / basis data.</div>
+              <div>03  Run standard validation queries.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -10259,12 +10357,12 @@ function infaScrollTo(cat) {
           <div class="rsb-link" onclick="edsTab('errors')"><span class="rsb-link-num">04</span><span class="rsb-link-text">Common Errors</span><span class="rsb-link-arr">→</span></div>
         </div>
         <div class="rsb-block">
-          <div class="rsb-title">STATUS CODES</div>
-          <div class="rsb-stat-row"><span class="rsb-stat-l">A</span><span class="rsb-stat-n" style="font-size:12px;font-family:var(--sans);color:#1aa96b;">Active</span></div>
-          <div class="rsb-stat-row"><span class="rsb-stat-l">T</span><span class="rsb-stat-n" style="font-size:12px;font-family:var(--sans);color:var(--red);">Terminated</span></div>
-          <div class="rsb-stat-row"><span class="rsb-stat-l">E</span><span class="rsb-stat-n" style="font-size:12px;font-family:var(--sans);color:#d4a017;">Eligible / Not Contributing</span></div>
-          <div class="rsb-stat-row"><span class="rsb-stat-l">L</span><span class="rsb-stat-n" style="font-size:12px;font-family:var(--sans);color:var(--dim);">Leave of Absence</span></div>
-          <div class="rsb-stat-row"><span class="rsb-stat-l">R</span><span class="rsb-stat-n" style="font-size:12px;font-family:var(--sans);color:var(--dim);">Retired</span></div>
+          <div class="rsb-title">SECTION GUIDE</div>
+          <div style="font-family:var(--serif);font-size:11px;color:var(--dim);line-height:1.8;padding-top:4px;">
+            <strong style="color:var(--ink);">Eligibility:</strong> P3 rules, source requests, and load order.<br>
+            <strong style="color:var(--ink);">Deferrals:</strong> Vendor data, validation rules, and transmission logic.<br>
+            <strong style="color:var(--ink);">Roth / Basis:</strong> P3 tracking rules, validations, and load sequence.
+          </div>
         </div>
       </div>
     </div>

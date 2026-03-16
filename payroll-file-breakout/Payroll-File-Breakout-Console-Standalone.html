@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payroll File Breakout Console</title>
+<style>
+:root{--bg:linear-gradient(180deg,#dceffc,#c7e2f7);--bg-overlay:linear-gradient(rgba(255,255,255,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.35) 1px,transparent 1px);--panel:rgba(244,251,255,.9);--panel-alt:#f9fdff;--text:#163040;--muted:#5c7586;--line:#a8c8dc;--line-soft:#cfe1ea;--field-bg:#fafdff;--field-line:#b8d1e0;--table-head:#e6f4fb;--chip-bg:#ecf7fd;--chip-line:#bcd7e6;--accent:#2d78a5;--hero-bg:linear-gradient(135deg,#184e73,#2c84b3);--hero-text:#f5fbff;--hero-kicker:#bfe8ff;--hero-sub:#def1fa;--glow:rgba(58,153,205,.28);--radius:14px;--shadow:0 18px 38px rgba(39,104,145,.14);--font-body:"Segoe UI",Tahoma,sans-serif;--font-display:"Segoe UI",Tahoma,sans-serif;--font-mono:Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:var(--font-body);background:var(--bg);color:var(--text)}body::before{content:"";position:fixed;inset:0;background:var(--bg-overlay);pointer-events:none;opacity:.55}a{color:inherit}.page{position:relative;z-index:1;width:min(1440px,calc(100vw - 28px));margin:0 auto;padding:18px 0 32px}
+.hero,.panel{border-radius:var(--radius);border:2px solid var(--line);box-shadow:var(--shadow)}.hero{padding:34px;background:var(--hero-bg);color:var(--hero-text);overflow:hidden;position:relative}.hero::after{content:"";position:absolute;inset:auto -8% -35% auto;width:260px;height:260px;border-radius:50%;background:var(--glow);filter:blur(30px);opacity:.45}.hero-kicker{position:relative;z-index:1;margin:0 0 10px;font:700 11px/1 var(--font-mono);letter-spacing:.28em;text-transform:uppercase;color:var(--hero-kicker)}.hero h1{position:relative;z-index:1;margin:0 0 10px;font:700 clamp(34px,4vw,56px)/1.02 var(--font-display);letter-spacing:-.03em}.hero p{position:relative;z-index:1;max-width:820px;margin:0;color:var(--hero-sub);line-height:1.7}
+.panel{padding:20px;background:var(--panel);backdrop-filter:blur(10px)}.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:16px}.section-tag{font:700 10px/1 var(--font-mono);letter-spacing:.26em;text-transform:uppercase;color:var(--accent)}h2{margin:0;font:700 20px/1.08 var(--font-display);letter-spacing:-.02em}
+.workspace{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;margin-top:16px}.details-panel{grid-column:span 5}.input-panel{grid-column:span 3}.summary-panel{grid-column:span 4}.reports-panel{grid-column:1 / -1}
+.field-block{display:flex;flex-direction:column;gap:10px}.field-block label,.summary-stack strong,.field-meta strong{font-weight:700}.field-block input{width:100%;padding:12px 14px;border:1px solid var(--field-line);border-radius:14px;background:var(--field-bg);color:var(--text);font:500 14px/1.4 var(--font-mono)}.file-input-native{display:none}.file-picker{min-height:48px;border:1px solid var(--field-line);border-radius:14px;background:var(--field-bg);display:flex;align-items:center;gap:12px;padding:8px 12px;cursor:pointer}.file-button{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:0 12px;border:1px solid var(--chip-line);border-radius:9px;background:var(--chip-bg);font:700 12px/1 var(--font-body);color:var(--text);white-space:nowrap}.file-picker-text{font:500 13px/1.3 var(--font-mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.export-btn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;width:100%;margin-top:14px;padding:0 24px;border:1px solid #16597d;border-radius:18px;background:linear-gradient(135deg,#0f699b,#2f9fd6 58%,#7fd4ff);color:#f8fdff;font:800 15px/1 var(--font-body);cursor:pointer;box-shadow:0 18px 28px rgba(18,90,131,.22),0 8px 16px rgba(43,143,200,.18)}.export-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 22px 34px rgba(18,90,131,.28),0 10px 18px rgba(43,143,200,.22)}.export-btn:disabled{border-color:#a8c8dc;background:linear-gradient(180deg,#dbeaf5,#c9dbe8);color:#6e8798;cursor:not-allowed;box-shadow:none}
+.summary-box,.stack-box,.report-card,.details-box{border:1px solid var(--line-soft);border-radius:16px;background:var(--panel-alt)}.summary-box,.stack-box,.details-box{padding:14px}.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.stat-card{min-height:108px;display:flex;flex-direction:column;justify-content:space-between}.stat-card strong{display:block;min-height:34px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;color:var(--muted)}.stat-card div{display:block;font:700 24px/1 var(--font-display)}
+.summary-stack{display:grid;gap:12px;margin-top:14px}.stack-box{min-height:58px}.muted{color:var(--muted)}.field-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}.field-meta span{display:block;margin-top:4px;color:var(--muted);font:600 13px/1.3 var(--font-mono)}
+.details-table-wrap,.report-table-wrap{overflow:auto;border:1px solid var(--line-soft);border-radius:12px;background:var(--field-bg)}.details-table-wrap{max-height:440px}.report-table-wrap{max-height:420px}.details-table-wrap table,.report-table-wrap table{width:max-content;min-width:100%;border-collapse:collapse}.details-table-wrap th,.details-table-wrap td,.report-table-wrap th,.report-table-wrap td{padding:9px 11px;white-space:nowrap;border:1px solid var(--line-soft);text-align:center;font-size:13px}.details-table-wrap th,.report-table-wrap th{position:sticky;top:0;background:var(--table-head);z-index:1}
+.report-card{padding:16px}.report-card h3{margin:0 0 6px;font:700 22px/1 var(--font-display)}.report-card p{margin:0 0 10px;color:var(--muted)}
+@media (max-width:1100px){.workspace{grid-template-columns:1fr}.details-panel,.input-panel,.summary-panel,.reports-panel{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="hero-kicker">Official Internal Utility</div>
+    <h1>Payroll File Breakout Console</h1>
+    <p>Authorized workspace for loading a payroll fixed-width text file, breaking each line into the approved field layout, reviewing parsed rows, and exporting a formatted workbook for downstream review.</p>
+  </div>
+
+  <div class="workspace">
+    <section class="panel details-panel">
+      <div class="section-head">
+        <span class="section-tag">Layout</span>
+        <h2>Breakout Details</h2>
+      </div>
+      <div class="details-box">
+        <div class="field-meta">
+          <div><strong>Total Fields</strong><span id="totalFieldsText">0</span></div>
+          <div><strong>Expected Record Length</strong><span id="recordLengthText">0</span></div>
+        </div>
+        <div class="details-table-wrap">
+          <table>
+            <thead>
+              <tr><th>Field</th><th>Start</th><th>Length</th><th>End</th><th>Type</th></tr>
+            </thead>
+            <tbody id="layoutTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel input-panel">
+      <div class="section-head">
+        <span class="section-tag">Input</span>
+        <h2>Input Data</h2>
+      </div>
+      <div class="field-block">
+        <label for="planNameInput">Plan Name</label>
+        <input id="planNameInput" type="text" placeholder="Enter plan name">
+      </div>
+      <div class="field-block" style="margin-top:14px">
+        <label for="fileInput">Select Text File</label>
+        <label for="fileInput" class="file-picker">
+          <span class="file-button">Choose File</span>
+          <span id="filePickerText" class="file-picker-text">No file chosen</span>
+        </label>
+        <input id="fileInput" class="file-input-native" type="file" accept=".txt,.dat,.prn,.log">
+      </div>
+      <button id="exportWorkbookBtn" class="export-btn" type="button" disabled>Export Workbook</button>
+      <textarea id="payloadInput" style="display:none"></textarea>
+    </section>
+
+    <section class="panel summary-panel">
+      <div class="section-head">
+        <div>
+          <span class="section-tag">Review</span>
+          <h2>Summary</h2>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="summary-box stat-card"><strong>Total Lines</strong><div id="totalLinesText">0</div></div>
+        <div class="summary-box stat-card"><strong>Accepted Rows</strong><div id="acceptedLinesText">0</div></div>
+        <div class="summary-box stat-card"><strong>Discarded Rows</strong><div id="discardedLinesText">0</div></div>
+      </div>
+      <div class="summary-stack">
+        <div><strong>Loaded File</strong><div id="loadedFileText" class="stack-box">None yet.</div></div>
+        <div><strong>Breakout Sheet</strong><div id="reportsFoundText" class="stack-box">Payroll Breakout</div></div>
+        <div><strong>Discard Reasons</strong><div id="discardText" class="stack-box">None yet.</div></div>
+        <div id="errorText"></div>
+      </div>
+    </section>
+
+    <section class="panel reports-panel">
+      <div class="section-head">
+        <span class="section-tag">Output</span>
+        <h2>Parsed Payroll Rows</h2>
+      </div>
+      <div id="reportOutputs">No parsed rows.</div>
+    </section>
+  </div>
+</div>
+<script>
+(function () {
+  var fileInput = document.getElementById("fileInput");
+  var filePickerText = document.getElementById("filePickerText");
+  var planNameInput = document.getElementById("planNameInput");
+  var payloadInput = document.getElementById("payloadInput");
+  var totalFieldsText = document.getElementById("totalFieldsText");
+  var recordLengthText = document.getElementById("recordLengthText");
+  var layoutTableBody = document.getElementById("layoutTableBody");
+  var totalLinesText = document.getElementById("totalLinesText");
+  var acceptedLinesText = document.getElementById("acceptedLinesText");
+  var discardedLinesText = document.getElementById("discardedLinesText");
+  var loadedFileText = document.getElementById("loadedFileText");
+  var reportsFoundText = document.getElementById("reportsFoundText");
+  var discardText = document.getElementById("discardText");
+  var errorText = document.getElementById("errorText");
+  var reportOutputs = document.getElementById("reportOutputs");
+  var exportBtn = document.getElementById("exportWorkbookBtn");
+
+  var PREVIEW_ROW_LIMIT = 20;
+  var RECORD_LENGTH = 553;
+  var currentFileName = "";
+  var lastParseResult = null;
+
+  var LAYOUT = [
+    { header: "Account Number", start: 1, length: 13, type: "text" },
+    { header: "Social Security Number", start: 14, length: 11, type: "text" },
+    { header: "Employee Number", start: 25, length: 10, type: "text" },
+    { header: "Employee Division/Location Code", start: 35, length: 4, type: "text" },
+    { header: "Class Code", start: 39, length: 10, type: "text" },
+    { header: "Employee Last Name", start: 49, length: 30, type: "text" },
+    { header: "Employee Last Name Suffix", start: 79, length: 5, type: "text" },
+    { header: "Employee First Name", start: 84, length: 20, type: "text" },
+    { header: "Employee Middle Initial", start: 104, length: 1, type: "text" },
+    { header: "Birth Date", start: 105, length: 10, type: "date" },
+    { header: "Hire Date", start: 115, length: 10, type: "date" },
+    { header: "Adjusted Service Date", start: 125, length: 10, type: "date" },
+    { header: "Termination Date", start: 135, length: 10, type: "date" },
+    { header: "Rehire Date", start: 145, length: 10, type: "date" },
+    { header: "Street Address Line 1", start: 155, length: 30, type: "text" },
+    { header: "Street Address Line 2", start: 185, length: 30, type: "text" },
+    { header: "City Name", start: 215, length: 20, type: "text" },
+    { header: "State Code", start: 235, length: 2, type: "text" },
+    { header: "Zip Code", start: 237, length: 10, type: "text" },
+    { header: "E-mail address", start: 247, length: 50, type: "text" },
+    { header: "Daytime/Work Phone Number", start: 297, length: 10, type: "text" },
+    { header: "Evening/Home Phone Number", start: 307, length: 10, type: "text" },
+    { header: "Mobile Phone Number", start: 317, length: 10, type: "text" },
+    { header: "Single Sign On Eligibility Code", start: 327, length: 1, type: "text" },
+    { header: "Single Sign On Id", start: 328, length: 30, type: "text" },
+    { header: "Marital Status Code", start: 358, length: 1, type: "text" },
+    { header: "Employee Payroll Frequency", start: 359, length: 2, type: "text" },
+    { header: "Gender", start: 361, length: 1, type: "text" },
+    { header: "Employee Highly Comp Code", start: 362, length: 1, type: "text" },
+    { header: "Insider Investor Code", start: 363, length: 1, type: "text" },
+    { header: "Language Code", start: 364, length: 1, type: "text" },
+    { header: "Termination Reason Code", start: 365, length: 1, type: "text" },
+    { header: "Current Hours Paid", start: 366, length: 8, type: "integer" },
+    { header: "Employer Non-elective Contribution Amount", start: 374, length: 10, type: "integer" },
+    { header: "Employee After-tax Contribution Amount", start: 384, length: 10, type: "integer" },
+    { header: "Employee Pre Tax Contribution Amount", start: 394, length: 10, type: "integer" },
+    { header: "Employee Roth Contribution Amount", start: 404, length: 10, type: "integer" },
+    { header: "Employer Match Contribution Amount", start: 414, length: 10, type: "integer" },
+    { header: "Safe Harbor Match Contribution Amount", start: 424, length: 10, type: "integer" },
+    { header: "Employee Loan Repayment", start: 434, length: 10, type: "integer" },
+    { header: "Additional Source 1 Contribution Amount", start: 444, length: 10, type: "integer" },
+    { header: "Additional Source 2 Contribution Amount", start: 454, length: 10, type: "integer" },
+    { header: "Current Gross Compensation", start: 464, length: 12, type: "integer" },
+    { header: "Current Plan Compensation", start: 476, length: 12, type: "integer" },
+    { header: "Additional Compensation 1", start: 488, length: 12, type: "integer" },
+    { header: "Additional Compensation 2", start: 500, length: 12, type: "integer" },
+    { header: "Payroll Period Start Date", start: 512, length: 10, type: "date" },
+    { header: "Payroll Period End Date", start: 522, length: 10, type: "date" },
+    { header: "Paycheck Date", start: 532, length: 10, type: "date" },
+    { header: "Department", start: 542, length: 12, type: "text" }
+  ];
+
+  function trimValue(value) {
+    return String(value || "").replace(/^\s+|\s+$/g, "");
+  }
+
+  function safeFilePart(value, fallback) {
+    var cleaned = trimValue(value).replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ");
+    return cleaned || fallback;
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function updateFileText() {
+    filePickerText.textContent = currentFileName || "No file chosen";
+    loadedFileText.textContent = currentFileName || "None yet.";
+  }
+
+  function renderLayoutDetails() {
+    var rows = [];
+    var i;
+    totalFieldsText.textContent = String(LAYOUT.length);
+    recordLengthText.textContent = String(RECORD_LENGTH);
+    for (i = 0; i < LAYOUT.length; i += 1) {
+      rows.push("<tr><td>" + escapeHtml(LAYOUT[i].header) + "</td><td>" + LAYOUT[i].start + "</td><td>" + LAYOUT[i].length + "</td><td>" + (LAYOUT[i].start + LAYOUT[i].length - 1) + "</td><td>" + escapeHtml(LAYOUT[i].type) + "</td></tr>");
+    }
+    layoutTableBody.innerHTML = rows.join("");
+  }
+
+  function clearResults() {
+    lastParseResult = null;
+    totalLinesText.textContent = "0";
+    acceptedLinesText.textContent = "0";
+    discardedLinesText.textContent = "0";
+    reportsFoundText.textContent = "Payroll Breakout";
+    discardText.textContent = "None yet.";
+    errorText.innerHTML = "";
+    reportOutputs.textContent = "No parsed rows.";
+    exportBtn.disabled = true;
+  }
+
+  function renderError(message) {
+    errorText.innerHTML = "<div class=\"details-box\" style=\"border-color:#cf8d8d;background:#fff1f1;color:#7a2323\">" + escapeHtml(message) + "</div>";
+  }
+
+  function extractValue(line, start, length) {
+    return trimValue(line.substring(start - 1, start - 1 + length));
+  }
+
+  function normalizeDate(value) {
+    var text = trimValue(value);
+    var match;
+    if (!text) {
+      return "";
+    }
+    if ((match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/))) {
+      return match[1] + "-" + match[2] + "-" + match[3];
+    }
+    if ((match = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/))) {
+      return match[3] + "-" + match[1] + "-" + match[2];
+    }
+    if ((match = text.match(/^(\d{4})(\d{2})(\d{2})$/))) {
+      return match[1] + "-" + match[2] + "-" + match[3];
+    }
+    return text;
+  }
+
+  function normalizeNumeric(value) {
+    var text = trimValue(value).replace(/,/g, "");
+    if (!text) {
+      return "";
+    }
+    return /^-?\d+(\.\d+)?$/.test(text) ? text : trimValue(value);
+  }
+
+  function parseLine(line) {
+    var row = [];
+    var i;
+    for (i = 0; i < LAYOUT.length; i += 1) {
+      var field = LAYOUT[i];
+      var value = extractValue(line, field.start, field.length);
+      if (field.type === "date") {
+        value = normalizeDate(value);
+      } else if (field.type === "integer" || field.type === "decimal") {
+        value = normalizeNumeric(value);
+      }
+      row.push(value);
+    }
+    return row;
+  }
+
+  function tableHtml(headers, rows) {
+    var thead = [];
+    var tbody = [];
+    var r;
+    var c;
+    for (c = 0; c < headers.length; c += 1) {
+      thead.push("<th>" + escapeHtml(headers[c]) + "</th>");
+    }
+    for (r = 0; r < rows.length; r += 1) {
+      var cells = [];
+      for (c = 0; c < rows[r].length; c += 1) {
+        cells.push("<td>" + escapeHtml(rows[r][c]) + "</td>");
+      }
+      tbody.push("<tr>" + cells.join("") + "</tr>");
+    }
+    return "<table><thead><tr>" + thead.join("") + "</tr></thead><tbody>" + tbody.join("") + "</tbody></table>";
+  }
+
+  function parsePayload() {
+    var text = String(payloadInput.value || "").replace(/\r\n/g, "\n");
+    var lines = text.split("\n");
+    var parsedRows = [];
+    var discardMap = {};
+    var totalLines = 0;
+    var i;
+
+    errorText.innerHTML = "";
+    for (i = 0; i < lines.length; i += 1) {
+      totalLines += 1;
+      if (!trimValue(lines[i])) {
+        discardMap["Blank line"] = true;
+        continue;
+      }
+      if (lines[i].length < RECORD_LENGTH) {
+        discardMap["Line shorter than expected record length (" + RECORD_LENGTH + ")"] = true;
+        continue;
+      }
+      parsedRows.push(parseLine(lines[i]));
+    }
+
+    if (lines.length === 1 && !trimValue(lines[0])) {
+      totalLines = 0;
+      discardMap = {};
+      parsedRows = [];
+    }
+
+    var discardReasons = [];
+    for (var key in discardMap) {
+      if (discardMap.hasOwnProperty(key)) {
+        discardReasons.push(key);
+      }
+    }
+
+    totalLinesText.textContent = String(totalLines);
+    acceptedLinesText.textContent = String(parsedRows.length);
+    discardedLinesText.textContent = String(Math.max(totalLines - parsedRows.length, 0));
+    discardText.innerHTML = discardReasons.length ? discardReasons.join("<br>") : "None yet.";
+
+    if (!totalLines) {
+      reportOutputs.textContent = "No parsed rows.";
+      exportBtn.disabled = true;
+      lastParseResult = null;
+      return;
+    }
+    if (!parsedRows.length) {
+      reportOutputs.textContent = "No parsed rows.";
+      renderError("No lines matched the expected payroll record length.");
+      exportBtn.disabled = true;
+      lastParseResult = null;
+      return;
+    }
+
+    var headers = [];
+    for (i = 0; i < LAYOUT.length; i += 1) {
+      headers.push(LAYOUT[i].header);
+    }
+    var previewRows = parsedRows.slice(0, PREVIEW_ROW_LIMIT);
+    reportOutputs.innerHTML = "<div class=\"report-card\"><h3>Payroll Breakout</h3><p>Showing " + previewRows.length + " of " + parsedRows.length + " row(s)</p><div class=\"report-table-wrap\">" + tableHtml(headers, previewRows) + "</div></div>";
+    lastParseResult = { totalLines: totalLines, acceptedLines: parsedRows.length, discardedLines: Math.max(totalLines - parsedRows.length, 0), parsedRows: parsedRows, currentFileName: currentFileName, planName: trimValue(planNameInput.value) };
+    exportBtn.disabled = false;
+  }
+
+  function workbookCell(value, type) {
+    var normalizedType = (type || "text").toLowerCase();
+    if (value === "" || value == null) {
+      return { kind: "text", value: "", styleId: 1 };
+    }
+    if ((normalizedType === "integer" || normalizedType === "decimal") && !isNaN(Number(value))) {
+      return { kind: "number", value: String(Number(value)), styleId: normalizedType === "integer" ? 2 : 3 };
+    }
+    if (normalizedType === "date" && /^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
+      return { kind: "date", value: String(value), styleId: 4 };
+    }
+    return { kind: "text", value: String(value), styleId: 1 };
+  }
+
+  function escapeXml(value) {
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+  }
+
+  function columnLetter(index) {
+    var result = "";
+    var current = index;
+    while (current > 0) {
+      var remainder = (current - 1) % 26;
+      result = String.fromCharCode(65 + remainder) + result;
+      current = Math.floor((current - 1) / 26);
+    }
+    return result;
+  }
+
+  function excelSerialFromIsoDate(iso) {
+    var parts = iso.split("-");
+    var utc = Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    return String(Math.floor(utc / 86400000) + 25569);
+  }
+
+  function textCell(ref, text, styleId) {
+    return "<c r=\"" + ref + "\" t=\"inlineStr\" s=\"" + styleId + "\"><is><t>" + escapeXml(text) + "</t></is></c>";
+  }
+
+  function numberCell(ref, value, styleId) {
+    return "<c r=\"" + ref + "\" s=\"" + styleId + "\"><v>" + value + "</v></c>";
+  }
+
+  function formulaCell(ref, formula, text, styleId) {
+    return "<c r=\"" + ref + "\" t=\"str\" s=\"" + styleId + "\"><f>" + escapeXml(formula) + "</f><v>" + escapeXml(text) + "</v></c>";
+  }
+
+  function worksheetXml(rows, columns) {
+    var colsXml = columns && columns.length ? "<cols>" + columns.join("") + "</cols>" : "";
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">" + colsXml + "<sheetData>" + rows.join("") + "</sheetData></worksheet>";
+  }
+
+  function buildWorkbookFiles(result) {
+    var titleRows = [];
+    var dataRows = [];
+    var headerCells = [];
+    var r;
+    var c;
+
+    titleRows.push("<row r=\"1\">" + textCell("A1", "Payroll File Breakout Console", 5) + textCell("B1", "", 1) + textCell("C1", "", 1) + "</row>");
+    titleRows.push("<row r=\"2\">" + textCell("A2", "Plan Name", 6) + textCell("B2", result.planName || "Not Provided", 1) + "</row>");
+    titleRows.push("<row r=\"3\">" + textCell("A3", "Input File", 6) + textCell("B3", result.currentFileName || "Not Provided", 1) + "</row>");
+    titleRows.push("<row r=\"4\">" + textCell("A4", "Total Lines", 6) + numberCell("B4", String(result.totalLines), 2) + "</row>");
+    titleRows.push("<row r=\"5\">" + textCell("A5", "Accepted Rows", 6) + numberCell("B5", String(result.acceptedLines), 2) + "</row>");
+    titleRows.push("<row r=\"6\">" + textCell("A6", "Discarded Rows", 6) + numberCell("B6", String(result.discardedLines), 2) + "</row>");
+    titleRows.push("<row r=\"8\">" + textCell("A8", "Sheet Name", 6) + textCell("B8", "Open Sheet", 6) + "</row>");
+    titleRows.push("<row r=\"9\">" + textCell("A9", "Payroll Breakout", 1) + formulaCell("B9", "HYPERLINK(\"#'Payroll Breakout'!A1\",\"Open\")", "Open", 7) + "</row>");
+
+    for (c = 0; c < LAYOUT.length; c += 1) {
+      headerCells.push(textCell(columnLetter(c + 1) + "1", LAYOUT[c].header, 6));
+    }
+    dataRows.push("<row r=\"1\">" + headerCells.join("") + "</row>");
+    for (r = 0; r < result.parsedRows.length; r += 1) {
+      var cellXml = [];
+      for (c = 0; c < LAYOUT.length; c += 1) {
+        var typed = workbookCell(result.parsedRows[r][c], LAYOUT[c].type);
+        var ref = columnLetter(c + 1) + String(r + 2);
+        if (typed.kind === "number") {
+          cellXml.push(numberCell(ref, typed.value, typed.styleId));
+        } else if (typed.kind === "date") {
+          cellXml.push(numberCell(ref, excelSerialFromIsoDate(typed.value), typed.styleId));
+        } else {
+          cellXml.push(textCell(ref, typed.value, typed.styleId));
+        }
+      }
+      dataRows.push("<row r=\"" + (r + 2) + "\">" + cellXml.join("") + "</row>");
+    }
+
+    return [
+      { path: "[Content_Types].xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\"><Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/><Default Extension=\"xml\" ContentType=\"application/xml\"/><Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/><Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/><Override PartName=\"/docProps/core.xml\" ContentType=\"application/vnd.openxmlformats-package.core-properties+xml\"/><Override PartName=\"/docProps/app.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.extended-properties+xml\"/><Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/><Override PartName=\"/xl/worksheets/sheet2.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/></Types>" },
+      { path: "_rels/.rels", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/><Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/></Relationships>" },
+      { path: "docProps/core.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dcmitype=\"http://purl.org/dc/dcmitype/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><dc:creator>OpenAI Codex</dc:creator><cp:lastModifiedBy>OpenAI Codex</cp:lastModifiedBy><dcterms:created xsi:type=\"dcterms:W3CDTF\">" + new Date().toISOString() + "</dcterms:created><dcterms:modified xsi:type=\"dcterms:W3CDTF\">" + new Date().toISOString() + "</dcterms:modified></cp:coreProperties>" },
+      { path: "docProps/app.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\"><Application>Microsoft Excel</Application></Properties>" },
+      { path: "xl/workbook.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><sheets><sheet name=\"Title Page\" sheetId=\"1\" r:id=\"rId1\"/><sheet name=\"Payroll Breakout\" sheetId=\"2\" r:id=\"rId2\"/></sheets></workbook>" },
+      { path: "xl/_rels/workbook.xml.rels", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet2.xml\"/><Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/></Relationships>" },
+      { path: "xl/styles.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><fonts count=\"3\"><font><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"16\"/><name val=\"Calibri\"/></font></fonts><fills count=\"3\"><fill><patternFill patternType=\"none\"/></fill><fill><patternFill patternType=\"gray125\"/></fill><fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFD9ECFF\"/><bgColor indexed=\"64\"/></patternFill></fill></fills><borders count=\"1\"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/></cellStyleXfs><cellXfs count=\"8\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"14\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"2\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"1\" fillId=\"2\" borderId=\"0\" xfId=\"0\" applyFont=\"1\" applyFill=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf></cellXfs><cellStyles count=\"1\"><cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/></cellStyles></styleSheet>" },
+      { path: "xl/worksheets/sheet1.xml", content: worksheetXml(titleRows, ["<col min=\"1\" max=\"1\" width=\"24\" customWidth=\"1\"/>","<col min=\"2\" max=\"2\" width=\"28\" customWidth=\"1\"/>","<col min=\"3\" max=\"3\" width=\"14\" customWidth=\"1\"/>"]) },
+      { path: "xl/worksheets/sheet2.xml", content: worksheetXml(dataRows, ["<col min=\"1\" max=\"" + LAYOUT.length + "\" width=\"18\" customWidth=\"1\"/>"]) }
+    ];
+  }
+
+  function crc32(bytes) {
+    var crc = -1;
+    var i;
+    var j;
+    for (i = 0; i < bytes.length; i += 1) {
+      crc ^= bytes[i];
+      for (j = 0; j < 8; j += 1) {
+        crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+      }
+    }
+    return (crc ^ -1) >>> 0;
+  }
+
+  function dosTime(date) {
+    return ((date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2)) & 65535;
+  }
+
+  function dosDate(date) {
+    return ((((date.getFullYear() - 1980) & 127) << 9) | ((date.getMonth() + 1) << 5) | date.getDate()) & 65535;
+  }
+
+  function writeUInt16(array, value) {
+    array.push(value & 255, (value >>> 8) & 255);
+  }
+
+  function writeUInt32(array, value) {
+    array.push(value & 255, (value >>> 8) & 255, (value >>> 16) & 255, (value >>> 24) & 255);
+  }
+
+  function createZip(files) {
+    var encoder = new TextEncoder();
+    var localParts = [];
+    var centralParts = [];
+    var offset = 0;
+    var now = new Date();
+    var time = dosTime(now);
+    var date = dosDate(now);
+    var i;
+
+    for (i = 0; i < files.length; i += 1) {
+      var file = files[i];
+      var nameBytes = encoder.encode(file.path);
+      var dataBytes = encoder.encode(file.content);
+      var crc = crc32(dataBytes);
+      var localHeader = [];
+      writeUInt32(localHeader, 0x04034b50);
+      writeUInt16(localHeader, 20);
+      writeUInt16(localHeader, 0);
+      writeUInt16(localHeader, 0);
+      writeUInt16(localHeader, time);
+      writeUInt16(localHeader, date);
+      writeUInt32(localHeader, crc);
+      writeUInt32(localHeader, dataBytes.length);
+      writeUInt32(localHeader, dataBytes.length);
+      writeUInt16(localHeader, nameBytes.length);
+      writeUInt16(localHeader, 0);
+      var localArray = new Uint8Array(localHeader.length + nameBytes.length + dataBytes.length);
+      localArray.set(localHeader, 0);
+      localArray.set(nameBytes, localHeader.length);
+      localArray.set(dataBytes, localHeader.length + nameBytes.length);
+      localParts.push(localArray);
+
+      var centralHeader = [];
+      writeUInt32(centralHeader, 0x02014b50);
+      writeUInt16(centralHeader, 20);
+      writeUInt16(centralHeader, 20);
+      writeUInt16(centralHeader, 0);
+      writeUInt16(centralHeader, 0);
+      writeUInt16(centralHeader, time);
+      writeUInt16(centralHeader, date);
+      writeUInt32(centralHeader, crc);
+      writeUInt32(centralHeader, dataBytes.length);
+      writeUInt32(centralHeader, dataBytes.length);
+      writeUInt16(centralHeader, nameBytes.length);
+      writeUInt16(centralHeader, 0);
+      writeUInt16(centralHeader, 0);
+      writeUInt16(centralHeader, 0);
+      writeUInt16(centralHeader, 0);
+      writeUInt32(centralHeader, 0);
+      writeUInt32(centralHeader, offset);
+      var centralArray = new Uint8Array(centralHeader.length + nameBytes.length);
+      centralArray.set(centralHeader, 0);
+      centralArray.set(nameBytes, centralHeader.length);
+      centralParts.push(centralArray);
+      offset += localArray.length;
+    }
+
+    var centralSize = 0;
+    for (i = 0; i < centralParts.length; i += 1) {
+      centralSize += centralParts[i].length;
+    }
+    var endRecord = [];
+    writeUInt32(endRecord, 0x06054b50);
+    writeUInt16(endRecord, 0);
+    writeUInt16(endRecord, 0);
+    writeUInt16(endRecord, files.length);
+    writeUInt16(endRecord, files.length);
+    writeUInt32(endRecord, centralSize);
+    writeUInt32(endRecord, offset);
+    writeUInt16(endRecord, 0);
+
+    var blobs = [];
+    for (i = 0; i < localParts.length; i += 1) {
+      blobs.push(localParts[i]);
+    }
+    for (i = 0; i < centralParts.length; i += 1) {
+      blobs.push(centralParts[i]);
+    }
+    blobs.push(new Uint8Array(endRecord));
+    return new Blob(blobs, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  }
+
+  function downloadWorkbook() {
+    if (!lastParseResult || !lastParseResult.parsedRows.length) {
+      return;
+    }
+    var baseName = lastParseResult.planName || lastParseResult.currentFileName.replace(/\.[^.]+$/, "");
+    var blob = createZip(buildWorkbookFiles(lastParseResult));
+    var anchor = document.createElement("a");
+    var url = URL.createObjectURL(blob);
+    anchor.href = url;
+    anchor.download = "Payroll Breakout - " + safeFilePart(baseName, "Output") + ".xlsx";
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  fileInput.onchange = function () {
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) {
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      payloadInput.value = String(event.target.result || "").replace(/\r\n/g, "\n");
+      currentFileName = file.name;
+      updateFileText();
+      parsePayload();
+    };
+    reader.readAsText(file);
+  };
+
+  exportBtn.onclick = downloadWorkbook;
+  updateFileText();
+  renderLayoutDetails();
+  clearResults();
+}());
+</script>
+</body>
+</html>
