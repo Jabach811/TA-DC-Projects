@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixed Width Report Lab Basic</title>
+<style>
+body{margin:0;font-family:Segoe UI,Tahoma,sans-serif;background:#f3efe7;color:#1b2833}
+.wrap{max-width:1180px;margin:0 auto;padding:24px}
+.hero{background:linear-gradient(135deg,#173042,#22485f);color:#fff;border:1px solid #31586f;border-radius:22px;padding:24px 26px;margin-bottom:16px;box-shadow:0 14px 32px rgba(0,0,0,.12)}
+.hero-kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#b8d7e8;margin-bottom:8px}
+.hero h1{margin:0 0 8px;font-size:38px;line-height:1}
+.hero p{margin:0;color:#d8e8f2;max-width:760px}
+.panel{background:#fff;border:1px solid #d8d0c4;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+h1,h2,h3{margin:0 0 12px}
+p{margin:0 0 10px}
+.muted{color:#5e6c75}
+label{display:block;font-weight:700;margin-bottom:8px}
+.field-block{display:flex;flex-direction:column}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cfc6b8;border-radius:12px;font-family:Consolas,monospace;font-size:13px;background:#fffdfa}
+textarea{min-height:140px;resize:vertical}
+button{padding:12px 16px;border:none;border-radius:999px;background:#b75a22;color:#fff;font-weight:700;cursor:pointer}
+.button-row{display:flex;gap:10px;flex-wrap:wrap}
+.small{font-size:12px}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#f3e6d7;margin:4px 6px 0 0;font-size:12px}
+.summary-box.match-control{min-height:46px;display:flex;align-items:center;padding:8px 12px}
+.file-input-native{display:none}
+.file-picker{
+  min-height:46px;
+  border:1px solid #cfc6b8;
+  border-radius:12px;
+  background:#fffdfa;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+.file-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:28px;
+  padding:0 12px;
+  border:1px solid #c7b8a3;
+  border-radius:8px;
+  background:#f4eadc;
+  font-size:12px;
+  font-weight:700;
+  color:#1b2833;
+  white-space:nowrap;
+}
+.file-picker-text{
+  color:#5e6c75;
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{border:1px solid #ddd3c4;padding:8px 10px;text-align:center;font-size:13px;vertical-align:top;white-space:nowrap;min-width:120px}
+th{background:#f3e6d7}
+.report-card{border:1px solid #ddd3c4;border-radius:14px;padding:14px;margin-top:14px}
+.report-card h3{margin-bottom:6px}
+.report-card p{margin-bottom:10px}
+.report-table-wrap{overflow:auto;max-height:360px;border:1px solid #e4dbcd;border-radius:12px;background:#fff}
+.report-table-wrap table{width:max-content;min-width:100%}
+.summary-box{padding:12px;border:1px solid #ddd3c4;border-radius:12px;background:#fffaf4}
+.error-box{padding:12px;border:1px solid #dfb0b0;border-radius:12px;background:#fff2f2;margin-top:12px}
+@media (max-width: 840px){.grid,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-kicker">Fixed Width Parser</div>
+    <h1>Inbound Report Breakout Lab</h1>
+    <p>Select a data source, load a text file, and preview the report slices that match the configured record codes.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Data Source</h2>
+    <div class="grid">
+      <div class="field-block">
+        <label for="dataSourceSelect">Choose Data Source</label>
+        <select id="dataSourceSelect"></select>
+      </div>
+      <div class="field-block">
+        <label>Source Details</label>
+        <div id="sourceDetails" class="summary-box">No source selected.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Input Data</h2>
+    <div class="field-block">
+      <label for="fileInput">Select Text File</label>
+      <label for="fileInput" class="file-picker">
+        <span class="file-button">Choose File</span>
+        <span id="filePickerText" class="file-picker-text">No file chosen</span>
+      </label>
+      <input id="fileInput" class="file-input-native" type="file" accept=".txt,.dat,.prn,.log">
+    </div>
+    <textarea id="payloadInput" style="display:none"></textarea>
+  </div>
+
+  <div class="panel">
+    <h2>Summary</h2>
+    <div class="grid-3">
+      <div class="summary-box"><strong>Total Lines</strong><div id="totalLinesText">0</div></div>
+      <div class="summary-box"><strong>Accepted Lines</strong><div id="acceptedLinesText">0</div></div>
+      <div class="summary-box"><strong>Discarded Lines</strong><div id="discardedLinesText">0</div></div>
+    </div>
+    <div style="margin-top:14px">
+      <strong>Reports Found</strong>
+      <div id="reportsFoundText" style="margin-top:6px">None yet.</div>
+    </div>
+    <div style="margin-top:14px">
+      <strong>Discard Reasons</strong>
+      <div id="discardText" style="margin-top:6px">None yet.</div>
+    </div>
+    <div id="errorText"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Parsed Reports</h2>
+    <div id="reportOutputs">Nothing yet.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var dataSourceSelect = document.getElementById("dataSourceSelect");
+  var sourceDetails = document.getElementById("sourceDetails");
+  var fileInput = document.getElementById("fileInput");
+  var filePickerText = document.getElementById("filePickerText");
+  var payloadInput = document.getElementById("payloadInput");
+  var totalLinesText = document.getElementById("totalLinesText");
+  var acceptedLinesText = document.getElementById("acceptedLinesText");
+  var discardedLinesText = document.getElementById("discardedLinesText");
+  var reportsFoundText = document.getElementById("reportsFoundText");
+  var discardText = document.getElementById("discardText");
+  var errorText = document.getElementById("errorText");
+  var reportOutputs = document.getElementById("reportOutputs");
+
+  var currentFileName = "";
+
+  var CONFIG = {
+    DATOSAURUS: {
+      label: "DATOSAURUS",
+      recordStart: 1,
+      recordLength: 6,
+      reports: ["BALNCE", "ALLOCA", "MEMBER"],
+      layouts: {
+        BALNCE: [
+          { header: "Record", start: 1, length: 6, type: "text" },
+          { header: "Account", start: 7, length: 10, type: "text" },
+          { header: "As Of Date", start: 17, length: 8, type: "date" },
+          { header: "Fund", start: 25, length: 8, type: "text" },
+          { header: "Balance", start: 33, length: 10, type: "decimal" },
+          { header: "Status", start: 43, length: 8, type: "text" },
+          { header: "Currency", start: 51, length: 3, type: "text" },
+          { header: "Advisor", start: 54, length: 8, type: "text" },
+          { header: "Office", start: 62, length: 6, type: "text" },
+          { header: "Risk", start: 68, length: 4, type: "text" },
+          { header: "Comment", start: 72, length: 12, type: "text" }
+        ],
+        ALLOCA: [
+          { header: "Record", start: 1, length: 6, type: "text" },
+          { header: "Account", start: 7, length: 10, type: "text" },
+          { header: "Plan", start: 17, length: 8, type: "text" },
+          { header: "Percent", start: 25, length: 5, type: "decimal" },
+          { header: "Effective Date", start: 30, length: 8, type: "date" },
+          { header: "Model", start: 38, length: 10, type: "text" },
+          { header: "Source Sys", start: 48, length: 8, type: "text" },
+          { header: "Auto", start: 56, length: 1, type: "text" },
+          { header: "Model Grp", start: 57, length: 6, type: "text" },
+          { header: "Rep ID", start: 63, length: 6, type: "text" },
+          { header: "Channel", start: 69, length: 6, type: "text" }
+        ],
+        MEMBER: [
+          { header: "Record", start: 1, length: 6, type: "text" },
+          { header: "Member ID", start: 7, length: 10, type: "text" },
+          { header: "First Name", start: 17, length: 10, type: "text" },
+          { header: "Last Name", start: 27, length: 14, type: "text" },
+          { header: "Birth Date", start: 41, length: 8, type: "date" },
+          { header: "State", start: 49, length: 2, type: "text" },
+          { header: "Email", start: 51, length: 18, type: "text" },
+          { header: "Segment", start: 69, length: 8, type: "text" },
+          { header: "Tier", start: 77, length: 4, type: "text" },
+          { header: "Enroll Date", start: 81, length: 8, type: "date" }
+        ]
+      }
+    },
+    LEDGERPRO: {
+      label: "LEDGERPRO",
+      recordStart: 4,
+      recordLength: 5,
+      reports: ["SUMRY", "DETAL", "AGENT"],
+      layouts: {
+        SUMRY: [
+          { header: "Prefix", start: 1, length: 3, type: "text" },
+          { header: "Record", start: 4, length: 5, type: "text" },
+          { header: "Batch", start: 9, length: 6, type: "text" },
+          { header: "Run Date", start: 15, length: 8, type: "date" },
+          { header: "Region", start: 23, length: 6, type: "text" },
+          { header: "Total", start: 29, length: 8, type: "decimal" },
+          { header: "Owner", start: 37, length: 8, type: "text" },
+          { header: "Product", start: 45, length: 8, type: "text" },
+          { header: "Count", start: 53, length: 4, type: "integer" },
+          { header: "Cycle", start: 57, length: 6, type: "text" }
+        ],
+        DETAL: [
+          { header: "Prefix", start: 1, length: 3, type: "text" },
+          { header: "Record", start: 4, length: 5, type: "text" },
+          { header: "Case ID", start: 9, length: 8, type: "text" },
+          { header: "Item Code", start: 17, length: 6, type: "text" },
+          { header: "Units", start: 23, length: 4, type: "integer" },
+          { header: "Amount", start: 27, length: 8, type: "decimal" },
+          { header: "Status", start: 35, length: 6, type: "text" },
+          { header: "Queue", start: 41, length: 6, type: "text" },
+          { header: "Analyst", start: 47, length: 8, type: "text" },
+          { header: "Region", start: 55, length: 6, type: "text" },
+          { header: "Note", start: 61, length: 10, type: "text" }
+        ],
+        AGENT: [
+          { header: "Prefix", start: 1, length: 3, type: "text" },
+          { header: "Record", start: 4, length: 5, type: "text" },
+          { header: "Agent ID", start: 9, length: 6, type: "text" },
+          { header: "Agent Name", start: 15, length: 12, type: "text" },
+          { header: "Start Date", start: 27, length: 8, type: "date" },
+          { header: "State", start: 35, length: 2, type: "text" },
+          { header: "Team", start: 37, length: 8, type: "text" },
+          { header: "Channel", start: 45, length: 6, type: "text" },
+          { header: "License", start: 51, length: 8, type: "text" },
+          { header: "Active", start: 59, length: 1, type: "text" }
+        ]
+      }
+    },
+    NEXUSOPS: {
+      label: "NEXUSOPS",
+      recordStart: 3,
+      recordLength: 4,
+      reports: ["ENRL", "TERM", "DEPN"],
+      layouts: {
+        ENRL: [
+          { header: "Prefix", start: 1, length: 2, type: "text" },
+          { header: "Record", start: 3, length: 4, type: "text" },
+          { header: "Employee ID", start: 7, length: 8, type: "text" },
+          { header: "Plan", start: 15, length: 6, type: "text" },
+          { header: "Coverage", start: 21, length: 8, type: "text" },
+          { header: "Start Date", start: 29, length: 8, type: "date" },
+          { header: "Option", start: 37, length: 6, type: "text" },
+          { header: "Payroll", start: 43, length: 8, type: "text" },
+          { header: "Location", start: 51, length: 8, type: "text" },
+          { header: "Status", start: 59, length: 8, type: "text" }
+        ],
+        TERM: [
+          { header: "Prefix", start: 1, length: 2, type: "text" },
+          { header: "Record", start: 3, length: 4, type: "text" },
+          { header: "Employee ID", start: 7, length: 8, type: "text" },
+          { header: "Term Date", start: 15, length: 8, type: "date" },
+          { header: "Reason", start: 23, length: 10, type: "text" },
+          { header: "Status", start: 33, length: 6, type: "text" },
+          { header: "Dept", start: 39, length: 8, type: "text" },
+          { header: "Manager", start: 47, length: 10, type: "text" },
+          { header: "Final Pay", start: 57, length: 8, type: "decimal" },
+          { header: "Rehire", start: 65, length: 1, type: "text" }
+        ],
+        DEPN: [
+          { header: "Prefix", start: 1, length: 2, type: "text" },
+          { header: "Record", start: 3, length: 4, type: "text" },
+          { header: "Employee ID", start: 7, length: 8, type: "text" },
+          { header: "Dependent", start: 15, length: 10, type: "text" },
+          { header: "Relation", start: 25, length: 6, type: "text" },
+          { header: "Birth Date", start: 31, length: 8, type: "date" },
+          { header: "Gender", start: 39, length: 1, type: "text" },
+          { header: "Covered", start: 40, length: 1, type: "text" },
+          { header: "Plan", start: 41, length: 6, type: "text" },
+          { header: "Start", start: 47, length: 8, type: "date" },
+          { header: "End", start: 55, length: 8, type: "date" }
+        ]
+      }
+    },
+    CLAIMWIRE: {
+      label: "CLAIMWIRE",
+      recordStart: 5,
+      recordLength: 3,
+      reports: ["HDR", "CLM", "PAY"],
+      layouts: {
+        HDR: [
+          { header: "Control", start: 1, length: 4, type: "text" },
+          { header: "Record", start: 5, length: 3, type: "text" },
+          { header: "File Date", start: 8, length: 8, type: "date" },
+          { header: "Carrier", start: 16, length: 8, type: "text" },
+          { header: "Batch ID", start: 24, length: 6, type: "text" },
+          { header: "Division", start: 30, length: 8, type: "text" },
+          { header: "LOB", start: 38, length: 6, type: "text" },
+          { header: "Submitter", start: 44, length: 8, type: "text" },
+          { header: "Version", start: 52, length: 3, type: "text" }
+        ],
+        CLM: [
+          { header: "Control", start: 1, length: 4, type: "text" },
+          { header: "Record", start: 5, length: 3, type: "text" },
+          { header: "Claim ID", start: 8, length: 9, type: "text" },
+          { header: "Member ID", start: 17, length: 8, type: "text" },
+          { header: "Service Date", start: 25, length: 8, type: "date" },
+          { header: "Amount", start: 33, length: 8, type: "decimal" },
+          { header: "Proc Code", start: 41, length: 6, type: "text" },
+          { header: "Provider", start: 47, length: 8, type: "text" },
+          { header: "Network", start: 55, length: 6, type: "text" },
+          { header: "Paid Status", start: 61, length: 6, type: "text" }
+        ],
+        PAY: [
+          { header: "Control", start: 1, length: 4, type: "text" },
+          { header: "Record", start: 5, length: 3, type: "text" },
+          { header: "Claim ID", start: 8, length: 9, type: "text" },
+          { header: "Check No", start: 17, length: 6, type: "text" },
+          { header: "Paid Date", start: 23, length: 8, type: "date" },
+          { header: "Paid Amt", start: 31, length: 8, type: "decimal" },
+          { header: "Method", start: 39, length: 6, type: "text" },
+          { header: "Bank", start: 45, length: 8, type: "text" },
+          { header: "Trace", start: 53, length: 8, type: "text" },
+          { header: "Recon", start: 61, length: 1, type: "text" }
+        ]
+      }
+    },
+    FUNDTRACK: {
+      label: "FUNDTRACK",
+      recordStart: 2,
+      recordLength: 7,
+      reports: ["POSHOLD", "TXNADJ", "CASHSUM"],
+      layouts: {
+        POSHOLD: [
+          { header: "Flag", start: 1, length: 1, type: "text" },
+          { header: "Record", start: 2, length: 7, type: "text" },
+          { header: "Account", start: 9, length: 8, type: "text" },
+          { header: "Fund", start: 17, length: 8, type: "text" },
+          { header: "Units", start: 25, length: 8, type: "decimal" },
+          { header: "Price", start: 33, length: 8, type: "decimal" },
+          { header: "Market Value", start: 41, length: 10, type: "decimal" },
+          { header: "Cost Basis", start: 51, length: 10, type: "decimal" },
+          { header: "Asset Class", start: 61, length: 8, type: "text" },
+          { header: "CUSIP", start: 69, length: 9, type: "text" }
+        ],
+        TXNADJ: [
+          { header: "Flag", start: 1, length: 1, type: "text" },
+          { header: "Record", start: 2, length: 7, type: "text" },
+          { header: "Account", start: 9, length: 8, type: "text" },
+          { header: "Trade Date", start: 17, length: 8, type: "date" },
+          { header: "Txn Type", start: 25, length: 6, type: "text" },
+          { header: "Amount", start: 31, length: 9, type: "decimal" },
+          { header: "Fund", start: 40, length: 8, type: "text" },
+          { header: "NAV", start: 48, length: 8, type: "decimal" },
+          { header: "Broker", start: 56, length: 8, type: "text" },
+          { header: "Settle", start: 64, length: 8, type: "date" }
+        ],
+        CASHSUM: [
+          { header: "Flag", start: 1, length: 1, type: "text" },
+          { header: "Record", start: 2, length: 7, type: "text" },
+          { header: "Account", start: 9, length: 8, type: "text" },
+          { header: "As Of Date", start: 17, length: 8, type: "date" },
+          { header: "Currency", start: 25, length: 3, type: "text" },
+          { header: "Cash Balance", start: 28, length: 10, type: "decimal" },
+          { header: "Available", start: 38, length: 10, type: "decimal" },
+          { header: "Pending", start: 48, length: 10, type: "decimal" },
+          { header: "Sweep", start: 58, length: 8, type: "text" },
+          { header: "Desk", start: 66, length: 6, type: "text" }
+        ]
+      }
+    }
+  };
+
+  function trimValue(value) {
+    return String(value).replace(/^\s+|\s+$/g, "");
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function sliceValue(line, start, length) {
+    return trimValue(line.substring(start - 1, start - 1 + length));
+  }
+
+  function formatValue(value, type) {
+    var clean = trimValue(value);
+    var digits;
+    if (!clean) {
+      return "";
+    }
+    if (type === "date") {
+      digits = clean.replace(/[^0-9]/g, "");
+      if (digits.length === 8) {
+        return digits.substring(0, 4) + "-" + digits.substring(4, 6) + "-" + digits.substring(6, 8);
+      }
+    }
+    if (type === "decimal") {
+      if (!isNaN(Number(clean))) {
+        return Number(clean).toFixed(2);
+      }
+    }
+    if (type === "integer") {
+      if (!isNaN(Number(clean))) {
+        return String(parseInt(clean, 10));
+      }
+    }
+    return clean;
+  }
+
+  function getSelectedSource() {
+    return CONFIG[dataSourceSelect.value];
+  }
+
+  function loadSourceOptions() {
+    var key;
+    var html = "";
+    for (key in CONFIG) {
+      if (CONFIG.hasOwnProperty(key)) {
+        html += "<option value=\"" + escapeHtml(key) + "\">" + escapeHtml(CONFIG[key].label) + "</option>";
+      }
+    }
+    dataSourceSelect.innerHTML = html;
+  }
+
+  function renderSourceDetails() {
+    var source = getSelectedSource();
+    var chips = [];
+    var i;
+    for (i = 0; i < source.reports.length; i += 1) {
+      chips.push("<span class=\"pill\">" + escapeHtml(source.reports[i]) + "</span>");
+    }
+    sourceDetails.innerHTML =
+      "<div><strong>Expected Reports:</strong></div>" +
+      "<div style=\"margin-top:4px\">" + chips.join("") + "</div>";
+  }
+
+  function updateFileText() {
+    filePickerText.innerHTML = currentFileName ? escapeHtml(currentFileName) : "No file chosen";
+  }
+
+  function clearResults() {
+    totalLinesText.innerHTML = "0";
+    acceptedLinesText.innerHTML = "0";
+    discardedLinesText.innerHTML = "0";
+    reportsFoundText.innerHTML = "None yet.";
+    discardText.innerHTML = "None yet.";
+    errorText.innerHTML = "";
+    reportOutputs.innerHTML = "No parsed reports.";
+  }
+
+  function tableHtml(headers, rows) {
+    var html = "<table><thead><tr>";
+    var i;
+    for (i = 0; i < headers.length; i += 1) {
+      html += "<th>" + escapeHtml(headers[i]) + "</th>";
+    }
+    html += "</tr></thead><tbody>";
+    if (!rows.length) {
+      html += "<tr><td colspan=\"" + headers.length + "\">No rows</td></tr>";
+    }
+    for (i = 0; i < rows.length; i += 1) {
+      html += "<tr>";
+      for (var j = 0; j < rows[i].length; j += 1) {
+        html += "<td>" + escapeHtml(rows[i][j]) + "</td>";
+      }
+      html += "</tr>";
+    }
+    html += "</tbody></table>";
+    return html;
+  }
+
+  function renderParse(result) {
+    totalLinesText.innerHTML = String(result.totalLines);
+    acceptedLinesText.innerHTML = String(result.acceptedLines);
+    discardedLinesText.innerHTML = String(result.discardedLines);
+
+    if (result.foundReports.length) {
+      var chips = [];
+      for (var i = 0; i < result.foundReports.length; i += 1) {
+        chips.push("<span class=\"pill\">" + escapeHtml(result.foundReports[i]) + "</span>");
+      }
+      reportsFoundText.innerHTML = chips.join("");
+    } else {
+      reportsFoundText.innerHTML = "No matching reports found.";
+    }
+
+    if (result.discardReasons.length) {
+      discardText.innerHTML = result.discardReasons.join("<br>");
+    } else {
+      discardText.innerHTML = "No discarded lines.";
+    }
+
+    if (result.errors.length) {
+      errorText.innerHTML = "<div class=\"error-box\">" + result.errors.join("<br>") + "</div>";
+    } else {
+      errorText.innerHTML = "";
+    }
+
+    if (!result.blocks.length) {
+      reportOutputs.innerHTML = "No parsed reports.";
+      return;
+    }
+
+    reportOutputs.innerHTML = result.blocks.join("");
+  }
+
+  function parsePayload() {
+    var source = getSelectedSource();
+    var recordStart = source.recordStart;
+    var recordLength = source.recordLength;
+    var expected = source.reports;
+    var layoutsByReport = source.layouts;
+    if (!trimValue(payloadInput.value)) {
+      clearResults();
+      return;
+    }
+    var lines = payloadInput.value.split(/\r?\n/);
+    var grouped = {};
+    var foundReports = [];
+    var discardMap = {};
+    var totalLines = 0;
+    var acceptedLines = 0;
+    var discardedLines = 0;
+    var blocks = [];
+    var i;
+
+    for (i = 0; i < lines.length; i += 1) {
+      var line = lines[i];
+      if (!trimValue(line)) {
+        continue;
+      }
+      totalLines += 1;
+      var record = sliceValue(line, recordStart, recordLength);
+      if (expected.indexOf(record) === -1) {
+        discardedLines += 1;
+        discardMap["Unexpected record: " + (record || "(blank)")] = true;
+        continue;
+      }
+      if (!layoutsByReport[record] || !layoutsByReport[record].length) {
+        discardedLines += 1;
+        discardMap["Missing layout for: " + record] = true;
+        continue;
+      }
+      if (!grouped[record]) {
+        grouped[record] = [];
+        foundReports.push(record);
+      }
+      var fields = layoutsByReport[record];
+      var row = [];
+      for (var k = 0; k < fields.length; k += 1) {
+        row.push(formatValue(sliceValue(line, fields[k].start, fields[k].length), fields[k].type));
+      }
+      grouped[record].push(row);
+      acceptedLines += 1;
+    }
+
+    for (i = 0; i < expected.length; i += 1) {
+      var code = expected[i];
+      if (grouped[code]) {
+        var headers = [];
+        var layouts = layoutsByReport[code];
+        for (var h = 0; h < layouts.length; h += 1) {
+          headers.push(layouts[h].header);
+        }
+        blocks.push(
+          "<div class=\"report-card\">" +
+          "<h3>" + escapeHtml(code) + "</h3>" +
+          "<p class=\"muted\">Rows parsed: " + grouped[code].length + "</p>" +
+          "<div class=\"report-table-wrap\">" + tableHtml(headers, grouped[code]) + "</div>" +
+          "</div>"
+        );
+      }
+    }
+
+    var discardReasons = [];
+    for (var key in discardMap) {
+      if (discardMap.hasOwnProperty(key)) {
+        discardReasons.push(key);
+      }
+    }
+
+    renderParse({
+      totalLines: totalLines,
+      acceptedLines: acceptedLines,
+      discardedLines: discardedLines,
+      foundReports: foundReports,
+      discardReasons: discardReasons,
+      errors: [],
+      blocks: blocks
+    });
+  }
+
+  fileInput.onchange = function () {
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) {
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      payloadInput.value = String(event.target.result || "").replace(/\r\n/g, "\n");
+      currentFileName = file.name;
+      updateFileText();
+      parsePayload();
+    };
+    reader.readAsText(file);
+  };
+
+  dataSourceSelect.onchange = function () {
+    renderSourceDetails();
+    parsePayload();
+  };
+
+  if (fileInput.value) {
+    fileInput.value = "";
+  }
+
+  loadSourceOptions();
+  dataSourceSelect.value = "DATOSAURUS";
+  renderSourceDetails();
+  currentFileName = "";
+  updateFileText();
+  clearResults();
+}());
+</script>
+</body>
+</html>

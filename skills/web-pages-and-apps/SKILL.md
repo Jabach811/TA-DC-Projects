@@ -44,6 +44,14 @@ Do not use this skill for:
 - For official intake or business-facing pages, bias toward polished, structured, credible presentation.
 - For internal tools, bias toward clarity first, then visual refinement.
 
+## Visual Verification
+
+- When making cosmetic or layout changes, capture local screenshots of the actual result before finalizing.
+- Review the screenshots yourself and confirm spacing, alignment, hierarchy, and obvious rendering issues instead of assuming the code is correct.
+- If the screenshot reveals a mismatch, fix it and re-check with another screenshot.
+- Delete temporary screenshot files after verification unless the user explicitly wants them kept.
+- Mention any screenshot tooling limitation if the environment cannot render the page faithfully.
+
 ## Variant Rules
 
 If the user asks for multiple concepts:
