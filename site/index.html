@@ -4,22 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Data Consultant Toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-    --bg:#0d0f12;
-    --bg-2:#17181b;
-    --panel:#17191d;
-    --panel-2:#1f2329;
-    --line:rgba(255,255,255,.10);
-    --line-strong:rgba(255,255,255,.18);
-    --text:#f4efe5;
-    --muted:#b3ab9d;
-    --soft:#7f7a72;
-    --gold:#f0b64a;
-    --blue:#6a8cff;
-    --green:#44d4ad;
-    --violet:#8d74ff;
-    --shadow:0 28px 70px rgba(0,0,0,.34);
+    --gunmetal:#393d3f;
+    --white:#fdfdff;
+    --silver:#c6c5b9;
+    --pacific-cyan:#62929e;
+    --blue-slate:#546a7b;
+    --bg:#eef1f2;
+    --paper:#f7f7f5;
+    --panel:#fdfdff;
+    --text:var(--gunmetal);
+    --muted:var(--blue-slate);
+    --line:rgba(84,106,123,.22);
+    --line-strong:rgba(84,106,123,.38);
+    --shadow-soft:0 16px 36px rgba(57,61,63,.08);
+    --shadow-card:0 22px 42px rgba(57,61,63,.12);
+    --radius-xl:34px;
+    --radius-lg:26px;
+    --radius-md:20px;
 }
 
 *{box-sizing:border-box}
@@ -28,579 +34,348 @@ body{
     margin:0;
     min-height:100vh;
     color:var(--text);
-    font-family:"Segoe UI",Tahoma,sans-serif;
+    font-family:"Manrope",sans-serif;
     background:
-        radial-gradient(circle at 0% 0%, rgba(240,182,74,.12), transparent 24%),
-        radial-gradient(circle at 100% 20%, rgba(106,140,255,.10), transparent 26%),
-        linear-gradient(180deg, var(--bg), var(--bg-2));
-    overflow-x:hidden;
+        radial-gradient(circle at top left, rgba(98,146,158,.16), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(84,106,123,.10), transparent 24%),
+        linear-gradient(180deg, #f7f8f8 0%, var(--bg) 100%);
 }
 
 body::before{
     content:"";
     position:fixed;
     inset:0;
-    background:
-        linear-gradient(135deg, rgba(255,255,255,.03) 0 1px, transparent 1px 38px),
-        linear-gradient(0deg, rgba(255,255,255,.02), rgba(255,255,255,.02));
-    background-size:38px 38px, auto;
-    mask-image:radial-gradient(circle at center, black 58%, transparent 100%);
     pointer-events:none;
-    opacity:.65;
+    background:
+        linear-gradient(135deg, rgba(255,255,255,.45), transparent 48%),
+        linear-gradient(0deg, rgba(57,61,63,.03), rgba(57,61,63,.03));
+    opacity:.55;
 }
 
 .page{
-    width:min(1380px, calc(100vw - 40px));
+    width:min(1240px, calc(100vw - 32px));
     margin:0 auto;
+    padding:24px 0 36px;
     position:relative;
     z-index:1;
 }
 
-.topband{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:18px;
-    padding:22px 0 10px;
-    animation:slideDown .7s ease both;
-}
-
-.brand{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.brand-mark{
-    width:46px;
-    height:46px;
-    border-radius:14px;
-    border:1px solid var(--line-strong);
-    background:
-        radial-gradient(circle at 30% 30%, rgba(240,182,74,.48), transparent 32%),
-        linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.03));
-    display:grid;
-    place-items:center;
-    box-shadow:0 12px 30px rgba(0,0,0,.22);
-    font-size:18px;
-}
-
-.brand-copy strong{
-    display:block;
-    font-size:12px;
-    letter-spacing:.24em;
-    text-transform:uppercase;
-    color:var(--gold);
-}
-
-.brand-copy span{
-    display:block;
-    margin-top:4px;
-    font-size:13px;
-    color:var(--muted);
-}
-
-.top-pills{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    justify-content:flex-end;
-}
-
-.pill{
-    padding:10px 14px;
-    border-radius:999px;
-    border:1px solid var(--line);
-    background:rgba(255,255,255,.04);
-    color:var(--muted);
-    font-size:10px;
-    letter-spacing:.16em;
-    text-transform:uppercase;
-    backdrop-filter:blur(10px);
-}
-
 .hero{
-    margin-top:12px;
-    display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);
-    gap:22px;
-    align-items:stretch;
-}
-
-.hero-main,
-.tool-card{
-    border:1px solid var(--line);
-    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-    border-radius:28px;
-    box-shadow:var(--shadow);
-    backdrop-filter:blur(12px);
-}
-
-.hero-main{
-    padding:42px 40px 34px;
     position:relative;
     overflow:hidden;
-    animation:riseIn .75s ease both;
+    padding:42px 42px 34px;
+    border-radius:var(--radius-xl);
+    background:
+        linear-gradient(180deg, rgba(253,253,255,.96), rgba(243,245,245,.94));
+    border:1px solid rgba(253,253,255,.98);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.95),
+        inset 0 -1px 0 rgba(198,197,185,.45),
+        0 0 0 1px rgba(84,106,123,.08),
+        var(--shadow-card);
 }
 
-.hero-main::before{
+.hero::before{
     content:"";
     position:absolute;
     inset:0;
     background:
-        radial-gradient(circle at 78% 18%, rgba(106,140,255,.18), transparent 22%),
-        radial-gradient(circle at 14% 80%, rgba(68,212,173,.11), transparent 20%);
+        radial-gradient(circle at 85% 18%, rgba(98,146,158,.18), transparent 24%),
+        radial-gradient(circle at 14% 82%, rgba(198,197,185,.26), transparent 22%);
     pointer-events:none;
 }
 
 .eyebrow{
     position:relative;
-    z-index:1;
-    font-size:11px;
-    letter-spacing:.34em;
-    text-transform:uppercase;
-    color:var(--gold);
-}
-
-.hero h1{
-    position:relative;
-    z-index:1;
-    margin:18px 0 12px;
-    font-size:clamp(52px, 7vw, 92px);
-    line-height:.9;
-    letter-spacing:.02em;
-    text-transform:uppercase;
-}
-
-.hero h1 span{color:var(--gold)}
-
-.hero-copy{
-    position:relative;
-    z-index:1;
-    max-width:760px;
-    color:var(--muted);
-    font-size:17px;
-    line-height:1.75;
-}
-
-.hero-actions{
-    position:relative;
-    z-index:1;
-    display:flex;
-    flex-wrap:wrap;
-    gap:14px;
-    margin-top:26px;
-}
-
-.hero-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    padding:14px 18px;
-    border-radius:16px;
-    border:1px solid var(--line);
-    text-decoration:none;
-    transition:transform .18s ease, border-color .18s ease, background .18s ease;
-}
-
-.hero-btn:hover{
-    transform:translateY(-2px);
-    border-color:rgba(255,255,255,.28);
-}
-
-.hero-btn.primary{
-    background:var(--gold);
-    color:#1a1307;
-    border-color:transparent;
-    font-weight:700;
-}
-
-.hero-btn.secondary{
-    background:rgba(255,255,255,.04);
-    color:var(--text);
-}
-
-.hero-stats{
-    position:relative;
-    z-index:1;
-    display:grid;
-    grid-template-columns:repeat(3, minmax(0,1fr));
-    gap:14px;
-    margin-top:28px;
-}
-
-.hero-stat{
-    padding:16px 16px 14px;
-    border-radius:18px;
-    background:rgba(0,0,0,.18);
-    border:1px solid rgba(255,255,255,.08);
-}
-
-.hero-stat strong{
-    display:block;
-    font-size:34px;
-    line-height:1;
-}
-
-.hero-stat span{
-    display:block;
-    margin-top:8px;
-    color:var(--muted);
+    margin-bottom:14px;
+    color:var(--blue-slate);
+    font-family:"IBM Plex Mono",monospace;
     font-size:11px;
     letter-spacing:.18em;
     text-transform:uppercase;
 }
 
-.tool-grid{
+.hero h1{
+    position:relative;
+    margin:0;
+    max-width:780px;
+    font-size:clamp(40px, 6vw, 74px);
+    line-height:.95;
+    letter-spacing:-.05em;
+}
+
+.hero h1 span{
+    color:var(--pacific-cyan);
+}
+
+.hero-copy{
+    position:relative;
+    max-width:760px;
+    margin-top:18px;
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.8;
+}
+
+.tools{
     display:grid;
-    grid-template-columns:repeat(3, minmax(0,1fr));
-    gap:18px;
-    align-content:start;
-    animation:riseIn .85s ease both;
-    grid-auto-rows:1fr;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:20px;
+    margin-top:24px;
 }
 
 .tool-card{
-    display:flex;
-    flex-direction:column;
-    padding:22px;
-    color:inherit;
-    min-height:100%;
-    height:100%;
     position:relative;
     overflow:hidden;
-    transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    display:flex;
+    flex-direction:column;
+    min-height:260px;
+    padding:24px;
+    border-radius:var(--radius-lg);
+    background:linear-gradient(180deg, rgba(253,253,255,.98), rgba(241,244,244,.96));
+    border:1px solid rgba(253,253,255,.98);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.96),
+        inset 0 -1px 0 rgba(198,197,185,.5),
+        0 0 0 1px rgba(84,106,123,.10),
+        var(--shadow-soft);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
 .tool-card::before{
     content:"";
     position:absolute;
-    inset:auto -20% -40% auto;
-    width:180px;
-    height:180px;
-    border-radius:50%;
-    background:var(--card-glow);
-    filter:blur(24px);
-    opacity:.35;
+    inset:0;
+    background:
+        linear-gradient(145deg, rgba(255,255,255,.42), transparent 38%),
+        radial-gradient(circle at 100% 0%, var(--glow), transparent 34%);
     pointer-events:none;
 }
 
 .tool-card:hover{
-    transform:translateY(-5px);
-    border-color:rgba(255,255,255,.24);
-    box-shadow:0 24px 54px rgba(0,0,0,.26);
+    transform:translateY(-4px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.96),
+        inset 0 -1px 0 rgba(198,197,185,.5),
+        0 0 0 1px rgba(84,106,123,.12),
+        0 24px 44px rgba(57,61,63,.14);
+}
+
+.tool-top{
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
 }
 
 .tool-icon{
-    width:54px;
-    height:54px;
-    border-radius:16px;
+    width:58px;
+    height:58px;
+    flex:0 0 58px;
     display:grid;
     place-items:center;
-    font-size:23px;
-    border:1px solid rgba(255,255,255,.14);
-    background:rgba(255,255,255,.08);
+    border-radius:18px;
+    color:var(--ink, var(--text));
+    font-family:"IBM Plex Mono",monospace;
+    font-size:18px;
+    letter-spacing:.08em;
+    background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(233,237,238,.95));
+    border:1px solid rgba(84,106,123,.16);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.92),
+        inset 0 -1px 0 rgba(198,197,185,.42),
+        0 10px 18px rgba(57,61,63,.08);
 }
 
-.tool-tag{
-    margin-top:18px;
-    font-size:10px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
-    color:var(--card-accent);
-}
-
-.tool-card h3{
-    margin:14px 0 10px;
+.tool-card h2{
+    position:relative;
+    z-index:1;
+    margin:0;
     font-size:28px;
-    line-height:1.02;
-    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:-.04em;
 }
 
 .tool-card p{
+    position:relative;
+    z-index:1;
     margin:0;
     color:var(--muted);
     font-size:14px;
-    line-height:1.75;
-}
-
-.tool-meta{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:18px;
-}
-
-.tool-meta span{
-    padding:8px 10px;
-    border-radius:999px;
-    border:1px solid var(--line);
-    color:var(--soft);
-    font-size:10px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
+    line-height:1.8;
 }
 
 .tool-links{
+    position:relative;
+    z-index:1;
     display:flex;
     gap:10px;
     flex-wrap:wrap;
     margin-top:auto;
-    padding-top:20px;
+    padding-top:22px;
 }
 
 .tool-link{
     display:inline-flex;
     align-items:center;
-    gap:8px;
-    padding:10px 12px;
-    border-radius:999px;
-    border:1px solid var(--line);
-    background:rgba(255,255,255,.05);
-    color:var(--text);
+    justify-content:center;
+    min-height:42px;
+    padding:10px 14px;
+    border-radius:14px;
     text-decoration:none;
+    font-family:"IBM Plex Mono",monospace;
     font-size:10px;
     letter-spacing:.14em;
     text-transform:uppercase;
-    transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    border:1px solid rgba(84,106,123,.22);
+    background:linear-gradient(180deg, rgba(253,253,255,.98), rgba(238,241,241,.96));
+    color:var(--text);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.9),
+        inset 0 -1px 0 rgba(198,197,185,.45),
+        0 8px 14px rgba(57,61,63,.08);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
 .tool-link:hover{
     transform:translateY(-1px);
-    border-color:rgba(255,255,255,.24);
-    background:rgba(255,255,255,.08);
+    border-color:rgba(84,106,123,.36);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.92),
+        inset 0 -1px 0 rgba(198,197,185,.45),
+        0 12px 18px rgba(57,61,63,.10);
 }
 
-.tool-link.guide-link{
-    background:color-mix(in srgb, var(--card-accent) 16%, rgba(255,255,255,.04));
-    border-color:color-mix(in srgb, var(--card-accent) 48%, rgba(255,255,255,.14));
-    color:var(--card-accent);
-    font-weight:700;
-    box-shadow:0 10px 24px color-mix(in srgb, var(--card-accent) 18%, transparent);
-}
-
-.tool-link.guide-link:hover{
-    background:color-mix(in srgb, var(--card-accent) 24%, rgba(255,255,255,.05));
-    border-color:color-mix(in srgb, var(--card-accent) 70%, rgba(255,255,255,.14));
-    color:#fff7e8;
-}
-
-.tool-site{
-    --card-accent:var(--blue);
-    --card-glow:rgba(106,140,255,.34);
-}
-
-.tool-main{
-    --card-accent:var(--gold);
-    --card-glow:rgba(240,182,74,.32);
-}
-
-.tool-payroll{
-    --card-accent:var(--green);
-    --card-glow:rgba(68,212,173,.30);
-}
-
-.tool-parser{
-    --card-accent:#ff8e4d;
-    --card-glow:rgba(255,142,77,.30);
-}
-
-.tool-intake{
-    --card-accent:var(--violet);
-    --card-glow:rgba(141,116,255,.30);
+.tool-link.primary{
+    color:var(--white);
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 88%, white), var(--accent));
+    border-color:transparent;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.22),
+        0 12px 20px color-mix(in srgb, var(--accent) 26%, transparent);
 }
 
 .footer{
-    padding:30px 0 40px;
-    display:flex;
-    justify-content:space-between;
-    gap:16px;
-    flex-wrap:wrap;
-    color:var(--soft);
-    font-size:12px;
+    padding:26px 6px 0;
+    color:var(--muted);
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;
     letter-spacing:.12em;
     text-transform:uppercase;
 }
 
-@keyframes riseIn{
-    from{opacity:0;transform:translateY(18px)}
-    to{opacity:1;transform:translateY(0)}
-}
+.tool-site{ --accent:var(--blue-slate); --glow:rgba(84,106,123,.20); }
+.tool-main{ --accent:var(--pacific-cyan); --glow:rgba(98,146,158,.22); }
+.tool-payroll{ --accent:#6e8f73; --glow:rgba(110,143,115,.22); }
+.tool-parser{ --accent:#8d6d53; --glow:rgba(141,109,83,.20); }
+.tool-intake{ --accent:#6a78a6; --glow:rgba(106,120,166,.22); }
 
-@keyframes slideDown{
-    from{opacity:0;transform:translateY(-10px)}
-    to{opacity:1;transform:translateY(0)}
-}
-
-@media (max-width: 1100px){
-    .hero{
-        grid-template-columns:1fr;
-    }
-    .tool-grid{
+@media (max-width: 980px){
+    .tools{
         grid-template-columns:1fr;
     }
 }
 
 @media (max-width: 720px){
     .page{
-        width:min(100vw - 24px, 100%);
+        width:min(100vw - 20px, 100%);
+        padding-top:18px;
     }
-    .topband{
-        padding-top:16px;
+
+    .hero{
+        padding:28px 22px 24px;
+        border-radius:28px;
     }
-    .hero-main,
-    .hero-side,
-    .tool-card,
-    .summary-panel{
+
+    .hero h1{
+        font-size:42px;
+    }
+
+    .tool-card{
+        min-height:auto;
+        padding:20px;
         border-radius:22px;
     }
-    .hero-main{
-        padding:28px 24px 24px;
-    }
-    .hero h1{
-        font-size:48px;
-    }
-    .hero-stats{
-        grid-template-columns:1fr;
-    }
-    .footer{
-        padding-bottom:28px;
-        font-size:11px;
+
+    .tool-top{
+        align-items:flex-start;
     }
 }
 </style>
 </head>
 <body>
 <div class="page">
-    <div class="topband">
-        <div class="brand">
-            <div class="brand-mark">DC</div>
-            <div class="brand-copy">
-                <strong>Data Consultant</strong>
-                <span>Internal toolkit and launch hub</span>
-            </div>
-        </div>
-        <div class="top-pills">
-            <div class="pill">Resource Portal</div>
-            <div class="pill">Implementation App</div>
-            <div class="pill">Payroll App</div>
-            <div class="pill">Report Parser</div>
-        </div>
-    </div>
-
     <section class="hero">
-        <div class="hero-main">
-            <div class="eyebrow">Internal Operations Launcher</div>
-            <h1>Data Consultant <span>Toolkit</span></h1>
-            <div class="hero-copy">
-                Launch the core Data Consultant workspace from one modern landing page. The portal, implementation checklist generator, payroll checklist generator, and fixed-width report parser stay grouped here so the team can move faster without digging through folders.
-            </div>
-            <div class="hero-actions">
-                <a class="hero-btn primary" href="#tools">Open Tool Hub</a>
-                <a class="hero-btn secondary" href="Data_Consultant_Website_v2_10.html">Enter Resource Site</a>
-            </div>
-        <div class="hero-stats">
-            <div class="hero-stat">
-                <strong>5</strong>
-                <span>Primary Launch Points</span>
-            </div>
-                <div class="hero-stat">
-                    <strong>1</strong>
-                    <span>Shared DC Workspace</span>
-                </div>
-                <div class="hero-stat">
-                    <strong>Live</strong>
-                <span>Standalone HTML Apps</span>
-            </div>
-        </div>
-    </div>
-        <div class="tool-grid" id="tools">
-            <div class="tool-card tool-site">
-                <div class="tool-icon">🌐</div>
-                <div class="tool-tag">Portal</div>
-                <h3>DC Resource Site</h3>
-                <p>Main Data Consultant portal for documentation, walkthroughs, process references, and quick-launch internal tools.</p>
-                <div class="tool-meta">
-                    <span>Reference Hub</span>
-                    <span>Procedures</span>
-                    <span>Launch Pads</span>
-                </div>
-                <div class="tool-links">
-                <a class="tool-link" href="Data_Consultant_Website_v2_10.html">Launch Portal</a>
-                </div>
-            </div>
-
-            <div class="tool-card tool-main">
-                <div class="tool-icon">✅</div>
-                <div class="tool-tag">Implementation App</div>
-                <h3>Main Checklist Generator</h3>
-                <p>Generate implementation plans, manage live checklist execution, pin critical task notes, add custom calendar milestones, and work from dashboards, vaults, and calendar views.</p>
-                <div class="tool-meta">
-                    <span>Checklist</span>
-                    <span>Pins</span>
-                    <span>Calendar</span>
-                </div>
-                <div class="tool-links">
-                    <a class="tool-link" href="../apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html">Launch App</a>
-                    <a class="tool-link guide-link" href="../guides/Main_Checklist_Generator_How_To_Guide.docx">📘 Open Guide</a>
-                </div>
-            </div>
-
-            <div class="tool-card tool-payroll">
-                <div class="tool-icon">💳</div>
-                <div class="tool-tag">Payroll App</div>
-                <h3>Payroll Checklist Generator</h3>
-                <p>Create payroll onboarding checklists, manage vendor setup work, and track payroll implementation tasks in a dedicated app shell.</p>
-                <div class="tool-meta">
-                    <span>Vendor Setup</span>
-                    <span>Testing</span>
-                    <span>Go-Live</span>
-                </div>
-                <div class="tool-links">
-                    <a class="tool-link" href="../apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html">Launch App</a>
-                    <a class="tool-link guide-link" href="../guides/Payroll_Checklist_Generator_Guide.docx">📘 Open Guide</a>
-                </div>
-            </div>
-            <div class="tool-card tool-parser">
-                <div class="tool-icon">LAB</div>
-                <div class="tool-tag">Parsing Utility</div>
-                <h3>Fixed-Width Report Extraction Console</h3>
-                <p>Load inbound flat files, validate expected record sets by data source, preview parsed reports, and export a formatted workbook with a title page and report sheets.</p>
-                <div class="tool-meta">
-                    <span>Data Source Rules</span>
-                    <span>Text Parsing</span>
-                    <span>XLSX Export</span>
-                </div>
-                <div class="tool-links">
-                    <a class="tool-link" href="../apps/fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html">Launch Console</a>
-                    <a class="tool-link guide-link" href="../guides/Fixed_Width_Report_Extraction_Console_Guide.docx">📘 Open Guide</a>
-                </div>
-            </div>
-
-            <div class="tool-card tool-intake">
-                <div class="tool-icon">REQ</div>
-                <div class="tool-tag">Request Intake</div>
-                <h3>Internal Request Form</h3>
-                <p>Capture website and web app requests in a clean internal form, preview the receipt email before submit, and launch the receipt draft with the request summary in the body.</p>
-                <div class="tool-meta">
-                    <span>Web Site</span>
-                    <span>Web App</span>
-                    <span>Email Receipt</span>
-                </div>
-                <div class="tool-links">
-                    <a class="tool-link" href="../apps/project-intake/Project Intake Form.html">Open Form</a>
-                </div>
-            </div>
-
+        <div class="eyebrow">Data Consultant Workspace</div>
+        <h1>Internal tools and request intake in one <span>lighter launcher</span>.</h1>
+        <div class="hero-copy">
+            This page groups the main Data Consultant tools in one place with a simpler layout and cleaner launch flow. Open the resource site, checklist tools, parsing console, or request intake form from here.
         </div>
     </section>
 
-    <div class="footer">
-        <div>Data Consultant Workspace</div>
-        <div>Internal Tools Launcher</div>
-    </div>
+    <section class="tools">
+        <article class="tool-card tool-site">
+            <div class="tool-top">
+                <div class="tool-icon">DC</div>
+                <h2>DC Resource Site</h2>
+            </div>
+            <p>Main Data Consultant portal for documentation, walkthroughs, process references, and quick-launch internal tools.</p>
+            <div class="tool-links">
+                <a class="tool-link primary" href="Data_Consultant_Website_v2_10.html">Launch Portal</a>
+            </div>
+        </article>
+
+        <article class="tool-card tool-main">
+            <div class="tool-top">
+                <div class="tool-icon">MC</div>
+                <h2>Main Checklist Generator</h2>
+            </div>
+            <p>Generate implementation plans, manage live checklist execution, pin task notes, and work from dashboard, vault, and calendar views.</p>
+            <div class="tool-links">
+                <a class="tool-link primary" href="../apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html">Launch App</a>
+                <a class="tool-link" href="../guides/Main_Checklist_Generator_How_To_Guide.docx">Open Guide</a>
+            </div>
+        </article>
+
+        <article class="tool-card tool-payroll">
+            <div class="tool-top">
+                <div class="tool-icon">PY</div>
+                <h2>Payroll Checklist Generator</h2>
+            </div>
+            <p>Create payroll onboarding checklists, manage vendor setup work, and track payroll implementation tasks in a dedicated app shell.</p>
+            <div class="tool-links">
+                <a class="tool-link primary" href="../apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html">Launch App</a>
+                <a class="tool-link" href="../guides/Payroll_Checklist_Generator_Guide.docx">Open Guide</a>
+            </div>
+        </article>
+
+        <article class="tool-card tool-parser">
+            <div class="tool-top">
+                <div class="tool-icon">FX</div>
+                <h2>Fixed-Width Report Extraction Console</h2>
+            </div>
+            <p>Load inbound flat files, validate record sets by data source, preview parsed reports, and export a formatted workbook with report sheets.</p>
+            <div class="tool-links">
+                <a class="tool-link primary" href="../apps/fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html">Launch Console</a>
+                <a class="tool-link" href="../guides/Fixed_Width_Report_Extraction_Console_Guide.docx">Open Guide</a>
+            </div>
+        </article>
+
+        <article class="tool-card tool-intake">
+            <div class="tool-top">
+                <div class="tool-icon">RQ</div>
+                <h2>Internal Request Form</h2>
+            </div>
+            <p>Capture website and web app requests, preview the receipt email before submit, and launch the receipt draft with the request summary in the body.</p>
+            <div class="tool-links">
+                <a class="tool-link primary" href="../apps/project-intake/Project Intake Form.html">Open Form</a>
+            </div>
+        </article>
+    </section>
+
+    <div class="footer">Data Consultant Workspace</div>
 </div>
 </body>
 </html>
-
-
