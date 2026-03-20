@@ -1,1398 +1,938 @@
 <!DOCTYPE html>
-<!-- saved from url=(0061)file:///C:/Users/mabac/OneDrive/Desktop/Joel/intake-form.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Intake Form</title>
+<title>Internal Request Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:16px;scroll-behavior:smooth;}
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f1f5f9;color:#0f172a;min-height:100vh;line-height:1.5;}
-
-:root{
-  --blue:#2563eb;--blue-d:#1d4ed8;--blue-l:#eff6ff;--blue-m:#bfdbfe;
-  --indigo:#6366f1;--green:#10b981;--red:#ef4444;--amber:#f59e0b;
-  --bg:#f1f5f9;--surface:#ffffff;--surface2:#f8fafc;
-  --border:#e2e8f0;--text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;
-  --r:12px;--rs:8px;
-  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.05);
-  --shadow-lg:0 8px 32px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --tr:.2s ease;
+:root {
+  --gunmetal: #393d3f;
+  --white: #fdfdff;
+  --silver: #c6c5b9;
+  --pacific-cyan: #62929e;
+  --blue-slate: #546a7b;
+  --bg: #eef1f2;
+  --ink: var(--gunmetal);
+  --muted: var(--blue-slate);
+  --line: rgba(84, 106, 123, 0.22);
+  --panel: rgba(253, 253, 255, 0.88);
+  --panel-strong: var(--white);
+  --accent: var(--blue-slate);
+  --accent-soft: rgba(98, 146, 158, 0.14);
+  --accent-2: var(--pacific-cyan);
+  --shadow: 0 24px 60px rgba(57, 61, 63, 0.14);
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
 }
 
-/* ── TOP BAR ── */
-.top-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.top-bar-logo{font-size:14px;font-weight:800;letter-spacing:-.3px;color:var(--text);display:flex;align-items:center;gap:10px;}
-.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:900;letter-spacing:-1px;}
-.top-bar-tag{font-size:11px;color:var(--text4);font-weight:600;letter-spacing:.8px;text-transform:uppercase;}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-/* ── PROGRESS BAR ── */
-.prog-wrap{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:none;}
-.prog-wrap.visible{display:block;}
-.prog-steps{display:flex;padding:14px 0;max-width:780px;gap:0;}
-.ps{display:flex;align-items:center;gap:8px;flex:1;position:relative;}
-.ps::after{content:'';position:absolute;left:108px;right:0;top:50%;transform:translateY(-50%);height:2px;background:var(--border);}
-.ps:last-child::after{display:none;}
-.ps.done::after{background:var(--blue);}
-.ps-num{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;transition:all var(--tr);}
-.ps.active .ps-num{background:var(--blue);color:#fff;}
-.ps.done .ps-num{background:var(--blue);color:#fff;}
-.ps-lbl{font-size:10px;font-weight:700;color:var(--text4);white-space:nowrap;transition:color var(--tr);text-transform:uppercase;letter-spacing:.5px;}
-.ps.active .ps-lbl{color:var(--blue);}
-.ps.done .ps-lbl{color:var(--text3);}
+html {
+  scroll-behavior: smooth;
+}
 
-/* ── MAIN ── */
-.main{flex:1;padding:48px 40px;display:flex;justify-content:center;}
-.step-wrap{width:100%;max-width:780px;}
+body {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(98, 146, 158, 0.14), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(84, 106, 123, 0.12), transparent 24%),
+    linear-gradient(180deg, #f6f7f7 0%, var(--bg) 100%);
+}
 
-/* ── STEPS ── */
-.step{display:none;}
-.step.active{display:block;animation:stepIn .22s ease;}
-@keyframes stepIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 64px;
+}
 
-/* ── STEP HEADER ── */
-.step-kicker{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
-.step-title{font-size:28px;font-weight:800;color:var(--text);letter-spacing:-.5px;line-height:1.2;margin-bottom:10px;}
-.step-sub{font-size:15px;color:var(--text3);line-height:1.6;margin-bottom:32px;}
+.hero {
+  display: block;
+  margin-bottom: 20px;
+}
 
-/* ── LANDING ── */
-.landing-hero{margin-bottom:40px;}
-.landing-title{font-size:42px;font-weight:900;letter-spacing:-1.2px;color:var(--text);line-height:1.15;margin-bottom:14px;}
-.landing-title .grad{background:linear-gradient(135deg,#2563eb,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.landing-sub{font-size:16px;color:var(--text3);line-height:1.65;max-width:560px;}
-.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px;}
-.choice-card{background:var(--surface);border:2px solid var(--border);border-radius:16px;padding:36px 28px;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden;}
-.choice-card:hover{border-color:var(--blue);box-shadow:0 8px 32px rgba(37,99,235,.12);transform:translateY(-2px);}
-.choice-card.selected{border-color:var(--blue);background:var(--blue-l);box-shadow:0 0 0 4px rgba(37,99,235,.1);}
-.choice-icon{font-size:44px;display:block;margin-bottom:16px;}
-.choice-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-.3px;}
-.choice-sub{font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:16px;}
-.choice-tags{display:flex;flex-wrap:wrap;gap:6px;}
-.ctag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 8px;border-radius:4px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);}
-.choice-card.selected .ctag{background:var(--blue-m);color:var(--blue);border-color:var(--blue-m);}
-.choice-check{position:absolute;top:16px;right:16px;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:none;align-items:center;justify-content:center;font-size:13px;font-weight:800;}
-.choice-card.selected .choice-check{display:flex;}
+.hero-card,
+.form-shell,
+.success-shell {
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(253, 253, 255, 0.92);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius-xl);
+}
 
-/* ── CARDS ── */
-.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);padding:28px;margin-bottom:20px;}
-.card-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.hero-card {
+  padding: 34px;
+}
 
-/* ── FORM ── */
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.frow.one{grid-template-columns:1fr;}
-.frow.three{grid-template-columns:1fr 1fr 1fr;}
-.field{display:flex;flex-direction:column;gap:6px;}
-.field label{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.1px;}
-.field label .req{color:var(--blue);}
-.field label .opt{color:var(--text4);font-weight:400;font-size:11px;margin-left:4px;}
-.field input,.field select,.field textarea{padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);transition:border-color var(--tr),box-shadow var(--tr);outline:none;-webkit-appearance:none;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
-.field textarea{resize:vertical;min-height:88px;line-height:1.6;}
-.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
-.field-hint{font-size:11px;color:var(--text4);margin-top:2px;line-height:1.5;}
+.eyebrow,
+.section-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
 
-/* ── CHIPS ── */
-.chip-group{display:flex;flex-wrap:wrap;gap:8px;}
-.chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .15s;background:var(--surface);user-select:none;white-space:nowrap;}
-.chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l);}
-.chip.on{background:var(--blue);border-color:var(--blue);color:#fff;}
-.chip.green.on{background:var(--green);border-color:var(--green);}
-.chip.amber.on{background:var(--amber);border-color:var(--amber);}
+.eyebrow {
+  color: var(--accent);
+  margin-bottom: 16px;
+}
 
-/* ── RADIO CARDS ── */
-.radio-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
-.rc{border:1.5px solid var(--border);border-radius:var(--rs);padding:14px 16px;cursor:pointer;transition:all .15s;background:var(--surface);user-select:none;}
-.rc:hover{border-color:var(--blue);background:var(--blue-l);}
-.rc.selected{border-color:var(--blue);background:var(--blue-l);}
-.rc-lbl{font-size:13px;font-weight:600;color:var(--text2);}
-.rc.selected .rc-lbl{color:var(--blue);}
-.rc-sub{font-size:11px;color:var(--text4);margin-top:2px;}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
 
-/* ── TOGGLE ROWS ── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);}
-.toggle-row:last-child{border-bottom:none;}
-.tgl-label{font-size:14px;color:var(--text2);font-weight:500;}
-.tgl-label small{display:block;font-size:11px;color:var(--text4);font-weight:400;margin-top:2px;}
-.tgl-sw{position:relative;width:40px;height:22px;flex-shrink:0;}
-.tgl-sw input{opacity:0;width:0;height:0;position:absolute;}
-.tgl-sl{position:absolute;inset:0;border-radius:11px;background:var(--border);cursor:pointer;transition:background .15s;}
-.tgl-sl::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;left:3px;top:3px;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
-.tgl-sw input:checked+.tgl-sl{background:var(--blue);}
-.tgl-sw input:checked+.tgl-sl::before{transform:translateX(18px);}
+.hero h1 span {
+  color: var(--accent);
+}
 
-/* ── FEATURE CHECKS ── */
-.fcheck-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.fcheck{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .15s;background:var(--surface);user-select:none;}
-.fcheck:hover{border-color:var(--blue);background:var(--blue-l);}
-.fcheck.checked{border-color:var(--blue);background:var(--blue-l);}
-.fcheck-box{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px;color:transparent;}
-.fcheck.checked .fcheck-box{background:var(--blue);border-color:var(--blue);color:#fff;}
-.fcheck-lbl{font-size:13px;color:var(--text2);font-weight:500;}
-.fcheck.checked .fcheck-lbl{color:var(--blue);font-weight:600;}
+.hero p {
+  margin: 18px 0 0;
+  max-width: 640px;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 15px;
+}
 
-/* ── STRUCTURE BUILDER ── */
-.page-builder{display:flex;flex-direction:column;gap:10px;}
-.pg-row{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);overflow:hidden;transition:border-color .15s;}
-.pg-row:hover{border-color:var(--blue-m);}
-.pg-head{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface2);}
-.pg-num{width:22px;height:22px;border-radius:6px;background:var(--blue);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.pg-head input{flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--text);}
-.pg-head input::placeholder{color:var(--text4);font-weight:400;}
-.pg-sub-toggle{font-size:10px;font-weight:700;color:var(--text4);cursor:pointer;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--surface);transition:all .15s;white-space:nowrap;user-select:none;}
-.pg-sub-toggle:hover,.pg-sub-toggle.has-subs{border-color:var(--blue);color:var(--blue);background:var(--blue-l);}
-.pg-del{background:none;border:none;color:var(--text4);cursor:pointer;font-size:16px;line-height:1;padding:2px;transition:color .15s;}
-.pg-del:hover{color:var(--red);}
-.pg-subs{padding:10px 14px 12px 46px;display:none;flex-direction:column;gap:7px;border-top:1px solid var(--border);background:var(--blue-l);}
-.pg-subs.open{display:flex;}
-.sub-row{display:flex;align-items:center;gap:8px;}
-.sub-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;}
-.sub-row input{flex:1;padding:6px 10px;border:1.5px solid var(--blue-m);border-radius:6px;background:#fff;font-family:inherit;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;}
-.sub-row input:focus{border-color:var(--blue);}
-.sub-row input::placeholder{color:var(--text4);}
-.sub-del{background:none;border:none;color:var(--text4);cursor:pointer;font-size:14px;padding:2px;transition:color .15s;}
-.sub-del:hover{color:var(--red);}
-.add-sub-btn{display:flex;align-items:center;gap:6px;background:none;border:1px dashed var(--blue-m);border-radius:6px;padding:6px 10px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;color:var(--blue);transition:all .15s;}
-.add-sub-btn:hover{background:#fff;}
-.add-page-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border:1.5px dashed var(--border);border-radius:var(--rs);background:transparent;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--text3);transition:all .15s;}
-.add-page-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l);}
+.form-shell,
+.success-shell {
+  padding: 24px;
+}
 
-/* ── HP SECTIONS (homepage sections) ── */
-.hp-section-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--surface);cursor:pointer;transition:all .15s;user-select:none;}
-.hp-section-row:hover{border-color:var(--blue);background:var(--blue-l);}
-.hp-section-row.checked{border-color:var(--blue);background:var(--blue-l);}
-.hp-cb{width:16px;height:16px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:transparent;transition:all .15s;}
-.hp-section-row.checked .hp-cb{background:var(--blue);border-color:var(--blue);color:#fff;}
-.hp-lbl{font-size:13px;color:var(--text2);font-weight:500;}
-.hp-section-row.checked .hp-lbl{color:var(--blue);font-weight:600;}
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
 
-/* ── STEPPER ── */
-.stepper{display:flex;align-items:center;gap:14px;}
-.step-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);transition:all .15s;font-weight:700;line-height:1;}
-.step-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l);}
-.step-val{font-size:22px;font-weight:800;color:var(--text);min-width:32px;text-align:center;}
+.form-header h2,
+.success-shell h2 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+  letter-spacing: -0.03em;
+}
 
-/* ── INFO BOX ── */
-.info-box{background:var(--blue-l);border:1px solid var(--blue-m);border-radius:var(--rs);padding:12px 16px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;display:flex;gap:10px;}
-.ib-icon{flex-shrink:0;font-size:15px;margin-top:1px;}
+.form-header p,
+.success-shell p {
+  margin: 0;
+  max-width: 620px;
+  color: var(--muted);
+  line-height: 1.75;
+}
 
-/* ── NAV BTNS ── */
-.step-nav{display:flex;align-items:center;justify-content:space-between;padding:24px 0 0;margin-top:12px;border-top:1px solid var(--border);}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:var(--rs);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;border:none;outline:none;}
-.btn-primary{background:var(--blue);color:#fff;}
-.btn-primary:hover{background:var(--blue-d);transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,.3);}
-.btn-ghost{background:transparent;color:var(--text3);border:1.5px solid var(--border);}
-.btn-ghost:hover{border-color:var(--text3);color:var(--text2);background:var(--surface2);}
-.btn-lg{padding:13px 32px;font-size:15px;}
-.btn-get-started{background:linear-gradient(135deg,var(--blue),var(--indigo));color:#fff;padding:14px 36px;font-size:15px;font-weight:800;border-radius:var(--rs);border:none;cursor:pointer;transition:all .2s;font-family:inherit;display:inline-flex;align-items:center;gap:10px;margin-top:36px;}
-.btn-get-started:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,99,235,.35);}
-.btn-get-started:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.section-grid {
+  display: grid;
+  gap: 18px;
+}
 
-/* ── REVIEW ── */
-.rev-section{margin-bottom:20px;}
-.rev-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:10px;padding:0 4px;}
-.rev-grid{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
-.rev-row{display:flex;gap:16px;padding:11px 20px;border-bottom:1px solid var(--border);align-items:flex-start;}
-.rev-row:last-child{border-bottom:none;}
-.rev-key{font-size:12px;font-weight:700;color:var(--text3);min-width:150px;flex-shrink:0;padding-top:1px;}
-.rev-val{font-size:13px;color:var(--text);line-height:1.5;}
-.rev-val.empty{color:var(--text4);font-style:italic;}
-.rev-tags{display:flex;flex-wrap:wrap;gap:5px;}
-.rev-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-m);}
-.rev-struct{display:flex;flex-direction:column;gap:5px;}
-.rev-page{font-size:13px;font-weight:600;color:var(--text);}
-.rev-page-subs{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;margin-left:12px;}
-.rev-sub-chip{font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);}
+.section {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(253, 253, 255, 0.96), rgba(245, 246, 245, 0.9));
+}
 
-/* ── SUBMIT AREA ── */
-.submit-block{background:linear-gradient(135deg,#1e40af,#2563eb,#4f46e5);border-radius:var(--r);padding:40px;text-align:center;margin-top:28px;}
-.submit-block h3{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.3px;margin-bottom:8px;}
-.submit-block p{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:28px;line-height:1.6;}
-.btn-white{background:#fff;color:var(--blue);padding:14px 36px;font-size:15px;font-weight:800;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
-.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2);}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg, rgba(84, 106, 123, 0.08), rgba(98, 146, 158, 0.07));
+}
 
-/* ── DONE SCREEN ── */
-.done-wrap{text-align:center;padding:60px 20px;max-width:520px;margin:0 auto;}
-.done-icon{font-size:64px;display:block;margin-bottom:24px;}
-.done-title{font-size:32px;font-weight:800;color:var(--text);letter-spacing:-.5px;margin-bottom:12px;}
-.done-sub{font-size:15px;color:var(--text3);line-height:1.7;margin-bottom:32px;}
-.done-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.section-head strong {
+  color: var(--accent);
+}
 
-/* ── SECTION DIVIDER ── */
-.sec-div{height:1px;background:var(--border);margin:20px 0;}
+.section-head span {
+  color: var(--muted);
+  font-size: 12px;
+}
 
-/* ── RANGE ── */
-.range-wrap{display:flex;flex-direction:column;gap:8px;}
-.range-wrap input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;border:none;padding:0;box-shadow:none;}
-.range-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--blue);cursor:pointer;box-shadow:0 1px 4px rgba(37,99,235,.4);}
-.range-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-.range-val{font-size:14px;font-weight:800;color:var(--blue);text-align:center;}
+.section-body {
+  padding: 18px;
+  display: grid;
+  gap: 16px;
+}
 
-/* ── COPY SUMMARY ── */
-.copy-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:inherit;font-size:13px;font-weight:600;color:var(--text3);background:var(--surface);cursor:pointer;transition:all .15s;}
-.copy-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l);}
+.grid-2,
+.grid-3 {
+  display: grid;
+  gap: 14px;
+}
 
-@media(max-width:640px){
-  .main{padding:24px 16px;}
-  .top-bar{padding:0 16px;}
-  .prog-wrap{padding:0 16px;}
-  .choice-grid{grid-template-columns:1fr;}
-  .frow{grid-template-columns:1fr;}
-  .frow.three{grid-template-columns:1fr 1fr;}
-  .landing-title{font-size:30px;}
-  .fcheck-grid{grid-template-columns:1fr;}
-  .ps-lbl{display:none;}
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-slate);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 13px 14px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--panel-strong);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(98, 146, 158, 0.16);
+}
+
+.field-hint {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.choice-card {
+  min-height: 47px;
+  border: 1.5px solid rgba(84, 106, 123, 0.34);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(253, 253, 255, 1), rgba(240, 243, 245, 0.96));
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(57, 61, 63, 0.08);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+}
+
+.choice-card:hover {
+  border-color: var(--pacific-cyan);
+  background: linear-gradient(180deg, rgba(98, 146, 158, 0.12), rgba(253, 253, 255, 0.98));
+  box-shadow: 0 10px 22px rgba(84, 106, 123, 0.14);
+  transform: translateY(-2px);
+}
+
+.choice-card.active {
+  border-color: var(--blue-slate);
+  background: linear-gradient(180deg, rgba(84, 106, 123, 0.18), rgba(98, 146, 158, 0.14));
+  box-shadow: inset 0 0 0 1px rgba(84, 106, 123, 0.12), 0 10px 24px rgba(57, 61, 63, 0.14);
+}
+
+.choice-card strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.choice-card span {
+  display: none;
+}
+
+.choice-card.active strong {
+  color: var(--gunmetal);
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.pill:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pill.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.footer-actions,
+.success-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 700px;
+}
+
+.cta-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 16px;
+  padding: 13px 18px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.18s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn.secondary {
+  background: rgba(198, 197, 185, 0.24);
+  border-color: rgba(198, 197, 185, 0.7);
+  color: var(--accent-2);
+}
+
+.btn.ghost {
+  background: transparent;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(57, 61, 63, 0.42);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-box {
+  width: min(760px, 100%);
+  max-height: min(88vh, 920px);
+  overflow: auto;
+  background: var(--white);
+  border: 1px solid rgba(253, 253, 255, 0.96);
+  border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(57, 61, 63, 0.28);
+}
+
+.modal-hdr,
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+}
+
+.modal-hdr {
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-title {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.modal-close,
+.modal-cancel,
+.modal-send {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 11px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modal-send {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.modal-body {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.modal-field {
+  display: grid;
+  gap: 7px;
+}
+
+.modal-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-slate);
+}
+
+.modal-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 13px 14px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--panel-strong);
+  outline: none;
+}
+
+.modal-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(98, 146, 158, 0.16);
+}
+
+.modal-textarea {
+  min-height: 280px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.success-shell {
+  display: none;
+}
+
+.success-shell.show {
+  display: block;
+}
+
+.success-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.summary {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(253, 253, 255, 0.84);
+  overflow: hidden;
+}
+
+.summary-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(98, 146, 158, 0.1);
+}
+
+.summary-head strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.summary-head span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.summary pre {
+  margin: 0;
+  padding: 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+@media (max-width: 920px) {
+  .choice-grid,
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: min(100% - 24px, 1120px);
+    padding-top: 20px;
+  }
+
+  .hero-card,
+  .form-shell,
+  .success-shell {
+    border-radius: 24px;
+  }
+
+  .form-header,
+  .footer-actions,
+  .success-actions,
+  .modal-hdr,
+  .modal-footer {
+    align-items: start;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+  }
 }
 </style>
 </head>
 <body>
-<div style="display:flex;flex-direction:column;min-height:100vh;">
+  <div class="shell">
+    <div class="hero">
+      <section class="hero-card">
+        <div class="eyebrow">Internal request intake</div>
+        <h1>Web request intake for <span>updates and new work</span>.</h1>
+        <p>Use this form to capture the basics before work starts. It is intended for straightforward website and web app requests where a short brief is enough to define the work clearly.</p>
+        <p>Include what needs to change, what the finished result should do, and any references or notes that would be helpful during implementation.</p>
+      </section>
+    </div>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-  <div class="top-bar-logo">
-    <div class="logo-mark">IF</div>
-    Project Intake Form
-  </div>
-  <div class="top-bar-tag">New Project Brief</div>
-</div>
-
-<!-- PROGRESS BAR -->
-<div class="prog-wrap visible" id="prog-wrap">
-  <div class="prog-steps" id="prog-steps">
-    <div class="ps done" id="prog-1">
-      <div class="ps-num">1</div>
-      <div class="ps-lbl">Client</div>
-    </div>
-    <div class="ps done" id="prog-2">
-      <div class="ps-num">2</div>
-      <div class="ps-lbl">Details</div>
-    </div>
-    <div class="ps done" id="prog-3">
-      <div class="ps-num">3</div>
-      <div class="ps-lbl">Design</div>
-    </div>
-    <div class="ps done" id="prog-4">
-      <div class="ps-num">4</div>
-      <div class="ps-lbl">Timeline</div>
-    </div>
-    <div class="ps active" id="prog-5">
-      <div class="ps-num">5</div>
-      <div class="ps-lbl">Review</div>
-    </div></div>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-<div class="step-wrap">
-
-  <!-- ══ STEP 0: LANDING ══ -->
-  <div class="step" id="step-0">
-    <div class="landing-hero">
-      <div class="landing-title">What are we<br>building <span class="grad">today?</span></div>
-      <div class="landing-sub">Fill out this intake form so we can scope your project accurately. Select your project type to get started — each path is tailored to the work involved.</div>
-    </div>
-    <div class="choice-grid">
-      <div class="choice-card" id="card-app" onclick="selectType(&#39;app&#39;)">
-        <div class="choice-check">✓</div>
-        <span class="choice-icon">⚙️</span>
-        <div class="choice-title">Web Application</div>
-        <div class="choice-sub">Interactive tools, SaaS platforms, dashboards, internal systems, and anything users log into.</div>
-        <div class="choice-tags">
-          <span class="ctag">SaaS</span><span class="ctag">Dashboard</span><span class="ctag">Internal Tool</span><span class="ctag">Portal</span><span class="ctag">API</span>
+    <section class="form-shell" id="form-shell">
+      <div class="form-header">
+        <div>
+          <div class="section-label" style="color: var(--accent);">One-page request form</div>
+          <h2>Internal Request Form</h2>
         </div>
+        <p>Use this form to document the request clearly before work begins.</p>
       </div>
-      <div class="choice-card selected" id="card-site" onclick="selectType(&#39;site&#39;)">
-        <div class="choice-check">✓</div>
-        <span class="choice-icon">🌐</span>
-        <div class="choice-title">Website</div>
-        <div class="choice-sub">Marketing sites, portfolios, business pages, landing pages, e-commerce storefronts.</div>
-        <div class="choice-tags">
-          <span class="ctag">Marketing</span><span class="ctag">Portfolio</span><span class="ctag">E-Commerce</span><span class="ctag">Blog</span><span class="ctag">Landing Page</span>
+
+      <form id="request-form">
+        <div class="section-grid">
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">01 | Basics</strong>
+              <span>Who asked for it, and what should we call it?</span>
+            </div>
+            <div class="section-body">
+              <div class="grid-2">
+                <div class="field">
+                  <label for="requester-name">Your Name</label>
+                  <input id="requester-name" name="requester-name" type="text" placeholder="Example: Joel">
+                </div>
+                <div class="field">
+                  <label for="requester-email">Your Email</label>
+                  <input id="requester-email" name="requester-email" type="email" placeholder="Example: your.name@company.com">
+                </div>
+              </div>
+              <div class="field">
+                <label for="request-title">Request Title</label>
+                <input id="request-title" name="request-title" type="text" placeholder="Example: Update intake page copy">
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="request-type">Request Type</label>
+                  <input id="request-type" name="request-type" type="hidden" value="">
+                  <div class="choice-grid" id="request-type-grid">
+                    <button class="choice-card" type="button" data-value="Web Site">
+                      <strong>Web Site</strong>
+                      <span>Pages, content, layout updates, landing sections, and site-level changes.</span>
+                    </button>
+                    <button class="choice-card" type="button" data-value="Web App">
+                      <strong>Web App</strong>
+                      <span>Tool updates, workflow fixes, interface changes, and functional app work.</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="contact-method">Preferred Follow-Up</label>
+                  <select id="contact-method" name="contact-method">
+                    <option value="">No preference</option>
+                    <option>Email</option>
+                    <option>Teams or chat</option>
+                    <option>Quick call</option>
+                    <option>No follow-up needed unless blocked</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">02 | Request</strong>
+              <span>What needs to happen, and what should the finished result look like?</span>
+            </div>
+            <div class="section-body">
+              <div class="field">
+                <label for="request-details">What Do You Need?</label>
+                <textarea id="request-details" name="request-details" placeholder="Example: Replace the current intake intro, remove business-heavy language, and make the form feel like an internal request page instead of a client onboarding form."></textarea>
+              </div>
+              <div class="field">
+                <label for="request-outcome">Desired Outcome</label>
+                <textarea id="request-outcome" name="request-outcome" placeholder="Example: Someone should be able to open the page, understand the request in under a minute, and give enough info for work to start without extra clarification."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">03 | Timing</strong>
+              <span>When does it matter, and is the date real or just nice to have?</span>
+            </div>
+            <div class="section-body">
+              <div class="field">
+                <label>Priority</label>
+                <div class="pill-row" id="priority-pills">
+                  <button class="pill" type="button" data-value="No rush">No rush</button>
+                  <button class="pill active" type="button" data-value="Normal">Normal</button>
+                  <button class="pill" type="button" data-value="This week">This week</button>
+                  <button class="pill" type="button" data-value="ASAP">ASAP</button>
+                </div>
+                <div class="field-hint">Choose a real priority, not the fantasy version where everything is urgent.</div>
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="due-date">Specific Date</label>
+                  <input id="due-date" name="due-date" type="date">
+                </div>
+                <div class="field">
+                  <label for="timing-notes">Timing Notes</label>
+                  <input id="timing-notes" name="timing-notes" type="text" placeholder="Example: Needed before Monday review or before payroll closes">
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">04 | Context</strong>
+              <span>Add anything that makes the request clearer the first time.</span>
+            </div>
+            <div class="section-body">
+              <div class="field">
+                <label for="links-files">Links, Files, or Examples</label>
+                <textarea id="links-files" name="links-files" placeholder="Example: Link to the live page, file name, screenshot location, or a similar tool/page that shows the direction."></textarea>
+              </div>
+              <div class="field">
+                <label for="notes-constraints">Notes or Constraints</label>
+                <textarea id="notes-constraints" name="notes-constraints" placeholder="Example: Keep the current layout, do not change export logic, use the existing blue palette, or this has to stay printable."></textarea>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
-    </div>
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-      <button class="btn-get-started" id="start-btn" onclick="goNext()">
-        Continue
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-      </button>
-      <span style="font-size:12px;color:var(--text4);" id="type-hint">🌐 Website selected</span>
-    </div>
-  </div>
 
-  <!-- ══ STEP 1: CLIENT INFO ══ -->
-  <div class="step" id="step-1">
-    <div class="step-kicker">Step 1 of 5 · Client</div>
-    <div class="step-title">Client &amp; Contact</div>
-    <div class="step-sub">Basic information about who this project is for and who we'll be working with.</div>
-    <div class="card">
-      <div class="card-title">Client Details</div>
-      <div class="frow">
-        <div class="field"><label>Client / Company Name <span class="req">*</span></label><input id="f-client" type="text" placeholder="e.g. Acme Corp"></div>
-        <div class="field"><label>Industry / Niche</label><input id="f-industry" type="text" placeholder="e.g. Healthcare, Fintech, Retail"></div>
-      </div>
-      <div class="frow">
-        <div class="field"><label>Primary Contact Name <span class="req">*</span></label><input id="f-contact" type="text" placeholder="Full name"></div>
-        <div class="field"><label>Contact Email <span class="req">*</span></label><input id="f-email" type="email" placeholder="email@company.com"></div>
-      </div>
-      <div class="frow">
-        <div class="field"><label>Phone <span class="opt">(optional)</span></label><input id="f-phone" type="tel" placeholder="+1 (555) 000-0000"></div>
-        <div class="field"><label>Company Website <span class="opt">(optional)</span></label><input id="f-website" type="text" placeholder="https://"></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Project Basics</div>
-      <div class="frow one">
-        <div class="field"><label>Project Name / Working Title <span class="req">*</span></label><input id="f-proj-name" type="text" placeholder="What are we calling this project?"></div>
-      </div>
-      <div class="frow one">
-        <div class="field"><label>Project Summary <span class="req">*</span></label><textarea id="f-proj-summary" placeholder="In 2–4 sentences, describe what this project is and what problem it solves."></textarea></div>
-      </div>
-      <div class="frow">
-        <div class="field">
-          <label>How did you hear about us?</label>
-          <select id="f-referral">
-            <option value="">— select —</option>
-            <option>Referral from a client</option>
-            <option>LinkedIn</option>
-            <option>Google Search</option>
-            <option>Portfolio / Website</option>
-            <option>Social Media</option>
-            <option>Direct Outreach</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Project Priority</label>
-          <select id="f-priority">
-            <option value="">— select —</option>
-            <option>🔴 Urgent — ASAP</option>
-            <option>🟡 High — within 2 weeks</option>
-            <option>🟢 Normal — flexible</option>
-            <option>🔵 Planning phase only</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goBack()">← Back</button>
-      <button class="btn btn-primary btn-lg" onclick="goNext()">Next — Project Details →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 2: PROJECT DETAILS (APP) ══ -->
-  <div class="step" id="step-2-app">
-    <div class="step-kicker">Step 2 of 5 · Application</div>
-    <div class="step-title">Application Details</div>
-    <div class="step-sub">Tell us about what your web application needs to do and who it's for.</div>
-
-    <div class="card">
-      <div class="card-title">Application Type</div>
-      <div class="radio-cards" id="app-type-cards">
-        <div class="rc" onclick="selectRC(this,&#39;app-type&#39;,&#39;SaaS Product&#39;)"><div class="rc-lbl">SaaS Product</div><div class="rc-sub">Subscription-based tool</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;app-type&#39;,&#39;Internal Tool&#39;)"><div class="rc-lbl">Internal Tool</div><div class="rc-sub">Team / company use</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;app-type&#39;,&#39;Client Portal&#39;)"><div class="rc-lbl">Client Portal</div><div class="rc-sub">External user access</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;app-type&#39;,&#39;Dashboard&#39;)"><div class="rc-lbl">Dashboard</div><div class="rc-sub">Data visualization</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;app-type&#39;,&#39;Marketplace&#39;)"><div class="rc-lbl">Marketplace</div><div class="rc-sub">Buyers + sellers</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;app-type&#39;,&#39;Other&#39;)"><div class="rc-lbl">Other</div><div class="rc-sub">Custom type</div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Target Users</div>
-      <div class="frow">
-        <div class="field"><label>Primary User Type</label><input id="f-user-type" type="text" placeholder="e.g. Small business owners, HR managers"></div>
-        <div class="field"><label>Estimated Number of Users</label>
-          <select id="f-user-count">
-            <option value="">— select —</option>
-            <option>1–10 (internal team)</option>
-            <option>10–100</option>
-            <option>100–1,000</option>
-            <option>1,000–10,000</option>
-            <option>10,000+ (scale required)</option>
-          </select>
-        </div>
-      </div>
-      <div class="frow one">
-        <div class="field"><label>User Roles Needed <span class="opt">(list them)</span></label><input id="f-user-roles" type="text" placeholder="e.g. Admin, Editor, Viewer, Super Admin"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Core Features</div>
-      <div class="info-box"><span class="ib-icon">💡</span> Check everything that applies. This shapes the scope estimate significantly.</div>
-      <div class="fcheck-grid" id="app-features">
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">User authentication / login</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">User roles &amp; permissions</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Admin panel / CMS</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Dashboard / analytics</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Search &amp; filtering</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">File uploads</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Notifications (email/in-app)</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Payments / billing</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Real-time features (live updates)</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Third-party API integrations</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Data export (CSV, PDF, etc.)</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Reporting &amp; data visualization</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Mobile responsive</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Offline / PWA support</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Multi-language / i18n</span></div>
-        <div class="fcheck" onclick="toggleFcheck(this)"><div class="fcheck-box">✓</div><span class="fcheck-lbl">Audit trail / activity log</span></div>
-      </div>
-      <div class="frow one" style="margin-top:16px;">
-        <div class="field"><label>Any other features not listed above?</label><textarea id="f-app-other-features" placeholder="Describe any additional features or functionality..."></textarea></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Technical</div>
-      <div class="frow">
-        <div class="field"><label>Tech Stack Preference <span class="opt">(optional)</span></label><input id="f-stack" type="text" placeholder="e.g. React, Node.js, PostgreSQL"></div>
-        <div class="field"><label>Hosting Preference</label>
-          <select id="f-hosting">
-            <option value="">— no preference —</option>
-            <option>AWS</option>
-            <option>Google Cloud</option>
-            <option>Azure</option>
-            <option>Vercel / Netlify</option>
-            <option>Client-managed server</option>
-            <option>No preference</option>
-          </select>
-        </div>
-      </div>
-      <div class="frow one">
-        <div class="field"><label>Third-Party Integrations Needed <span class="opt">(optional)</span></label><input id="f-integrations" type="text" placeholder="e.g. Stripe, Salesforce, Slack, HubSpot, Google Sheets..."></div>
-      </div>
-      <div class="frow one">
-        <div class="field"><label>Existing Systems to Connect To <span class="opt">(optional)</span></label><input id="f-existing-systems" type="text" placeholder="e.g. We have an existing CRM / ERP we need to sync with..."></div>
-      </div>
-    </div>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goBack()">← Back</button>
-      <button class="btn btn-primary btn-lg" onclick="goNext()">Next — Design &amp; Brand →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 2: PROJECT DETAILS (SITE) ══ -->
-  <div class="step" id="step-2-site">
-    <div class="step-kicker">Step 2 of 5 · Website</div>
-    <div class="step-title">Website Details</div>
-    <div class="step-sub">Tell us about the site's purpose, structure, and content. The more detail here, the tighter the estimate.</div>
-
-    <div class="card">
-      <div class="card-title">Site Type &amp; Purpose</div>
-      <div class="radio-cards">
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;Business Site&#39;)"><div class="rc-lbl">Business Site</div><div class="rc-sub">Services &amp; credibility</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;Portfolio&#39;)"><div class="rc-lbl">Portfolio</div><div class="rc-sub">Showcase work</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;Landing Page&#39;)"><div class="rc-lbl">Landing Page</div><div class="rc-sub">Single conversion goal</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;E-Commerce&#39;)"><div class="rc-lbl">E-Commerce</div><div class="rc-sub">Online store</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;Blog / Publication&#39;)"><div class="rc-lbl">Blog</div><div class="rc-sub">Content-first</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;Event / Conference&#39;)"><div class="rc-lbl">Event</div><div class="rc-sub">Event promotion</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;Non-Profit / Org&#39;)"><div class="rc-lbl">Non-Profit</div><div class="rc-sub">Mission-driven</div></div>
-        <div class="rc" onclick="selectRC(this,&#39;site-type&#39;,&#39;Other&#39;)"><div class="rc-lbl">Other</div><div class="rc-sub">Custom type</div></div>
-      </div>
-      <div class="frow one" style="margin-top:16px;">
-        <div class="field"><label>Primary Goal of the Site <span class="req">*</span></label><input id="f-site-goal" type="text" placeholder="e.g. Generate leads, showcase services, sell products online, build credibility"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Site Structure — Navigation &amp; Pages</div>
-      <div class="info-box"><span class="ib-icon">🗂</span> Add each top-level page to your navigation. Toggle "Sub-pages" on any page to add nested pages underneath it.</div>
-      <div class="page-builder" id="page-builder"><div class="pg-row" id="pg-row-1">
-    <div class="pg-head">
-      <div class="pg-num">1</div>
-      <input id="pg-name-1" type="text" placeholder="Page name (e.g. About, Services, Contact)" value="Home">
-      <span class="pg-sub-toggle" onclick="togglePageSubs(1, this)">+ Sub-pages</span>
-      <button class="pg-del" onclick="deletePage(1)" title="Remove page">×</button>
-    </div>
-    <div class="pg-subs" id="pg-subs-1">
-      <div class="sub-row">
-    <div class="sub-dot"></div>
-    <input type="text" placeholder="Sub-page 1 (e.g. Service A, Team Member, Case Study)">
-    <button class="sub-del" onclick="this.parentElement.remove()">×</button></div><div class="add-sub-btn" onclick="addSub(1)">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Add sub-page
-      </div>
-    </div></div><div class="pg-row" id="pg-row-2">
-    <div class="pg-head">
-      <div class="pg-num">2</div>
-      <input id="pg-name-2" type="text" placeholder="Page name (e.g. About, Services, Contact)" value="About">
-      <span class="pg-sub-toggle" onclick="togglePageSubs(2, this)">+ Sub-pages</span>
-      <button class="pg-del" onclick="deletePage(2)" title="Remove page">×</button>
-    </div>
-    <div class="pg-subs" id="pg-subs-2">
-      <div class="add-sub-btn" onclick="addSub(2)">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Add sub-page
-      </div>
-    </div></div><div class="pg-row" id="pg-row-3">
-    <div class="pg-head">
-      <div class="pg-num">3</div>
-      <input id="pg-name-3" type="text" placeholder="Page name (e.g. About, Services, Contact)" value="Services">
-      <span class="pg-sub-toggle" onclick="togglePageSubs(3, this)">+ Sub-pages</span>
-      <button class="pg-del" onclick="deletePage(3)" title="Remove page">×</button>
-    </div>
-    <div class="pg-subs" id="pg-subs-3">
-      <div class="add-sub-btn" onclick="addSub(3)">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Add sub-page
-      </div>
-    </div></div><div class="pg-row" id="pg-row-4">
-    <div class="pg-head">
-      <div class="pg-num">4</div>
-      <input id="pg-name-4" type="text" placeholder="Page name (e.g. About, Services, Contact)" value="Contact">
-      <span class="pg-sub-toggle" onclick="togglePageSubs(4, this)">+ Sub-pages</span>
-      <button class="pg-del" onclick="deletePage(4)" title="Remove page">×</button>
-    </div>
-    <div class="pg-subs" id="pg-subs-4">
-      <div class="add-sub-btn" onclick="addSub(4)">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Add sub-page
-      </div>
-    </div></div></div>
-      <button class="add-page-btn" onclick="addPage()" style="margin-top:10px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Add Page
-      </button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Homepage Sections</div>
-      <div class="info-box"><span class="ib-icon">📐</span> Select all the sections you want on the homepage. These are the building blocks of the page layout.</div>
-      <div class="fcheck-grid" id="hp-sections">
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Hero / Banner (main headline + CTA)</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">About / Who We Are</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Services / What We Do</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Featured Work / Portfolio</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Testimonials / Social Proof</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Pricing / Plans</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Team / People</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Blog / News / Insights</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Stats / Numbers / Achievements</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">FAQ</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Contact / Get In Touch</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Call to Action (bottom CTA)</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Partners / Clients / Logos</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Newsletter / Email Signup</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Video / Media Section</span></div>
-        <div class="hp-section-row" onclick="toggleHP(this)"><div class="hp-cb">✓</div><span class="hp-lbl">Map / Location</span></div>
-      </div>
-      <div class="frow one" style="margin-top:14px;">
-        <div class="field"><label>Any other homepage sections?</label><input id="f-hp-other" type="text" placeholder="e.g. Timeline, Comparison table, Feature breakdown..."></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Site Features</div>
-      <div class="toggle-row">
-        <div class="tgl-label">Contact Form<small>Standard name/email/message form</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-contact"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Blog / CMS<small>Client can add and manage posts</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-blog"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">E-Commerce / Store<small>Product catalog, cart, checkout</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-ecomm"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Booking / Scheduling<small>Appointment or reservation system</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-booking"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Search Functionality<small>Site-wide search bar</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-search"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Live Chat / Support Widget<small>e.g. Intercom, Drift, Tawk.to</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-chat"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Analytics Integration<small>Google Analytics, Hotjar, etc.</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-analytics"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Multi-language / Translations<small>Site content in more than one language</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="sf-i18n"><span class="tgl-sl"></span></label>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Content Readiness</div>
-      <div class="frow">
-        <div class="field">
-          <label>Do you have copy (written content)?</label>
-          <select id="f-has-copy">
-            <option value="">— select —</option>
-            <option>Yes — all copy is ready</option>
-            <option>Partial — some sections done</option>
-            <option>No — needs to be written</option>
-            <option>No — we'll provide rough notes</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Do you have images / photography?</label>
-          <select id="f-has-images">
-            <option value="">— select —</option>
-            <option>Yes — professional photos ready</option>
-            <option>Partial — some images available</option>
-            <option>No — stock photos are fine</option>
-            <option>No — photography needed</option>
-          </select>
-        </div>
-      </div>
-      <div class="frow">
-        <div class="field">
-          <label>Do you have a logo?</label>
-          <select id="f-has-logo">
-            <option value="">— select —</option>
-            <option>Yes — high-res files available</option>
-            <option>Yes — but low quality only</option>
-            <option>No — logo design needed</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Brand guide / style guide?</label>
-          <select id="f-has-brand">
-            <option value="">— select —</option>
-            <option>Yes — full brand guide exists</option>
-            <option>Partial — colors and fonts only</option>
-            <option>No — open to recommendations</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goBack()">← Back</button>
-      <button class="btn btn-primary btn-lg" onclick="goNext()">Next — Design &amp; Brand →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 3: DESIGN & BRAND ══ -->
-  <div class="step" id="step-3">
-    <div class="step-kicker">Step 3 of 5 · Design</div>
-    <div class="step-title">Design &amp; Brand Direction</div>
-    <div class="step-sub">Help us understand the look, feel, and vibe you're going for.</div>
-
-    <div class="card">
-      <div class="card-title">Visual Style</div>
-      <div class="frow one" style="margin-bottom:8px;"><div class="field"><label>What vibe should the design give off?</label></div></div>
-      <div class="chip-group" style="margin-bottom:20px;">
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Clean &amp; Minimal</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Bold &amp; Energetic</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Corporate &amp; Professional</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Warm &amp; Friendly</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Dark &amp; Sleek</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Playful &amp; Creative</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Luxury / Premium</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Technical / Data-Heavy</span>
-        <span class="chip" onclick="toggleChip(this,&#39;design-vibe&#39;)">Editorial / Content-First</span>
-      </div>
-
-      <div class="frow">
-        <div class="field">
-          <label>Color Mode Preference</label>
-          <select id="f-color-mode">
-            <option value="">— no preference —</option>
-            <option>Light mode (white / light backgrounds)</option>
-            <option>Dark mode (dark backgrounds)</option>
-            <option>Both — toggle option for users</option>
-            <option>Undecided — open to recommendation</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Typography Feel</label>
-          <select id="f-typography">
-            <option value="">— no preference —</option>
-            <option>Modern sans-serif (clean, tech)</option>
-            <option>Classic serif (trust, editorial)</option>
-            <option>Geometric (structured, minimal)</option>
-            <option>Humanist (warm, approachable)</option>
-            <option>Display / expressive (bold, unique)</option>
-          </select>
-        </div>
-      </div>
-      <div class="frow">
-        <div class="field"><label>Primary Brand Color <span class="opt">(hex code if known)</span></label><input id="f-color1" type="text" placeholder="#2563EB or &#39;deep navy blue&#39;"></div>
-        <div class="field"><label>Secondary / Accent Color <span class="opt">(optional)</span></label><input id="f-color2" type="text" placeholder="#10B981 or &#39;emerald green&#39;"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">References &amp; Inspiration</div>
-      <div class="frow one">
-        <div class="field"><label>Sites or apps you love the look of <span class="opt">(URLs, names, or descriptions)</span></label><textarea id="f-inspo" placeholder="e.g. stripe.com, linear.app — I love the clean dark aesthetic and tight typography..."></textarea></div>
-      </div>
-      <div class="frow one">
-        <div class="field"><label>Competitors / Similar sites in your space</label><textarea id="f-competitors" placeholder="List any competitors or similar companies — helpful for differentiation..."></textarea></div>
-      </div>
-      <div class="frow one">
-        <div class="field"><label>Anything you specifically do NOT want</label><textarea id="f-dont-want" placeholder="e.g. No stock photos of people shaking hands. No auto-playing video. No bright red..."></textarea></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Animation &amp; Interactions</div>
-      <div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:700;color:var(--text2);display:block;margin-bottom:10px;">How much motion / animation?</label>
-      <div class="range-wrap">
-        <input type="range" min="1" max="5" value="2" id="f-animation" oninput="updateRange(this,&#39;range-anim-val&#39;)">
-        <div class="range-val" id="range-anim-val">2 — Subtle transitions only</div>
-        <div class="range-labels"><span>Static</span><span>Subtle</span><span>Moderate</span><span>Rich</span><span>Cinematic</span></div>
-      </div></div>
-      <div class="toggle-row">
-        <div class="tgl-label">Scroll animations (elements animate in as you scroll)<small>Adds visual depth and modern feel</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="d-scroll-anim"><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Micro-interactions (button states, hover effects)<small>Small interactive details that polish the UX</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="d-micro" checked=""><span class="tgl-sl"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div class="tgl-label">Loading / page transitions<small>Animated transitions between pages or sections</small></div>
-        <label class="tgl-sw"><input type="checkbox" id="d-transitions"><span class="tgl-sl"></span></label>
-      </div>
-    </div>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goBack()">← Back</button>
-      <button class="btn btn-primary btn-lg" onclick="goNext()">Next — Timeline &amp; Budget →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 4: TIMELINE & BUDGET ══ -->
-  <div class="step" id="step-4">
-    <div class="step-kicker">Step 4 of 5 · Scope</div>
-    <div class="step-title">Timeline &amp; Budget</div>
-    <div class="step-sub">Honest numbers here help us scope the work properly and avoid misaligned expectations.</div>
-
-    <div class="card">
-      <div class="card-title">Timeline</div>
-      <div class="frow">
-        <div class="field">
-          <label>Desired Launch / Deadline</label>
-          <input id="f-deadline" type="date">
-        </div>
-        <div class="field">
-          <label>How flexible is that date?</label>
-          <select id="f-deadline-flex">
-            <option value="">— select —</option>
-            <option>Hard deadline — cannot move</option>
-            <option>Strong preference — prefer not to move</option>
-            <option>Soft deadline — some flexibility</option>
-            <option>Fully flexible — quality first</option>
-          </select>
-        </div>
-      </div>
-      <div class="frow one">
-        <div class="field">
-          <label>Milestone Preferences</label>
-          <select id="f-milestones">
-            <option value="">— select —</option>
-            <option>Wireframes → Design → Build → Launch (standard)</option>
-            <option>Design first, then scope build</option>
-            <option>Phased releases (MVP first, then features)</option>
-            <option>One final delivery</option>
-            <option>Agile / sprint-based delivery</option>
-          </select>
-        </div>
-      </div>
-      <div class="frow one">
-        <div class="field"><label>Are there any specific dates that matter? <span class="opt">(events, campaigns, investor demos, etc.)</span></label><input id="f-dates-matter" type="text" placeholder="e.g. Product launch tied to conference on Oct 15th"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Budget</div>
-      <div class="info-box"><span class="ib-icon">💰</span> Budget ranges help us recommend the right approach. All ranges are for project total, not per month.</div>
-      <div class="frow one">
-        <div class="field">
-          <label>Estimated Project Budget</label>
-          <div class="radio-cards" style="margin-top:8px;" id="budget-cards">
-            <div class="rc" onclick="selectRC(this,&#39;budget&#39;,&#39;Under $1,500&#39;)"><div class="rc-lbl">Under $1.5k</div><div class="rc-sub">Small scope</div></div>
-            <div class="rc" onclick="selectRC(this,&#39;budget&#39;,&#39;$1,500 – $5,000&#39;)"><div class="rc-lbl">$1.5k – $5k</div><div class="rc-sub">Standard project</div></div>
-            <div class="rc" onclick="selectRC(this,&#39;budget&#39;,&#39;$5,000 – $15,000&#39;)"><div class="rc-lbl">$5k – $15k</div><div class="rc-sub">Mid-size</div></div>
-            <div class="rc" onclick="selectRC(this,&#39;budget&#39;,&#39;$15,000 – $40,000&#39;)"><div class="rc-lbl">$15k – $40k</div><div class="rc-sub">Complex build</div></div>
-            <div class="rc" onclick="selectRC(this,&#39;budget&#39;,&#39;$40,000+&#39;)"><div class="rc-lbl">$40k+</div><div class="rc-sub">Enterprise</div></div>
-            <div class="rc" onclick="selectRC(this,&#39;budget&#39;,&#39;To Be Discussed&#39;)"><div class="rc-lbl">TBD</div><div class="rc-sub">Let's talk scope first</div></div>
+        <div class="footer-actions">
+          <div class="footer-note">If this form is filled out well, you should know what to do, why it matters, and where to start looking.</div>
+          <div class="cta-row">
+            <button class="btn primary" type="submit">Submit Request</button>
           </div>
         </div>
-      </div>
-      <div class="frow">
-        <div class="field">
-          <label>Billing Preference</label>
-          <select id="f-billing">
-            <option value="">— select —</option>
-            <option>Fixed price (one total)</option>
-            <option>Milestone-based payments</option>
-            <option>Hourly / time &amp; materials</option>
-            <option>Monthly retainer</option>
-            <option>Open to recommendation</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Ongoing Maintenance Needed?</label>
-          <select id="f-maintenance">
-            <option value="">— select —</option>
-            <option>Yes — monthly retainer</option>
-            <option>Yes — as-needed only</option>
-            <option>No — we'll handle it in-house</option>
-            <option>Not sure yet</option>
-          </select>
-        </div>
-      </div>
-    </div>
+      </form>
+    </section>
 
-    <div class="card">
-      <div class="card-title">Collaboration</div>
-      <div class="frow">
-        <div class="field">
-          <label>Who is the decision maker on the client side?</label>
-          <input id="f-decision-maker" type="text" placeholder="Name or role">
-        </div>
-        <div class="field">
-          <label>How many people will be reviewing work?</label>
-          <select id="f-reviewers">
-            <option value="">— select —</option>
-            <option>Just me</option>
-            <option>2–3 people</option>
-            <option>A small team (4–8)</option>
-            <option>Large committee (8+)</option>
-          </select>
-        </div>
-      </div>
-      <div class="frow">
-        <div class="field">
-          <label>Preferred Communication Channel</label>
-          <select id="f-comm">
-            <option value="">— select —</option>
-            <option>Email only</option>
-            <option>Email + video calls</option>
-            <option>Slack / Teams</option>
-            <option>Project management tool (Notion, Linear, Asana)</option>
-            <option>Phone / text</option>
-            <option>Whatever works best</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Check-in Frequency</label>
-          <select id="f-checkins">
-            <option value="">— select —</option>
-            <option>Weekly status updates</option>
-            <option>Bi-weekly check-ins</option>
-            <option>At major milestones only</option>
-            <option>Daily (intensive project)</option>
-            <option>Async only — minimal meetings</option>
-          </select>
-        </div>
-      </div>
-    </div>
+    <section class="success-shell" id="success-shell">
+      <div class="success-badge">OK</div>
+      <div class="section-label" style="color: var(--accent); margin-bottom: 10px;">Request captured</div>
+      <h2>Request summary ready.</h2>
+      <p>Use the summary below in email, chat, notes, or your task tracker. It is meant to read like an actual working brief, not a generic intake dump.</p>
 
-    <div class="card">
-      <div class="card-title">Anything Else?</div>
-      <div class="frow one">
-        <div class="field"><label>Additional context, requirements, or concerns</label><textarea id="f-notes" placeholder="Anything important we haven&#39;t asked? Special requirements, accessibility needs, regulatory constraints, prior bad experiences, things that matter most to you..."></textarea></div>
+      <div class="summary">
+        <div class="summary-head">
+          <strong>Request Summary</strong>
+          <span>Generated from the fields above so you can reuse it immediately.</span>
+        </div>
+        <pre id="summary-output"></pre>
       </div>
-    </div>
 
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goBack()">← Back</button>
-      <button class="btn btn-primary btn-lg" onclick="goNext()">Review &amp; Submit →</button>
-    </div>
+      <div class="success-actions">
+        <button class="btn secondary" type="button" id="copy-summary-success">Copy Summary</button>
+        <button class="btn ghost" type="button" id="start-over">Start New Request</button>
+      </div>
+    </section>
   </div>
 
-  <!-- ══ STEP 5: REVIEW ══ -->
-  <div class="step active" id="step-5">
-    <div class="step-kicker">Step 5 of 5 · Review</div>
-    <div class="step-title">Review Your Submission</div>
-    <div class="step-sub">Look everything over before submitting. Use the Back button to make changes.</div>
-    <div id="review-content">
-    <div class="rev-section">
-      <div class="rev-section-title">Client &amp; Project</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Client</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Industry</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Contact</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Email</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Project Name</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Project Summary</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Priority</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Project Type</div><div class="rev-val">🌐 Website</div></div>
+  <div class="modal-overlay" id="emailModal" onclick="closeEmailModalOnOverlay(event)">
+    <div class="modal-box">
+      <div class="modal-hdr">
+        <div class="modal-title">Receipt Email Preview</div>
+        <button class="modal-close" type="button" id="modal-close">Close</button>
       </div>
-    </div>
-    <div class="rev-section">
-      <div class="rev-section-title">Website Details</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Site Type</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Primary Goal</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Site Structure</div><div class="rev-val"><div class="rev-struct">
-      <div class="rev-page">↳ Home</div>
-      <div class="rev-page">↳ About</div>
-      <div class="rev-page">↳ Services</div>
-      <div class="rev-page">↳ Contact</div></div></div></div>
-        <div class="rev-row"><div class="rev-key">Homepage Sections</div><div class="rev-val"><span class="empty">None selected</span></div></div>
-        <div class="rev-row"><div class="rev-key">Site Features</div><div class="rev-val"><span class="empty">None selected</span></div></div>
-        <div class="rev-row"><div class="rev-key">Copy Ready?</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Images Ready?</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Logo?</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Brand Guide?</div><div class="rev-val empty">—</div></div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label class="modal-label" for="modalTo">To</label>
+          <input class="modal-input" id="modalTo" type="email">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="modalCc">CC</label>
+          <input class="modal-input" id="modalCc" type="text">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="modalSubject">Subject</label>
+          <input class="modal-input" id="modalSubject" type="text">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="modalBody">Body</label>
+          <textarea class="modal-input modal-textarea" id="modalBody"></textarea>
+        </div>
       </div>
-    </div>
-    <div class="rev-section">
-      <div class="rev-section-title">Design &amp; Brand</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Design Vibe</div><div class="rev-val"><span class="empty">Not specified</span></div></div>
-        <div class="rev-row"><div class="rev-key">Color Mode</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Typography</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Primary Color</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Accent Color</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Inspiration</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Competitors</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Avoid</div><div class="rev-val empty">—</div></div>
-      </div>
-    </div>
-    <div class="rev-section">
-      <div class="rev-section-title">Timeline &amp; Budget</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Deadline</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Flexibility</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Milestones</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Budget</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Billing</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Maintenance</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Comms</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Check-ins</div><div class="rev-val empty">—</div></div>
-        <div class="rev-row"><div class="rev-key">Notes</div><div class="rev-val empty">—</div></div>
-      </div>
-    </div></div>
-    <div class="submit-block">
-      <h3>Ready to submit?</h3>
-      <p>Once submitted, you'll get a confirmation and we'll follow up within 1–2 business days with questions, a proposal outline, or a discovery call invite.</p>
-      <button class="btn-white" onclick="submitForm()">Submit Intake Form →</button>
-    </div>
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goBack()">← Edit Answers</button>
-      <button class="copy-btn" onclick="copyToClipboard()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-        Copy Summary
-      </button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 6: DONE ══ -->
-  <div class="step" id="step-6">
-    <div class="done-wrap">
-      <span class="done-icon">✅</span>
-      <div class="done-title">Intake Submitted!</div>
-      <div class="done-sub">Your project brief has been received. We'll review everything and reach out within <strong>1–2 business days</strong> to discuss next steps, ask any clarifying questions, and get the ball rolling.</div>
-      <div class="done-actions">
-        <button class="btn btn-primary btn-lg" onclick="copyToClipboard()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-          Copy Summary
-        </button>
-        <button class="btn btn-ghost btn-lg" onclick="startOver()">Start New Intake</button>
+      <div class="modal-footer">
+        <button class="modal-cancel" type="button" id="modal-cancel">Cancel</button>
+        <button class="modal-send" type="button" id="modal-send">Open Receipt Email</button>
       </div>
     </div>
   </div>
-
-</div><!-- /step-wrap -->
-</div><!-- /main -->
-</div><!-- /app-wrap -->
 
 <script>
-// ── STATE ──
-let projectType = null;
-let currentStep = 0;
-let pages = [];
-let pageCount = 0;
+const form = document.getElementById("request-form");
+const formShell = document.getElementById("form-shell");
+const successShell = document.getElementById("success-shell");
+const summaryOutput = document.getElementById("summary-output");
+const priorityButtons = Array.from(document.querySelectorAll("#priority-pills .pill"));
+const requestTypeInput = document.getElementById("request-type");
+const requestTypeButtons = Array.from(document.querySelectorAll("#request-type-grid .choice-card"));
+const emailModal = document.getElementById("emailModal");
+let selectedPriority = "Normal";
+let pendingSummary = "";
 
-const STEPS = [
-  { label:'Client' },
-  { label:'Details' },
-  { label:'Design' },
-  { label:'Timeline' },
-  { label:'Review' },
-];
-
-// ── PROGRESS BAR ──
-function buildProgress() {
-  const wrap = document.getElementById('prog-steps');
-  wrap.innerHTML = STEPS.map((s,i) => `
-    <div class="ps" id="prog-${i+1}">
-      <div class="ps-num">${i+1}</div>
-      <div class="ps-lbl">${s.label}</div>
-    </div>`).join('');
+function getValue(id) {
+  return document.getElementById(id).value.trim();
 }
 
-function updateProgress(step) {
-  for (let i=1;i<=5;i++) {
-    const el = document.getElementById('prog-'+i);
-    if (!el) continue;
-    el.classList.remove('active','done');
-    if (i < step) el.classList.add('done');
-    if (i === step) el.classList.add('active');
-  }
+function buildSummary() {
+  const lines = [
+    "INTERNAL REQUEST SUMMARY",
+    "========================================",
+    "",
+    "Requester: " + (getValue("requester-name") || "-"),
+    "Requester Email: " + (getValue("requester-email") || "-"),
+    "Title: " + (getValue("request-title") || "-"),
+    "Type: " + (getValue("request-type") || "-"),
+    "Follow-Up: " + (getValue("contact-method") || "-"),
+    "Priority: " + (selectedPriority || "-"),
+    "Specific Date: " + (getValue("due-date") || "-"),
+    "Timing Notes: " + (getValue("timing-notes") || "-"),
+    "",
+    "WHAT THEY NEED",
+    "----------------------------------------",
+    getValue("request-details") || "-",
+    "",
+    "DESIRED OUTCOME",
+    "----------------------------------------",
+    getValue("request-outcome") || "-",
+    "",
+    "LINKS, FILES, OR EXAMPLES",
+    "----------------------------------------",
+    getValue("links-files") || "-",
+    "",
+    "NOTES OR CONSTRAINTS",
+    "----------------------------------------",
+    getValue("notes-constraints") || "-",
+    "",
+    "Generated: " + new Date().toLocaleString()
+  ];
+
+  return lines.join("\n");
 }
 
-// ── TYPE SELECTION ──
-window.selectType = function(type) {
-  projectType = type;
-  document.getElementById('card-app').classList.toggle('selected', type==='app');
-  document.getElementById('card-site').classList.toggle('selected', type==='site');
-  document.getElementById('start-btn').disabled = false;
-  document.getElementById('type-hint').textContent = type === 'app' ? '⚙️ Web Application selected' : '🌐 Website selected';
-};
-
-// ── NAVIGATION ──
-window.goNext = function() {
-  const next = getNextStep(currentStep);
-  showStep(next);
-};
-
-window.goBack = function() {
-  const prev = getPrevStep(currentStep);
-  showStep(prev);
-};
-
-function getNextStep(s) {
-  if (s === 0) return 1;
-  if (s === 1) return projectType === 'app' ? '2-app' : '2-site';
-  if (s === '2-app' || s === '2-site') return 3;
-  if (s === 3) return 4;
-  if (s === 4) { buildReview(); return 5; }
-  return 6;
-}
-
-function getPrevStep(s) {
-  if (s === 1) return 0;
-  if (s === '2-app' || s === '2-site') return 1;
-  if (s === 3) return projectType === 'app' ? '2-app' : '2-site';
-  if (s === 4) return 3;
-  if (s === 5) return 4;
-  return 0;
-}
-
-function showStep(step) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step-'+step).classList.add('active');
-  currentStep = step;
-
-  const progWrap = document.getElementById('prog-wrap');
-  if (step === 0) {
-    progWrap.classList.remove('visible');
-  } else {
-    progWrap.classList.add('visible');
-    const stepNum = typeof step === 'number' ? step : (step === '2-app' || step === '2-site') ? 2 : parseInt(step);
-    updateProgress(stepNum);
-  }
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ── RADIO CARDS ──
-window.selectRC = function(el, group, val) {
-  document.querySelectorAll(`[onclick*="${group}"]`).forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  el.dataset.group = group;
-  el.dataset.val = val;
-};
-
-function getRCValue(group) {
-  const el = document.querySelector(`[data-group="${group}"]`);
-  return el ? el.dataset.val : '';
-}
-
-// ── CHIPS ──
-window.toggleChip = function(el, group) {
-  el.classList.toggle('on');
-};
-
-function getChips(containerId) {
-  return [...document.querySelectorAll(`#${containerId} .chip.on`)].map(c=>c.textContent);
-}
-
-function getChipsFromGroup(group) {
-  return [...document.querySelectorAll(`.chip.on`)].map(c=>c.textContent).filter(Boolean);
-}
-
-function getChipsByClass(cls) {
-  return [...document.querySelectorAll(`.${cls}.on`)].map(c=>c.textContent);
-}
-
-// ── FEATURE CHECKS ──
-window.toggleFcheck = function(el) { el.classList.toggle('checked'); };
-window.toggleHP     = function(el) { el.classList.toggle('checked'); };
-
-function getChecked(containerId) {
-  return [...document.querySelectorAll(`#${containerId} .checked`)].map(c=>{
-    return (c.querySelector('.fcheck-lbl') || c.querySelector('.hp-lbl') || c).textContent.trim();
-  });
-}
-
-// ── RANGE ──
-const RANGE_LABELS = { f_animation: ['','Static','Subtle transitions only','Moderate motion','Rich animations','Cinematic / full motion'] };
-window.updateRange = function(el, valId) {
-  const v = parseInt(el.value);
-  const labels = ['','Static (no animation)','Subtle transitions only','Moderate motion','Rich animations','Cinematic / full motion'];
-  document.getElementById(valId).textContent = v + ' — ' + labels[v];
-};
-
-// ── PAGE BUILDER ──
-function addPage(name) {
-  pageCount++;
-  const id = pageCount;
-  const builder = document.getElementById('page-builder');
-  const div = document.createElement('div');
-  div.className = 'pg-row';
-  div.id = 'pg-row-'+id;
-  div.innerHTML = `
-    <div class="pg-head">
-      <div class="pg-num">${id}</div>
-      <input id="pg-name-${id}" type="text" placeholder="Page name (e.g. About, Services, Contact)" value="${name||''}">
-      <span class="pg-sub-toggle" onclick="togglePageSubs(${id}, this)">+ Sub-pages</span>
-      <button class="pg-del" onclick="deletePage(${id})" title="Remove page">×</button>
-    </div>
-    <div class="pg-subs" id="pg-subs-${id}">
-      <div class="add-sub-btn" onclick="addSub(${id})">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add sub-page
-      </div>
-    </div>`;
-  builder.appendChild(div);
-  pages.push({id, subs:[]});
-}
-
-window.togglePageSubs = function(id, btn) {
-  const subs = document.getElementById('pg-subs-'+id);
-  const isOpen = subs.classList.contains('open');
-  if (!isOpen) {
-    subs.classList.add('open');
-    btn.classList.add('has-subs');
-    btn.textContent = '− Sub-pages';
-    if (subs.querySelectorAll('.sub-row').length === 0) addSub(id);
-  } else {
-    subs.classList.remove('open');
-    btn.classList.remove('has-subs');
-    btn.textContent = '+ Sub-pages';
-  }
-};
-
-window.addSub = function(pageId) {
-  const subs = document.getElementById('pg-subs-'+pageId);
-  const addBtn = subs.querySelector('.add-sub-btn');
-  const subCount = subs.querySelectorAll('.sub-row').length + 1;
-  const row = document.createElement('div');
-  row.className = 'sub-row';
-  row.innerHTML = `
-    <div class="sub-dot"></div>
-    <input type="text" placeholder="Sub-page ${subCount} (e.g. Service A, Team Member, Case Study)">
-    <button class="sub-del" onclick="this.parentElement.remove()">×</button>`;
-  subs.insertBefore(row, addBtn);
-};
-
-window.deletePage = function(id) {
-  const row = document.getElementById('pg-row-'+id);
-  if (row) row.remove();
-  pages = pages.filter(p => p.id !== id);
-  renumberPages();
-};
-
-function renumberPages() {
-  const rows = document.querySelectorAll('.pg-row');
-  rows.forEach((row, i) => {
-    const numEl = row.querySelector('.pg-num');
-    if (numEl) numEl.textContent = i + 1;
-  });
-}
-
-function getSitePages() {
-  const rows = document.querySelectorAll('.pg-row');
-  return [...rows].map((row, i) => {
-    const input = row.querySelector('[id^="pg-name-"]');
-    const name = input ? input.value.trim() || `Page ${i+1}` : `Page ${i+1}`;
-    const subsOpen = row.querySelector('.pg-subs.open');
-    let subs = [];
-    if (subsOpen) {
-      subs = [...subsOpen.querySelectorAll('.sub-row input')]
-        .map(el => el.value.trim()).filter(Boolean);
+function copySummary() {
+  const summary = pendingSummary || buildSummary();
+  navigator.clipboard.writeText(summary).then(() => {
+    const activeButton = document.activeElement;
+    if (activeButton && activeButton.classList.contains("btn")) {
+      const original = activeButton.textContent;
+      activeButton.textContent = "Copied";
+      setTimeout(() => {
+        activeButton.textContent = original;
+      }, 1400);
     }
-    return { name, subs };
+  }).catch(() => {
+    window.alert("Copy failed. You can still use the generated summary on screen.");
   });
 }
 
-// Init default pages
-(function() {
-  ['Home','About','Services','Contact'].forEach(p => addPage(p));
-})();
-
-// ── TOGGLES ──
-function getToggle(id) { return document.getElementById(id)?.checked; }
-
-// ── REVIEW BUILDER ──
-function buildReview() {
-  const container = document.getElementById('review-content');
-  const type = projectType;
-  const pages = getSitePages();
-
-  const v = id => (document.getElementById(id)||{}).value || '';
-  const t = id => (document.getElementById(id)||{}).checked;
-
-  const siteFeats = [];
-  if(t('sf-contact'))  siteFeats.push('Contact Form');
-  if(t('sf-blog'))     siteFeats.push('Blog / CMS');
-  if(t('sf-ecomm'))    siteFeats.push('E-Commerce');
-  if(t('sf-booking'))  siteFeats.push('Booking / Scheduling');
-  if(t('sf-search'))   siteFeats.push('Search');
-  if(t('sf-chat'))     siteFeats.push('Live Chat');
-  if(t('sf-analytics'))siteFeats.push('Analytics');
-  if(t('sf-i18n'))     siteFeats.push('Multi-language');
-
-  const appFeats = [...document.querySelectorAll('#app-features .checked')].map(el => el.querySelector('.fcheck-lbl').textContent);
-  const vibes = [...document.querySelectorAll('.chip.on')].map(c=>c.textContent);
-  const hpSections = [...document.querySelectorAll('#hp-sections .checked')].map(el=>el.querySelector('.hp-lbl').textContent);
-
-  let html = `
-    <div class="rev-section">
-      <div class="rev-section-title">Client &amp; Project</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Client</div><div class="rev-val ${!v('f-client')?'empty':''}">${v('f-client')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Industry</div><div class="rev-val ${!v('f-industry')?'empty':''}">${v('f-industry')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Contact</div><div class="rev-val ${!v('f-contact')?'empty':''}">${v('f-contact')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Email</div><div class="rev-val ${!v('f-email')?'empty':''}">${v('f-email')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Project Name</div><div class="rev-val ${!v('f-proj-name')?'empty':''}">${v('f-proj-name')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Project Summary</div><div class="rev-val ${!v('f-proj-summary')?'empty':''}">${v('f-proj-summary')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Priority</div><div class="rev-val ${!v('f-priority')?'empty':''}">${v('f-priority')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Project Type</div><div class="rev-val">${type==='app'?'⚙️ Web Application':'🌐 Website'}</div></div>
-      </div>
-    </div>`;
-
-  if (type === 'app') {
-    html += `
-    <div class="rev-section">
-      <div class="rev-section-title">Application Details</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">App Type</div><div class="rev-val ${!getRCValue('app-type')?'empty':''}">${getRCValue('app-type')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">User Type</div><div class="rev-val ${!v('f-user-type')?'empty':''}">${v('f-user-type')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Est. Users</div><div class="rev-val ${!v('f-user-count')?'empty':''}">${v('f-user-count')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">User Roles</div><div class="rev-val ${!v('f-user-roles')?'empty':''}">${v('f-user-roles')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Core Features</div><div class="rev-val">${appFeats.length?`<div class="rev-tags">${appFeats.map(f=>`<span class="rev-tag">${f}</span>`).join('')}</div>`:'<span class="empty">None selected</span>'}</div></div>
-        <div class="rev-row"><div class="rev-key">Other Features</div><div class="rev-val ${!v('f-app-other-features')?'empty':''}">${v('f-app-other-features')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Tech Stack</div><div class="rev-val ${!v('f-stack')?'empty':''}">${v('f-stack')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Hosting</div><div class="rev-val ${!v('f-hosting')?'empty':''}">${v('f-hosting')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Integrations</div><div class="rev-val ${!v('f-integrations')?'empty':''}">${v('f-integrations')||'—'}</div></div>
-      </div>
-    </div>`;
-  } else {
-    const sitePages = getSitePages();
-    const structHtml = sitePages.map(p=>`
-      <div class="rev-page">↳ ${p.name}${p.subs.length?`<div class="rev-page-subs">${p.subs.map(s=>`<span class="rev-sub-chip">${s}</span>`).join('')}</div>`:''}</div>`).join('');
-
-    html += `
-    <div class="rev-section">
-      <div class="rev-section-title">Website Details</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Site Type</div><div class="rev-val ${!getRCValue('site-type')?'empty':''}">${getRCValue('site-type')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Primary Goal</div><div class="rev-val ${!v('f-site-goal')?'empty':''}">${v('f-site-goal')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Site Structure</div><div class="rev-val"><div class="rev-struct">${structHtml||'<span class="empty">No pages defined</span>'}</div></div></div>
-        <div class="rev-row"><div class="rev-key">Homepage Sections</div><div class="rev-val">${hpSections.length?`<div class="rev-tags">${hpSections.map(s=>`<span class="rev-tag">${s}</span>`).join('')}</div>`:'<span class="empty">None selected</span>'}</div></div>
-        <div class="rev-row"><div class="rev-key">Site Features</div><div class="rev-val">${siteFeats.length?`<div class="rev-tags">${siteFeats.map(f=>`<span class="rev-tag">${f}</span>`).join('')}</div>`:'<span class="empty">None selected</span>'}</div></div>
-        <div class="rev-row"><div class="rev-key">Copy Ready?</div><div class="rev-val ${!v('f-has-copy')?'empty':''}">${v('f-has-copy')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Images Ready?</div><div class="rev-val ${!v('f-has-images')?'empty':''}">${v('f-has-images')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Logo?</div><div class="rev-val ${!v('f-has-logo')?'empty':''}">${v('f-has-logo')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Brand Guide?</div><div class="rev-val ${!v('f-has-brand')?'empty':''}">${v('f-has-brand')||'—'}</div></div>
-      </div>
-    </div>`;
-  }
-
-  html += `
-    <div class="rev-section">
-      <div class="rev-section-title">Design &amp; Brand</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Design Vibe</div><div class="rev-val">${vibes.length?`<div class="rev-tags">${vibes.map(v=>`<span class="rev-tag">${v}</span>`).join('')}</div>`:'<span class="empty">Not specified</span>'}</div></div>
-        <div class="rev-row"><div class="rev-key">Color Mode</div><div class="rev-val ${!v('f-color-mode')?'empty':''}">${v('f-color-mode')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Typography</div><div class="rev-val ${!v('f-typography')?'empty':''}">${v('f-typography')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Primary Color</div><div class="rev-val ${!v('f-color1')?'empty':''}">${v('f-color1')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Accent Color</div><div class="rev-val ${!v('f-color2')?'empty':''}">${v('f-color2')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Inspiration</div><div class="rev-val ${!v('f-inspo')?'empty':''}">${v('f-inspo')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Competitors</div><div class="rev-val ${!v('f-competitors')?'empty':''}">${v('f-competitors')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Avoid</div><div class="rev-val ${!v('f-dont-want')?'empty':''}">${v('f-dont-want')||'—'}</div></div>
-      </div>
-    </div>
-    <div class="rev-section">
-      <div class="rev-section-title">Timeline &amp; Budget</div>
-      <div class="rev-grid">
-        <div class="rev-row"><div class="rev-key">Deadline</div><div class="rev-val ${!v('f-deadline')?'empty':''}">${v('f-deadline')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Flexibility</div><div class="rev-val ${!v('f-deadline-flex')?'empty':''}">${v('f-deadline-flex')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Milestones</div><div class="rev-val ${!v('f-milestones')?'empty':''}">${v('f-milestones')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Budget</div><div class="rev-val ${!getRCValue('budget')?'empty':''}">${getRCValue('budget')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Billing</div><div class="rev-val ${!v('f-billing')?'empty':''}">${v('f-billing')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Maintenance</div><div class="rev-val ${!v('f-maintenance')?'empty':''}">${v('f-maintenance')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Comms</div><div class="rev-val ${!v('f-comm')?'empty':''}">${v('f-comm')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Check-ins</div><div class="rev-val ${!v('f-checkins')?'empty':''}">${v('f-checkins')||'—'}</div></div>
-        <div class="rev-row"><div class="rev-key">Notes</div><div class="rev-val ${!v('f-notes')?'empty':''}">${v('f-notes')||'—'}</div></div>
-      </div>
-    </div>`;
-
-  container.innerHTML = html;
+function buildReceiptSubject() {
+  const title = getValue("request-title") || "New Web Request";
+  return "Request Receipt - " + title;
 }
 
-// ── SUBMIT ──
-window.submitForm = function() { showStep(6); };
+function buildReceiptBody() {
+  const requester = getValue("requester-name") || "Requester";
+  const summary = pendingSummary || buildSummary();
+  return [
+    "Hi " + requester + ",",
+    "",
+    "This is your receipt for the request submitted through the internal intake form.",
+    "",
+    summary,
+    "",
+    "End of receipt."
+  ].join("\n");
+}
 
-// ── COPY SUMMARY ──
-window.copyToClipboard = function() {
-  const v = id => (document.getElementById(id)||{}).value || '—';
-  const type = projectType === 'app' ? 'Web Application' : 'Website';
-  const appFeats = [...document.querySelectorAll('#app-features .checked')].map(el=>el.querySelector('.fcheck-lbl').textContent);
-  const hpSects  = [...document.querySelectorAll('#hp-sections .checked')].map(el=>el.querySelector('.hp-lbl').textContent);
-  const vibes    = [...document.querySelectorAll('.chip.on')].map(c=>c.textContent);
-  const sitePages = getSitePages();
+function openEmailModal() {
+  document.getElementById("modalTo").value = "your.name@example.com";
+  document.getElementById("modalCc").value = getValue("requester-email");
+  document.getElementById("modalSubject").value = buildReceiptSubject();
+  document.getElementById("modalBody").value = buildReceiptBody();
+  emailModal.classList.add("open");
+}
 
-  let txt = `PROJECT INTAKE SUMMARY\n${'='.repeat(40)}\n\n`;
-  txt += `Project Type:    ${type}\n`;
-  txt += `Client:          ${v('f-client')}\n`;
-  txt += `Contact:         ${v('f-contact')} · ${v('f-email')}\n`;
-  txt += `Project:         ${v('f-proj-name')}\n`;
-  txt += `Summary:         ${v('f-proj-summary')}\n\n`;
+function closeEmailModal() {
+  emailModal.classList.remove("open");
+}
 
-  if (projectType === 'site') {
-    txt += `SITE STRUCTURE\n${'-'.repeat(30)}\n`;
-    sitePages.forEach((p,i) => {
-      txt += `${i+1}. ${p.name}\n`;
-      p.subs.forEach(s => txt += `   - ${s}\n`);
-    });
-    txt += `\nHomepage Sections: ${hpSects.join(', ')||'—'}\n`;
-  } else {
-    txt += `FEATURES\n${'-'.repeat(30)}\n${appFeats.join(', ')||'—'}\n`;
-  }
+function closeEmailModalOnOverlay(event) {
+  if (event.target === emailModal) closeEmailModal();
+}
 
-  txt += `\nDESIGN\n${'-'.repeat(30)}\n`;
-  txt += `Vibe: ${vibes.join(', ')||'—'}\n`;
-  txt += `Colors: ${v('f-color1')} / ${v('f-color2')}\n`;
+function sendReceiptEmail() {
+  const to = document.getElementById("modalTo").value.trim();
+  const cc = document.getElementById("modalCc").value.trim();
+  const subject = document.getElementById("modalSubject").value.trim();
+  const body = document.getElementById("modalBody").value;
+  let mailto = "mailto:" + encodeURIComponent(to);
+  const params = [];
+  if (cc) params.push("cc=" + encodeURIComponent(cc));
+  if (subject) params.push("subject=" + encodeURIComponent(subject));
+  if (body) params.push("body=" + encodeURIComponent(body));
+  if (params.length) mailto += "?" + params.join("&");
 
-  txt += `\nTIMELINE & BUDGET\n${'-'.repeat(30)}\n`;
-  txt += `Deadline: ${v('f-deadline')}\n`;
-  txt += `Budget:   ${getRCValue('budget')||'—'}\n`;
-  txt += `Notes:    ${v('f-notes')}\n`;
-  txt += `\nGenerated: ${new Date().toLocaleDateString()} via Project Intake Form\n`;
+  const link = document.createElement("a");
+  link.href = mailto;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(() => document.body.removeChild(link), 200);
 
-  navigator.clipboard.writeText(txt).then(()=>{
-    const btn = document.querySelector('.copy-btn');
-    if (btn) { const orig=btn.innerHTML; btn.innerHTML='✓ Copied!'; setTimeout(()=>btn.innerHTML=orig,2000); }
-  }).catch(()=>{ alert('Copy failed — please copy manually.'); });
-};
+  closeEmailModal();
+  summaryOutput.textContent = pendingSummary;
+  formShell.style.display = "none";
+  successShell.classList.add("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
-// ── START OVER ──
-window.startOver = function() {
-  if (!confirm('Start a new intake? This will clear everything.')) return;
-  location.reload();
-};
+priorityButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    priorityButtons.forEach((item) => item.classList.remove("active"));
+    button.classList.add("active");
+    selectedPriority = button.dataset.value;
+  });
+});
 
-// ── INIT ──
-buildProgress();
+requestTypeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    requestTypeButtons.forEach((item) => item.classList.remove("active"));
+    button.classList.add("active");
+    requestTypeInput.value = button.dataset.value;
+  });
+});
+
+document.getElementById("copy-summary-success").addEventListener("click", copySummary);
+document.getElementById("modal-close").addEventListener("click", closeEmailModal);
+document.getElementById("modal-cancel").addEventListener("click", closeEmailModal);
+document.getElementById("modal-send").addEventListener("click", sendReceiptEmail);
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  pendingSummary = buildSummary();
+  openEmailModal();
+});
+
+document.getElementById("start-over").addEventListener("click", () => {
+  form.reset();
+  selectedPriority = "Normal";
+  priorityButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.value === "Normal");
+  });
+  requestTypeInput.value = "";
+  requestTypeButtons.forEach((button) => button.classList.remove("active"));
+  pendingSummary = "";
+  summaryOutput.textContent = "";
+  closeEmailModal();
+  successShell.classList.remove("show");
+  formShell.style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
 </script>
-
-
-</body></html>
+</body>
+</html>
