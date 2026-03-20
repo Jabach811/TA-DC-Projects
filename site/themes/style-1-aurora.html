@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DC Toolkit — Aurora</title>
+<style>
+/* ── STYLE 1: AURORA GLASS ──────────────────────────────────────────
+   Deep space dark. Heavy frosted-glass panels. Shifting aurora blobs.
+   Ultra-premium, immersive.
+──────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+:root{
+  --bg:#06080f;
+  --glass:rgba(255,255,255,.055);
+  --glass-border:rgba(255,255,255,.13);
+  --text:#eef0f8;
+  --muted:#8892b0;
+  --faint:#3d4464;
+  --aurora-1:#7b2ff7;
+  --aurora-2:#00d4ff;
+  --aurora-3:#ff6b9d;
+  --aurora-4:#00ffc8;
+  --gold:#f5c842;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* Aurora blobs */
+.aurora{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(100px);animation:drift 14s ease-in-out infinite alternate}
+.blob-1{width:700px;height:700px;background:radial-gradient(circle,rgba(123,47,247,.45),transparent 70%);top:-200px;left:-200px;animation-duration:18s}
+.blob-2{width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,255,.35),transparent 70%);top:20%;right:-150px;animation-duration:14s;animation-delay:-4s}
+.blob-3{width:500px;height:500px;background:radial-gradient(circle,rgba(255,107,157,.3),transparent 70%);bottom:-100px;left:30%;animation-duration:20s;animation-delay:-8s}
+.blob-4{width:400px;height:400px;background:radial-gradient(circle,rgba(0,255,200,.28),transparent 70%);bottom:10%;right:10%;animation-duration:16s;animation-delay:-2s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.08)}}
+
+/* Grid overlay */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+.page{
+  width:min(1360px,calc(100vw - 48px));
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+  padding-bottom:60px;
+}
+
+/* ── NAV ── */
+nav{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:28px 0 20px;
+  animation:fadeUp .6s ease both;
+}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-gem{
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,var(--aurora-1),var(--aurora-2));
+  display:grid;place-items:center;font-weight:900;font-size:14px;
+  color:#fff;box-shadow:0 0 24px rgba(123,47,247,.5);
+  letter-spacing:.05em;
+}
+.logo-text strong{display:block;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+.logo-text span{display:block;margin-top:3px;font-size:12px;color:var(--muted)}
+.nav-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.chip{
+  padding:8px 14px;border-radius:999px;
+  border:1px solid var(--glass-border);
+  background:var(--glass);
+  backdrop-filter:blur(16px);
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  transition:border-color .2s,color .2s;
+}
+.chip:hover{border-color:rgba(255,255,255,.3);color:var(--text)}
+
+/* ── HERO ── */
+.hero{
+  display:grid;
+  grid-template-columns:1fr 1.1fr;
+  gap:24px;
+  margin-top:10px;
+  align-items:stretch;
+}
+.glass-panel{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:28px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 32px 80px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.hero-left{
+  padding:48px 44px 40px;
+  position:relative;
+  overflow:hidden;
+  animation:fadeUp .7s ease both;
+}
+.hero-left::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(123,47,247,.12) 0%,rgba(0,212,255,.06) 100%);
+  pointer-events:none;
+}
+.eyebrow{
+  font-size:10px;letter-spacing:.36em;text-transform:uppercase;
+  color:var(--aurora-2);margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--aurora-2)}
+.hero-left h1{
+  font-size:clamp(48px,6.5vw,88px);
+  line-height:.92;font-weight:900;letter-spacing:-.01em;
+  margin-bottom:18px;
+}
+.h1-line1{display:block;color:var(--text)}
+.h1-line2{display:block;background:linear-gradient(90deg,var(--aurora-1),var(--aurora-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{
+  color:var(--muted);font-size:16px;line-height:1.8;
+  max-width:520px;margin-bottom:32px;
+}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:13px 20px;border-radius:14px;
+  font-size:13px;font-weight:600;letter-spacing:.03em;
+  text-decoration:none;border:1px solid transparent;
+  transition:transform .18s,box-shadow .18s;
+  cursor:pointer;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--aurora-1),var(--aurora-2));
+  color:#fff;
+  box-shadow:0 8px 28px rgba(123,47,247,.45);
+}
+.btn-primary:hover{box-shadow:0 12px 36px rgba(123,47,247,.6)}
+.btn-ghost{
+  background:var(--glass);border-color:var(--glass-border);
+  color:var(--text);backdrop-filter:blur(12px);
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,.28)}
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px;
+}
+.stat-box{
+  padding:18px;border-radius:18px;
+  background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.07);
+  text-align:center;
+}
+.stat-box strong{display:block;font-size:32px;font-weight:800;line-height:1}
+.stat-box span{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+/* ── TOOL GRID ── */
+.tool-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:16px;
+  animation:fadeUp .85s ease both;
+  align-content:start;
+}
+.tool-card{
+  padding:26px;border-radius:24px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(18px);
+  position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+.tool-card:hover{transform:translateY(-5px);border-color:var(--c-accent);box-shadow:0 28px 64px rgba(0,0,0,.45),0 0 0 1px var(--c-accent)}
+.tool-card::after{
+  content:"";position:absolute;top:-40%;right:-20%;
+  width:200px;height:200px;border-radius:50%;
+  background:var(--c-glow);filter:blur(40px);opacity:.4;pointer-events:none;
+}
+.t-site{--c-accent:rgba(0,212,255,.6);--c-glow:rgba(0,212,255,.3)}
+.t-main{--c-accent:rgba(245,200,66,.6);--c-glow:rgba(245,200,66,.3)}
+.t-payroll{--c-accent:rgba(0,255,200,.6);--c-glow:rgba(0,255,200,.3)}
+.t-parser{--c-accent:rgba(255,107,157,.6);--c-glow:rgba(255,107,157,.3)}
+.t-icon{
+  width:52px;height:52px;border-radius:16px;
+  display:grid;place-items:center;font-size:22px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.07);
+  margin-bottom:16px;
+}
+.t-tag{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.tool-card h3{font-size:18px;font-weight:700;margin-bottom:8px;line-height:1.2}
+.tool-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.t-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.badge{
+  padding:5px 10px;border-radius:999px;
+  border:1px solid var(--glass-border);
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+}
+.t-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.t-link{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 13px;border-radius:999px;
+  border:1px solid var(--glass-border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);text-decoration:none;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
+  transition:transform .16s,background .16s,border-color .16s;
+}
+.t-link:hover{transform:translateY(-1px);background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.25)}
+.t-link-accent{
+  background:color-mix(in srgb,var(--c-accent) 18%,rgba(255,255,255,.04));
+  border-color:color-mix(in srgb,var(--c-accent) 50%,rgba(255,255,255,.12));
+  color:var(--c-accent);font-weight:700;
+}
+.t-link-accent:hover{background:color-mix(in srgb,var(--c-accent) 28%,rgba(255,255,255,.04))}
+
+/* ── FOOTER ── */
+footer{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:28px 0;border-top:1px solid rgba(255,255,255,.07);
+  color:var(--faint);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+}
+.footer-dot{width:6px;height:6px;border-radius:50%;background:var(--aurora-4);box-shadow:0 0 8px var(--aurora-4);display:inline-block;margin-right:8px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:1100px){.hero{grid-template-columns:1fr}.tool-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.hero-left{padding:32px 28px}.hero-left h1{font-size:44px}.stats-row{grid-template-columns:1fr}.tool-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="aurora">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<div class="page">
+  <nav>
+    <div class="logo">
+      <div class="logo-gem">DC</div>
+      <div class="logo-text">
+        <strong>Data Consultant</strong>
+        <span>Internal toolkit and launch hub</span>
+      </div>
+    </div>
+    <div class="nav-chips">
+      <div class="chip">Resource Portal</div>
+      <div class="chip">Implementation App</div>
+      <div class="chip">Payroll App</div>
+      <div class="chip">Report Parser</div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-left glass-panel">
+      <div class="eyebrow">Internal Operations Launcher</div>
+      <h1>
+        <span class="h1-line1">Data</span>
+        <span class="h1-line2">Consultant</span>
+        <span class="h1-line1">Toolkit</span>
+      </h1>
+      <p class="hero-desc">Launch the core Data Consultant workspace from one modern landing page. The portal, implementation checklist generator, payroll checklist generator, and fixed-width report parser—all grouped here so the team can move faster.</p>
+      <div class="hero-btns">
+        <a class="btn btn-primary" href="#tools">Open Tool Hub ↓</a>
+        <a class="btn btn-ghost" href="../Data_Consultant_Website_v2_10.html">Enter Resource Site</a>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><strong>4</strong><span>Launch Points</span></div>
+        <div class="stat-box"><strong>1</strong><span>DC Workspace</span></div>
+        <div class="stat-box"><strong>Live</strong><span>HTML Apps</span></div>
+      </div>
+    </div>
+
+    <div class="tool-grid" id="tools">
+      <div class="tool-card t-site">
+        <div class="t-icon">🌐</div>
+        <div class="t-tag">Portal</div>
+        <h3>DC Resource Site</h3>
+        <p>Main Data Consultant portal for documentation, walkthroughs, process references, and quick-launch internal tools.</p>
+        <div class="t-badges"><span class="badge">Reference Hub</span><span class="badge">Procedures</span><span class="badge">Launch Pads</span></div>
+        <div class="t-links"><a class="t-link t-link-accent" href="../Data_Consultant_Website_v2_10.html">Launch Portal</a></div>
+      </div>
+
+      <div class="tool-card t-main">
+        <div class="t-icon">✅</div>
+        <div class="t-tag">Implementation App</div>
+        <h3>Main Checklist Generator</h3>
+        <p>Generate implementation plans, manage live checklist execution, monitor due dates with dashboard, vault, and calendar views.</p>
+        <div class="t-badges"><span class="badge">Checklist</span><span class="badge">Dashboard</span><span class="badge">Calendar</span></div>
+        <div class="t-links">
+          <a class="t-link" href="../../apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html">Launch App</a>
+          <a class="t-link t-link-accent" href="../../guides/Main_Checklist_Generator_How_To_Guide.docx">📘 Guide</a>
+        </div>
+      </div>
+
+      <div class="tool-card t-payroll">
+        <div class="t-icon">💳</div>
+        <div class="t-tag">Payroll App</div>
+        <h3>Payroll Checklist Generator</h3>
+        <p>Create payroll onboarding checklists, manage vendor setup work, and track payroll implementation tasks.</p>
+        <div class="t-badges"><span class="badge">Vendor Setup</span><span class="badge">Testing</span><span class="badge">Go-Live</span></div>
+        <div class="t-links">
+          <a class="t-link" href="../../apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html">Launch App</a>
+          <a class="t-link t-link-accent" href="../../guides/Payroll_Checklist_Generator_Guide.docx">📘 Guide</a>
+        </div>
+      </div>
+
+      <div class="tool-card t-parser">
+        <div class="t-icon">LAB</div>
+        <div class="t-tag">Parsing Utility</div>
+        <h3>Fixed-Width Extraction Console</h3>
+        <p>Load flat files, validate record sets by data source, preview parsed reports, and export a formatted workbook.</p>
+        <div class="t-badges"><span class="badge">Text Parsing</span><span class="badge">XLSX Export</span></div>
+        <div class="t-links"><a class="t-link t-link-accent" href="../../apps/fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html">Launch Console</a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div><span class="footer-dot"></span>Data Consultant Workspace</div>
+    <div>Internal Tools Launcher</div>
+  </footer>
+</div>
+</body>
+</html>

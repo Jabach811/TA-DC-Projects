@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DC Toolkit — Brutalist</title>
+<style>
+/* ── STYLE 4: EDITORIAL BRUTALIST ───────────────────────────────────
+   Cream/off-white background. Pure black type. No border radius.
+   Raw, bold, editorial — like a high-end print magazine built as a site.
+   Inspired by editorial design, Swiss typography.
+──────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --cream:#f2ede6;
+  --cream-dark:#e8e2d9;
+  --ink:#0a0a0a;
+  --ink-mid:#2a2a2a;
+  --ink-soft:#5a5a5a;
+  --ink-faint:#999;
+  --red:#e63022;
+  --yellow:#f5d800;
+  --blue:#1a2fff;
+  --border:2px solid var(--ink);
+  --font:'Space Grotesk',sans-serif;
+  --mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── BRUTAL HEADER ── */
+.header-stripe{
+  background:var(--ink);
+  padding:0 40px;
+  display:flex;align-items:stretch;
+  min-height:70px;
+  border-bottom:4px solid var(--ink);
+}
+.header-logo{
+  display:flex;align-items:center;gap:0;
+  padding:18px 28px 18px 0;
+  border-right:2px solid rgba(255,255,255,.15);
+}
+.logo-box{
+  width:44px;height:44px;background:var(--yellow);
+  display:grid;place-items:center;
+  font-weight:700;font-size:14px;color:var(--ink);
+  letter-spacing:.06em;flex-shrink:0;
+}
+.logo-words{padding-left:16px}
+.logo-words strong{display:block;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--yellow);font-weight:700}
+.logo-words span{display:block;font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.header-nav{
+  display:flex;align-items:center;gap:0;margin-left:auto;
+}
+.hn{
+  padding:0 20px;height:100%;display:flex;align-items:center;
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);font-weight:500;
+  border-left:1px solid rgba(255,255,255,.1);
+  transition:color .15s,background .15s;
+}
+.hn:hover{color:white;background:rgba(255,255,255,.06)}
+
+/* ── HERO ── */
+.page{max-width:1380px;margin:0 auto;padding:0 40px 60px}
+
+.hero-block{
+  border-bottom:var(--border);
+  padding:56px 0 48px;
+  display:grid;
+  grid-template-columns:1fr 400px;
+  gap:0;
+  align-items:stretch;
+}
+.hero-left{
+  padding-right:48px;
+  border-right:var(--border);
+}
+.hero-kicker{
+  font-family:var(--mono);
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--red);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-kicker::after{content:"";flex:1;height:2px;background:var(--red)}
+.hero-block h1{
+  font-size:clamp(56px,7vw,104px);
+  font-weight:700;line-height:.88;
+  letter-spacing:-.03em;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+.hero-block h1 em{font-style:normal;color:var(--red)}
+.hero-desc{
+  font-size:16px;line-height:1.7;color:var(--ink-soft);
+  max-width:540px;margin-bottom:32px;
+  border-left:4px solid var(--ink);
+  padding-left:16px;
+}
+.hero-btns{display:flex;gap:0}
+.bru-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:16px 26px;
+  font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;
+  border:var(--border);
+  transition:transform .15s,box-shadow .15s;
+  position:relative;
+}
+.bru-btn:hover{box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px)}
+.bru-btn.primary{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.bru-btn.primary:hover{box-shadow:4px 4px 0 var(--red)}
+.bru-btn.sec{background:transparent;color:var(--ink);border-left:none}
+.bru-btn.sec:hover{box-shadow:4px 4px 0 var(--ink)}
+
+.hero-right{
+  padding:0 0 0 40px;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.hero-num-grid{display:flex;flex-direction:column;gap:0;flex:1}
+.hero-num{
+  flex:1;
+  padding:20px 0;
+  border-bottom:1px solid rgba(0,0,0,.15);
+  display:flex;align-items:center;gap:20px;
+}
+.hero-num:last-child{border-bottom:none}
+.num-big{
+  font-size:52px;font-weight:700;line-height:1;
+  letter-spacing:-.03em;color:var(--ink);
+  min-width:80px;
+}
+.num-label{
+  font-family:var(--mono);
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-soft);
+}
+
+/* ── SECTION LABEL ── */
+.section-bar{
+  display:flex;align-items:center;gap:0;
+  border-top:var(--border);border-bottom:var(--border);
+  margin-top:0;
+}
+.section-bar-label{
+  padding:14px 20px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.26em;text-transform:uppercase;
+  font-weight:700;background:var(--ink);color:var(--yellow);
+}
+.section-bar-right{
+  padding:14px 20px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-faint);margin-left:auto;
+}
+
+/* ── TOOL GRID ── */
+.tool-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  border-left:var(--border);
+}
+.tool-card{
+  padding:32px 28px;
+  border-right:var(--border);border-bottom:var(--border);
+  position:relative;
+  transition:background .15s;
+}
+.tool-card:hover{background:var(--cream-dark)}
+.tc-num{
+  font-family:var(--mono);font-size:64px;font-weight:700;
+  color:rgba(0,0,0,.06);line-height:1;
+  position:absolute;top:16px;right:20px;
+  letter-spacing:-.04em;pointer-events:none;
+}
+.tc-type{
+  font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ink-faint);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.tc-type-dot{width:8px;height:8px;background:var(--c-dot);flex-shrink:0}
+.c-blue{--c-dot:var(--blue)}
+.c-red{--c-dot:var(--red)}
+.c-yellow{--c-dot:var(--yellow);border:1px solid rgba(0,0,0,.2)}
+.c-ink{--c-dot:var(--ink)}
+.tc-icon{
+  width:56px;height:56px;
+  border:var(--border);
+  display:grid;place-items:center;font-size:20px;
+  margin-bottom:18px;background:var(--cream);
+}
+.tool-card h3{
+  font-size:22px;font-weight:700;letter-spacing:-.02em;
+  text-transform:uppercase;margin-bottom:10px;line-height:1.1;
+}
+.tool-card p{
+  font-size:13px;line-height:1.7;color:var(--ink-soft);
+  margin-bottom:18px;
+}
+.tc-tags{display:flex;flex-wrap:wrap;gap:0;margin-bottom:20px}
+.tc-tag{
+  padding:5px 10px;
+  font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid rgba(0,0,0,.2);color:var(--ink-soft);
+  margin-right:-1px;margin-bottom:-1px;
+}
+.tc-links{display:flex;gap:0;border-top:1px solid rgba(0,0,0,.12);padding-top:18px}
+.tcl{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 16px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  text-decoration:none;
+  border:1px solid rgba(0,0,0,.2);
+  color:var(--ink);background:transparent;
+  transition:background .15s,transform .12s,box-shadow .12s;
+  position:relative;
+}
+.tcl:hover{background:var(--ink);color:var(--cream);box-shadow:3px 3px 0 var(--c-dot)}
+.tcl+.tcl{border-left:none}
+
+/* ── FOOTER ── */
+footer{
+  border-top:var(--border);border-bottom:var(--border);
+  margin-top:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 0;
+}
+.f-left{display:flex;align-items:center;gap:0}
+.f-blk{
+  padding:8px 16px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  border-right:var(--border);color:var(--ink-soft);
+}
+.f-blk:first-child{background:var(--ink);color:var(--yellow);font-weight:700}
+.f-right{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+
+@media(max-width:1100px){.hero-block{grid-template-columns:1fr}.hero-left{border-right:none;padding-right:0;border-bottom:var(--border);padding-bottom:32px;margin-bottom:32px}.hero-right{padding-left:0}.hero-num-grid{flex-direction:row}.hero-num{flex-direction:column;text-align:center;gap:8px}}
+@media(max-width:800px){.tool-grid{grid-template-columns:1fr}.page{padding:0 20px 40px}.header-nav{display:none}}
+@media(max-width:600px){.hero-block h1{font-size:52px}.hero-num-grid{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<header class="header-stripe">
+  <div class="header-logo">
+    <div class="logo-box">DC</div>
+    <div class="logo-words">
+      <strong>Data Consultant</strong>
+      <span>Internal toolkit and launch hub</span>
+    </div>
+  </div>
+  <nav class="header-nav">
+    <div class="hn">Resource Portal</div>
+    <div class="hn">Implementation</div>
+    <div class="hn">Payroll App</div>
+    <div class="hn">Parser</div>
+  </nav>
+</header>
+
+<div class="page">
+  <div class="hero-block">
+    <div class="hero-left">
+      <div class="hero-kicker">Internal Operations Launcher</div>
+      <h1>Data<br><em>Consult</em><br>Toolkit</h1>
+      <p class="hero-desc">Launch the core Data Consultant workspace from one modern landing page. The portal, implementation checklist generator, payroll checklist generator, and fixed-width report parser—grouped here so the team can move faster.</p>
+      <div class="hero-btns">
+        <a class="bru-btn primary" href="#tools">Open Tool Hub ↓</a>
+        <a class="bru-btn sec" href="../Data_Consultant_Website_v2_10.html">Resource Site →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-num-grid">
+        <div class="hero-num">
+          <div class="num-big">04</div>
+          <div class="num-label">Primary Launch Points</div>
+        </div>
+        <div class="hero-num">
+          <div class="num-big">01</div>
+          <div class="num-label">Shared DC Workspace</div>
+        </div>
+        <div class="hero-num">
+          <div class="num-big">↗</div>
+          <div class="num-label">Standalone HTML Apps — Live</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-bar">
+    <div class="section-bar-label" id="tools">Tool Hub</div>
+    <div class="section-bar-right">4 Applications Available</div>
+  </div>
+
+  <div class="tool-grid">
+    <div class="tool-card c-blue">
+      <div class="tc-num">01</div>
+      <div class="tc-type"><span class="tc-type-dot"></span>Portal</div>
+      <div class="tc-icon">🌐</div>
+      <h3>DC Resource Site</h3>
+      <p>Main Data Consultant portal for documentation, walkthroughs, process references, and quick-launch internal tools.</p>
+      <div class="tc-tags"><span class="tc-tag">Reference Hub</span><span class="tc-tag">Procedures</span><span class="tc-tag">Launch Pads</span></div>
+      <div class="tc-links">
+        <a class="tcl" href="../Data_Consultant_Website_v2_10.html">Launch Portal →</a>
+      </div>
+    </div>
+
+    <div class="tool-card c-yellow">
+      <div class="tc-num">02</div>
+      <div class="tc-type"><span class="tc-type-dot"></span>Implementation App</div>
+      <div class="tc-icon">✅</div>
+      <h3>Main Checklist Generator</h3>
+      <p>Generate implementation plans, manage live checklist execution, monitor due dates with dashboard, vault, and calendar views.</p>
+      <div class="tc-tags"><span class="tc-tag">Checklist</span><span class="tc-tag">Dashboard</span><span class="tc-tag">Calendar</span></div>
+      <div class="tc-links">
+        <a class="tcl" href="../../apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html">Launch App →</a>
+        <a class="tcl" href="../../guides/Main_Checklist_Generator_How_To_Guide.docx">📘 Guide</a>
+      </div>
+    </div>
+
+    <div class="tool-card c-red">
+      <div class="tc-num">03</div>
+      <div class="tc-type"><span class="tc-type-dot"></span>Payroll App</div>
+      <div class="tc-icon">💳</div>
+      <h3>Payroll Checklist Generator</h3>
+      <p>Create payroll onboarding checklists, manage vendor setup work, and track payroll implementation tasks in a dedicated app shell.</p>
+      <div class="tc-tags"><span class="tc-tag">Vendor Setup</span><span class="tc-tag">Testing</span><span class="tc-tag">Go-Live</span></div>
+      <div class="tc-links">
+        <a class="tcl" href="../../apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html">Launch App →</a>
+        <a class="tcl" href="../../guides/Payroll_Checklist_Generator_Guide.docx">📘 Guide</a>
+      </div>
+    </div>
+
+    <div class="tool-card c-ink">
+      <div class="tc-num">04</div>
+      <div class="tc-type"><span class="tc-type-dot"></span>Parsing Utility</div>
+      <div class="tc-icon" style="font-size:13px;font-weight:700;font-family:'Space Mono',monospace">LAB</div>
+      <h3>Fixed-Width Extraction Console</h3>
+      <p>Load inbound flat files, validate expected record sets by data source, preview parsed reports, and export a formatted workbook.</p>
+      <div class="tc-tags"><span class="tc-tag">Data Source Rules</span><span class="tc-tag">Text Parsing</span><span class="tc-tag">XLSX Export</span></div>
+      <div class="tc-links">
+        <a class="tcl" href="../../apps/fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html">Launch Console →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="f-left">
+      <div class="f-blk">DC</div>
+      <div class="f-blk">Data Consultant Workspace</div>
+      <div class="f-blk">Internal Tools Launcher</div>
+    </div>
+    <div class="f-right">2025 — Internal Use Only</div>
+  </footer>
+</div>
+</body>
+</html>
