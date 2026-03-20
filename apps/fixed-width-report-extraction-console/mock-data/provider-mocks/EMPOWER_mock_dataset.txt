@@ -1,0 +1,11 @@
+TITLE1 EMPOWER MOCK DATA
+SUBSETGRP0000000001111223333                 ADAMS                              JORDAN                                                 ROTH  1250.7520260101
+EMP   GRP0000000001111223333                 ADAMS                              JORDAN                                                 20190415        E10001                        N
+DFRL  GRP0000000001111223333                 ADAMS                              JORDAN                                                 PRE                    20260101     6.50                 0
+BALANCGRP0000000001111223333                 ADAMS                              JORDAN                                                 EE1   1FND1001          15234.67                                              456.1234                                                      20260131
+BALANCGRP0000000001111223333                 ADAMS                              JORDAN                                                 RTH   2FND2002           8040.12                                              209.8801                                                      20260131
+BALANCGRP0000000001222334444                 BROOKS                             MAYA                                                   ERM   1FND1001          12890.55                                              344.1100                                                      20260131
+ALLOC GRP0000000001111223333                 ADAMS                              JORDAN                                                 EE1   1FND1001   60.0N101
+ALLOC GRP0000000001111223333                 ADAMS                              JORDAN                                                 RTH   2FND2002   40.0N101
+LOANS GRP0000000001222334444                 BROOKS                             MAYA                                                   LN0001                    20260215              125.00                   5000.00                                            4325.2520291215
+FOOTER EMPOWER MOCK DATA

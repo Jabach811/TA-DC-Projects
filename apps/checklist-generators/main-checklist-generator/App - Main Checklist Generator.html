@@ -179,7 +179,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .intake-clear-btn:hover { background:#dc262612; border-color:#dc2626; }
 
 /* CHECKLIST SCREEN */
-.cl-header { background:#1a1916; color:#fff; padding:26px 32px 22px; position:relative; overflow:hidden; }
+.cl-header { background:#1a1916; color:#fff; padding:26px 32px 22px; position:relative; overflow:visible; z-index:140; }
 .cl-header::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(-45deg,transparent,transparent 30px,#ffffff03 30px,#ffffff03 31px); }
 .cl-header-inner { position:relative; z-index:1; max-width:1100px; margin:0 auto; }
 .cl-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
@@ -200,8 +200,8 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .cl-badge { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 10px; border-radius:20px; border:1px solid; }
 
 /* ── STATUS PILL ── */
-.status-pill-wrap { display:flex; align-items:center; gap:6px; margin-top:12px; }
-.status-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#ffffff33; }
+.status-pill-wrap { display:flex; align-items:center; gap:6px; margin-top:12px; position:relative; z-index:900; }
+.status-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#fff; }
 .status-pill { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; padding:4px 14px; border-radius:20px; border:1.5px solid; cursor:pointer; transition:all 0.18s; display:inline-flex; align-items:center; gap:6px; }
 .status-pill:hover { filter:brightness(1.15); }
 .sp-active   { color:#4ade80; border-color:#4ade8055; background:#4ade8010; }
@@ -213,7 +213,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .sp-hold     .sp-dot { background:#f87171; }
 
 /* Status dropdown */
-.status-menu { position:absolute; top:calc(100% + 6px); left:0; background:#1e1c18; border:1px solid #ffffff18; border-radius:9px; padding:5px; z-index:500; min-width:150px; box-shadow:0 8px 24px #00000055; }
+.status-menu { position:absolute; top:calc(100% + 6px); left:0; background:#1e1c18; border:1px solid #ffffff18; border-radius:9px; padding:5px; z-index:1200; min-width:150px; box-shadow:0 8px 24px #00000055; }
 .status-menu-item { display:flex; align-items:center; gap:9px; padding:8px 12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; transition:background 0.12s; }
 .status-menu-item:hover { background:#ffffff10; }
 .smi-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
@@ -243,13 +243,14 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 /* Body */
 .cl-body { max-width:1580px; margin:0 auto; padding:26px 32px 80px; }
 @media(min-width:900px){
-  .cl-layout { display:grid; grid-template-columns:520px 188px minmax(0,1fr) 265px; gap:24px; align-items:start; }
+  .cl-layout { display:grid; grid-template-columns:188px 210px minmax(0,1fr) 265px; gap:24px; align-items:start; }
   .mini-cal-col { position:sticky; top:66px; }
   .cl-plan-rail { position:sticky; top:66px; }
+  .cl-pinboard  { position:sticky; top:66px; }
   .cl-sidebar { position:sticky; top:66px; }
 }
 
-.cl-plan-rail { min-width:0; }
+.cl-plan-rail { min-width:0; display:none; }
 .pr-section-title { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); padding-bottom:10px; border-bottom:1px solid var(--border); margin-bottom:4px; }
 .pr-list { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; max-height:calc(100vh - 98px); overflow-y:auto; padding-right:4px; align-content:start; }
 .pr-item { padding:8px 8px 9px; border-radius:11px; border:1px solid var(--border); background:var(--surface); cursor:pointer; transition:all .15s; min-height:86px; }
@@ -267,15 +268,14 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .pr-empty { padding:18px 12px; border-radius:11px; border:1px dashed var(--border); color:var(--muted); font-size:11px; line-height:1.6; text-align:center; }
 @media (max-width: 1500px) {
   .cl-body { max-width:1420px; }
-  .cl-layout { grid-template-columns:420px 188px minmax(0,1fr) 265px; }
-  .pr-list { grid-template-columns:repeat(3, minmax(0,1fr)); }
+  .cl-layout { grid-template-columns:188px 210px minmax(0,1fr) 265px; }
 }
 @media (max-width: 1250px) {
   .cl-body { max-width:1140px; }
-  .cl-layout { grid-template-columns:188px minmax(0,1fr); }
+  .cl-layout { grid-template-columns:188px 200px minmax(0,1fr); }
   .cl-plan-rail, .cl-sidebar, .mini-cal-col { position:static; }
-  .cl-plan-rail { grid-column:1 / -1; }
-  .cl-sidebar { grid-column:1 / -1; }
+  .cl-pinboard { position:static; }
+  .cl-sidebar { display:none; }
   .pr-list { grid-template-columns:repeat(4, minmax(0,1fr)); max-height:360px; }
 }
 @media (max-width: 760px) {
@@ -285,11 +285,27 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 }
 
 /* ── PLAN NAME IN PROGRESS BAR ── */
-.prog-plan { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:.04em; color:var(--text); margin-left:auto; display:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:280px; opacity:0; transition:opacity .2s; }
+.prog-plan { font-family:'Bebas Neue',sans-serif; font-size:28px; font-weight:700; letter-spacing:.02em; color:var(--text); margin-left:auto; display:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:420px; opacity:0; transition:opacity .2s; }
 .prog-plan.visible { display:block; opacity:1; }
 
 /* ── MINI CALENDAR COLUMN ── */
 .mini-cal-col { padding:16px 12px; border:1px solid var(--border); background:var(--surface); display:flex; flex-direction:column; border-radius:11px; }
+.cl-pinboard { padding:16px 12px; border:1px solid var(--border); background:var(--surface); border-radius:11px; display:flex; flex-direction:column; gap:0; overflow:hidden; }
+.cl-pinboard .pb-head { color:var(--muted); margin-bottom:10px; }
+.cl-pinboard .pb-input { background:var(--surface2); border-color:var(--border); color:var(--text); }
+.cl-pinboard .pb-input::placeholder { color:var(--muted); opacity:0.6; }
+.cl-pinboard .pb-input:focus { border-color:#fbbf2466; }
+.cl-pinboard .pb-card { background:var(--surface2); border-color:var(--border); }
+.cl-pinboard .pb-card-title { color:var(--text); }
+.cl-pinboard .pb-card-note { color:var(--muted); }
+.cl-pinboard .pb-unpin { color:var(--muted); }
+.cl-pinboard .pb-empty { color:var(--muted); opacity:0.5; font-size:8px; }
+.cl-pinboard .pb-free-card { background:rgba(251,191,36,0.07) !important; border-color:rgba(251,191,36,0.22) !important; }
+.cl-pinboard .pb-free-card:hover { background:rgba(251,191,36,0.12) !important; }
+.cl-pinboard .pb-add-btn { border-color:var(--border); color:var(--muted); }
+.cl-pinboard .pb-add-btn:hover { border-color:#fbbf2466; color:#d97706; background:rgba(251,191,36,0.08); }
+.cl-pinboard .pb-cancel-btn { border-color:var(--border); color:var(--muted); }
+.cl-pinboard .pb-submit-btn { border-color:rgba(251,191,36,0.44); color:#d97706; background:rgba(251,191,36,0.10); }
 .mc-section-title { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); padding-bottom:10px; border-bottom:1px solid var(--border); margin-bottom:12px; flex-shrink:0; }
 .mc-head-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:4px; }
 .mc-nav { background:none; border:1px solid var(--border); border-radius:5px; color:var(--muted); cursor:pointer; font-size:14px; line-height:1; width:22px; height:22px; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; padding:0; }
@@ -314,8 +330,18 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .mc-today-dot { background:#2563eb; }
 .mc-eff-dot { background:var(--ok); }
 .mc-wire-dot { background:var(--warn); }
+.mc-ci-del { font-size:9px; color:var(--muted); cursor:pointer; padding:1px 4px; border-radius:3px; border:1px solid transparent; transition:all 0.12s; flex-shrink:0; }
+.mc-ci-del:hover { color:#f87171; border-color:#f8717144; }
 .mc-go-today { width:100%; margin-top:14px; padding:6px 0; background:transparent; border:1px solid var(--border); border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:all .15s; flex-shrink:0; }
 .mc-go-today:hover { border-color:var(--text); color:var(--text); }
+.mc-add-ci-btn { width:100%; margin-top:6px; padding:6px 0; background:transparent; border:1px dashed #0891b244; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:#0891b2; cursor:pointer; transition:all 0.15s; }
+.mc-add-ci-btn:hover { background:#0891b210; border-color:#0891b2; }
+.mc-ci-form { margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+.mc-ci-input { width:100%; padding:6px 9px; background:var(--input-bg); border:1px solid var(--border); border-radius:6px; font-size:11px; color:var(--text); font-family:inherit; box-sizing:border-box; }
+.mc-ci-input:focus { outline:none; border-color:#0891b2; }
+.mc-ci-actions { display:flex; gap:6px; }
+.mc-ci-dot { background:#0891b2; }
+.mc-day.ci-date { background:#0891b21a; color:#67e8f9; font-weight:700; border:1px solid #0891b244; border-radius:4px; }
 /* dark overrides */
 html.dark-mode .mini-cal-col { border-right-color:var(--border); background:var(--surface); }
 html.dark-mode .prog-plan { color:var(--text); }
@@ -556,6 +582,10 @@ html.dark-mode .phase-bulk-btn.undo { border-color:#d9740655; }
 .task-note-toggle:hover { color:var(--text); border-color:var(--border); background:var(--surface2); }
 .task-note-toggle.has-note { color:#fbbf24; border-color:#fbbf2433; background:#fbbf2408; }
 .task-note-toggle.has-note:hover { background:#fbbf2415; border-color:#fbbf2466; }
+.task-pin-btn { display:inline-flex; align-items:center; gap:4px; font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); padding:2px 7px; border-radius:4px; border:1px solid transparent; transition:all 0.15s; opacity:0.35; cursor:default; pointer-events:none; background:none; }
+.task-pin-btn.active { opacity:1; color:#0891b2; border-color:#0891b233; background:#0891b208; cursor:pointer; pointer-events:auto; }
+.task-pin-btn.active:hover { background:#0891b215; border-color:#0891b266; }
+.task-pin-btn.pinned { color:#10b981; border-color:#10b98133; background:#10b98110; }
 html.dark-mode .task-note-input { background:var(--surface2); border-color:var(--border); }
 
 /* ── NOTES PANEL ── */
@@ -585,6 +615,26 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
 .custom-task-del { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; padding:1px 6px; border-radius:3px; border:1px solid transparent; transition:all 0.15s; }
 .custom-task-del:hover { color:var(--critical); border-color:var(--critical); background:#dc262608; }
 
+/* Calendar Items sidebar card */
+.ci-add-btn { width:100%; padding:8px 0; background:transparent; border:1px dashed #0891b244; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:#0891b2; cursor:pointer; transition:all 0.15s; margin-top:10px; }
+.ci-add-btn:hover { background:#0891b210; border-color:#0891b2; }
+.ci-form { margin-top:10px; background:#0891b20c; border:1px solid #0891b222; border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+.ci-input { width:100%; padding:7px 10px; background:var(--input-bg); border:1px solid var(--border); border-radius:7px; font-size:12px; color:var(--text); font-family:inherit; box-sizing:border-box; }
+.ci-input:focus { outline:none; border-color:#0891b2; }
+.ci-actions { display:flex; gap:8px; }
+.ci-save { padding:7px 16px; background:#0891b2; border:none; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#fff; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.ci-save:hover { filter:brightness(1.12); }
+.ci-cancel { padding:7px 12px; background:transparent; border:1px solid var(--border); border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.ci-cancel:hover { color:var(--text); border-color:var(--text); }
+.ci-list { display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+.ci-item { display:flex; align-items:center; gap:8px; padding:7px 10px; background:rgba(255,255,255,0.03); border:1px solid #ffffff0d; border-radius:8px; }
+.ci-dot { width:10px; height:10px; border-radius:50%; background:#0891b2; flex-shrink:0; }
+.ci-text { flex:1; min-width:0; }
+.ci-name { font-size:12px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ci-date { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted); margin-top:1px; }
+.ci-del { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; padding:1px 6px; border-radius:3px; border:1px solid transparent; transition:all 0.15s; flex-shrink:0; }
+.ci-del:hover { color:var(--critical); border-color:var(--critical); background:#dc262608; }
+.ci-empty { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted); text-align:center; padding:10px 0; }
 
 .dashboard-launch-row { display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
 .dashboard-launch-btn { padding:12px 16px; border-radius:10px; border:1px solid #fbbf2444; background:#fbbf2410; color:#fbbf24; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; cursor:pointer; transition:all 0.16s; }
@@ -594,6 +644,24 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
   linear-gradient(180deg, #151310 0%, #11100d 100%);
   color:#f5efe4; }
 .dash-shell { max-width:1240px; margin:0 auto; padding:34px 28px 60px; }
+/* ════════════════════════════════════════════════════════════════
+   SHARED APP HEADER — used across Checklist, Dashboard, Home, Calendar
+   Each page sets --pg-accent / --pg-accent-bg / --pg-accent-bd via inline style
+════════════════════════════════════════════════════════════════ */
+.app-hdr{background:#1a1916;position:relative;overflow:hidden;padding:18px 32px 16px;flex-shrink:0}
+.app-hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 30px,#ffffff03 30px,#ffffff03 31px);pointer-events:none}
+.app-hdr-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.app-hdr-identity{display:flex;flex-direction:column;gap:3px;min-width:0}
+.app-hdr-kicker{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.32)}
+.app-hdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.05em;color:#fff;line-height:1;white-space:nowrap}
+.app-hdr-title em{font-style:normal;color:var(--pg-accent,#fbbf24)}
+.app-nav{display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.app-nav-sep{width:1px;height:18px;background:rgba(255,255,255,.12);margin:0 5px;flex-shrink:0;align-self:center}
+.app-nav-btn{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:7px 11px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:rgba(255,255,255,.44);cursor:pointer;transition:all .15s;white-space:nowrap;line-height:1}
+.app-nav-btn:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.22);color:#fff;transform:translateY(-1px)}
+.app-nav-btn.is-active{background:var(--pg-accent-bg,rgba(251,191,36,.15));border-color:var(--pg-accent-bd,rgba(251,191,36,.38));color:var(--pg-accent,#fbbf24);font-weight:700}
+.app-nav-btn.is-back{background:transparent;border-color:transparent;color:rgba(255,255,255,.32);padding-left:6px}
+.app-nav-btn.is-back:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.7);transform:translateY(-1px)}
 .dash-topbar { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
 .dash-kicker { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:#fbbf24; margin-bottom:10px; }
 .dash-title { font-family:'Bebas Neue',sans-serif; font-size:60px; letter-spacing:0.06em; line-height:0.92; }
@@ -775,6 +843,44 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
 .cal-stat-box.ok   .cal-stat-box-val { color:#4ade80; }
 .cal-stat-box.blue .cal-stat-box-val { color:#60a5fa; }
 
+/* Pin board */
+.pb-head { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:#b8ad9a; margin-bottom:12px; display:flex; align-items:center; gap:6px; justify-content:space-between; }
+.pb-head-icon { opacity:0.6; }
+.pb-form { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.pb-input { width:100%; padding:7px 10px; background:rgba(255,255,255,0.04); border:1px solid #ffffff10; border-radius:8px; font-size:11px; color:#f0e8d6; font-family:inherit; box-sizing:border-box; resize:none; transition:border-color 0.15s; }
+.pb-input:focus { outline:none; border-color:#ffffff28; }
+.pb-input::placeholder { color:#4a4538; }
+.pb-textarea { min-height:58px; }
+.pb-pin-btn { align-self:flex-end; padding:6px 14px; border:1px solid #ffffff18; background:transparent; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.14em; text-transform:uppercase; color:#6b6357; cursor:default; transition:all 0.18s; }
+.pb-pin-btn.active { color:#fbbf24; border-color:#fbbf2444; background:#fbbf2410; cursor:pointer; }
+.pb-pin-btn.active:hover { background:#fbbf2420; border-color:#fbbf2488; }
+.pb-cards { display:flex; flex-direction:column; gap:8px; }
+.pb-card { background:rgba(255,255,255,0.04); border:1px solid #ffffff0e; border-radius:12px; padding:11px 12px 10px; position:relative; transition:background 0.12s; }
+.pb-card:hover { background:rgba(255,255,255,0.07); }
+.pb-card-title { font-size:11px; font-weight:600; color:#f0e8d6; line-height:1.4; padding-right:20px; margin-bottom:5px; }
+.pb-card-note { font-size:11px; color:#9e9486; line-height:1.5; }
+.pb-unpin { position:absolute; top:9px; right:10px; background:none; border:none; color:#4a4538; font-size:13px; cursor:pointer; line-height:1; padding:2px 4px; border-radius:4px; transition:color 0.12s; }
+.pb-unpin:hover { color:#f87171; }
+.pb-empty { font-family:'JetBrains Mono',monospace; font-size:8.5px; color:#3a3530; text-align:center; padding:20px 0 8px; letter-spacing:0.06em; }
+.pb-add-btn { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.12em; text-transform:uppercase; padding:4px 9px; border-radius:6px; border:1px solid #ffffff18; background:transparent; color:#6b6357; cursor:pointer; transition:all 0.15s; flex-shrink:0; line-height:1.4; }
+.pb-add-btn:hover { border-color:#fbbf2466; color:#fbbf24; background:#fbbf2410; }
+.pb-add-btn.open { border-color:#ffffff22; color:#9e9486; background:transparent; }
+.pb-add-form { display:none; flex-direction:column; gap:6px; margin-bottom:14px; }
+.pb-add-form.open { display:flex; }
+.pb-form-actions { display:flex; justify-content:flex-end; gap:6px; }
+.pb-cancel-btn { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; padding:5px 10px; border-radius:6px; border:1px solid #ffffff14; background:transparent; color:#6b6357; cursor:pointer; transition:all 0.15s; }
+.pb-cancel-btn:hover { color:#f0e8d6; border-color:#ffffff30; }
+.pb-submit-btn { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; padding:5px 12px; border-radius:6px; border:1px solid #fbbf2444; background:#fbbf2412; color:#fbbf24; cursor:pointer; transition:all 0.15s; }
+.pb-submit-btn:hover { background:#fbbf2422; border-color:#fbbf2488; }
+.pb-cards-mount { display:flex; flex-direction:column; gap:10px; }
+.pb-free-card { background:rgba(251,191,36,0.06) !important; border-color:rgba(251,191,36,0.18) !important; }
+.pb-free-card:hover { background:rgba(251,191,36,0.10) !important; }
+.pb-free-label { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:0.12em; text-transform:uppercase; color:#fbbf2499; margin-bottom:5px; }
+.pb-card[draggable="true"] { cursor:grab; }
+.pb-card[draggable="true"]:active { cursor:grabbing; }
+.pb-card.pb-dragging { opacity:0.35; box-shadow:none !important; transform:none !important; }
+.pb-card.pb-drag-over { border-color:rgba(251,191,36,0.65) !important; box-shadow:0 0 0 2px rgba(251,191,36,0.2); transform:translateY(-2px); transition:transform 0.1s, border-color 0.1s; }
+
 /* Calendar grid */
 .cal-main { background:rgba(255,255,255,0.025); border:1px solid #ffffff0d; border-radius:18px; overflow:hidden; }
 .cal-dow-row { display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid #ffffff0a; }
@@ -788,6 +894,10 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
 .cal-cell.cal-selected { background:rgba(37,99,235,0.10); box-shadow:inset 0 0 0 1.5px #2563eb44; }
 .cal-cell.cal-other-month { opacity:0.28; pointer-events:none; }
 .cal-cell.cal-today .cal-cell-num { background:#fbbf24; color:#1a1200; border-radius:50%; }
+.cal-cell.cal-day1 .cal-cell-num { background:#7c3aed; color:#fff; border-radius:50%; }
+.cal-cell.cal-eff  .cal-cell-num { background:#16a34a; color:#fff; border-radius:50%; }
+.cal-cell.cal-wire .cal-cell-num { background:#d97406; color:#fff; border-radius:50%; }
+.cal-cell.cal-ci   .cal-cell-num { background:#0891b2; color:#fff; border-radius:50%; }
 .cal-cell.cal-weekend .cal-cell-num { color:#4a4538; }
 .cal-cell-num { font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; color:#7a7060; width:22px; height:22px; display:flex; align-items:center; justify-content:center; margin-bottom:3px; flex-shrink:0; }
 .cal-cell-tasks { display:flex; flex-direction:column; gap:2px; }
@@ -798,6 +908,7 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
 .cal-pill.cp-week    { background:#a3e63510; border-left-color:#a3e635; color:#bef264; }
 .cal-pill.cp-future  { background:#60a5fa0b; border-left-color:#60a5fa44; color:#93c5fd; }
 .cal-pill.cp-done    { background:#4ade8008; border-left-color:#4ade8033; color:#4b5563; text-decoration:line-through; }
+.cal-pill.cp-custom  { background:#0891b218; border-left-color:#0891b2; color:#67e8f9; }
 .cal-cell-more { font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:0.06em; color:#4a4538; padding:1px 5px; cursor:pointer; }
 .cal-heat { position:absolute; bottom:0; left:0; right:0; height:3px; opacity:0.6; }
 
@@ -818,6 +929,8 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
 .cal-dp-item.cp-week    { border-left-color:#a3e635; background:#a3e63508; }
 .cal-dp-item.cp-future  { border-left-color:#60a5fa33; }
 .cal-dp-item.cp-done    { border-left-color:#4ade8033; opacity:0.55; }
+.cal-dp-item.cp-custom  { border-left-color:#0891b2; background:#0891b210; }
+.cal-dp-plan-head { font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.12em; text-transform:uppercase; color:#93c5fd; margin-bottom:7px; }
 .cal-dp-item-text { font-size:12.5px; color:#f0e8d6; line-height:1.45; font-weight:500; }
 .cal-dp-item.cp-done .cal-dp-item-text { color:#6b7280; text-decoration:line-through; }
 .cal-dp-item-meta { display:flex; align-items:center; gap:6px; margin-top:6px; flex-wrap:wrap; }
@@ -879,6 +992,15 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
 .cal-screen.cal-light .cal-theme-btn:hover { border-color:#f59e0b66; color:#d97706; background:#fffbeb; }
 .cal-screen.cal-light .cal-plan-select { background:#fff; border-color:#e2e0d8; color:#1a1916; }
 .cal-screen.cal-light .cal-plan-select option { background:#fff; color:#1a1916; }
+.cal-screen.cal-light .pb-input { background:#fff; border-color:#e2e0d8; color:#1a1916; }
+.cal-screen.cal-light .pb-input::placeholder { color:#c0b8b0; }
+.cal-screen.cal-light .pb-card { background:#fff; border-color:#e2e0d8; }
+.cal-screen.cal-light .pb-card-title { color:#1a1916; }
+.cal-screen.cal-light .pb-card-note { color:#7a6d5d; }
+.cal-screen.cal-light .pb-unpin { color:#c0b8b0; }
+.cal-screen.cal-light .pb-unpin:hover { color:#ef4444; }
+.cal-screen.cal-light .pb-head { color:#9e9080; }
+.cal-screen.cal-light .pb-empty { color:#d0c8be; }
 .cal-screen.cal-light .cal-filters { background:#fff; border-color:#e2e0d8; }
 .cal-screen.cal-light .cal-filter-label { color:#c0b8b0; }
 .cal-screen.cal-light .cal-ftab { border-color:#e2e0d8; color:#9e9080; }
@@ -942,123 +1064,87 @@ html.dark-mode .notes-textarea { background:var(--surface2); border-color:var(--
 @media (max-width:760px) { .cal-shell { padding:20px 14px 48px; } .cal-cell { min-height:72px; } .cal-title-word { font-size:36px; } }
 
 /* ══════════════════════════════════════════════════════════════
-   PLANS VAULT
+   HOME PAGE
 ══════════════════════════════════════════════════════════════ */
-.pv-screen{min-height:100vh;background:radial-gradient(circle at top left, rgba(243,188,60,.06), transparent 28%),radial-gradient(circle at top right, rgba(92,139,255,.07), transparent 24%),linear-gradient(180deg,#ede6da,#ded3c0);color:#1d150c}
-.pv-shell{width:min(1460px,calc(100vw - 46px));margin:26px auto 56px;animation:pv-shell-in .7s ease both}
+/* ── HOME PAGE (Design B) ── */
+.pv-screen{min-height:100vh;background:#f5f4f0;color:#1a1916}
+.pv-shell{width:min(1540px,calc(100vw - 46px));margin:0 auto 56px;animation:pv-shell-in .7s ease both;display:flex;flex-direction:column}
 @keyframes pv-shell-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.pv-hero{position:relative;overflow:hidden;padding:30px 34px 28px;border:1px solid rgba(49,34,16,.10);border-radius:30px;background:rgba(255,255,255,.66);box-shadow:0 28px 60px rgba(67,42,12,.10);isolation:isolate}
-.pv-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.35) 40%,transparent 70%),repeating-linear-gradient(135deg,rgba(200,133,30,.05) 0 1px,transparent 1px 28px);pointer-events:none;z-index:-1}
-.pv-hero-inner{position:relative;z-index:1}
-.pv-top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:28px}
-.pv-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#c8851e;margin-bottom:10px}
-.pv-title{font-family:'Bebas Neue',sans-serif;font-size:60px;line-height:.88;letter-spacing:.05em;color:#1d150c}
-.pv-title em{font-style:normal;color:#c8851e}
-.pv-sub{max-width:720px;margin-top:10px;font-size:14px;line-height:1.75;color:#6c5a46}
-.pv-hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:24px}
-.pvhs-item{padding:18px 18px 16px;border-radius:18px;border:1px solid rgba(49,34,16,.10);background:rgba(255,255,255,.72)}
-.pvhs-val{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;color:#1d150c;letter-spacing:.04em}
-.pvhs-lbl{margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.20em;text-transform:uppercase;color:#907a62}
-.pv-screen .page-action-menu{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;max-width:620px;margin-top:0}
-.pv-screen .page-action-btn{padding:11px 15px;border-radius:999px;border:1px solid rgba(49,34,16,.10);background:rgba(255,255,255,.68);color:#6c5a46;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .16s}
-.pv-screen .page-action-btn:hover{background:#fff;border-color:#1d150c33;color:#1d150c;transform:translateY(-1px)}
-.pv-screen .page-action-btn.active{background:#c8851e;border-color:#c8851e;color:#fff}
-.pv-body{display:grid;grid-template-columns:320px 1fr;gap:22px;margin-top:22px;align-items:start}
-.pv-side-stack{display:grid;gap:18px;position:sticky;top:24px}
-.pv-panel{padding:22px;border-radius:24px;border:1px solid rgba(49,34,16,.10);background:rgba(255,255,255,.72);box-shadow:0 18px 36px rgba(67,42,12,.08)}
-.pv-panel h3{margin:0 0 14px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:#907a62}
-.pv-metric-list,.pv-legend{display:grid;gap:10px}
-.pv-metric{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#6c5a46}
-.pv-metric strong{color:#1d150c}
-.pv-legend-item{display:flex;align-items:flex-start;gap:9px;font-size:13px;line-height:1.55;color:#6c5a46}
-.pv-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.pv-main{padding:22px;border-radius:24px;border:1px solid rgba(49,34,16,.10);background:rgba(255,255,255,.72);box-shadow:0 18px 36px rgba(67,42,12,.08)}
-.pv-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
-.pv-count{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#907a62}
-.pv-sort-tabs{display:flex;gap:8px;flex-wrap:wrap}
-.pvt-tab{padding:10px 14px;border-radius:999px;border:1px solid rgba(49,34,16,.10);background:rgba(255,255,255,.55);color:#6c5a46;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .15s}
-.pvt-tab:hover{border-color:#1d150c55;color:#1d150c;transform:translateY(-1px)}
-.pvt-tab.on{background:#2458d8;border-color:#2458d8;color:#fff}
-.pvt-tab.fav-tab.on{background:#c8851e;border-color:#c8851e;color:#fff}
-.pv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
-.pv-empty{text-align:center;padding:90px 20px;color:#907a62;display:none;border:1px dashed rgba(49,34,16,.12);border-radius:24px;background:rgba(255,255,255,.4)}
-.pv-empty-icon{font-size:52px;margin-bottom:18px;opacity:.45}
-.pv-empty-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.06em;margin-bottom:8px;color:#1d150c}
-.pv-empty-sub{font-size:13px;line-height:1.7}
-.plan-card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(246,240,230,.92));border:1px solid rgba(49,34,16,.10);border-radius:24px;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s,border-color .18s;box-shadow:0 16px 28px rgba(67,42,12,.08)}
-.plan-card:hover{transform:translateY(-4px);box-shadow:0 24px 46px rgba(67,42,12,.14);border-color:#1d150c22}
-.plan-card.is-fav{border-color:#c8851e55}
-.plan-card.is-fav:hover{border-color:#c8851e88}
-.plan-card.dragging{opacity:.45;transform:scale(.97);box-shadow:none}
-.plan-card.drag-over{border-color:#2458d8aa;box-shadow:0 0 0 3px #2458d833}
-.pc-accent{position:absolute;inset:0 auto 0 0;width:5px;height:auto}
-.pc-body{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
-.pc-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.pc-status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.13em;text-transform:uppercase}
-.pc-status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.pcs-active{color:#14866d;border-color:#14866d33;background:#14866d12}
-.pcs-active .pc-status-dot{background:#14866d}
-.pcs-complete{color:#c8851e;border-color:#c8851e33;background:#c8851e12}
-.pcs-complete .pc-status-dot{background:#c8851e}
-.pcs-hold{color:#c04d4d;border-color:#c04d4d33;background:#c04d4d12}
-.pcs-hold .pc-status-dot{background:#c04d4d}
-.pc-fav-btn{background:none;border:none;cursor:pointer;font-size:20px;line-height:1;color:#c8851e;transition:transform .15s,opacity .15s;padding:0;opacity:.72}
-.pc-fav-btn:hover{transform:scale(1.15);opacity:1}
-.pc-fav-btn.is-fav{opacity:1}
-.pc-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.04em;line-height:1.02;color:#1d150c}
-.pc-case{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#907a62}
-.pc-chips{display:flex;gap:6px;flex-wrap:wrap}
-.pc-chip{padding:5px 10px;border-radius:999px;border:1px solid rgba(49,34,16,.10);background:#f3ede2;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#6c5a46;white-space:nowrap}
-.pc-chip.ct-startup{color:#2458d8;border-color:#2458d833;background:#2458d80d}
-.pc-chip.ct-conversion{color:#14866d;border-color:#14866d33;background:#14866d0d}
-.pc-chip.ct-merger{color:#7449d8;border-color:#7449d833;background:#7449d80d}
-.pc-dates{display:flex;gap:14px;flex-wrap:wrap}
-.pc-date-item{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6c5a46}
-.pc-date-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.pps-ph-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:#907a62;margin-bottom:6px}
-.pc-phase-strip{display:flex;gap:4px}
-.pps-seg{flex:1;height:26px;border-radius:7px;background:#ebe3d6;overflow:hidden;position:relative}
-.pps-fill{height:100%;border-radius:7px;transition:width .35s ease;opacity:.88}
-.pps-seg-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:6.5px;letter-spacing:.05em;color:#fff;font-weight:700;opacity:0;transition:opacity .15s;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-.pps-seg:hover .pps-seg-lbl{opacity:1}
-.pc-progress{display:flex;align-items:center;gap:10px}
-.pc-prog-track{flex:1;height:8px;border-radius:999px;background:#e8e0d4;overflow:hidden}
-.pc-prog-fill{height:100%;border-radius:999px}
-.pc-prog-pct{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#1d150c;min-width:38px;text-align:right}
-.pc-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:12px;border-top:1px solid rgba(49,34,16,.10);margin-top:2px}
-.pc-saved-ts{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:#907a62}
-.pc-actions{display:flex;gap:8px;align-items:center}
-.pc-del-btn{background:none;border:1px solid rgba(49,34,16,.10);border-radius:9px;color:#6c5a46;cursor:pointer;font-size:11px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
-.pc-del-btn:hover{border-color:#c04d4d;color:#c04d4d;background:#c04d4d12}
-.pc-open-btn{padding:9px 14px;border-radius:999px;background:#2458d8;border:none;color:#fff;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .15s}
-.pc-open-btn:hover{background:#1d4ed8}
-.pc-drag{position:absolute;top:0;right:0;bottom:0;width:24px;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;cursor:grab;opacity:0;transition:opacity .15s}
-.pc-drag:active{cursor:grabbing}
-.plan-card:hover .pc-drag{opacity:.32}
-.pc-drag span{display:block;width:4px;height:4px;border-radius:50%;background:#907a62}
-html.dark-mode .pv-screen{background:radial-gradient(circle at top left, rgba(243,188,60,.08), transparent 28%),radial-gradient(circle at top right, rgba(92,139,255,.09), transparent 24%),linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
-html.dark-mode .pv-hero{background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border-color:var(--border);box-shadow:0 24px 60px rgba(0,0,0,.28)}
-html.dark-mode .pv-hero::before{background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.06) 40%,transparent 70%),repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px)}
-html.dark-mode .pv-kicker{color:var(--gold)}
-html.dark-mode .pv-title{color:var(--text)}
-html.dark-mode .pv-title em{color:var(--gold)}
-html.dark-mode .pv-screen .page-action-btn{border-color:#ffffff16;background:#ffffff08;color:#f5efe4}
-html.dark-mode .pv-screen .page-action-btn:hover{background:#ffffff12;border-color:#fbbf2466;color:#fbbf24}
-html.dark-mode .pv-screen .page-action-btn.active{border-color:#fbbf2466;color:#1a1400;background:#fbbf24}
-html.dark-mode .pv-sub,html.dark-mode .pv-metric,html.dark-mode .pv-legend-item,html.dark-mode .pv-count,html.dark-mode .pc-date-item,html.dark-mode .pc-saved-ts,html.dark-mode .pc-case,html.dark-mode .pc-chip,html.dark-mode .pps-ph-label{color:var(--muted)}
-html.dark-mode .pvhs-item,html.dark-mode .pv-panel,html.dark-mode .pv-main{background:rgba(255,255,255,.03);border-color:var(--border);box-shadow:0 18px 40px rgba(0,0,0,.18)}
-html.dark-mode .pvhs-val,html.dark-mode .pv-panel h3,html.dark-mode .pv-metric strong,html.dark-mode .pc-name,html.dark-mode .pc-prog-pct{color:var(--text)}
-html.dark-mode .pvhs-lbl{color:var(--soft)}
-html.dark-mode .pvt-tab{border-color:var(--border);background:rgba(255,255,255,.03);color:var(--muted)}
+/* Hero strip — replaced by shared .app-hdr, but we add a stats row below it */
+.pv-stats-strip{background:#1a1916;padding:0 32px 16px;display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.pvss-item{display:flex;flex-direction:column;gap:2px;padding:0 28px 0 0;margin-right:28px;border-right:1px solid rgba(255,255,255,.1)}
+.pvss-item:last-child{border-right:none}
+.pvss-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--pg-accent,#10b981);line-height:1}
+.pvss-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.32)}
+/* body / toolbar */
+.pv-body{flex:1;padding:24px 0 0}
+.pv-main{padding:0}
+.pv-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.pv-search-wrap{position:relative;flex:1;min-width:200px}
+.pv-search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9e9486;opacity:.7}
+.pv-search{width:100%;min-height:40px;border-radius:999px;border:1px solid #ddd9d0;background:#fff;color:#1a1916;padding:0 16px 0 42px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color .18s,box-shadow .18s;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.pv-search::placeholder{color:#b8b0a4}
+.pv-search:focus{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.12)}
+.pv-sort-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.pvt-tab{padding:9px 14px;border-radius:999px;border:1px solid #ddd9d0;background:#fff;color:#7a7870;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.pvt-tab:hover{border-color:#10b981;color:#1a1916;transform:translateY(-1px)}
+.pvt-tab.on{background:#10b981;border-color:#10b981;color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.28)}
+.pvt-tab.fav-tab.on{background:#f59e0b;border-color:#f59e0b;color:#fff;box-shadow:0 4px 12px rgba(245,158,11,.28)}
+.pv-count{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#b8b0a4;margin-bottom:14px}
+/* Grid */
+.pv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+/* Plan cards — Design B */
+.plan-card{position:relative;background:#fff;border:1px solid #e8e4dc;border-left:4px solid var(--card-status-color,#10b981);border-radius:16px;display:flex;flex-direction:column;min-height:220px;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}
+.plan-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,0,0,.11);border-color:#d4cfc6;border-left-color:var(--card-status-color,#10b981)}
+.plan-card.is-fav{border-top-color:#f59e0b}
+.plan-card.dragging{opacity:.4;transform:scale(.97);box-shadow:none}
+.plan-card.drag-over{box-shadow:0 0 0 2px #10b98166}
+.pc-top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0;display:flex}
+.pc-status-badge{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid var(--card-status-color,#10b981);color:var(--card-status-color,#10b981);background:var(--card-status-bg,rgba(16,185,129,.08));font-weight:700}
+.pc-fav-star{font-size:15px;color:#f59e0b;opacity:.3;cursor:pointer;padding:2px 4px;border-radius:4px;transition:opacity .12s,transform .12s;background:none;border:none;line-height:1}
+.plan-card.is-fav .pc-fav-star{opacity:1}
+.pc-fav-star:hover{opacity:.8;transform:scale(1.15)}
+.pc-body{padding:10px 16px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.pc-name{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.02em;line-height:1.2;color:#1a1916;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc-case{font-family:'JetBrains Mono',monospace;font-size:10px;color:#9e9486;letter-spacing:.08em}
+.pc-type-chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:5px;border:1px solid #e0dbd4;color:#9e9486;background:#f8f6f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pc-divider{height:1px;background:#f0ece6;margin:2px 0}
+.pc-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:#9e9486}
+.pc-meta-date{display:flex;align-items:center;gap:5px}
+.pc-due-badge{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;font-weight:700;white-space:nowrap}
+.pc-due-badge.has-due{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.25)}
+.pc-due-badge.no-due{background:rgba(16,185,129,.08);color:#10b981;border:1px solid rgba(16,185,129,.2)}
+.pc-progress{margin-top:auto;padding-top:8px}
+.pc-prog-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.pc-prog-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#b8b0a4}
+.pc-prog-pct{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.03em;color:#1a1916;line-height:1}
+.pc-prog-track{height:5px;border-radius:999px;background:#f0ece6;overflow:hidden}
+.pc-prog-fill{height:100%;border-radius:999px;transition:width .4s ease}
+/* Empty state */
+.pv-empty{text-align:center;padding:80px 20px;color:#9e9486;display:none;border:2px dashed #e0dbd4;border-radius:20px;background:#fff;margin-top:8px}
+.pv-empty-icon{font-size:44px;margin-bottom:16px;opacity:.5}
+.pv-empty-title{font-family:'Outfit',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px;color:#1a1916}
+.pv-empty-sub{font-size:13px;line-height:1.7;color:#9e9486}
+/* dark mode overrides for home page */
+html.dark-mode .pv-screen{background:#141210;color:var(--text)}
+html.dark-mode .pv-stats-strip{background:#141210;border-bottom-color:var(--border)}
+html.dark-mode .pvss-item{border-right-color:var(--border)}
+html.dark-mode .pv-search{background:var(--surface);border-color:var(--border);color:var(--text)}
+html.dark-mode .pv-search::placeholder{color:var(--muted)}
+html.dark-mode .pvt-tab{background:var(--surface);border-color:var(--border);color:var(--muted)}
 html.dark-mode .pvt-tab:hover{border-color:rgba(255,255,255,.28);color:var(--text)}
-html.dark-mode .pvt-tab.on{background:#2563eb;border-color:#2563eb;color:#fff}
-html.dark-mode .pvt-tab.fav-tab.on{background:#f59e0b;border-color:#f59e0b;color:#1a1400}
-html.dark-mode .plan-card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border-color:var(--border);box-shadow:0 18px 32px rgba(0,0,0,.20)}
-html.dark-mode .plan-card:hover{box-shadow:0 24px 46px rgba(0,0,0,.28);border-color:rgba(255,255,255,.20)}
-html.dark-mode .pc-chip{background:var(--surface2);border-color:var(--border)}
-html.dark-mode .pps-seg,html.dark-mode .pc-prog-track{background:var(--surface2)}
-html.dark-mode .pc-del-btn{border-color:var(--border);color:var(--muted)}
-html.dark-mode .pc-drag span{background:var(--muted)}
+html.dark-mode .pvt-tab.on{background:#10b981;border-color:#10b981;color:#fff}
+html.dark-mode .pvt-tab.fav-tab.on{background:#f59e0b;border-color:#f59e0b;color:#fff}
+html.dark-mode .plan-card{background:var(--surface);border-color:var(--border);border-left-color:var(--card-status-color,#10b981)}
+html.dark-mode .plan-card:hover{border-color:rgba(255,255,255,.2);border-left-color:var(--card-status-color,#10b981)}
+html.dark-mode .pc-name{color:var(--text)}
+html.dark-mode .pc-type-chip{background:var(--surface2);border-color:var(--border);color:var(--muted)}
+html.dark-mode .pc-divider{background:var(--border)}
+html.dark-mode .pc-prog-track{background:var(--surface2)}
+html.dark-mode .pc-prog-pct{color:var(--text)}
+html.dark-mode .pv-empty{background:var(--surface);border-color:var(--border);color:var(--muted)}
+html.dark-mode .pv-empty-title{color:var(--text)}
+html.dark-mode .pv-count{color:var(--muted)}
 /* ── NAV-AWAY CONFIRM MODAL ── */
 .nac-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .18s; }
 .nac-overlay.active { opacity:1; pointer-events:all; }
@@ -1079,9 +1165,7 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
 /* responsive */
 @media (max-width:1100px){
   .pv-shell{width:min(100vw - 28px,100%)}
-  .pv-hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .pv-body{grid-template-columns:1fr}
-  .pv-side-stack{position:static;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 @media (max-width:760px) {
@@ -1090,10 +1174,8 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
   .pv-shell{width:min(100vw - 18px,100%)}
   .pv-hero { padding:20px 18px 18px; }
   .pv-top-row{flex-direction:column;}
-  .pv-hero-stats,.pv-side-stack { grid-template-columns:1fr; }
-  .pv-title { font-size:40px; }
+  .pv-title { font-size:42px; }
   .pv-grid { grid-template-columns:1fr; }
-  .pv-main,.pv-panel{padding:18px}
 }
 
 @media print {
@@ -1120,11 +1202,6 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
   </div>
   <div class="intake-eyebrow">Plan Implementation</div>
   <div class="intake-title">CHECKLIST<br><span>GENERATOR</span></div>
-  <div class="app-link-bar">
-    <div class="app-link-chip">Standalone App</div>
-    <button class="app-link-btn" onclick="copyAppLink()">🔗 Copy App Link</button>
-    <button class="app-link-btn" onclick="openStandaloneApp()">↗ Open Direct</button>
-  </div>
   <div class="intake-sub">Fill out the intake form — your fully customized checklist is generated instantly based on plan type and characteristics.</div>
 
   <!-- Load from file button -->
@@ -1136,7 +1213,7 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
 
   <div class="dashboard-launch-row">
     <button class="dashboard-launch-btn" onclick="openDashboard()">📊 Plans Dashboard</button>
-    <button class="dashboard-launch-btn" onclick="openPlans()">🗂 Plans Vault</button>
+    <button class="dashboard-launch-btn" onclick="openPlans()">🏠 Home Page</button>
     <button class="dashboard-launch-btn" onclick="openCalendar()">📅 Calendar</button>
   </div>
 
@@ -1220,14 +1297,14 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
     <div class="fr2">
       <div>
         <label class="fl">TM Name <span class="opt">optional</span></label>
-        <select class="fi" id="tmName" onchange="selectTeamMember('tm')"><option value="">Select TM</option><option value="Sarah Juhl">Sarah Juhl</option><option value="Damien Hurm">Damien Hurm</option></select>
+        <select class="fi" id="tmName" onchange="selectTeamMember('tm')"><option value="">Select TM</option><option value="Alicia Johnson">Alicia Johnson</option><option value="Damien Hurm">Damien Hurm</option><option value="Dawn Sander">Dawn Sander</option><option value="Donna Eliasson">Donna Eliasson</option><option value="Katy Sweeney">Katy Sweeney</option><option value="Paul Falatico">Paul Falatico</option><option value="Sarah Juhl">Sarah Juhl</option><option value="Tawnya Neighbor">Tawnya Neighbor</option><option value="Tiffany Castro">Tiffany Castro</option><option value="Courtney Moses">Courtney Moses</option><option value="Lexi Westenskow">Lexi Westenskow</option></select>
       </div>
       <div><label class="fl">TM Email <span class="opt">optional</span></label><input class="fi" id="tmEmail" type="email" placeholder="tm@company.com" readonly></div>
     </div>
     <div class="fr2">
       <div>
         <label class="fl">TC Name <span class="opt">optional</span></label>
-        <select class="fi" id="tcName" onchange="selectTeamMember('tc')"><option value="">Select TC</option><option value="Dan Clifford">Dan Clifford</option><option value="Connie Smith">Connie Smith</option></select>
+        <select class="fi" id="tcName" onchange="selectTeamMember('tc')"><option value="">Select TC</option><option value="Theresa Herzner">Theresa Herzner</option><option value="Beth Turnwall">Beth Turnwall</option><option value="Gabe Ceballos">Gabe Ceballos</option><option value="Dan Clifford">Dan Clifford</option><option value="Krystal Tournier">Krystal Tournier</option><option value="Connie Halter">Connie Halter</option></select>
       </div>
       <div><label class="fl">TC Email <span class="opt">optional</span></label><input class="fi" id="tcEmail" type="email" placeholder="tc@company.com" readonly></div>
     </div>
@@ -1304,21 +1381,28 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
      CHECKLIST
 ════════════════════════════════ -->
 <div id="checklistScreen" class="screen">
-  <div class="cl-header">
-    <div class="cl-header-inner">
-      <div class="cl-top">
-        <div class="cl-back" onclick="goBack()">← New Plan</div>
-        <div class="hdr-actions">
-          <button class="hdr-btn btn-save-ls" onclick="copyAppLink()">🔗 Copy App Link</button>
-          <button class="hdr-btn btn-save-json" onclick="saveToJson()">💾 Save to File</button>
-          <button class="hdr-btn btn-save-ls"   onclick="saveChecklist()">⚡ Quick Save</button>
-          <button class="hdr-btn btn-save-ls" onclick="openChecklist()">✅ Checklist</button>
-          <button class="hdr-btn btn-save-ls" onclick="openDashboard()">📊 Dashboard</button>
-          <button class="hdr-btn btn-save-ls" onclick="openPlans()">🗂 Plans Vault</button>
-          <button class="hdr-btn btn-save-ls" onclick="openCalendar()">📅 Calendar</button>
-          <button class="hdr-btn btn-print"      onclick="window.print()">🖨 Print</button>
-        </div>
+  <div class="cl-header app-hdr" style="--pg-accent:#fbbf24;--pg-accent-bg:rgba(251,191,36,.14);--pg-accent-bd:rgba(251,191,36,.36);">
+    <div class="cl-header-inner app-hdr-inner" style="max-width:none;margin-bottom:14px">
+      <div class="app-hdr-identity">
+        <div class="app-hdr-kicker">Checklist Generator</div>
+        <div class="app-hdr-title">Implementation <em>Checklist</em></div>
       </div>
+      <nav class="app-nav">
+        <button class="app-nav-btn is-back" onclick="goBack()">← New Plan</button>
+        <span class="app-nav-sep"></span>
+        <button class="app-nav-btn" onclick="saveToJson()">💾 Save</button>
+        <button class="app-nav-btn" onclick="saveChecklist()">⚡ Quick Save</button>
+        <span class="app-nav-sep"></span>
+        <button class="app-nav-btn is-active" onclick="openChecklist()">Checklist</button>
+        <button class="app-nav-btn" onclick="openDashboard()">Dashboard</button>
+        <button class="app-nav-btn" onclick="openPlans()">Home</button>
+        <button class="app-nav-btn" onclick="openCalendar()">Calendar</button>
+        <span class="app-nav-sep"></span>
+        <button class="app-nav-btn" onclick="window.print()">Print</button>
+      </nav>
+    </div>
+    <div class="cl-header-inner">
+      <div class="cl-top" style="display:none"></div>
       <div class="cl-plan-name" id="clName"></div>
       <div class="cl-case" id="clCase"></div>
       <div class="cl-meta" id="clMeta"></div>
@@ -1375,7 +1459,7 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
   </div>
   <div class="cl-body">
     <div class="cl-layout">
-      <div class="cl-plan-rail">
+      <div class="cl-plan-rail" aria-hidden="true">
         <div class="sc">
           <div class="pr-section-title">Active Plans</div>
           <div class="pr-list" id="checklistPlanRail"></div>
@@ -1394,6 +1478,30 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
         <div class="mc-grid" id="mc-grid"></div>
         <div id="mc-legend"></div>
         <button class="mc-go-today" onclick="mcGoToday()">&#9679; Today</button>
+        <button class="mc-add-ci-btn" id="ciAddBtn" onclick="openCalItemForm()">+ Add Item</button>
+        <div class="mc-ci-form" id="ciForm" style="display:none;">
+          <input class="mc-ci-input" type="date" id="ciDate" />
+          <input class="mc-ci-input" type="text" id="ciDesc" placeholder="Brief description..." maxlength="80" />
+          <div class="mc-ci-actions">
+            <button class="ci-save" onclick="saveCalItem()">Add</button>
+            <button class="ci-cancel" onclick="closeCalItemForm()">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="cl-pinboard">
+        <div class="pb-head">
+          <span><span class="pb-head-icon">📌</span> Pins</span>
+          <button class="pb-add-btn" id="pbAddBtn" onclick="togglePbForm()" type="button">+ Add Pin</button>
+        </div>
+        <div class="pb-add-form" id="pbAddForm">
+          <input type="text" class="pb-input" id="pbFreeTitle" placeholder="Title…" />
+          <textarea class="pb-input pb-textarea" id="pbFreeDesc" placeholder="Description…"></textarea>
+          <div class="pb-form-actions">
+            <button class="pb-cancel-btn" onclick="togglePbForm()" type="button">Cancel</button>
+            <button class="pb-submit-btn" onclick="addFreePin()" type="button">Pin It</button>
+          </div>
+        </div>
+        <div class="pb-cards-mount"></div>
       </div>
       <div id="phaseContainer"></div>
       <div class="cl-sidebar">
@@ -1435,6 +1543,7 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
           <textarea class="notes-textarea" id="planNotes" placeholder="Add notes about this implementation..."></textarea>
           <button class="notes-save-btn" onclick="saveNotes()">💾 Save Notes</button>
         </div>
+
       </div>
     </div>
   </div>
@@ -1443,26 +1552,28 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
 
 <div id="dashboardScreen" class="screen dash-screen">
   <div class="dash-shell">
-    <div class="dash-topbar">
-      <div>
-        <div class="dash-kicker">Implementation Portfolio</div>
-        <div class="dash-title">Plans Dashboard</div>
-        <div class="dash-sub">A live summary of the current checklist session and every browser-saved implementation plan in this app. Status, completion, plan mix, and feature flags roll up here automatically.</div>
-        <div class="page-action-menu">
-          <button class="page-action-btn" onclick="closeDashboard()">← Back</button>
-          <button class="page-action-btn" onclick="copyAppLink()">🔗 Copy App Link</button>
-          <button class="page-action-btn" onclick="saveToJson()">💾 Save to File</button>
-          <button class="page-action-btn" onclick="saveChecklist()">⚡ Quick Save</button>
-          <button class="page-action-btn" onclick="openChecklist()">✅ Checklist</button>
-          <button class="page-action-btn active" onclick="openDashboard()">📊 Dashboard</button>
-          <button class="page-action-btn" onclick="openPlans()">🗂 Plans Vault</button>
-          <button class="page-action-btn" onclick="openCalendar()">📅 Calendar</button>
-          <button class="page-action-btn" onclick="window.print()">🖨 Print</button>
+    <div class="dash-topbar app-hdr" style="--pg-accent:#60a5fa;--pg-accent-bg:rgba(96,165,250,.14);--pg-accent-bd:rgba(96,165,250,.36);margin-bottom:0;padding:18px 32px 16px;">
+      <div class="app-hdr-inner" style="width:100%">
+        <div class="app-hdr-identity">
+          <div class="app-hdr-kicker">Implementation Portfolio</div>
+          <div class="app-hdr-title">Plans <em>Dashboard</em></div>
         </div>
+        <nav class="app-nav">
+          <button class="app-nav-btn is-back" onclick="closeDashboard()">← Back</button>
+          <span class="app-nav-sep"></span>
+          <button class="app-nav-btn" onclick="saveToJson()">💾 Save</button>
+          <button class="app-nav-btn" onclick="saveChecklist()">⚡ Quick Save</button>
+          <span class="app-nav-sep"></span>
+          <button class="app-nav-btn" onclick="openChecklist()">Checklist</button>
+          <button class="app-nav-btn is-active" onclick="openDashboard()">Dashboard</button>
+          <button class="app-nav-btn" onclick="openPlans()">Home</button>
+          <button class="app-nav-btn" onclick="openCalendar()">Calendar</button>
+          <span class="app-nav-sep"></span>
+          <button class="app-nav-btn" onclick="window.print()">Print</button>
+          <button class="app-nav-btn" onclick="renderDashboard()" style="margin-left:4px">↺ Refresh</button>
+        </nav>
       </div>
-      <div class="dash-actions">
-        <button class="dash-action-btn" onclick="renderDashboard()">Refresh</button>
-      </div>
+      <div class="dash-sub" style="position:relative;z-index:1;padding:10px 0 2px;font-size:12px;color:rgba(255,255,255,.38);font-family:'Outfit',sans-serif;max-width:680px">A live summary of the current checklist session and every browser-saved plan. Status, completion, plan mix, and feature flags roll up here automatically.</div>
     </div>
 
     <div id="dashMount"></div>
@@ -1470,78 +1581,60 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
 </div>
 
 <!-- ════════════════════════════════
-     PLANS VAULT
+     HOME PAGE
 ════════════════════════════════ -->
 <div id="plansScreen" class="screen pv-screen">
   <div class="pv-shell">
-    <div class="pv-hero">
-      <div class="pv-hero-inner">
-        <div class="pv-top-row">
-          <div>
-            <div class="pv-kicker">Saved Portfolio</div>
-            <div class="pv-title">PLANS<br><em>VAULT</em></div>
-            <div class="pv-sub">A gallery wall for every browser-saved implementation plan in this app. Keep favorites surfaced, compare progress quickly, and reopen work from a cleaner portfolio shell.</div>
-          </div>
-          <div class="page-action-menu">
-            <button class="page-action-btn" onclick="closePlans()">← Back</button>
-            <button class="page-action-btn" onclick="copyAppLink()">🔗 Copy App Link</button>
-            <button class="page-action-btn" onclick="saveToJson()">💾 Save to File</button>
-            <button class="page-action-btn" onclick="saveChecklist()">⚡ Quick Save</button>
-            <button class="page-action-btn" onclick="openChecklist()">✅ Checklist</button>
-            <button class="page-action-btn" onclick="openDashboard()">📊 Dashboard</button>
-            <button class="page-action-btn active" onclick="openPlans()">🗂 Plans Vault</button>
-            <button class="page-action-btn" onclick="openCalendar()">📅 Calendar</button>
-            <button class="page-action-btn" onclick="window.print()">🖨 Print</button>
-          </div>
+    <!-- Standard header -->
+    <div class="app-hdr" style="--pg-accent:#10b981;--pg-accent-bg:rgba(16,185,129,.14);--pg-accent-bd:rgba(16,185,129,.36);">
+      <div class="app-hdr-inner">
+        <div class="app-hdr-identity">
+          <div class="app-hdr-kicker">Checklist Generator</div>
+          <div class="app-hdr-title">Implementation <em>Home</em></div>
         </div>
-        <div class="pv-hero-stats" id="pvHeroStats">
-          <div class="pvhs-item"><div class="pvhs-val" id="pvStatTotal">0</div><div class="pvhs-lbl">Total Plans</div></div>
-          <div class="pvhs-item"><div class="pvhs-val" id="pvStatActive">0</div><div class="pvhs-lbl">Active</div></div>
-          <div class="pvhs-item"><div class="pvhs-val" id="pvStatFavs">0</div><div class="pvhs-lbl">Favorited</div></div>
-          <div class="pvhs-item"><div class="pvhs-val" id="pvStatAvg">—</div><div class="pvhs-lbl">Avg Complete</div></div>
-        </div>
+        <nav class="app-nav">
+          <button class="app-nav-btn is-back" onclick="closePlans()">← Back</button>
+          <span class="app-nav-sep"></span>
+          <button class="app-nav-btn" onclick="saveToJson()">💾 Save</button>
+          <button class="app-nav-btn" onclick="saveChecklist()">⚡ Quick Save</button>
+          <span class="app-nav-sep"></span>
+          <button class="app-nav-btn" onclick="openChecklist()">Checklist</button>
+          <button class="app-nav-btn" onclick="openDashboard()">Dashboard</button>
+          <button class="app-nav-btn is-active" onclick="openPlans()">Home</button>
+          <button class="app-nav-btn" onclick="openCalendar()">Calendar</button>
+          <span class="app-nav-sep"></span>
+          <button class="app-nav-btn" onclick="window.print()">Print</button>
+        </nav>
       </div>
     </div>
+    <!-- Stats strip (populated by renderPlansVault) -->
+    <div class="pv-stats-strip" style="--pg-accent:#10b981">
+      <div class="pvss-item"><div class="pvss-val" id="pvStatTotal">0</div><div class="pvss-lbl">Plans Saved</div></div>
+      <div class="pvss-item"><div class="pvss-val" id="pvStatActive">0</div><div class="pvss-lbl">Active</div></div>
+      <div class="pvss-item"><div class="pvss-val" id="pvStatFavs">0</div><div class="pvss-lbl">Favorited</div></div>
+      <div class="pvss-item"><div class="pvss-val" id="pvStatAvg">—</div><div class="pvss-lbl">Avg Complete</div></div>
+    </div>
     <div class="pv-body">
-      <div class="pv-side-stack">
-        <div class="pv-panel">
-          <h3>Current Lens</h3>
-          <div class="pv-metric-list">
-            <div class="pv-metric"><span>Sort Mode</span><strong id="pvLensSort">Favorites First</strong></div>
-            <div class="pv-metric"><span>Highest Progress</span><strong id="pvLensTop">—</strong></div>
-            <div class="pv-metric"><span>Needs Attention</span><strong id="pvLensAttention">—</strong></div>
-            <div class="pv-metric"><span>Complete Plans</span><strong id="pvLensComplete">0</strong></div>
-          </div>
-        </div>
-        <div class="pv-panel">
-          <h3>Status Legend</h3>
-          <div class="pv-legend">
-            <div class="pv-legend-item"><span class="pv-dot" style="background:var(--ok)"></span>Active plans remain in motion and should be easy to reopen from the vault.</div>
-            <div class="pv-legend-item"><span class="pv-dot" style="background:#c8851e"></span>Favorited plans stay visually prioritized in this shell.</div>
-            <div class="pv-legend-item"><span class="pv-dot" style="background:var(--critical)"></span>On Hold plans stay visible without blending into normal active work.</div>
-            <div class="pv-legend-item"><span class="pv-dot" style="background:var(--blue)"></span>Phase bars still use the same progress math as the live vault logic.</div>
-          </div>
-        </div>
-        <div class="pv-panel">
-          <h3>Design Note</h3>
-          <div class="pv-sub" style="max-width:none;margin-top:0;font-size:13px;">Gallery Wall keeps the real vault metrics and card data, but presents them in a brighter collection view so saved plans feel easier to scan, compare, and return to.</div>
-        </div>
-      </div>
       <div class="pv-main">
+        <!-- Toolbar -->
         <div class="pv-toolbar">
-          <div class="pv-count" id="pvCount"></div>
+          <div class="pv-search-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input class="pv-search" id="pvSearch" type="search" placeholder="Search plans…" oninput="renderPlansVault()" />
+          </div>
           <div class="pv-sort-tabs">
-            <button class="pvt-tab fav-tab on" id="pvt-fav"    onclick="setPvSort('fav')">★ Favorites First</button>
+            <button class="pvt-tab fav-tab on" id="pvt-fav"    onclick="setPvSort('fav')">★ Favorites</button>
             <button class="pvt-tab"            id="pvt-recent" onclick="setPvSort('recent')">Recent</button>
             <button class="pvt-tab"            id="pvt-alpha"  onclick="setPvSort('alpha')">A–Z</button>
             <button class="pvt-tab"            id="pvt-pct"    onclick="setPvSort('pct')">% Complete</button>
           </div>
         </div>
+        <div class="pv-count" id="pvCount"></div>
         <div class="pv-grid" id="pvGrid"></div>
         <div class="pv-empty" id="pvEmpty">
           <div class="pv-empty-icon">📂</div>
-          <div class="pv-empty-title">No Saved Plans</div>
-          <div class="pv-empty-sub">Quick Save a checklist to see it here. Plans are stored in your browser and stay across sessions.</div>
+          <div class="pv-empty-title">No Saved Plans Yet</div>
+          <div class="pv-empty-sub">Quick Save a checklist to seed your Home Page. Saved plans stay in your browser and are ready to reopen from here.</div>
         </div>
       </div>
     </div>
@@ -1554,23 +1647,29 @@ html.dark-mode .nac-box { box-shadow:0 24px 60px rgba(0,0,0,0.5); }
 <div id="calendarScreen" class="screen cal-screen">
   <div class="cal-shell">
     <!-- TOPBAR -->
-    <div class="cal-topbar">
-      <div>
-        <div class="cal-kicker">Task Scheduling</div>
-        <div class="cal-title-word">IMPLEMENTATION <span>CALENDAR</span></div>
-        <div class="page-action-menu">
-          <button class="page-action-btn" onclick="closeCalendar()">← Back</button>
-          <button class="page-action-btn" onclick="copyAppLink()">🔗 Copy App Link</button>
-          <button class="page-action-btn" onclick="saveToJson()">💾 Save to File</button>
-          <button class="page-action-btn" onclick="saveChecklist()">⚡ Quick Save</button>
-          <button class="page-action-btn" onclick="openChecklist()">✅ Checklist</button>
-          <button class="page-action-btn" onclick="openDashboard()">📊 Dashboard</button>
-          <button class="page-action-btn" onclick="openPlans()">🗂 Plans Vault</button>
-          <button class="page-action-btn active" onclick="openCalendar()">📅 Calendar</button>
-          <button class="page-action-btn" onclick="window.print()">🖨 Print</button>
+    <div class="cal-topbar app-hdr" style="--pg-accent:#a78bfa;--pg-accent-bg:rgba(167,139,250,.14);--pg-accent-bd:rgba(167,139,250,.36);margin-bottom:0;padding:18px 32px 16px;">
+      <div class="app-hdr-inner" style="width:100%">
+        <div class="app-hdr-identity">
+          <div class="app-hdr-kicker">Task Scheduling</div>
+          <div class="app-hdr-title">Implementation <em>Calendar</em></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div id="calPlanBadge"></div>
+          <nav class="app-nav">
+            <button class="app-nav-btn is-back" onclick="closeCalendar()">← Back</button>
+            <span class="app-nav-sep"></span>
+            <button class="app-nav-btn" onclick="saveToJson()">💾 Save</button>
+            <button class="app-nav-btn" onclick="saveChecklist()">⚡ Quick Save</button>
+            <span class="app-nav-sep"></span>
+            <button class="app-nav-btn" onclick="openChecklist()">Checklist</button>
+            <button class="app-nav-btn" onclick="openDashboard()">Dashboard</button>
+            <button class="app-nav-btn" onclick="openPlans()">Home</button>
+            <button class="app-nav-btn is-active" onclick="openCalendar()">Calendar</button>
+            <span class="app-nav-sep"></span>
+            <button class="app-nav-btn" onclick="window.print()">Print</button>
+          </nav>
         </div>
       </div>
-      <div id="calPlanBadge" style="align-self:flex-end"></div>
     </div>
 
     <!-- CONTROLS: month nav + plan selector -->
@@ -1975,6 +2074,18 @@ function getOverdueCountFor(planS, planCS) {
   }).length;
 }
 
+function getDueThisWeekCountFor(planS, planCS) {
+  if (!planS || (!planS.day1 && !planS.effectiveDate)) return 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Object.keys(TASK_DUE).filter(id => {
+    if (planCS && planCS[id]) return false;
+    const due = calcTaskDueFor(id, planS);
+    if (!due) return false;
+    const diff = Math.round((due - today) / 86400000);
+    return diff >= 0 && diff <= 7;
+  }).length;
+}
+
 function effDaysLeft(dateStr) {
   if (!dateStr) return null;
   const eff = new Date(dateStr + 'T00:00:00');
@@ -2031,6 +2142,9 @@ let S = {
 let CS       = {};
 let CN       = {}; // per-task user notes
 let CT       = {}; // custom tasks: CT[phaseId] = [{id,text,note}]
+let CAL_ITEMS = []; // custom calendar items: [{id,text,date}]
+let PINS      = []; // pin board items: [{id,title,note,ts,free?}]
+let pbDragSrcId = null;
 let saveKey  = null;
 let PHASES   = [];
 let planStatus = 'active'; // 'active' | 'complete' | 'hold'
@@ -2041,13 +2155,26 @@ const STORE  = 'icg_v4';
 const TEAM_DIRECTORY = {
   tm: {
     '': '',
-    'Sarah Juhl': 'Sarah.JuhlHurd@transamerica.com',
-    'Damien Hurm': 'Damien.Hurm@transamerica.com'
+    'Alicia Johnson': 'alicia.johnson@transamerica.com',
+    'Damien Hurm': 'damien.hurm@transamerica.com',
+    'Dawn Sander': 'dawn.sander@transamerica.com',
+    'Donna Eliasson': 'donna.eliasson@transamerica.com',
+    'Katy Sweeney': 'katy.sweeney@transamerica.com',
+    'Paul Falatico': 'paul.falatico@transamerica.com',
+    'Sarah Juhl': 'sarah.juhlhalsrud@transamerica.com',
+    'Tawnya Neighbor': 'tawnya.neighbor@transamerica.com',
+    'Tiffany Castro': 'tiffany.castro@transamerica.com',
+    'Courtney Moses': 'courtney.moses@transamerica.com',
+    'Lexi Westenskow': 'lexi.westenskow@transamerica.com'
   },
   tc: {
     '': '',
-    'Dan Clifford': 'Dan.Clifford@transamerica.com',
-    'Connie Smith': 'Connie.Smith@transamerica.com'
+    'Theresa Herzner': 'theresa.herzner@transamerica.com',
+    'Beth Turnwall': 'elizabeth.turnwall@transamerica.com',
+    'Gabe Ceballos': 'gabriel.ceballos@transamerica.com',
+    'Dan Clifford': 'dan.clifford@transamerica.com',
+    'Krystal Tournier': 'krystal.tournier@transamerica.com',
+    'Connie Halter': 'connie.halter@transamerica.com'
   }
 };
 const VENDOR_OPTIONS = {
@@ -2164,6 +2291,8 @@ function doSaveJson(overwrite){
     CS:         JSON.parse(JSON.stringify(CS)),
     CN:         JSON.parse(JSON.stringify(CN)),
     CT:         JSON.parse(JSON.stringify(CT)),
+    CAL_ITEMS:  JSON.parse(JSON.stringify(CAL_ITEMS)),
+    PINS:       JSON.parse(JSON.stringify(PINS)),
     chars:      getChars(),
     notes:      (document.getElementById('planNotes')||{}).value || ''
   };
@@ -2198,6 +2327,10 @@ function handleJsonLoad(event){
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
+      if(data && data._batchVersion && data.saves){
+        importBatchSaves(data);
+        return;
+      }
       if(!data.S || !data.planName){ throw new Error('Invalid file'); }
       pendingJsonData = data;
       showLoadConfirm(data);
@@ -2248,6 +2381,8 @@ function applyLoadedData(data){
   CS = JSON.parse(JSON.stringify(data.CS || {}));
   CN = JSON.parse(JSON.stringify(data.CN || {}));
   CT = JSON.parse(JSON.stringify(data.CT || {}));
+  CAL_ITEMS = JSON.parse(JSON.stringify(data.CAL_ITEMS || []));
+  PINS      = JSON.parse(JSON.stringify(data.PINS      || []));
 
   const ids = ['planName','caseNumber','effectiveDate','wireDate','spUrl','clientName','clientEmail',
                'tmName','tmEmail','tcName','tcEmail','payrollVendor','payrollName','payrollEmail',
@@ -2275,6 +2410,8 @@ function applyLoadedData(data){
   });
   updProg();
   loadNotes(data);
+  renderCalItemList();
+  renderPins();
   renderChecklistPlanRail();
   showToast('✓ Loaded — ' + data.planName);
 }
@@ -2282,6 +2419,32 @@ function applyLoadedData(data){
 // ════════════════════════ LOCALSTORAGE SAVES (unchanged) ════════════════════════
 function getSaves(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{}'); }catch(e){ return {}; } }
 function putSaves(o){ try{ localStorage.setItem(STORE,JSON.stringify(o)); }catch(e){} }
+
+function importBatchSaves(data){
+  const incoming = data.saves || {};
+  const keys = Object.keys(incoming);
+  if(!keys.length){
+    showToast('⚠ Batch file did not contain any plans.');
+    return;
+  }
+  const saves = getSaves();
+  const meta = getPvMeta();
+  keys.forEach(k => {
+    saves[k] = incoming[k];
+    if(!meta[k]){
+      meta[k] = { fav:false, order: incoming[k].ts || Date.now() };
+    }
+  });
+  putSaves(saves);
+  putPvMeta(meta);
+  renderSavedBar();
+  renderDashboard();
+  renderChecklistPlanRail();
+  if(typeof renderPlansVault === 'function'){
+    renderPlansVault();
+  }
+  showToast('📦 Loaded ' + keys.length + ' plan' + (keys.length === 1 ? '' : 's') + ' into browser saves');
+}
 
 function renderSavedBar(){
   const saves=getSaves(), keys=Object.keys(saves);
@@ -2347,7 +2510,7 @@ function saveChecklist(){
   const tasksList = PHASES.flatMap(p => p.tasks.map(t => ({id:t.id, text:t.text, phaseId:p.id, phaseName:p.title, phaseColor:p.color, tags:t.tags||[]})));
   saves[k]={ planName:S.planName, caseNumber:S.caseNumber, pct:total?Math.round(done/total*100):0,
              status:planStatus, S:JSON.parse(JSON.stringify(S)), CS:JSON.parse(JSON.stringify(CS)),
-             CN:JSON.parse(JSON.stringify(CN)), CT:JSON.parse(JSON.stringify(CT)), chars:getChars(), ts:Date.now(),
+             CN:JSON.parse(JSON.stringify(CN)), CT:JSON.parse(JSON.stringify(CT)), CAL_ITEMS:JSON.parse(JSON.stringify(CAL_ITEMS)), PINS:JSON.parse(JSON.stringify(PINS)), chars:getChars(), ts:Date.now(),
              doneTasks:done, totalTasks:total, phaseCount:PHASES.length, phases, tasks:tasksList };
   putSaves(saves); markSaved(); renderDashboard(); renderChecklistPlanRail(); showToast('Quick saved — ' + S.planName);
 }
@@ -2808,7 +2971,7 @@ function renderDashboard(){
 }
 
 // ════════════════════════════════════════════════════════════════
-// PLANS VAULT
+// HOME PAGE
 // ════════════════════════════════════════════════════════════════
 let pvReturnScreen = 'intake';
 let pvSortMode     = 'fav';
@@ -2880,11 +3043,16 @@ function renderPlansVault(){
   const active = list.filter(x => (x.sv.status||'active') === 'active').length;
   const favs   = list.filter(x => x.m.fav).length;
   const avgPct = total ? Math.round(list.reduce((s,x) => s + (x.sv.pct||0), 0) / total) : 0;
-  document.getElementById('pvStatTotal').textContent  = total;
-  document.getElementById('pvStatActive').textContent = active;
-  document.getElementById('pvStatFavs').textContent   = favs;
-  document.getElementById('pvStatAvg').textContent    = total ? avgPct + '%' : '—';
-  document.getElementById('pvCount').textContent      = total + (total === 1 ? ' plan' : ' plans') + ' saved';
+  const statTotalEl = document.getElementById('pvStatTotal');
+  const statActiveEl = document.getElementById('pvStatActive');
+  const statFavsEl = document.getElementById('pvStatFavs');
+  const statAvgEl = document.getElementById('pvStatAvg');
+  const countEl = document.getElementById('pvCount');
+  if(statTotalEl) statTotalEl.textContent = total;
+  if(statActiveEl) statActiveEl.textContent = active;
+  if(statFavsEl) statFavsEl.textContent = favs;
+  if(statAvgEl) statAvgEl.textContent = total ? avgPct + '%' : '—';
+  if(countEl) countEl.textContent = total + (total === 1 ? ' plan' : ' plans') + ' saved';
   const topPlan = list.length ? [...list].sort((a,b) => (b.sv.pct||0) - (a.sv.pct||0))[0] : null;
   const attentionPlan = list.filter(x => (x.sv.status||'active') !== 'complete').sort((a,b) => (a.sv.pct||0) - (b.sv.pct||0))[0] || null;
   const completePlans = list.filter(x => (x.sv.status||'active') === 'complete').length;
@@ -2899,14 +3067,19 @@ function renderPlansVault(){
 
   const grid  = document.getElementById('pvGrid');
   const empty = document.getElementById('pvEmpty');
+  const searchEl = document.getElementById('pvSearch');
+  const searchTerm = searchEl ? searchEl.value.trim().toLowerCase() : '';
+  const filtered = searchTerm
+    ? list.filter(({sv}) => (sv.planName||'').toLowerCase().includes(searchTerm) || (sv.caseNumber||'').toLowerCase().includes(searchTerm))
+    : list;
 
-  if(!total){
+  if(!filtered.length){
     grid.innerHTML = '';
     empty.style.display = 'block';
     return;
   }
   empty.style.display = 'none';
-  grid.innerHTML = list.map(({key, sv, m}) => buildPlanCard(key, sv, m)).join('');
+  grid.innerHTML = filtered.map(({key, sv, m}) => buildPlanCard(key, sv, m)).join('');
 
   // Wire drag-and-drop
   grid.querySelectorAll('.plan-card').forEach(card => {
@@ -2918,87 +3091,44 @@ function renderPlansVault(){
 }
 
 function buildPlanCard(key, sv, m){
-  const st = sv.status || 'active';
-  const stLabel = { active:'Active', complete:'Complete', hold:'On Hold' }[st] || st;
-  const typeColor = { startup:'#2563eb', conversion:'#059669', merger:'#7c3aed' }[(sv.S||{}).planType] || '#888888';
-  const typeClass = { startup:'ct-startup', conversion:'ct-conversion', merger:'ct-merger' }[(sv.S||{}).planType] || '';
   const pct = sv.pct || 0;
   const fd  = ds => ds ? new Date(ds+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : null;
-
-  // Chips
-  let chips = '';
-  if((sv.S||{}).planType) chips += `<span class="pc-chip chip-type ${typeClass}">${(sv.S.planType).toUpperCase()}</span>`;
-  ((sv.S||{}).strategies||[]).forEach(s => { chips += `<span class="pc-chip">${s.toUpperCase()}</span>`; });
-  const chars = sv.chars || {};
-  if(chars.roth)      chips += `<span class="pc-chip">ROTH</span>`;
-  if(chars.loans)     chips += `<span class="pc-chip">LOANS</span>`;
-  if(chars.autoenroll)chips += `<span class="pc-chip">AUTO-ENROLL</span>`;
-  if(chars.nonqual)   chips += `<span class="pc-chip">NON-QUAL</span>`;
-
-  // Dates
-  let dates = '';
   const effD = fd((sv.S||{}).effectiveDate);
-  const wdD  = fd((sv.S||{}).wireDate);
-  if(effD) dates += `<span class="pc-date-item"><span class="pc-date-dot" style="background:#16a34a"></span>Eff: ${effD}</span>`;
-  if(wdD)  dates += `<span class="pc-date-item"><span class="pc-date-dot" style="background:#d97706"></span>Wire: ${wdD}</span>`;
+  const dueWeekCount = getDueThisWeekCountFor(sv.S || {}, sv.CS || {});
+  const taskLabel = dueWeekCount === 1 ? '1 due this week' : dueWeekCount > 0 ? `${dueWeekCount} due this week` : 'Clear';
+  const status = sv.status || 'active';
+  const statusColor = status === 'complete' ? '#3b82f6' : status === 'hold' ? '#f59e0b' : '#10b981';
+  const statusBg    = status === 'complete' ? 'rgba(59,130,246,.08)' : status === 'hold' ? 'rgba(245,158,11,.08)' : 'rgba(16,185,129,.08)';
+  const statusLabel = status === 'complete' ? 'Complete' : status === 'hold' ? 'On Hold' : 'Active';
+  const progColor = pct >= 80 ? '#10b981' : pct >= 50 ? '#3b82f6' : pct >= 25 ? '#f59e0b' : '#ef4444';
+  const convType = (sv.S||{}).conversionType || '';
 
-  // Phase strip — use stored phase summary if available, else generic bar
-  let phaseStrip = '';
-  if(sv.phases && sv.phases.length){
-    const segs = sv.phases.map(ph => {
-      const pPct = ph.total ? Math.round(ph.done / ph.total * 100) : 0;
-      const abbr = ph.title.replace(/&.*?;/g,'').replace(/[^A-Za-z0-9 ]/g,'').trim().split(' ').map(w=>w[0]).join('').slice(0,3).toUpperCase();
-      return `<div class="pps-seg" title="${ph.title}: ${ph.done}/${ph.total}" draggable="false">
-        <div class="pps-fill" style="width:${pPct}%;background:${ph.color}"></div>
-        <div class="pps-seg-lbl">${abbr} ${pPct}%</div>
-      </div>`;
-    }).join('');
-    phaseStrip = `<div>
-      <div class="pps-ph-label">Phase Progress</div>
-      <div class="pc-phase-strip">${segs}</div>
-    </div>`;
-  }
-
-  // Progress fill gradient
-  const progColor = pct >= 80 ? 'linear-gradient(90deg,#059669,#16a34a)'
-                  : pct >= 50 ? 'linear-gradient(90deg,#2563eb,#7c3aed)'
-                  : pct >= 25 ? 'linear-gradient(90deg,#d97706,#f59e0b)'
-                  :             'linear-gradient(90deg,#dc2626,#f87171)';
-
-  // Saved timestamp
-  const savedStr = sv.ts ? new Date(sv.ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-
-  return `<div class="plan-card${m.fav?' is-fav':''}" data-key="${key}" draggable="true">
-    <div class="pc-accent" style="background:${typeColor}"></div>
+  return `<div class="plan-card${m.fav?' is-fav':''}" data-key="${key}" draggable="true"
+    style="--card-status-color:${statusColor};--card-status-bg:${statusBg}"
+    onclick="openPvPlan('${key}')">
+    <div class="pc-top">
+      <span class="pc-status-badge" style="--card-status-color:${statusColor};--card-status-bg:${statusBg}">${statusLabel}</span>
+      <button class="pc-fav-star" onclick="togglePvFav(event,'${key}')" title="${m.fav?'Unfavorite':'Favorite'}">★</button>
+    </div>
     <div class="pc-body">
-      <div class="pc-top">
-        <div class="pc-status-pill pcs-${st}">
-          <div class="pc-status-dot"></div>${stLabel}
-        </div>
-        <button class="pc-fav-btn${m.fav?' is-fav':''}" onclick="togglePvFav(event,'${key}')" title="${m.fav?'Remove favorite':'Add to favorites'}">
-          ${m.fav ? '★' : '☆'}
-        </button>
-      </div>
       <div>
         <div class="pc-name">${sv.planName || '—'}</div>
-        <div class="pc-case">${sv.caseNumber ? 'Case No. '+sv.caseNumber : 'No case number'}</div>
+        <div class="pc-case">${sv.caseNumber || ''}</div>
       </div>
-      ${chips ? `<div class="pc-chips">${chips}</div>` : ''}
-      ${dates ? `<div class="pc-dates">${dates}</div>` : ''}
-      ${phaseStrip}
+      ${convType ? `<div class="pc-type-chip">${convType}</div>` : ''}
+      <div class="pc-divider"></div>
+      <div class="pc-meta">
+        <div class="pc-meta-date">📅 ${effD || 'No date'}</div>
+        <span class="pc-due-badge ${dueWeekCount > 0 ? 'has-due' : 'no-due'}">${taskLabel}</span>
+      </div>
       <div class="pc-progress">
-        <div class="pc-prog-track"><div class="pc-prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
-        <div class="pc-prog-pct">${pct}%</div>
-      </div>
-      <div class="pc-footer">
-        <div class="pc-saved-ts">${savedStr ? 'Saved '+savedStr : ''}</div>
-        <div class="pc-actions">
-          <button class="pc-del-btn" onclick="deletePvPlan(event,'${key}')" title="Delete plan">✕</button>
-          <button class="pc-open-btn" onclick="openPvPlan('${key}')">Open →</button>
+        <div class="pc-prog-row">
+          <span class="pc-prog-label">Progress</span>
+          <span class="pc-prog-pct">${pct}%</span>
         </div>
+        <div class="pc-prog-track"><div class="pc-prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
       </div>
     </div>
-    <div class="pc-drag" draggable="false"><span></span><span></span><span></span><span></span><span></span></div>
   </div>`;
 }
 
@@ -3139,6 +3269,8 @@ function clearAllIntake(){
   CD = {};
   CN = {};
   CT = {};
+  CAL_ITEMS = [];
+  PINS      = [];
   PHASES = [];
   saveKey = null;
   sessionSavedFilename = null;
@@ -3350,7 +3482,7 @@ function generate(fromLoad){
     const ids=['planName','caseNumber','effectiveDate','wireDate','day1','spUrl','clientName','clientEmail','tmName','tmEmail','tcName','tcEmail','payrollVendor','payrollName','payrollEmail','priorVendorName','priorContactName','priorContactEmail'];
     ids.forEach(id=>{ const el=document.getElementById(id); if(el) S[id]=el.value.trim(); });
     if(!S.day1) S.day1 = new Date().toISOString().split('T')[0];
-    CS={}; CN={}; CT={}; saveKey=null; planStatus='active'; sessionSavedFilename=null;
+    CS={}; CN={}; CT={}; CAL_ITEMS=[]; PINS=[]; saveKey=null; planStatus='active'; sessionSavedFilename=null;
     setStatus('active');
   }
 
@@ -3434,6 +3566,7 @@ function generate(fromLoad){
             <span class="task-note-toggle${hasNote?' has-note':''}" id="tnt-${t.id}" onclick="togTaskNote('${t.id}')">${hasNote?'📝 Note':'+ Note'}</span>
             <div class="task-note-area${hasNote?' open':''}" id="tna-${t.id}">
               <textarea class="task-note-input" id="tni-${t.id}" placeholder="Add your notes here..." oninput="saveTaskNote('${t.id}')">${esc(userNote)}</textarea>
+              <button class="task-pin-btn${hasNote?' active':''}" id="tnp-${t.id}" onclick="pinTaskNote('${t.id}')" ${hasNote?'':'disabled'}>📌 Pin</button>
             </div>
           </div>
         </div>
@@ -3450,7 +3583,6 @@ function generate(fromLoad){
         <div class="phase-stats">
           <div class="phase-stats-main">
             <div><div class="phase-cnt" id="pc-${p.id}">0 / ${p.tasks.length}</div><div class="mp"><div class="mp-f" id="mp-${p.id}" style="width:0%;background:${p.color}"></div></div></div>
-            <button class="phase-bulk-btn" id="bulk-${p.id}" onclick="event.stopPropagation();bulkPhase('${p.id}')">✓ Complete All</button>
             <div class="phase-chev">›</div>
           </div>
           ${getPhaseOverdueCount(p)>0?`<div class="phase-overdue-badge">⚠ ${getPhaseOverdueCount(p)} overdue</div>`:''}
@@ -3478,6 +3610,7 @@ function generate(fromLoad){
   document.getElementById('sTotal').textContent=total;
   document.getElementById('sPhases').textContent=PHASES.length;
   updProg();
+  renderPins();
 
   setActiveScreen('checklist');
   // reset filter + collapse state on new generate
@@ -3641,6 +3774,7 @@ function renderMiniCal() {
     if (day1Date && date.getTime() === day1Date.getTime())                cls += ' day1-date';
     if (effDate  && date.getTime() === effDate.getTime())                 cls += ' eff-date';
     if (wireDate && date.getTime() === wireDate.getTime())                cls += ' wire-date';
+    if (CAL_ITEMS.some(ci => ci.date === date.toISOString().split('T')[0]))  cls += ' ci-date';
     cells.push({ n: d, cls });
   }
   const trail = (7 - (cells.length % 7)) % 7;
@@ -3654,6 +3788,9 @@ function renderMiniCal() {
   if (day1Date) leg += `<div class="mc-legend-item"><div class="mc-legend-dot mc-d1-dot"></div>Day 1: ${fd(S.day1)}</div>`;
   if (effDate)  leg += `<div class="mc-legend-item"><div class="mc-legend-dot mc-eff-dot"></div>Eff: ${fd(S.effectiveDate)}</div>`;
   if (wireDate) leg += `<div class="mc-legend-item"><div class="mc-legend-dot mc-wire-dot"></div>Wire: ${fd(S.wireDate)}</div>`;
+  CAL_ITEMS.forEach(ci => {
+    leg += `<div class="mc-legend-item"><div class="mc-legend-dot mc-ci-dot"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(ci.desc||ci.text)}: ${fd(ci.date)}</span><span class="mc-ci-del" onclick="deleteCalItem('${ci.id}')">✕</span></div>`;
+  });
   leg += '</div>';
   document.getElementById('mc-legend').innerHTML = leg;
 }
@@ -3914,6 +4051,11 @@ function saveTaskNote(taskId){
     toggle.classList.toggle('has-note', !!val);
     toggle.textContent = val ? '📝 Note' : '+ Note';
   }
+  const pinBtn = document.getElementById('tnp-'+taskId);
+  if(pinBtn){
+    pinBtn.classList.toggle('active', !!val.trim());
+    pinBtn.disabled = !val.trim();
+  }
 }
 
 // ════════════════════════ NOTES ════════════════════════
@@ -3929,6 +4071,146 @@ function saveNotes(){
 function loadNotes(data){
   const el = document.getElementById('planNotes');
   if(el) el.value = data.notes || '';
+}
+
+// ════════════════════════════════════════════════════════════════
+// PIN BOARD
+// ════════════════════════════════════════════════════════════════
+function pinTaskNote(taskId){
+  const note = (CN[taskId] || '').trim();
+  if(!note) return;
+  const txtEl = document.querySelector('#ti-'+taskId+' .task-txt');
+  const title = txtEl ? txtEl.textContent.trim() : taskId;
+  PINS.unshift({ id: 'pin_' + Date.now(), title, note, ts: Date.now() });
+  renderPins();
+  hasPendingChanges = true;
+  const btn = document.getElementById('tnp-'+taskId);
+  if(btn){ btn.textContent = '📌 Pinned!'; btn.classList.add('pinned'); setTimeout(()=>{ btn.textContent = '📌 Pin'; btn.classList.remove('pinned'); }, 1800); }
+}
+
+function pbRemovePin(id){
+  PINS = PINS.filter(p => p.id !== id);
+  renderPins();
+  hasPendingChanges = true;
+}
+
+function togglePbForm(){
+  const form = document.getElementById('pbAddForm');
+  const btn  = document.getElementById('pbAddBtn');
+  if(!form || !btn) return;
+  const isOpen = form.classList.toggle('open');
+  btn.textContent = isOpen ? '✕ Cancel' : '+ Add Pin';
+  btn.classList.toggle('open', isOpen);
+  if(isOpen){ setTimeout(()=>{ const t=document.getElementById('pbFreeTitle'); if(t) t.focus(); },50); }
+  else { document.getElementById('pbFreeTitle').value=''; document.getElementById('pbFreeDesc').value=''; }
+}
+
+function addFreePin(){
+  const title = (document.getElementById('pbFreeTitle').value || '').trim();
+  const note  = (document.getElementById('pbFreeDesc').value  || '').trim();
+  if(!title && !note) return;
+  PINS.unshift({ id:'pin_'+Date.now(), title, note, ts:Date.now(), free:true });
+  renderPins();
+  hasPendingChanges = true;
+  togglePbForm();
+}
+
+function renderPins(){
+  const cardHtml = !PINS.length
+    ? '<div class="pb-empty">No pins yet.</div>'
+    : PINS.map(p => `
+    <div class="pb-card${p.free ? ' pb-free-card' : ''}" draggable="true" data-pin-id="${p.id}">
+      <button class="pb-unpin" onclick="pbRemovePin('${p.id}')" title="Unpin">✕</button>
+      ${p.free ? '<div class="pb-free-label">✏ Note</div>' : ''}
+      ${p.title ? `<div class="pb-card-title">${esc(p.title)}</div>` : ''}
+      ${p.note  ? `<div class="pb-card-note">${esc(p.note)}</div>`  : ''}
+    </div>`).join('');
+  document.querySelectorAll('.pb-cards-mount').forEach(el => el.innerHTML = cardHtml);
+  initPinDrag();
+}
+
+function initPinDrag(){
+  document.querySelectorAll('.pb-card[draggable="true"]').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      pbDragSrcId = card.dataset.pinId;
+      e.dataTransfer.effectAllowed = 'move';
+      // delay so the drag ghost captures normal appearance
+      setTimeout(() => card.classList.add('pb-dragging'), 0);
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('pb-dragging');
+      document.querySelectorAll('.pb-card').forEach(c => c.classList.remove('pb-drag-over'));
+      pbDragSrcId = null;
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if(card.dataset.pinId === pbDragSrcId) return;
+      document.querySelectorAll('.pb-card').forEach(c => c.classList.remove('pb-drag-over'));
+      card.classList.add('pb-drag-over');
+    });
+    card.addEventListener('dragleave', () => {
+      card.classList.remove('pb-drag-over');
+    });
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      const targetId = card.dataset.pinId;
+      if(!pbDragSrcId || pbDragSrcId === targetId) return;
+      const srcIdx = PINS.findIndex(p => p.id === pbDragSrcId);
+      const tgtIdx = PINS.findIndex(p => p.id === targetId);
+      if(srcIdx === -1 || tgtIdx === -1) return;
+      const [moved] = PINS.splice(srcIdx, 1);
+      PINS.splice(tgtIdx, 0, moved);
+      hasPendingChanges = true;
+      renderPins();
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// CUSTOM CALENDAR ITEMS
+// ════════════════════════════════════════════════════════════════
+function fmtCalDate(dateStr){
+  if(!dateStr) return '';
+  const [y,m,d] = dateStr.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[+m-1]} ${+d}, ${y}`;
+}
+
+function openCalItemForm(){
+  document.getElementById('ciForm').style.display = 'flex';
+  document.getElementById('ciAddBtn').style.display = 'none';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('ciDate').value = today;
+  document.getElementById('ciDesc').value = '';
+  setTimeout(() => { const el = document.getElementById('ciDesc'); if(el) el.focus(); }, 50);
+}
+
+function closeCalItemForm(){
+  document.getElementById('ciForm').style.display = 'none';
+  document.getElementById('ciAddBtn').style.display = '';
+}
+
+function saveCalItem(){
+  const date = document.getElementById('ciDate').value;
+  const desc = document.getElementById('ciDesc').value.trim();
+  if(!date || !desc){ showToast('⚠ Enter a date and description'); return; }
+  const id = 'ci_' + Date.now();
+  CAL_ITEMS.push({ id, desc, text: desc + ': ' + fmtCalDate(date), date });
+  renderCalItemList();
+  closeCalItemForm();
+  hasPendingChanges = true;
+}
+
+function deleteCalItem(id){
+  CAL_ITEMS = CAL_ITEMS.filter(ci => ci.id !== id);
+  renderCalItemList();
+  hasPendingChanges = true;
+}
+
+function renderCalItemList(){
+  renderMiniCal();
+  if(typeof renderCalendar === 'function' && document.getElementById('calendarScreen') && document.getElementById('calendarScreen').classList.contains('active')) renderCalendar();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3998,6 +4280,16 @@ function buildCalTasks(){
     }).filter(t => t.dueDate);
   }
 
+  // Helper: convert CAL_ITEMS to task-shaped objects
+  function calItemTasks(){
+    return CAL_ITEMS.map(ci => {
+      const due = new Date(ci.date + 'T00:00:00');
+      return { id:ci.id, text:ci.text, phaseId:'', phaseName:'Custom', phaseColor:'#0891b2',
+               dueDate:due, isDone:false, doneTs:null, tags:[], planName:'Custom', planKey:'__custom__',
+               isCustomCal:true };
+    });
+  }
+
   if(calPlanKey === '__all__'){
     const all = [];
     // Current live plan
@@ -4015,13 +4307,15 @@ function buildCalTasks(){
     }
     // All saved plans
     Object.keys(saves).forEach(k => all.push(...tasksFromSave(k, saves[k])));
+    // Custom calendar items
+    all.push(...calItemTasks());
     return all;
   }
 
   if(calPlanKey === '__current__'){
-    if(!PHASES.length) return [];
+    if(!PHASES.length) return calItemTasks();
     const pLabel = S.planName || 'Current';
-    return PHASES.flatMap(p => p.tasks.map(t => {
+    const planTasks = PHASES.flatMap(p => p.tasks.map(t => {
       const due     = calcTaskDue(t.id);
       const doneVal = CS[t.id];
       return { id:t.id, text:t.text, phaseId:p.id, phaseName:p.title, phaseColor:p.color,
@@ -4029,6 +4323,7 @@ function buildCalTasks(){
                doneTs: typeof doneVal==='number' ? doneVal : null,
                tags:t.tags||[], planName:pLabel, planKey:'__current__' };
     })).filter(t => t.dueDate);
+    return [...planTasks, ...calItemTasks()];
   }
 
   return tasksFromSave(calPlanKey, saves[calPlanKey]);
@@ -4036,6 +4331,7 @@ function buildCalTasks(){
 
 // ── Urgency class for a calendar task ──
 function calTaskClass(task){
+  if(task.isCustomCal) return 'cp-custom';
   if(task.isDone) return 'cp-done';
   if(!task.dueDate) return '';
   const today = new Date(); today.setHours(0,0,0,0);
@@ -4194,6 +4490,10 @@ function renderCalendar(){
     const isToday    = dateStr === todayStr;
     const isSelected = dateStr === calSelectedDate;
     const isWeekend  = date.getDay() === 0 || date.getDay() === 6;
+    const isDay1    = S.day1          && dateStr === S.day1;
+    const isEff     = S.effectiveDate && dateStr === S.effectiveDate;
+    const isWire    = S.wireDate      && dateStr === S.wireDate;
+    const isCi      = CAL_ITEMS.some(ci => ci.date === dateStr);
     const dayTasks   = dayMap[dateStr] || [];
 
     const LIMIT = 3;
@@ -4218,7 +4518,7 @@ function renderCalendar(){
       heatColor = hasOv ? '#f87171' : hasTd ? '#fbbf24' : hasSn ? '#fb923c' : hasWk ? '#a3e635' : hasDn ? '#4ade80' : '#60a5fa';
     }
 
-    gridHtml += `<div class="cal-cell ${!isThisMonth?'cal-other-month':''} ${isToday?'cal-today':''} ${isSelected?'cal-selected':''} ${isWeekend?'cal-weekend':''}"
+    gridHtml += `<div class="cal-cell ${!isThisMonth?'cal-other-month':''} ${isToday?'cal-today':''} ${isDay1?'cal-day1':''} ${isEff?'cal-eff':''} ${isWire?'cal-wire':''} ${isCi?'cal-ci':''} ${isSelected?'cal-selected':''} ${isWeekend?'cal-weekend':''}"
       onclick="calSelectDay('${dateStr}')" data-date="${dateStr}">
       ${heatColor ? `<div class="cal-heat" style="background:linear-gradient(90deg,${heatColor}00,${heatColor}66)"></div>` : ''}
       <div class="cal-cell-num">${date.getDate()}</div>
@@ -4264,14 +4564,13 @@ function calRenderDayPanel(dateStr, dayMap){
     const dc = calTaskClass(t);
     const urgLabel = dc === 'cp-overdue' ? 'Overdue' : dc === 'cp-today' ? 'Due Today'
       : dc === 'cp-soon' ? 'Due Soon' : dc === 'cp-week' ? 'This Week' : dc === 'cp-future' ? 'Upcoming' : '✓ Done';
-    const planChip = (calPlanKey === '__all__' && t.planName)
-      ? `<div class="cal-dp-plan-chip">${esc(t.planName)}</div>` : '';
+    const planHead = t.planName ? `<div class="cal-dp-plan-head">${esc(t.planName)}</div>` : '';
     return `<div class="cal-dp-item ${dc}">
+      ${planHead}
       <div class="cal-dp-item-text">${t.isDone?'✓ ':''}${esc(t.text)}</div>
       <div class="cal-dp-item-meta">
         <div class="cal-dp-phase-chip" style="border-color:${t.phaseColor}33;color:${t.phaseColor}aa">${esc(t.phaseName)}</div>
         <div class="cal-dp-urgency-chip ${dc}">${urgLabel}</div>
-        ${planChip}
       </div>
     </div>`;
   }).join('')
@@ -4413,6 +4712,7 @@ function renderCustomTask(phaseId, task){
       </div>
       <div class="task-note-area${hasNote?' open':''}" id="tna-${task.id}" onclick="event.stopPropagation()">
         <textarea class="task-note-input" id="tni-${task.id}" placeholder="Add your notes here…" oninput="saveTaskNote('${task.id}')">${esc(userNote)}</textarea>
+        <button class="task-pin-btn${hasNote?' active':''}" id="tnp-${task.id}" onclick="pinTaskNote('${task.id}')" ${hasNote?'':'disabled'}>📌 Pin</button>
       </div>
     </div>`;
   tasksEl.appendChild(div);

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plan Assignment Board | Data Consultant</title>
+  <style>
+    :root{
+      color-scheme: dark;
+      --palette-harbor-graphite:#353535ff;
+      --palette-harbor-stormy-teal:#3c6e71ff;
+      --palette-harbor-white:#ffffffff;
+      --palette-harbor-alabaster:#d9d9d9ff;
+      --palette-harbor-yale-blue:#284b63ff;
+      --bg:#202020;
+      --bg-alt:#1e2f3a;
+      --panel:rgba(31,53,68,.96);
+      --panel-strong:rgba(32,32,32,.98);
+      --line:rgba(255,255,255,.18);
+      --line-strong:rgba(255,255,255,.34);
+      --text:var(--palette-harbor-white);
+      --muted:rgba(255,255,255,.88);
+      --soft:var(--palette-harbor-alabaster);
+      --accent:var(--palette-harbor-stormy-teal);
+      --accent-dim:rgba(60,110,113,.15);
+      --accent-text:#7dbfc2;
+      --shadow:0 24px 56px rgba(0,0,0,.34);
+      --hero-glow:radial-gradient(circle at 14% 18%, rgba(60,110,113,.38), transparent 26%), radial-gradient(circle at 88% 0%, rgba(40,75,99,.42), transparent 28%);
+      --app-bg:linear-gradient(180deg, #1f1f1f, #182834);
+      --field-bg:rgba(255,255,255,.09);
+      --field-hover:rgba(255,255,255,.14);
+      --row-hover:rgba(255,255,255,.10);
+      --row-alt:rgba(255,255,255,.03);
+      --thead:#213946;
+      --chip-bg:rgba(60,110,113,.16);
+      --chip-border:rgba(60,110,113,.36);
+      --chip-text:#7dbfc2;
+      --date-bg:rgba(40,75,99,.26);
+      --date-border:rgba(40,75,99,.48);
+    }
+
+    body[data-theme="light"]{
+      color-scheme: light;
+      --bg:var(--palette-harbor-white);
+      --bg-alt:#eef2f1;
+      --panel:rgba(255,255,255,.98);
+      --panel-strong:rgba(224,231,233,.98);
+      --line:rgba(40,75,99,.22);
+      --line-strong:rgba(40,75,99,.34);
+      --text:#172833;
+      --muted:#294353;
+      --soft:#35515e;
+      --accent:var(--palette-harbor-stormy-teal);
+      --accent-dim:rgba(60,110,113,.09);
+      --accent-text:#2d6467;
+      --shadow:0 24px 56px rgba(40,75,99,.16);
+      --hero-glow:radial-gradient(circle at 14% 18%, rgba(60,110,113,.18), transparent 28%), radial-gradient(circle at 100% 0%, rgba(40,75,99,.14), transparent 32%);
+      --app-bg:linear-gradient(180deg, #f8fbfb, #e6edef);
+      --field-bg:rgba(40,75,99,.08);
+      --field-hover:rgba(40,75,99,.12);
+      --row-hover:rgba(40,75,99,.08);
+      --row-alt:rgba(40,75,99,.03);
+      --thead:#cbd8dd;
+      --chip-bg:rgba(60,110,113,.10);
+      --chip-border:rgba(60,110,113,.26);
+      --chip-text:#2d6467;
+      --date-bg:rgba(40,75,99,.09);
+      --date-border:rgba(40,75,99,.22);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family:"Segoe UI",Tahoma,sans-serif;
+      background:var(--hero-glow), var(--app-bg);
+    }
+
+    .page{width:min(1440px, calc(100vw - 36px)); margin:22px auto 36px}
+
+    /* Panels */
+    .hero,.controls,.board{
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:linear-gradient(180deg, var(--panel), var(--panel-strong));
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      animation:fadeUp .38s ease both;
+    }
+    .controls{animation-delay:.07s}
+    .board{animation-delay:.14s}
+
+    @keyframes fadeUp{
+      from{opacity:0; transform:translateY(10px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    /* Hero */
+    .hero{
+      padding:22px 24px;
+      margin-bottom:16px;
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:flex-start;
+    }
+
+    .eyebrow{
+      font-size:11px;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      color:var(--accent-text);
+      font-weight:700;
+    }
+    .hero h1{margin:10px 0 0; font-size:clamp(30px, 4vw, 54px); line-height:1.02; text-transform:uppercase}
+    .hero h1 span{color:var(--soft)}
+
+    .hero-tools{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .theme-toggle,.ghost-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      min-height:36px;
+      padding:0 16px;
+      border-radius:999px;
+      border:1px solid var(--line-strong);
+      background:var(--field-bg);
+      color:var(--text);
+      font-size:12px;
+      font-weight:700;
+      font-family:inherit;
+      letter-spacing:.04em;
+      cursor:pointer;
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+      text-decoration:none;
+    }
+
+    .theme-toggle:hover,.ghost-btn:hover{
+      transform:translateY(-1px);
+      background:var(--field-hover);
+      border-color:var(--line-strong);
+    }
+
+    .import-btn{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#fff;
+    }
+    .import-btn:hover{
+      background:#458c8f;
+      border-color:#458c8f;
+    }
+
+    /* Controls */
+    .controls{padding:18px 20px; margin-bottom:16px}
+
+    .file-input{
+      position:absolute;
+      width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+
+
+    .controls-top{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:12px;
+      align-items:center;
+    }
+
+    .search-wrap{position:relative}
+    .search-wrap .search-icon{
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      pointer-events:none;
+      color:var(--soft);
+      opacity:.6;
+    }
+    .search-wrap input{
+      width:100%;
+      min-height:48px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:var(--field-bg);
+      color:var(--text);
+      padding:10px 12px 10px 44px;
+      font-size:15px;
+      font-family:inherit;
+      outline:none;
+      transition:border-color .18s, box-shadow .18s;
+    }
+    .search-wrap input::placeholder{color:var(--soft); opacity:.65}
+    .search-wrap input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(60,110,113,.18);
+    }
+
+    /* Board */
+    .board{overflow:hidden}
+    .table-wrap{overflow:auto; max-height:70vh}
+    table{width:100%; border-collapse:collapse; min-width:980px}
+    th,td{padding:13px 16px; border-bottom:1px solid var(--line); text-align:left}
+
+    th{
+      position:sticky;
+      top:0;
+      z-index:1;
+      background:var(--thead);
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:var(--text);
+      font-weight:700;
+    }
+
+    th button{
+      background:none;
+      border:none;
+      color:inherit;
+      font:inherit;
+      letter-spacing:inherit;
+      text-transform:inherit;
+      cursor:pointer;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:0;
+      transition:color .15s;
+    }
+    th button:hover{color:var(--accent-text)}
+
+    .sort-icon{
+      display:inline-flex;
+      flex-direction:column;
+      gap:2px;
+      flex-shrink:0;
+    }
+    .sort-icon svg{display:block}
+    .arrow-up,.arrow-down{opacity:.25; transition:opacity .15s}
+    th button:hover .arrow-up,
+    th button:hover .arrow-down{opacity:.5}
+
+    th.sort-active button{color:var(--accent-text)}
+    th.sort-active .arrow-up{opacity:.2}
+    th.sort-active .arrow-down{opacity:.2}
+    th.sort-active[data-dir="asc"] .arrow-up{opacity:1}
+    th.sort-active[data-dir="desc"] .arrow-down{opacity:1}
+
+    tbody tr:nth-child(even){background:var(--row-alt)}
+    tbody tr:hover{background:var(--row-hover) !important}
+
+    td{font-size:14px; color:var(--text); font-weight:500; vertical-align:middle}
+    td:first-child{
+      font-family:Consolas,"SFMono-Regular",monospace;
+      color:var(--accent-text);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .person-name{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .person-avatar{
+      width:26px;height:26px;border-radius:50%;
+      background:var(--chip-bg);
+      border:1px solid var(--chip-border);
+      display:inline-flex;
+      align-items:center;justify-content:center;
+      font-size:9px;font-weight:800;
+      color:var(--accent-text);
+      flex-shrink:0;
+      letter-spacing:0;
+      text-transform:uppercase;
+      font-family:"Segoe UI",Tahoma,sans-serif;
+    }
+
+    .date-chip{
+      display:inline-flex;
+      align-items:center;
+      padding:3px 10px;
+      border-radius:6px;
+      border:1px solid var(--date-border);
+      background:var(--date-bg);
+      font-size:12px;
+      font-weight:700;
+      font-family:Consolas,"SFMono-Regular",monospace;
+      letter-spacing:.04em;
+    }
+
+    .board-footer{
+      padding:10px 18px;
+      border-top:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.07em;
+      text-transform:uppercase;
+      color:var(--soft);
+      opacity:.85;
+    }
+    .board-footer strong{color:var(--accent-text)}
+
+    .empty{
+      padding:52px 16px;
+      color:var(--muted);
+      text-align:center;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    @media (max-width:860px){
+      .page{width:min(100vw - 20px, 100%)}
+      .hero{padding:24px 20px; flex-direction:column}
+      .hero-tools{justify-content:flex-start}
+      .controls-top{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <main class="page">
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Data Consultant &nbsp;/&nbsp; CSV Planning View</div>
+        <h1>Plan Assignment <span>Board</span></h1>
+      </div>
+      <div class="hero-tools">
+        <button class="theme-toggle" id="themeToggle" type="button">Light Mode</button>
+        <label class="ghost-btn import-btn" for="fileInput">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 1v9M4 6l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Import CSV
+        </label>
+        <input class="file-input" id="fileInput" type="file" accept=".csv" />
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Search and filters">
+      <div class="controls-top">
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="searchInput" type="search" placeholder="Search case, plan, consultant, TM, TC, or date…" />
+        </div>
+        <button class="ghost-btn" id="clearSearch" type="button">Clear</button>
+      </div>
+    </section>
+
+    <section class="board" aria-label="Plan assignment table">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th id="th-caseNumber">
+                <button data-key="caseNumber" type="button">Case #
+                  <span class="sort-icon" aria-hidden="true">
+                    <svg class="arrow-up" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>
+                    <svg class="arrow-down" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>
+                  </span>
+                </button>
+              </th>
+              <th id="th-planName">
+                <button data-key="planName" type="button">Plan Name
+                  <span class="sort-icon" aria-hidden="true">
+                    <svg class="arrow-up" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>
+                    <svg class="arrow-down" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>
+                  </span>
+                </button>
+              </th>
+              <th id="th-dataConsultant">
+                <button data-key="dataConsultant" type="button">Data Consultant
+                  <span class="sort-icon" aria-hidden="true">
+                    <svg class="arrow-up" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>
+                    <svg class="arrow-down" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>
+                  </span>
+                </button>
+              </th>
+              <th id="th-transitionManager">
+                <button data-key="transitionManager" type="button">TM
+                  <span class="sort-icon" aria-hidden="true">
+                    <svg class="arrow-up" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>
+                    <svg class="arrow-down" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>
+                  </span>
+                </button>
+              </th>
+              <th id="th-transitionConsultant">
+                <button data-key="transitionConsultant" type="button">TC
+                  <span class="sort-icon" aria-hidden="true">
+                    <svg class="arrow-up" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>
+                    <svg class="arrow-down" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>
+                  </span>
+                </button>
+              </th>
+              <th id="th-effectiveDate">
+                <button data-key="effectiveDate" type="button">Effective Date
+                  <span class="sort-icon" aria-hidden="true">
+                    <svg class="arrow-up" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 0L7 5H0z" fill="currentColor"/></svg>
+                    <svg class="arrow-down" width="7" height="5" viewBox="0 0 7 5"><path d="M3.5 5L0 0h7z" fill="currentColor"/></svg>
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty" hidden>No records match the current search.</div>
+      </div>
+      <div class="board-footer">
+        <div>Showing <strong id="footerCount">60</strong> records</div>
+        <div id="sortLabel">Sorted by Case #</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const themeKey = 'plan-assignment-board-theme';
+    const requiredHeaders = ['Case Number', 'Plan Name', 'Data Consultant', 'TM', 'TC', 'Effective Date'];
+
+    const colLabels = {
+      caseNumber: 'Case #',
+      planName: 'Plan Name',
+      dataConsultant: 'Data Consultant',
+      transitionManager: 'TM',
+      transitionConsultant: 'TC',
+      effectiveDate: 'Effective Date'
+    };
+
+    const dataConsultants = ['Ava Martin', 'Liam Brooks', 'Mia Patel', 'Noah Turner', 'Ella Kim', 'Mason Reed', 'Sofia Carter', 'Ethan Hayes'];
+    const transitionManagers = ['Grace Miller', 'Henry Collins', 'Isla Bennett', 'Jack Perry', 'Chloe Foster', 'Logan Diaz', 'Nora Simmons', 'Owen Price'];
+    const transitionConsultants = ['Zoe Bryant', 'Leo Sanders', 'Mila Ross', 'Wyatt Jenkins', 'Aria Bell', 'Isaac Fisher', 'Layla Cooper', 'Julian Cox'];
+    const planNames = ['Acorn Retirement Plan', 'Bridgeway Pension Plan', 'Crescent 401(k) Plan', 'Delta Group Savings Plan', 'Evergreen Trust Plan', 'Foundry Benefits Plan', 'Granite Employee Plan', 'Harbor Care Plan'];
+    const effectiveDates = ['2026-04-01', '2026-05-01', '2026-06-01', '2026-07-01'];
+
+    const mockRecords = Array.from({ length: 60 }, (_, idx) => ({
+      caseNumber: `C-${String(26001 + idx).padStart(5, '0')}`,
+      planName: planNames[idx % planNames.length],
+      dataConsultant: dataConsultants[idx % dataConsultants.length],
+      transitionManager: transitionManagers[idx % transitionManagers.length],
+      transitionConsultant: transitionConsultants[idx % transitionConsultants.length],
+      effectiveDate: effectiveDates[idx % effectiveDates.length]
+    }));
+
+    let records = [...mockRecords];
+
+    const state = {
+      sortBy: 'caseNumber',
+      sortDir: 'asc',
+      search: ''
+    };
+
+    function initials(name) {
+      return name.split(' ').map((p) => p[0]).slice(0, 2).join('');
+    }
+
+    function setTheme(theme) {
+      document.body.dataset.theme = theme;
+      localStorage.setItem(themeKey, theme);
+      document.getElementById('themeToggle').textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+    }
+
+
+    function buildSearchIndex(record) {
+      return [record.caseNumber, record.planName, record.dataConsultant, record.transitionManager, record.transitionConsultant, record.effectiveDate].join(' ').toLowerCase();
+    }
+
+    function splitCsvLine(line) {
+      const values = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let index = 0; index < line.length; index += 1) {
+        const char = line[index];
+        const next = line[index + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            current += '"';
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          values.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+
+      values.push(current.trim());
+      return values;
+    }
+
+    function parseCsv(text) {
+      const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/).filter((line) => line.trim().length > 0);
+      if (lines.length < 2) {
+        throw new Error('CSV must contain a header row and at least one data row.');
+      }
+
+      const headers = splitCsvLine(lines[0]);
+      const missingHeaders = requiredHeaders.filter((header) => !headers.includes(header));
+      if (missingHeaders.length) {
+        throw new Error(`Missing required headers: ${missingHeaders.join(', ')}`);
+      }
+
+      return lines.slice(1).map((line) => {
+        const values = splitCsvLine(line);
+        const row = Object.fromEntries(headers.map((header, index) => [header, values[index] || '']));
+        return {
+          caseNumber: String(row['Case Number'] || '').trim(),
+          planName: String(row['Plan Name'] || '').trim(),
+          dataConsultant: String(row['Data Consultant'] || '').trim(),
+          transitionManager: String(row.TM || '').trim(),
+          transitionConsultant: String(row.TC || '').trim(),
+          effectiveDate: String(row['Effective Date'] || '').trim()
+        };
+      }).filter((row) => Object.values(row).some(Boolean));
+    }
+
+    function getFilteredRecords() {
+      const searchTerm = state.search.trim().toLowerCase();
+      return records.filter((record) => !searchTerm || buildSearchIndex(record).includes(searchTerm));
+    }
+
+    function updateSortHeaders() {
+      document.querySelectorAll('th[id^="th-"]').forEach((th) => {
+        th.classList.remove('sort-active');
+        th.removeAttribute('data-dir');
+      });
+      const activeTh = document.getElementById(`th-${state.sortBy}`);
+      if (activeTh) {
+        activeTh.classList.add('sort-active');
+        activeTh.dataset.dir = state.sortDir;
+      }
+      const sortLabel = document.getElementById('sortLabel');
+      if (sortLabel) {
+        sortLabel.textContent = `Sorted by ${colLabels[state.sortBy]} (${state.sortDir === 'asc' ? 'A–Z' : 'Z–A'})`;
+      }
+    }
+
+    function render() {
+      const filtered = getFilteredRecords();
+
+      filtered.sort((a, b) => {
+        const left = String(a[state.sortBy]);
+        const right = String(b[state.sortBy]);
+        const comparison = left.localeCompare(right, undefined, { numeric: true });
+        return state.sortDir === 'asc' ? comparison : -comparison;
+      });
+
+      document.getElementById('tableBody').innerHTML = filtered.map((record) => `
+        <tr>
+          <td>${record.caseNumber}</td>
+          <td>${record.planName}</td>
+          <td><span class="person-name"><span class="person-avatar">${initials(record.dataConsultant)}</span>${record.dataConsultant}</span></td>
+          <td><span class="person-name"><span class="person-avatar">${initials(record.transitionManager)}</span>${record.transitionManager}</span></td>
+          <td><span class="person-name"><span class="person-avatar">${initials(record.transitionConsultant)}</span>${record.transitionConsultant}</span></td>
+          <td><span class="date-chip">${record.effectiveDate}</span></td>
+        </tr>
+      `).join('');
+
+      document.getElementById('emptyState').hidden = filtered.length > 0;
+
+      const footerCount = document.getElementById('footerCount');
+      if (footerCount) footerCount.textContent = filtered.length;
+
+      updateSortHeaders();
+    }
+
+    function init() {
+      setTheme(localStorage.getItem(themeKey) || 'dark');
+      render();
+
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        setTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+
+      document.getElementById('clearSearch').addEventListener('click', () => {
+        state.search = '';
+        document.getElementById('searchInput').value = '';
+        render();
+      });
+
+      document.getElementById('searchInput').addEventListener('input', (event) => {
+        state.search = event.target.value;
+        render();
+      });
+
+      document.getElementById('fileInput').addEventListener('change', async (event) => {
+        const [file] = event.target.files || [];
+        if (!file) return;
+
+        try {
+          records = parseCsv(await file.text());
+          state.search = '';
+          document.getElementById('searchInput').value = '';
+          render();
+        } catch (error) {
+          alert(`Import failed: ${error.message}`);
+        } finally {
+          event.target.value = '';
+        }
+      });
+
+      document.querySelectorAll('th button[data-key]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const key = button.dataset.key;
+          if (state.sortBy === key) {
+            state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            state.sortBy = key;
+            state.sortDir = 'asc';
+          }
+          render();
+        });
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -851,6 +851,7 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); mi
 
 .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--paper); font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 12px 24px; border-bottom: 3px solid var(--red); z-index: 9999; transition: transform .25s ease; white-space: nowrap; }
 .toast.show { transform: translateX(-50%) translateY(0); }
+.infa-hidden { display: none !important; }
 
 </style>
 </head>
@@ -929,123 +930,6 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); mi
       </div>
     </div>
   </div>
-
-  <!-- QUICK LAUNCH BAND -->
-  <div class="ql-band">
-    <div class="ql-band-label">INTERACTIVE FLOWS</div>
-    <div class="ql-band-rule"></div>
-    <div class="ql-band-sub">Click any flow to launch the guided interactive version</div>
-  </div>
-
-  <!-- QUICK LAUNCH TILES — 7 interactive flows -->
-  <div class="ql-grid" id="ql-grid">
-
-    <div class="ql-tile" data-delay="0" onclick="nav('flow-payroll-ix')">
-      <div class="ql-accent-bar" style="background:var(--fd-purple);"></div>
-      <div class="ql-inner">
-        <div class="ql-top">
-          <div class="ql-icon">💼</div>
-          <div class="ql-num">01</div>
-        </div>
-        <div class="ql-tag" style="color:var(--fd-purple);">Payroll · EDS · OnePayroll</div>
-        <div class="ql-title">Payroll Integration</div>
-        <div class="ql-desc">Vendor setup → template → test loop → live run</div>
-        <span class="ql-cta">Launch ★</span>
-      </div>
-      <div class="ql-badge" style="color:var(--fd-purple);border-color:var(--fd-purple);">INTERACTIVE</div>
-    </div>
-
-    <div class="ql-tile" data-delay="60" onclick="nav('flow-tik-ix')">
-      <div class="ql-accent-bar" style="background:var(--fd-purple);"></div>
-      <div class="ql-inner">
-        <div class="ql-top">
-          <div class="ql-icon">📦</div>
-          <div class="ql-num">02</div>
-        </div>
-        <div class="ql-tag" style="color:var(--fd-purple);">Re-Reg · TIK · 4-Week</div>
-        <div class="ql-title">Re-Reg &amp; Transfer In-Kind</div>
-        <div class="ql-desc">TOA → template → 4-week deadline → shares confirmed</div>
-        <span class="ql-cta">Launch ★</span>
-      </div>
-      <div class="ql-badge" style="color:var(--fd-purple);border-color:var(--fd-purple);">INTERACTIVE</div>
-    </div>
-
-    <div class="ql-tile" data-delay="120" onclick="nav('flow-balance-ix')">
-      <div class="ql-accent-bar" style="background:var(--fd-orange);"></div>
-      <div class="ql-inner">
-        <div class="ql-top">
-          <div class="ql-icon">💰</div>
-          <div class="ql-num">03</div>
-        </div>
-        <div class="ql-tag" style="color:var(--fd-orange);">Cash · Mapping · TIK</div>
-        <div class="ql-title">Balance Import</div>
-        <div class="ql-desc">Method selection → Informatica → P3 → upload</div>
-        <span class="ql-cta">Launch ★</span>
-      </div>
-      <div class="ql-badge" style="color:var(--fd-orange);border-color:var(--fd-orange);">INTERACTIVE</div>
-    </div>
-
-    <div class="ql-tile" data-delay="180" onclick="nav('flow-loans-ix')">
-      <div class="ql-accent-bar" style="background:var(--fd-blue);"></div>
-      <div class="ql-inner">
-        <div class="ql-top">
-          <div class="ql-icon">🏦</div>
-          <div class="ql-num">04</div>
-        </div>
-        <div class="ql-tag" style="color:var(--fd-blue);">P3 · Dates · Informatica</div>
-        <div class="ql-title">Loan Setup &amp; Processing</div>
-        <div class="ql-desc">Setup → date calc → validation → upload</div>
-        <span class="ql-cta">Launch ★</span>
-      </div>
-      <div class="ql-badge" style="color:var(--fd-blue);border-color:var(--fd-blue);">INTERACTIVE</div>
-    </div>
-
-    <div class="ql-tile" data-delay="240" onclick="nav('flow-elig-ix')">
-      <div class="ql-accent-bar" style="background:var(--fd-green);"></div>
-      <div class="ql-inner">
-        <div class="ql-top">
-          <div class="ql-icon">👥</div>
-          <div class="ql-num">05</div>
-        </div>
-        <div class="ql-tag" style="color:var(--fd-green);">EDS · P3 · Auto-Enroll</div>
-        <div class="ql-title">Eligibility Processing</div>
-        <div class="ql-desc">File type → EDS layout → P3 settings → submit</div>
-        <span class="ql-cta">Launch ★</span>
-      </div>
-      <div class="ql-badge" style="color:var(--fd-green);border-color:var(--fd-green);">INTERACTIVE</div>
-    </div>
-
-    <div class="ql-tile" data-delay="300" onclick="nav('flow-defer-ix')">
-      <div class="ql-accent-bar" style="background:var(--fd-blue);"></div>
-      <div class="ql-inner">
-        <div class="ql-top">
-          <div class="ql-icon">💵</div>
-          <div class="ql-num">06</div>
-        </div>
-        <div class="ql-tag" style="color:var(--fd-blue);">Pre-Tax · Roth · Flat $</div>
-        <div class="ql-title">Deferral Elections</div>
-        <div class="ql-desc">Type setup → IRS limit check → EDS format → submit</div>
-        <span class="ql-cta">Launch ★</span>
-      </div>
-      <div class="ql-badge" style="color:var(--fd-blue);border-color:var(--fd-blue);">INTERACTIVE</div>
-    </div>
-
-    <div class="ql-tile" data-delay="360" onclick="nav('flow-roth-ix')">
-      <div class="ql-accent-bar" style="background:var(--fd-purple);"></div>
-      <div class="ql-inner">
-        <div class="ql-top">
-          <div class="ql-icon">🟣</div>
-          <div class="ql-num">07</div>
-        </div>
-        <div class="ql-tag" style="color:var(--fd-purple);">Roth · Basis · 5-Year</div>
-        <div class="ql-title">Roth &amp; After-Tax Basis</div>
-        <div class="ql-desc">Source type → basis calc → 5-year rule → EDS fields</div>
-        <span class="ql-cta">Launch ★</span>
-      </div>
-      <div class="ql-badge" style="color:var(--fd-purple);border-color:var(--fd-purple);">INTERACTIVE</div>
-    </div>
-
-  </div><!-- /ql-grid -->
 
   <!-- SECTION DIVIDER -->
   <div class="section-rule">
@@ -9366,25 +9250,23 @@ function scrollToDept(id) {
   <div class="sec-band">
     <div class="sb-left">
       <div class="sb-kicker">Section 07 · Data Consulting Division</div>
-      <div class="sb-title"><em>Informatica</em> Reference Library</div>
-      <div class="sb-desc">SQL queries, mapping references, workflow notes, common errors, tips, and environment links — everything Informatica in one place.</div>
+      <div class="sb-title"><em>Informatica</em> — Workflow Guide</div>
+      <div class="sb-desc">File preparation, parameter setup, best practices, and silent-error troubleshooting — everything you need to run Informatica correctly.</div>
     </div>
     <div class="sb-right">
-      <div class="sb-stat"><span class="sb-stat-n" id="infa-total-count">24</span><span class="sb-stat-l">Total Items</span></div>
-      <div class="sb-stat"><span class="sb-stat-n">5</span><span class="sb-stat-l">Categories</span></div>
+      <div class="sb-stat"><span class="sb-stat-n">3</span><span class="sb-stat-l">Sections</span></div>
+      <div class="sb-stat"><span class="sb-stat-n">27</span><span class="sb-stat-l">Topics</span></div>
     </div>
   </div>
 
   <!-- Filter bar -->
   <div class="filter-bar">
-    <div class="filter-label">FILTER</div>
+    <div class="filter-label">SECTION</div>
     <div class="filter-tags" id="infaFilterTags">
-      <div class="ftag on" data-infa-filter="all"      onclick="infaFilter('all',this)">All <span class="ftag-n">24</span></div>
-      <div class="ftag"     data-infa-filter="sql"      onclick="infaFilter('sql',this)">SQL &amp; Mappings <span class="ftag-n">08</span></div>
-      <div class="ftag"     data-infa-filter="workflow" onclick="infaFilter('workflow',this)">Workflows &amp; Sessions <span class="ftag-n">05</span></div>
-      <div class="ftag"     data-infa-filter="error"    onclick="infaFilter('error',this)">Errors &amp; Fixes <span class="ftag-n">06</span></div>
-      <div class="ftag"     data-infa-filter="tip"      onclick="infaFilter('tip',this)">Tips &amp; Shortcuts <span class="ftag-n">04</span></div>
-      <div class="ftag"     data-infa-filter="link"     onclick="infaFilter('link',this)">Environment Links <span class="ftag-n">01</span></div>
+      <div class="ftag on" data-infa-filter="all"           onclick="infaFilter('all',this)">All <span class="ftag-n">27</span></div>
+      <div class="ftag"     data-infa-filter="prep"         onclick="infaFilter('prep',this)">Preparation <span class="ftag-n">10</span></div>
+      <div class="ftag"     data-infa-filter="bestpractice" onclick="infaFilter('bestpractice',this)">Best Practices <span class="ftag-n">07</span></div>
+      <div class="ftag"     data-infa-filter="troubleshoot" onclick="infaFilter('troubleshoot',this)">Troubleshooting <span class="ftag-n">10</span></div>
     </div>
     <div class="filter-search">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -9395,503 +9277,397 @@ function scrollToDept(id) {
   <div class="sec-layout">
     <div id="infaContent">
 
-      <!-- ── SQL & MAPPINGS ── -->
-      <div class="group-hd infa-group" data-infa-cat="sql"><div class="group-hd-name">SQL &amp; MAPPING QUERIES</div><div class="group-hd-rule"></div><div class="group-hd-count">08</div></div>
+      <!-- ── PREPARATION ── -->
+      <div class="group-hd infa-group" data-infa-cat="prep"><div class="group-hd-name">PREPARATION</div><div class="group-hd-rule"></div><div class="group-hd-count">10</div></div>
 
-      <div class="infa-item" data-infa-cat="sql">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · Balance Import · Cash</div>
-            <div class="infa-item-title">Cash Balance Import — Core Select Query</div>
-            <div class="infa-item-desc">Pulls participant balances for cash-method imports. Used in the source qualifier of the Cash BI mapping. Filter by plan ID before running.</div>
+            <div class="infa-item-tag">Preparation · Data Quality · First Step</div>
+            <div class="infa-item-title">Validate Your Input Data First</div>
+            <div class="infa-item-desc">Good data going in is everything. Before touching Informatica, validate your source data — bad input produces silent failures that show "Success" in the monitor but load nothing. This is the most important step.</div>
           </div>
-          <div class="infa-badge sql">SQL</div>
+          <div class="infa-badge tip">PREP</div>
         </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="kw">SELECT</span>
-  p.PLAN_ID,
-  p.PARTICIPANT_ID,
-  p.SSN,
-  p.LAST_NAME,
-  p.FIRST_NAME,
-  b.FUND_CODE,
-  b.BALANCE_AMOUNT,
-  b.EFFECTIVE_DATE
-<span class="kw">FROM</span> PARTICIPANT p
-<span class="kw">JOIN</span> BALANCE b <span class="kw">ON</span> p.PARTICIPANT_ID = b.PARTICIPANT_ID
-<span class="kw">WHERE</span> p.PLAN_ID = <span class="str">:PLAN_ID</span>
-  <span class="kw">AND</span> b.EFFECTIVE_DATE = (<span class="kw">SELECT MAX</span>(EFFECTIVE_DATE) <span class="kw">FROM</span> BALANCE
-                          <span class="kw">WHERE</span> PARTICIPANT_ID = b.PARTICIPANT_ID)
-  <span class="kw">AND</span> b.BALANCE_AMOUNT &gt; 0
-<span class="kw">ORDER BY</span> p.LAST_NAME, p.FIRST_NAME;</pre>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.75;">
+          Check that all required columns are present and populated. Confirm row counts are what you expect. Look for stray data sitting outside the clean dataset boundary — even a single out-of-place cell can cause a silent failure where the monitor shows success but zero rows load.
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="sql">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · Balance Import · Mapping Method</div>
-            <div class="infa-item-title">Mapping-Method Balance Query with Fund Crosswalk</div>
-            <div class="infa-item-desc">Joins balance data against the fund crosswalk table for mapping-method imports. Returns old fund code, new fund code, and balance amount.</div>
+            <div class="infa-item-tag">Preparation · Naming · Organization</div>
+            <div class="infa-item-title">File Naming Conventions &amp; Folder Locations</div>
+            <div class="infa-item-desc">Files must be named correctly — either with standard names or with parameterized names that match exactly what's in the parameter file. Folder names must be intuitive and correct because most files are accessed by folder path.</div>
           </div>
-          <div class="infa-badge sql">SQL</div>
+          <div class="infa-badge tip">PREP</div>
         </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="kw">SELECT</span>
-  b.PARTICIPANT_ID,
-  b.OLD_FUND_CODE,
-  fx.NEW_FUND_CODE,
-  fx.FUND_NAME,
-  b.BALANCE_AMOUNT
-<span class="kw">FROM</span> BALANCE b
-<span class="kw">JOIN</span> FUND_CROSSWALK fx <span class="kw">ON</span> b.OLD_FUND_CODE = fx.OLD_FUND_CODE
-<span class="kw">WHERE</span> b.PLAN_ID = <span class="str">:PLAN_ID</span>
-  <span class="kw">AND</span> fx.CROSSWALK_STATUS = <span class="str">'ACTIVE'</span>
-<span class="kw">ORDER BY</span> b.PARTICIPANT_ID, b.OLD_FUND_CODE;</pre>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2.1;">
+          <div>&middot; If names are parameterized, changing them requires updating the parameter file too</div>
+          <div>&middot; Pick a system, stick with it — simple and consistent beats clever</div>
+          <div>&middot; Folder names need to be correct — wrong folder = pulling from the wrong files</div>
+          <div>&middot; Better organization = more efficient, more accurate, and auditable work</div>
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="sql">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · Payroll · Source Qualifier</div>
-            <div class="infa-item-title">Payroll Source Qualifier — Active Participant Filter</div>
-            <div class="infa-item-desc">Used in payroll import mappings. Pulls only active participants with a valid deferral rate. Add plan ID parameter before deploying to session.</div>
+            <div class="infa-item-tag">Preparation · Parameter File · Setup</div>
+            <div class="infa-item-title">Parameter File — Pair It Down to What You Need</div>
+            <div class="infa-item-desc">The parameter file is your key. It is not read top-to-bottom — order doesn't matter. But you don't need the entire standard parameter file. Pair it down to just the workflow you're running to make it easier to review and reduce mistakes.</div>
           </div>
-          <div class="infa-badge sql">SQL</div>
+          <div class="infa-badge tip">PREP</div>
         </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="kw">SELECT</span>
-  pr.PLAN_ID,
-  pr.PARTICIPANT_ID,
-  pr.PAY_DATE,
-  pr.GROSS_PAY,
-  pr.DEFERRAL_PCT,
-  pr.DEFERRAL_AMT,
-  pr.EMPLOYER_MATCH
-<span class="kw">FROM</span> PAYROLL_RECORD pr
-<span class="kw">JOIN</span> PARTICIPANT p <span class="kw">ON</span> pr.PARTICIPANT_ID = p.PARTICIPANT_ID
-<span class="kw">WHERE</span> pr.PLAN_ID = <span class="str">:PLAN_ID</span>
-  <span class="kw">AND</span> p.STATUS = <span class="str">'ACTIVE'</span>
-  <span class="kw">AND</span> pr.DEFERRAL_PCT &gt; 0
-  <span class="kw">AND</span> pr.PAY_DATE = <span class="str">:PAY_DATE</span>;</pre>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2.2;">
+          <div>&middot; Loans only → keep loan parameters</div>
+          <div>&middot; Elections only → keep election parameters</div>
+          <div>&middot; CIT Balances → keep balance parameters (input + output files)</div>
+          <div>&middot; Day of Wire → keep just the parameters for that workflow</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper3);font-family:var(--serif);font-size:11px;color:var(--dim);">Stripping it down makes it easier to review and reduces the chance of accidentally looking at the wrong value.</div>
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="sql">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · Loans · Outstanding Balance</div>
-            <div class="infa-item-title">Outstanding Loan Balance Query</div>
-            <div class="infa-item-desc">Returns all open loans with remaining balance, issue date, and maturity date. Use as source for loan takeover mapping.</div>
+            <div class="infa-item-tag">Preparation · Parameter File · Test Flag</div>
+            <div class="infa-item-title">Test Flag — Keep the Safety On Until You're Ready</div>
+            <div class="infa-item-desc">The test flag (WIRE_N / WIRE_Y) is like the safety on a gun. Keep it on WIRE_N for as long as possible. Always verify this before running. This is a production system.</div>
           </div>
-          <div class="infa-badge sql">SQL</div>
+          <div class="infa-badge wf">FLAG</div>
         </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="kw">SELECT</span>
-  l.LOAN_ID,
-  l.PARTICIPANT_ID,
-  l.PLAN_ID,
-  l.ISSUE_DATE,
-  l.MATURITY_DATE,
-  l.ORIGINAL_AMOUNT,
-  l.OUTSTANDING_BALANCE,
-  l.INTEREST_RATE,
-  l.LOAN_STATUS
-<span class="kw">FROM</span> LOANS l
-<span class="kw">WHERE</span> l.PLAN_ID = <span class="str">:PLAN_ID</span>
-  <span class="kw">AND</span> l.LOAN_STATUS = <span class="str">'OPEN'</span>
-  <span class="kw">AND</span> l.OUTSTANDING_BALANCE &gt; 0
-<span class="kw">ORDER BY</span> l.PARTICIPANT_ID;</pre>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #6f4cd7;font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2.1;">
+          <div><span style="color:#6f4cd7;font-weight:700;">WIRE_N</span> &nbsp;→&nbsp; Test mode — safe to run</div>
+          <div><span style="color:#c0392b;font-weight:700;">WIRE_Y</span> &nbsp;→&nbsp; Production — this fires for real</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper3);font-family:var(--serif);font-size:11px;color:var(--dim);">On test mode you can run to confirm file structure and mapping without committing data. Don't flip to WIRE_Y until everything has checked out.</div>
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="sql">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · TIK · Share Matching</div>
-            <div class="infa-item-title">TIK Share Match Validation Query</div>
-            <div class="infa-item-desc">Compares incoming TIK share quantities against expected quantities. Use to verify share counts before submitting the mapping for processing.</div>
+            <div class="infa-item-tag">Preparation · Parameter File · Source Folder</div>
+            <div class="infa-item-title">Update the Source Folder Before Every Run</div>
+            <div class="infa-item-desc">Make sure the source folder parameter is updated to the correct directory. Leaving it pointed at an old folder can cause it to pull from stale or wrong files — potentially a big mess if a similar workflow's folder gets picked up.</div>
           </div>
-          <div class="infa-badge sql">SQL</div>
+          <div class="infa-badge tip">PREP</div>
         </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="kw">SELECT</span>
-  t.PARTICIPANT_ID,
-  t.FUND_CODE,
-  t.EXPECTED_SHARES,
-  i.RECEIVED_SHARES,
-  (t.EXPECTED_SHARES - i.RECEIVED_SHARES) <span class="kw">AS</span> VARIANCE
-<span class="kw">FROM</span> TIK_EXPECTED t
-<span class="kw">LEFT JOIN</span> TIK_INCOMING i
-  <span class="kw">ON</span> t.PARTICIPANT_ID = i.PARTICIPANT_ID
-  <span class="kw">AND</span> t.FUND_CODE = i.FUND_CODE
-<span class="kw">WHERE</span> t.PLAN_ID = <span class="str">:PLAN_ID</span>
-<span class="kw">HAVING</span> ABS(t.EXPECTED_SHARES - i.RECEIVED_SHARES) &gt; 0.001
-<span class="kw">ORDER BY</span> ABS(VARIANCE) <span class="kw">DESC</span>;</pre>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.75;">
+          Before running anything, walk through the parameter file carefully. Confirm the source folder path, confirm input file names match the actual file names, and make sure everything lines up. This takes two minutes and can save hours.
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="sql">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · Audit · Row Count Check</div>
-            <div class="infa-item-title">Pre-Run Row Count Validation</div>
-            <div class="infa-item-desc">Quick sanity check before executing a workflow. Run against source and target to confirm expected row counts match before commit.</div>
+            <div class="infa-item-tag">Preparation · Mapping Files · Structure</div>
+            <div class="infa-item-title">Know Your Mapping Files — Source Mapping &amp; Fund Mapping</div>
+            <div class="infa-item-desc">Both the source mapping and fund mapping files are large, standard files shared across departments with many columns we don't use. They're always the same structure. Get familiar with them so you know which columns are relevant to your workflow.</div>
           </div>
-          <div class="infa-badge sql">SQL</div>
+          <div class="infa-badge tip">PREP</div>
         </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="cmt">-- Source count</span>
-<span class="kw">SELECT COUNT</span>(*) <span class="kw">AS</span> SOURCE_ROWS <span class="kw">FROM</span> SOURCE_TABLE <span class="kw">WHERE</span> PLAN_ID = <span class="str">:PLAN_ID</span>;
-
-<span class="cmt">-- Target count (run after load)</span>
-<span class="kw">SELECT COUNT</span>(*) <span class="kw">AS</span> TARGET_ROWS <span class="kw">FROM</span> TARGET_TABLE <span class="kw">WHERE</span> PLAN_ID = <span class="str">:PLAN_ID</span>
-  <span class="kw">AND</span> LOAD_DATE = <span class="fn">TRUNC</span>(<span class="fn">SYSDATE</span>);
-
-<span class="cmt">-- Mismatch check</span>
-<span class="kw">SELECT</span> s.SOURCE_ROWS, t.TARGET_ROWS,
-  (s.SOURCE_ROWS - t.TARGET_ROWS) <span class="kw">AS</span> DIFF
-<span class="kw">FROM</span> (<span class="kw">SELECT COUNT</span>(*) <span class="kw">AS</span> SOURCE_ROWS <span class="kw">FROM</span> SOURCE_TABLE <span class="kw">WHERE</span> PLAN_ID = <span class="str">:PLAN_ID</span>) s,
-     (<span class="kw">SELECT COUNT</span>(*) <span class="kw">AS</span> TARGET_ROWS <span class="kw">FROM</span> TARGET_TABLE <span class="kw">WHERE</span> PLAN_ID = <span class="str">:PLAN_ID</span>) t;</pre>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.75;">
+          We use the standard file as-is rather than manipulating it — consistent format, consistent access. The extra columns belong to other departments and don't affect our workflow but add bulk. Know which columns matter and where they are.
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="sql">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · General · Duplicate Check</div>
-            <div class="infa-item-title">Duplicate Participant Record Check</div>
-            <div class="infa-item-desc">Identifies duplicate participant records in the staging table before import. Always run this before executing balance or payroll workflows.</div>
+            <div class="infa-item-tag">Preparation · Mapping Files · Data Format</div>
+            <div class="infa-item-title">Always Use General Format — Never Accounting</div>
+            <div class="infa-item-desc">All numeric fields in the mapping files must be in General format. Accounting format adds a leading space to numbers. On the ref numbers column, that space causes a character to get dropped on load — a silent error that corrupts your ref numbers.</div>
           </div>
-          <div class="infa-badge sql">SQL</div>
-        </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="kw">SELECT</span>
-  PARTICIPANT_ID,
-  FUND_CODE,
-  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> RECORD_COUNT
-<span class="kw">FROM</span> STAGING_TABLE
-<span class="kw">WHERE</span> PLAN_ID = <span class="str">:PLAN_ID</span>
-<span class="kw">GROUP BY</span> PARTICIPANT_ID, FUND_CODE
-<span class="kw">HAVING COUNT</span>(*) &gt; 1
-<span class="kw">ORDER BY</span> RECORD_COUNT <span class="kw">DESC</span>;</pre>
-        </div>
-      </div>
-
-      <div class="infa-item" data-infa-cat="sql">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">SQL · Mapping · Expression Transform</div>
-            <div class="infa-item-title">Common Expression Transform Snippets</div>
-            <div class="infa-item-desc">Reusable expression logic for Informatica mapping transformations. Copy into the Expression Editor as needed.</div>
-          </div>
-          <div class="infa-badge sql">SQL</div>
-        </div>
-        <div class="infa-code-block">
-          <button class="infa-copy-btn" onclick="infaCopyCode(this)">Copy</button>
-          <pre><span class="cmt">-- Null-safe string concat</span>
-<span class="fn">IIF</span>(<span class="fn">ISNULL</span>(LAST_NAME), <span class="str">''</span>, LAST_NAME) || <span class="str">', '</span> || <span class="fn">IIF</span>(<span class="fn">ISNULL</span>(FIRST_NAME), <span class="str">''</span>, FIRST_NAME)
-
-<span class="cmt">-- Date format normalization (YYYYMMDD → MM/DD/YYYY)</span>
-<span class="fn">TO_CHAR</span>(<span class="fn">TO_DATE</span>(DATE_FIELD, <span class="str">'YYYYMMDD'</span>), <span class="str">'MM/DD/YYYY'</span>)
-
-<span class="cmt">-- Safe numeric conversion</span>
-<span class="fn">IIF</span>(<span class="fn">ISNULL</span>(BALANCE_AMOUNT) <span class="kw">OR</span> BALANCE_AMOUNT = <span class="str">''</span>, 0, <span class="fn">TO_DECIMAL</span>(BALANCE_AMOUNT, 2))
-
-<span class="cmt">-- Active status flag</span>
-<span class="fn">IIF</span>(STATUS_CODE = <span class="str">'A'</span>, <span class="str">'ACTIVE'</span>, <span class="fn">IIF</span>(STATUS_CODE = <span class="str">'T'</span>, <span class="str">'TERMINATED'</span>, <span class="str">'UNKNOWN'</span>))</pre>
-        </div>
-      </div>
-
-      <!-- ── WORKFLOWS & SESSIONS ── -->
-      <div class="group-hd infa-group" data-infa-cat="workflow"><div class="group-hd-name">WORKFLOWS &amp; SESSIONS</div><div class="group-hd-rule"></div><div class="group-hd-count">05</div></div>
-
-      <div class="infa-item" data-infa-cat="workflow">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Workflow · Balance Import · Standard</div>
-            <div class="infa-item-title">Balance Import Workflow — Standard Run Order</div>
-            <div class="infa-item-desc">The expected execution order for a standard balance import workflow. Sessions must run in this sequence or dependencies will fail.</div>
-          </div>
-          <div class="infa-badge wf">WF</div>
-        </div>
-        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #6f4cd7;">
-          <div style="font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2;">
-            <div><span style="color:#6f4cd7;font-weight:700;">01</span> &nbsp;s_Validate_Source_Data</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">02</span> &nbsp;s_Stage_Balance_Records</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">03</span> &nbsp;s_Apply_Fund_Crosswalk</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">04</span> &nbsp;s_Load_Balance_Target</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">05</span> &nbsp;s_Post_Load_Audit</div>
-            <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper3);font-family:var(--serif);font-size:11px;color:var(--dim);">⚠ If s_Apply_Fund_Crosswalk fails, do <strong>not</strong> proceed to load. Investigate crosswalk table before re-running.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="infa-item" data-infa-cat="workflow">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Workflow · Payroll · Session Config</div>
-            <div class="infa-item-title">Payroll Import Session — Key Parameter Reference</div>
-            <div class="infa-item-desc">Critical session-level parameters to set before running any payroll workflow. These override the mapping defaults and must be set per run.</div>
-          </div>
-          <div class="infa-badge wf">WF</div>
-        </div>
-        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #6f4cd7;">
-          <div style="font-family:var(--mono);font-size:10px;line-height:2.1;color:var(--ink);">
-            <div><span style="color:var(--dim);">$$PLAN_ID</span> &nbsp;→&nbsp; <span style="color:#2a6df4;">Target plan number (required)</span></div>
-            <div><span style="color:var(--dim);">$$PAY_DATE</span> &nbsp;→&nbsp; <span style="color:#2a6df4;">Payroll effective date (YYYY-MM-DD)</span></div>
-            <div><span style="color:var(--dim);">$$SOURCE_FILE</span> &nbsp;→&nbsp; <span style="color:#2a6df4;">Full path to inbound payroll file</span></div>
-            <div><span style="color:var(--dim);">$$COMMIT_ROWS</span> &nbsp;→&nbsp; <span style="color:#2a6df4;">Batch commit size (default: 1000)</span></div>
-            <div><span style="color:var(--dim);">$$ERROR_THRESHOLD</span> &nbsp;→&nbsp; <span style="color:#2a6df4;">Max errors before abort (default: 10)</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="infa-item" data-infa-cat="workflow">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Workflow · Naming · Conventions</div>
-            <div class="infa-item-title">Workflow &amp; Mapping Naming Conventions</div>
-            <div class="infa-item-desc">Standard naming patterns used across all Informatica objects. Follow these when creating new workflows or cloning existing ones.</div>
-          </div>
-          <div class="infa-badge wf">WF</div>
-        </div>
-        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #6f4cd7;">
-          <div style="font-family:var(--mono);font-size:10px;line-height:2.2;color:var(--ink);">
-            <div><span style="color:#6f4cd7;">WF_</span>[PROCESS]_[PLAN]_[VERSION] &nbsp;&nbsp;<span style="color:var(--dim);font-size:9px;">e.g. WF_BAL_IMPORT_12345_v2</span></div>
-            <div><span style="color:#6f4cd7;">m_</span>[SOURCE]_to_[TARGET]_[DESC] &nbsp;&nbsp;<span style="color:var(--dim);font-size:9px;">e.g. m_STAGING_to_BALANCE_CASH</span></div>
-            <div><span style="color:#6f4cd7;">s_</span>[ACTION]_[OBJECT]_[DESC] &nbsp;&nbsp;<span style="color:var(--dim);font-size:9px;">e.g. s_Load_Balance_Target</span></div>
-            <div><span style="color:#6f4cd7;">SQ_</span>[TABLE]_[FILTER] &nbsp;&nbsp;<span style="color:var(--dim);font-size:9px;">e.g. SQ_PARTICIPANT_ACTIVE</span></div>
-            <div><span style="color:#6f4cd7;">EXP_</span>[TRANSFORM_PURPOSE] &nbsp;&nbsp;<span style="color:var(--dim);font-size:9px;">e.g. EXP_Format_Date_Fields</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="infa-item" data-infa-cat="workflow">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Workflow · Scheduling · Notes</div>
-            <div class="infa-item-title">Scheduler Setup — Recurring vs. Manual Runs</div>
-            <div class="infa-item-desc">When to use the Informatica scheduler vs. triggering manually. Most balance imports are manual; payroll workflows are typically scheduled.</div>
-          </div>
-          <div class="infa-badge wf">WF</div>
-        </div>
-        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #6f4cd7;font-family:var(--serif);font-size:12px;color:var(--dim);line-height:1.7;">
-          <strong style="color:var(--ink);">Manual:</strong> Balance imports, TIK processing, loan takeovers, one-time conversions. Always trigger manually and monitor to completion.<br><br>
-          <strong style="color:var(--ink);">Scheduled:</strong> Recurring payroll workflows (weekly/bi-weekly plans), nightly audit extracts, automated fund price feeds. Set scheduler to retry once on failure — do not set infinite retries.
-        </div>
-      </div>
-
-      <div class="infa-item" data-infa-cat="workflow">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Workflow · Session · Recovery</div>
-            <div class="infa-item-title">Recovering a Failed Session Mid-Run</div>
-            <div class="infa-item-desc">Steps to safely recover from a session failure without re-processing already-committed rows. Use the recovery strategy rather than a full restart when possible.</div>
-          </div>
-          <div class="infa-badge wf">WF</div>
-        </div>
-        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #6f4cd7;">
-          <div style="font-family:var(--mono);font-size:10px;line-height:2.1;color:var(--ink);">
-            <div><span style="color:#6f4cd7;font-weight:700;">1.</span> &nbsp;Check session log — identify last successful commit row</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">2.</span> &nbsp;Confirm target table state — no partial records</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">3.</span> &nbsp;Right-click session → <em>Recover Workflow</em> (not Restart)</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">4.</span> &nbsp;Verify recovery picks up from correct checkpoint</div>
-            <div><span style="color:#6f4cd7;font-weight:700;">5.</span> &nbsp;Run post-load audit query to confirm row counts</div>
-            <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper3);font-family:var(--serif);font-size:11px;color:var(--dim);">⚠ If recovery is unavailable, truncate target staging table and full-restart from session 01.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── ERRORS & FIXES ── -->
-      <div class="group-hd infa-group" data-infa-cat="error"><div class="group-hd-name">COMMON ERRORS &amp; FIXES</div><div class="group-hd-rule"></div><div class="group-hd-count">06</div></div>
-
-      <div class="infa-item" data-infa-cat="error">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Error · Connection · ORA-12541</div>
-            <div class="infa-item-title">ORA-12541: TNS No Listener</div>
-            <div class="infa-item-desc">Session fails to connect to the Oracle source or target database. Usually a network or listener issue, not a credentials problem.</div>
-          </div>
-          <div class="infa-badge err">ERR</div>
+          <div class="infa-badge err">CAUTION</div>
         </div>
         <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
-          <div style="color:#c0392b;margin-bottom:6px;">✗ ORA-12541: TNS:no listener</div>
-          <div style="color:#5a5248;font-style:italic;">Fix:</div>
-          <div>1. Confirm you're on VPN — this is the #1 cause</div>
-          <div>2. Check TNSNAMES.ORA for correct host/port entry</div>
-          <div>3. Verify the Oracle listener service is running on the DB server</div>
-          <div>4. Test connection in SQL Developer before retrying in Informatica</div>
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Accounting format on ref numbers → leading space → dropped character on load</div>
+          <div style="color:#5a5248;font-style:italic;">Fix: Select all numeric columns → Format Cells → Number → General</div>
+          <div style="margin-top:6px;">Also watch for commas in numbers — those will also cause errors. Everything should be plain General format.</div>
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="error">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">Error · Session · Transformation Overflow</div>
-            <div class="infa-item-title">Numeric Overflow in Expression Transform</div>
-            <div class="infa-item-desc">Session aborts with a numeric overflow error in an expression transformation. Typically caused by a DECIMAL precision mismatch between source and target.</div>
+            <div class="infa-item-tag">Preparation · Mapping Files · CIT Filter</div>
+            <div class="infa-item-title">Informatica Only Picks Up Rows with CIT in Column A</div>
+            <div class="infa-item-desc">In both source mapping and fund mapping, Informatica only reads rows that have a recognized code in column A — primarily CIT. Source mapping may also pick up PDF and TIK. Any row without a valid code in column A is ignored entirely.</div>
           </div>
-          <div class="infa-badge err">ERR</div>
+          <div class="infa-badge wf">NOTE</div>
         </div>
-        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
-          <div style="color:#c0392b;margin-bottom:6px;">✗ Transformation Evaluation Exception: Numeric value out of range</div>
-          <div style="color:#5a5248;font-style:italic;">Fix:</div>
-          <div>1. Open mapping → locate EXP transform with the offending port</div>
-          <div>2. Change output precision: DECIMAL(15,2) → DECIMAL(18,4)</div>
-          <div>3. Wrap in IIF(ISNULL(field), 0, TO_DECIMAL(field, 4))</div>
-          <div>4. Save, validate mapping, re-deploy session</div>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #6f4cd7;font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2.1;">
+          <div><span style="color:#6f4cd7;font-weight:700;">CIT</span> &nbsp;→&nbsp; Used ~99% of the time</div>
+          <div><span style="color:#6f4cd7;font-weight:700;">PDF / TIK</span> &nbsp;→&nbsp; Source mapping only (when applicable)</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper3);font-family:var(--serif);font-size:11px;color:var(--dim);">If you're stuck debugging, delete everything except CIT rows. Strip the file to its core and start surgical testing from there.</div>
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="error">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">Error · Source · File Not Found</div>
-            <div class="infa-item-title">Flat File Source — File Not Found at Runtime</div>
-            <div class="infa-item-desc">Session fails immediately because the flat file source cannot be located. Usually a path issue or the file hasn't landed yet from the FTP drop.</div>
+            <div class="infa-item-tag">Preparation · CITS Balances · File Setup</div>
+            <div class="infa-item-title">CITS Balance File — Fixed Width, PRN to TXT</div>
+            <div class="infa-item-desc">The CITS balance input file requires six columns set to specific fixed widths. Use the macro — no one should be doing this manually. Then save as PRN and rename to TXT. Same process whether it's a cash conversion or not.</div>
           </div>
-          <div class="infa-badge err">ERR</div>
+          <div class="infa-badge tip">PREP</div>
         </div>
-        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
-          <div style="color:#c0392b;margin-bottom:6px;">✗ CMN_1022: File [path] could not be opened</div>
-          <div style="color:#5a5248;font-style:italic;">Fix:</div>
-          <div>1. Confirm file has landed in the expected FTP/drop directory</div>
-          <div>2. Check $$SOURCE_FILE parameter — path must use forward slashes</div>
-          <div>3. Verify Informatica service account has read access to the directory</div>
-          <div>4. Check for file naming discrepancy (date suffix, extension case)</div>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2.2;">
+          <div><span style="color:#6f4cd7;font-weight:700;">Step 1</span> &nbsp;Validate your data — totals, format, completeness</div>
+          <div><span style="color:#6f4cd7;font-weight:700;">Step 2</span> &nbsp;Run the column width macro (sets fixed widths on 6 columns)</div>
+          <div><span style="color:#6f4cd7;font-weight:700;">Step 3</span> &nbsp;Save As → PRN (formatted text)</div>
+          <div><span style="color:#6f4cd7;font-weight:700;">Step 4</span> &nbsp;Rename .PRN → .TXT</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper3);font-family:var(--serif);font-size:11px;color:var(--dim);">For cash conversions: fund mapping is not required, but a blank fund mapping text file must still be present in the folder — the workflow expects to see something there.</div>
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="error">
+      <div class="infa-item" data-infa-cat="prep">
         <div class="infa-item-header">
           <div class="infa-item-left">
-            <div class="infa-item-tag">Error · Target · Constraint Violation</div>
-            <div class="infa-item-title">Target Table — Unique Constraint Violation</div>
-            <div class="infa-item-desc">Load fails due to duplicate key insertion into the target table. Source data has duplicates that passed the source qualifier without being caught.</div>
+            <div class="infa-item-tag">Preparation · CONV File · Loans · Elections · File Types</div>
+            <div class="infa-item-title">CONV File, Loans &amp; Elections — File Format Rules</div>
+            <div class="infa-item-desc">Different workflows require different file formats. The CONV file is a plain text file. Loan files must be pipe-delimited — never CSV. Elections also convert to pipe-delimited TXT. Getting the file type wrong is a silent error causer.</div>
           </div>
-          <div class="infa-badge err">ERR</div>
+          <div class="infa-badge tip">PREP</div>
         </div>
-        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
-          <div style="color:#c0392b;margin-bottom:6px;">✗ ORA-00001: unique constraint violated on [TABLE.KEY]</div>
-          <div style="color:#5a5248;font-style:italic;">Fix:</div>
-          <div>1. Run the Duplicate Participant Check query (see SQL section)</div>
-          <div>2. Add DISTINCT or GROUP BY to source qualifier SQL</div>
-          <div>3. Add a Sorter → Aggregator before the target to deduplicate</div>
-          <div>4. If target already has partial data, truncate staging and re-run</div>
+        <div style="margin-top:10px;padding:14px 18px;background:var(--paper2);border:1.5px solid var(--paper3);border-left:4px solid #1aa96b;font-family:var(--mono);font-size:10px;color:var(--ink);line-height:2.2;">
+          <div><span style="color:#1aa96b;font-weight:700;">CONV file</span> &nbsp;→&nbsp; Plain text, arbitrarily named "CONV"</div>
+          <div><span style="color:#1aa96b;font-weight:700;">Loans</span> &nbsp;→&nbsp; Pipe-delimited TXT — never CSV (commas will kill it)</div>
+          <div><span style="color:#1aa96b;font-weight:700;">Elections</span> &nbsp;→&nbsp; Source mapping + fund mapping; properly formatted CSV → pipe-delimited TXT</div>
+          <div><span style="color:#1aa96b;font-weight:700;">Elections fund mapping</span> &nbsp;→&nbsp; Same structure as balance fund mapping but no totals or ref numbers needed</div>
         </div>
       </div>
 
-      <div class="infa-item" data-infa-cat="error">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Error · Repository · Lock</div>
-            <div class="infa-item-title">Repository Lock — Object Checked Out by Another User</div>
-            <div class="infa-item-desc">Cannot edit or save a mapping because it's checked out by another user (or a previous crashed session left it locked).</div>
-          </div>
-          <div class="infa-badge err">ERR</div>
-        </div>
-        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
-          <div style="color:#c0392b;margin-bottom:6px;">✗ Object is locked / checked out by user [USERNAME]</div>
-          <div style="color:#5a5248;font-style:italic;">Fix:</div>
-          <div>1. Contact the locking user — they may have an active session open</div>
-          <div>2. If user is unavailable, admin can unlock: Repository → Lock Manager</div>
-          <div>3. If the lock is a ghost (crashed session), restart the Repository Service</div>
-          <div>4. After unlock, check out the object immediately before editing</div>
-        </div>
-      </div>
+      <!-- ── BEST PRACTICES ── -->
+      <div class="group-hd infa-group" data-infa-cat="bestpractice"><div class="group-hd-name">BEST PRACTICES</div><div class="group-hd-rule"></div><div class="group-hd-count">07</div></div>
 
-      <div class="infa-item" data-infa-cat="error">
-        <div class="infa-item-header">
-          <div class="infa-item-left">
-            <div class="infa-item-tag">Error · Performance · Session Slow</div>
-            <div class="infa-item-title">Session Running Abnormally Slow</div>
-            <div class="infa-item-desc">A workflow that typically completes in minutes is taking significantly longer. Usually a missing index, large dataset without partitioning, or network saturation.</div>
-          </div>
-          <div class="infa-badge err">ERR</div>
-        </div>
-        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
-          <div style="color:#c0392b;margin-bottom:6px;">⚠ Session throughput: 50 rows/sec (expected: 5,000+)</div>
-          <div style="color:#5a5248;font-style:italic;">Fix:</div>
-          <div>1. Check session log — identify which transformation is the bottleneck</div>
-          <div>2. Add index to source table on PLAN_ID + PARTICIPANT_ID if missing</div>
-          <div>3. Enable session partitioning (Partitions tab → Database Partitioning)</div>
-          <div>4. Increase DTM buffer size in session properties → Config Object tab</div>
-        </div>
-      </div>
-
-      <!-- ── TIPS & SHORTCUTS ── -->
-      <div class="group-hd infa-group" data-infa-cat="tip"><div class="group-hd-name">TIPS, SHORTCUTS &amp; BEST PRACTICES</div><div class="group-hd-rule"></div><div class="group-hd-count">04</div></div>
-
-      <div data-infa-cat="tip" class="infa-tips-grid" id="infaTipsGrid">
+      <div class="infa-tips-grid" id="infaBPGrid">
         <div class="infa-tip-card">
           <div class="infa-tip-num">01</div>
-          <div class="infa-tip-title">Always Preview Before Running</div>
-          <div class="infa-tip-body">Use <strong>Data Preview</strong> on your source qualifier before executing a full session. It catches bad SQL, null columns, and data type issues in seconds vs. waiting for a full session abort.</div>
+          <div class="infa-tip-title">Keep the Safety On</div>
+          <div class="infa-tip-body">The test flag (WIRE_N) is like the safety on a gun. Keep it on until you are absolutely ready to fire. Verify this setting every single time before running — it's easy to forget when you're in a rhythm.</div>
         </div>
         <div class="infa-tip-card">
           <div class="infa-tip-num">02</div>
-          <div class="infa-tip-title">Use Reusable Transformations</div>
-          <div class="infa-tip-body">For logic you use repeatedly (date formatting, null handling, status code mapping), create a Reusable Transformation in the Shared folder. Edit once, updates propagate everywhere it's used.</div>
+          <div class="infa-tip-title">Match Your Totals First</div>
+          <div class="infa-tip-body">Always validate that ref numbers match dollar amounts before importing anything — CONV file, balance file, and P2 ref number setup. A mismatch is either an error or a silent failure. Catch it before you run.</div>
         </div>
         <div class="infa-tip-card">
           <div class="infa-tip-num">03</div>
-          <div class="infa-tip-title">Check In Objects Before Logging Off</div>
-          <div class="infa-tip-body">Always check in your mappings and workflows when done for the day. Leaving objects checked out blocks teammates and can corrupt the object if your session crashes overnight.</div>
+          <div class="infa-tip-title">General Format — Always</div>
+          <div class="infa-tip-body">Set all numeric columns to General format in Excel before building your input file. Accounting format adds a leading space that drops characters from ref numbers on load. One of the most common silent error causes.</div>
         </div>
         <div class="infa-tip-card">
           <div class="infa-tip-num">04</div>
-          <div class="infa-tip-title">Parameter Files Over Hardcoded Values</div>
-          <div class="infa-tip-body">Never hardcode plan IDs, file paths, or dates in a mapping. Use workflow parameters ($$PARAM) and a parameter file. Makes reuse trivial and avoids the classic "I forgot to change the plan ID" mistake.</div>
+          <div class="infa-tip-title">Use the Column Width Macro</div>
+          <div class="infa-tip-body">The CITS balance file requires fixed-width columns. Use the macro — no one should ever set those widths manually. If you don't have the macro, get it. Consistent column widths are required for the file to process correctly.</div>
+        </div>
+        <div class="infa-tip-card">
+          <div class="infa-tip-num">05</div>
+          <div class="infa-tip-title">Loans: Pipe-Delimited Only</div>
+          <div class="infa-tip-body">Loan files must be pipe-delimited text files. If you accidentally leave it as CSV (comma-delimited), it will fail. This is a common mistake — always convert before importing. Same applies to elections.</div>
+        </div>
+        <div class="infa-tip-card">
+          <div class="infa-tip-num">06</div>
+          <div class="infa-tip-title">Strip It Down to Debug</div>
+          <div class="infa-tip-body">If you can't figure out what's wrong, strip the mapping file down to just CIT rows and start eliminating variables one at a time. Add things back incrementally until the issue surfaces. Surgical debugging beats guessing.</div>
+        </div>
+        <div class="infa-tip-card">
+          <div class="infa-tip-num">07</div>
+          <div class="infa-tip-title">Add Leading Zeros to SSNs</div>
+          <div class="infa-tip-body">For CIT Balances, participants with fewer than 9 SSN digits generate kickouts. To get a clean output with no noise, add leading zeros to bring every SSN to 9 digits using =TEXT(A2,"000000000") in Excel.</div>
         </div>
       </div>
 
-      <!-- ── ENVIRONMENT LINKS ── -->
-      <div class="group-hd infa-group" data-infa-cat="link"><div class="group-hd-name">ENVIRONMENT &amp; RESOURCE LINKS</div><div class="group-hd-rule"></div><div class="group-hd-count">01</div></div>
+      <!-- ── TROUBLESHOOTING ── -->
+      <div class="group-hd infa-group" data-infa-cat="troubleshoot"><div class="group-hd-name">TROUBLESHOOTING</div><div class="group-hd-rule"></div><div class="group-hd-count">10</div></div>
 
-      <div class="infa-link-row" data-infa-cat="link">
-        <div class="infa-link-icon">🔗</div>
-        <div class="infa-link-body">
-          <div class="infa-link-tag">Environment · Informatica Admin Console</div>
-          <div class="infa-link-title">Informatica Admin Console — Internal</div>
-          <div class="infa-link-url">http://informatica-admin.internal:6008/adminconsole</div>
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Silent Error · Monitor Shows Success · Zero Rows Load</div>
+            <div class="infa-item-title">Stray Data Hanging Off the Dataset</div>
+            <div class="infa-item-desc">The monitor shows "Success" — no failure, no error message — but nothing loaded. One of the most common causes is stray data sitting outside the clean dataset boundary. A single out-of-place cell can prevent the entire load.</div>
+          </div>
+          <div class="infa-badge err">SILENT</div>
         </div>
-        <a class="infa-link-btn" href="http://informatica-admin.internal:6008/adminconsole" target="_blank" rel="noopener">Open ↗</a>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Monitor: Success — Rows loaded: 0</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Press Ctrl+End to find the true extent of the spreadsheet</div>
+          <div>2. Look for any data, formatting, or spaces beyond the last real row/column</div>
+          <div>3. Delete all content and formatting outside the dataset boundary</div>
+          <div>4. Save, rebuild the file, and re-run</div>
+        </div>
       </div>
-      <div class="infa-link-row" data-infa-cat="link">
-        <div class="infa-link-icon">🔗</div>
-        <div class="infa-link-body">
-          <div class="infa-link-tag">Environment · PowerCenter Repository Manager</div>
-          <div class="infa-link-title">PowerCenter Repository Manager (Launch)</div>
-          <div class="infa-link-url">Installed locally — Start Menu → Informatica → Repository Manager</div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Silent Error · Case Number · Spacing</div>
+            <div class="infa-item-title">Improperly Spaced Case Numbers</div>
+            <div class="infa-item-desc">Case numbers must have the correct spacing between the case and affiliate portions. If the spacing is off by even one character, the monitor will show success but nothing will load.</div>
+          </div>
+          <div class="infa-badge err">SILENT</div>
         </div>
-        <span class="infa-link-btn" style="cursor:default;opacity:.6;">Local App</span>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Monitor: Success — nothing loaded</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Confirm case number format: [CASE] [correct spacing] [AFFILIATE] — exact spacing required</div>
+          <div>2. If entering manually, reference the format from a known-good file</div>
+          <div>3. If generated via workflow or automation, verify the output format hasn't changed</div>
+        </div>
       </div>
-      <div class="infa-link-row" data-infa-cat="link">
-        <div class="infa-link-icon">📄</div>
-        <div class="infa-link-body">
-          <div class="infa-link-tag">Docs · Informatica · PowerCenter 10.x</div>
-          <div class="infa-link-title">Informatica PowerCenter 10.x Official Docs</div>
-          <div class="infa-link-url">https://docs.informatica.com/data-integration/powercenter/10-5.html</div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Silent Error · CONV File · Ref Numbers</div>
+            <div class="infa-item-title">Ref Numbers in CONV File Don't Match Dollar Amounts</div>
+            <div class="infa-item-desc">A silent error where CONV file ref numbers and mapping file dollar amounts don't align. The monitor shows success but nothing loads. Should be caught in QC anyway — but it's a known silent error causer worth flagging explicitly.</div>
+          </div>
+          <div class="infa-badge err">SILENT</div>
         </div>
-        <a class="infa-link-btn" href="https://docs.informatica.com/data-integration/powercenter/10-5.html" target="_blank" rel="noopener">Open ↗</a>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Monitor: Success — zero or partial load</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Compare CONV file ref numbers against the mapping file ref numbers line by line</div>
+          <div>2. Compare CONV file dollar amounts against mapping file fund amounts</div>
+          <div>3. Common cause: a mock or refreshed CONV file used without updating the mapping, or vice versa</div>
+          <div>4. Rebuild the CONV file from scratch if any mismatch is found</div>
+        </div>
       </div>
-      <div class="infa-link-row" data-infa-cat="link">
-        <div class="infa-link-icon">💬</div>
-        <div class="infa-link-body">
-          <div class="infa-link-tag">Internal · Slack · Informatica Channel</div>
-          <div class="infa-link-title">#informatica-help — Team Slack Channel</div>
-          <div class="infa-link-url">Post questions, share mappings, and flag issues here before escalating</div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Silent Error · Cell Format · Ref Numbers</div>
+            <div class="infa-item-title">Accounting Format on Ref Numbers Column</div>
+            <div class="infa-item-desc">If the ref numbers column is set to Accounting format in Excel, a leading space gets added in front of each number. When the data loads, that space causes a character to get dropped from the ref number. The monitor shows success.</div>
+          </div>
+          <div class="infa-badge err">SILENT</div>
         </div>
-        <a class="infa-link-btn" href="slack://channel?team=&id=informatica-help">Open Slack</a>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Monitor: Success — ref numbers load with a missing character</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Select the ref numbers column → Format Cells → Number → General</div>
+          <div>2. Check all other numeric columns for the same issue while you're at it</div>
+          <div>3. Never use Accounting, Currency, or any format that adds prefix characters to numbers</div>
+        </div>
+      </div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Silent Error · Trailing Spaces · Mapping</div>
+            <div class="infa-item-title">Trailing Spaces Breaking the Mapping</div>
+            <div class="infa-item-desc">Even a single trailing space in a field will break the mapping. It looks correct on screen. A trailing space on one participant can block the entire load or cause incorrect mapping for that row.</div>
+          </div>
+          <div class="infa-badge err">SILENT</div>
+        </div>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Load fails or maps incorrectly — no obvious error</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Use =TRIM() on suspect columns to strip trailing and leading spaces</div>
+          <div>2. Paste-special values only after TRIM, then delete the helper column</div>
+          <div>3. Use =LEN() comparisons to quickly spot length discrepancies that indicate hidden spaces</div>
+          <div>4. Focus on name fields, case numbers, and fund codes — most common offenders</div>
+        </div>
+      </div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Error · Source Mapping · Column Order</div>
+            <div class="infa-item-title">"Source ID Does Not Exist" — But It Clearly Does</div>
+            <div class="infa-item-desc">The error says a source ID doesn't exist, but you can see it right there in the file. The real cause is almost always a column order issue — a blank column where data is expected, or an extra column shifting everything off.</div>
+          </div>
+          <div class="infa-badge err">ERR</div>
+        </div>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Error: Source ID [X] does not exist</div>
+          <div style="color:#5a5248;font-style:italic;">Common causes:</div>
+          <div>1. Alt+Enter (line break) inside a description or notes cell — pushes column order off</div>
+          <div>2. Required end-of-row fields left blank — throws off the expected column count</div>
+          <div>3. Extra empty column inserted somewhere in the file</div>
+          <div style="margin-top:6px;color:#5a5248;font-style:italic;">Fix: Review each column carefully. Ensure all required end fields are filled. Remove any Alt+Enter line breaks from cells.</div>
+        </div>
+      </div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Error · CIT Balances · SSN</div>
+            <div class="infa-item-title">Kickouts for SSNs with Fewer Than 9 Digits</div>
+            <div class="infa-item-desc">Informatica will generate kickouts for any participant whose SSN is fewer than 9 digits. Not a blocking error — just noisy output. Add leading zeros to bring every SSN to 9 digits to get a clean run.</div>
+          </div>
+          <div class="infa-badge err">ERR</div>
+        </div>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Kickout: SSN does not contain 9 digits</div>
+          <div style="color:#5a5248;font-style:italic;">Fix (optional — cleans up output):</div>
+          <div>1. In Excel: =TEXT(A2,"000000000") to pad SSN to 9 digits with leading zeros</div>
+          <div>2. Paste-special values only, then replace the original column</div>
+          <div>3. Re-run — kickouts will be gone and output will be clean</div>
+        </div>
+      </div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Error · CIT Balances · Enrollment</div>
+            <div class="infa-item-title">Kickouts for Participants Not Yet Enrolled</div>
+            <div class="infa-item-desc">Informatica will kick out participants who are not yet enrolled in the system. The load freezes on those participants. Enroll them manually, then re-run. Once they're in the system, the load clears.</div>
+          </div>
+          <div class="infa-badge err">ERR</div>
+        </div>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Kickout: Participant [ID] not enrolled</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Note the participant IDs from the kickout output</div>
+          <div>2. Go into the system and manually enroll those participants</div>
+          <div>3. Re-run the workflow — they should now clear</div>
+        </div>
+      </div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Error · Cash Conversion · P2 Ref Number</div>
+            <div class="infa-item-title">Ref Number Total Differs by More Than $1</div>
+            <div class="infa-item-desc">For cash conversions using a P2 ref number, the total on the ref number must match the total in the import file. A difference of more than $1 throws an error. The P2 ref number setup and the import file were built from different numbers.</div>
+          </div>
+          <div class="infa-badge err">ERR</div>
+        </div>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ Error: Ref number total and import total differ by more than $1.00</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Compare the dollar amount on the P2 ref number vs. the total on your import file</div>
+          <div>2. Identify which one is wrong — usually the import file was built with different numbers</div>
+          <div>3. Correct the discrepancy and re-run</div>
+        </div>
+      </div>
+
+      <div class="infa-item" data-infa-cat="troubleshoot">
+        <div class="infa-item-header">
+          <div class="infa-item-left">
+            <div class="infa-item-tag">Error · Effective Date · Day of Wire</div>
+            <div class="infa-item-title">Wrong Effective Date — Must Delete and Reload</div>
+            <div class="infa-item-desc">For Day of Wire workflows, effective dates are set in the parameter file. For transferring kinds, the date must be the liquidation date. If you load with the wrong date, you must delete those ref numbers and rebuild with the correct date — no in-place correction.</div>
+          </div>
+          <div class="infa-badge err">ERR</div>
+        </div>
+        <div style="margin-top:10px;padding:14px 18px;background:#1a1614;border:1.5px solid var(--paper3);border-left:4px solid #c0392b;font-family:var(--mono);font-size:10px;color:#d4c9b8;line-height:1.9;">
+          <div style="color:#c0392b;margin-bottom:6px;">✗ P3 shows incorrect effective date on the pending tab</div>
+          <div style="color:#5a5248;font-style:italic;">Fix:</div>
+          <div>1. Go to P3 → verify the effective date shown on the pending tab</div>
+          <div>2. If incorrect: delete all ref numbers that were loaded</div>
+          <div>3. Update the parameter file with the correct effective date</div>
+          <div>4. Rebuild and reload the file from scratch</div>
+          <div style="margin-top:6px;">Note: There are two date fields in the parameter file — one for mapping, one for transferring kinds. Make sure you're updating the correct one.</div>
+        </div>
       </div>
 
     </div><!-- end #infaContent -->
@@ -9899,35 +9675,28 @@ function scrollToDept(id) {
     <!-- Sidebar -->
     <div class="right-sidebar">
       <div class="rsb-block">
-        <div class="rsb-title">STATS</div>
-        <div class="rsb-stat-row"><span class="rsb-stat-l">Total Items</span><span class="rsb-stat-n">24</span></div>
-        <div class="rsb-stat-row"><span class="rsb-stat-l">SQL Queries</span><span class="rsb-stat-n">08</span></div>
-        <div class="rsb-stat-row"><span class="rsb-stat-l">Workflows</span><span class="rsb-stat-n">05</span></div>
-        <div class="rsb-stat-row"><span class="rsb-stat-l">Error Fixes</span><span class="rsb-stat-n">06</span></div>
-        <div class="rsb-stat-row"><span class="rsb-stat-l">Tips</span><span class="rsb-stat-n">04</span></div>
-        <div class="rsb-stat-row"><span class="rsb-stat-l">Env Links</span><span class="rsb-stat-n">04</span></div>
+        <div class="rsb-title">SECTIONS</div>
+        <div class="rsb-stat-row"><span class="rsb-stat-l">Preparation</span><span class="rsb-stat-n">10</span></div>
+        <div class="rsb-stat-row"><span class="rsb-stat-l">Best Practices</span><span class="rsb-stat-n">07</span></div>
+        <div class="rsb-stat-row"><span class="rsb-stat-l">Troubleshooting</span><span class="rsb-stat-n">10</span></div>
+        <div class="rsb-stat-row"><span class="rsb-stat-l">Silent Errors</span><span class="rsb-stat-n">05</span></div>
       </div>
       <div class="rsb-block">
         <div class="rsb-title">JUMP TO</div>
-        <div class="rsb-link" onclick="infaScrollTo('sql')"><span class="rsb-link-num">01</span><span class="rsb-link-text">SQL &amp; Mapping Queries</span><span class="rsb-link-arr">→</span></div>
-        <div class="rsb-link" onclick="infaScrollTo('workflow')"><span class="rsb-link-num">02</span><span class="rsb-link-text">Workflows &amp; Sessions</span><span class="rsb-link-arr">→</span></div>
-        <div class="rsb-link" onclick="infaScrollTo('error')"><span class="rsb-link-num">03</span><span class="rsb-link-text">Errors &amp; Fixes</span><span class="rsb-link-arr">→</span></div>
-        <div class="rsb-link" onclick="infaScrollTo('tip')"><span class="rsb-link-num">04</span><span class="rsb-link-text">Tips &amp; Shortcuts</span><span class="rsb-link-arr">→</span></div>
-        <div class="rsb-link" onclick="infaScrollTo('link')"><span class="rsb-link-num">05</span><span class="rsb-link-text">Environment Links</span><span class="rsb-link-arr">→</span></div>
+        <div class="rsb-link" onclick="infaScrollTo('prep')"><span class="rsb-link-num">01</span><span class="rsb-link-text">Preparation</span><span class="rsb-link-arr">→</span></div>
+        <div class="rsb-link" onclick="infaScrollTo('bestpractice')"><span class="rsb-link-num">02</span><span class="rsb-link-text">Best Practices</span><span class="rsb-link-arr">→</span></div>
+        <div class="rsb-link" onclick="infaScrollTo('troubleshoot')"><span class="rsb-link-num">03</span><span class="rsb-link-text">Troubleshooting</span><span class="rsb-link-arr">→</span></div>
       </div>
       <div class="rsb-block">
         <div class="rsb-title">QUICK NOTE</div>
         <div style="font-family:var(--serif);font-size:11px;color:var(--dim);line-height:1.7;padding-top:4px;">
-          All SQL here uses <strong style="color:var(--ink);">:PARAM</strong> syntax for Informatica source qualifiers. Replace with <strong style="color:var(--ink);">$$PARAM</strong> when used in parameter files.<br><br>
-          Code blocks have a <strong style="color:var(--ink);">Copy</strong> button — click to copy to clipboard.
+          "Silent errors" are the most dangerous class of Informatica issue — the monitor shows <strong style="color:var(--ink);">Success</strong> but nothing loads. Five of the ten troubleshooting entries cover silent errors specifically.
         </div>
       </div>
     </div>
   </div>
 </div>
 <script>
-
-
 
 // ════════════════════════════════════════════════════════
 // INFORMATICA PAGE FUNCTIONS
@@ -9951,12 +9720,12 @@ function infaFilter(cat, el) {
   el.classList.add('on');
   const si = document.getElementById('infaSearchInput');
   if (si) si.value = '';
-  document.querySelectorAll('#infaContent .infa-item, #infaContent .infa-link-row').forEach(item => {
+  document.querySelectorAll('#infaContent .infa-item').forEach(item => {
     const match = cat === 'all' || item.dataset.infaCat === cat;
     item.classList.toggle('infa-hidden', !match);
   });
-  const tg = document.getElementById('infaTipsGrid');
-  if (tg) tg.classList.toggle('infa-hidden', cat !== 'all' && cat !== 'tip');
+  const bpGrid = document.getElementById('infaBPGrid');
+  if (bpGrid) bpGrid.classList.toggle('infa-hidden', cat !== 'all' && cat !== 'bestpractice');
   document.querySelectorAll('#infaContent .infa-group').forEach(g => {
     const match = cat === 'all' || g.dataset.infaCat === cat;
     g.classList.toggle('infa-hidden', !match);
@@ -9969,23 +9738,23 @@ function infaSearch(q) {
   const allTag = document.querySelector('#infaFilterTags [data-infa-filter="all"]');
   if (allTag) allTag.classList.add('on');
   if (!query) {
-    document.querySelectorAll('#infaContent [data-infa-cat]').forEach(i => i.classList.remove('infa-hidden'));
+    document.querySelectorAll('#infaContent .infa-item').forEach(i => i.classList.remove('infa-hidden'));
     document.querySelectorAll('#infaContent .infa-group').forEach(g => g.classList.remove('infa-hidden'));
-    const tg = document.getElementById('infaTipsGrid');
-    if (tg) tg.classList.remove('infa-hidden');
+    const bpGrid = document.getElementById('infaBPGrid');
+    if (bpGrid) bpGrid.classList.remove('infa-hidden');
     return;
   }
-  document.querySelectorAll('#infaContent .infa-item, #infaContent .infa-link-row').forEach(item => {
+  document.querySelectorAll('#infaContent .infa-item').forEach(item => {
     const text = item.innerText.toLowerCase();
     item.classList.toggle('infa-hidden', !text.includes(query));
   });
-  const tg = document.getElementById('infaTipsGrid');
-  if (tg) tg.classList.toggle('infa-hidden', !tg.innerText.toLowerCase().includes(query));
+  const bpGrid = document.getElementById('infaBPGrid');
+  if (bpGrid) bpGrid.classList.toggle('infa-hidden', !bpGrid.innerText.toLowerCase().includes(query));
   document.querySelectorAll('#infaContent .infa-group').forEach(g => {
     const cat = g.dataset.infaCat;
     let hasVisible = false;
-    document.querySelectorAll(`#infaContent [data-infa-cat="${cat}"]:not(.infa-group):not(.infa-hidden)`).forEach(() => hasVisible = true);
-    if (cat === 'tip' && tg && !tg.classList.contains('infa-hidden')) hasVisible = true;
+    document.querySelectorAll(`#infaContent .infa-item[data-infa-cat="${cat}"]:not(.infa-hidden)`).forEach(() => hasVisible = true);
+    if (cat === 'bestpractice' && bpGrid && !bpGrid.classList.contains('infa-hidden')) hasVisible = true;
     g.classList.toggle('infa-hidden', !hasVisible);
   });
 }
@@ -9997,7 +9766,6 @@ function infaScrollTo(cat) {
     if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 50);
 }
-
 
 </script>
 

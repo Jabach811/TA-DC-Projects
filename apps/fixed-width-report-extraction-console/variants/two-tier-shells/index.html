@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two-Tier Shell Variants</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 28px;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: linear-gradient(160deg, #09121c 0%, #0f2233 42%, #d7e8f3 100%);
+      color: #eef6fb;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 24px; }
+    .hero {
+      padding: 28px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+      box-shadow: 0 22px 60px rgba(0,0,0,0.22);
+      backdrop-filter: blur(10px);
+    }
+    .hero span {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: #91d0fb;
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: .96; }
+    p { margin: 0; max-width: 760px; line-height: 1.6; color: #cadeec; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    a {
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: linear-gradient(180deg, rgba(240,247,252,0.95), rgba(223,236,245,0.9));
+      color: #173246;
+      text-decoration: none;
+      box-shadow: 0 18px 48px rgba(0,0,0,0.12);
+      display: grid;
+      gap: 8px;
+    }
+    a span { color: #5e86a2; font-size: .76rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
+    a strong { font-size: 1.55rem; line-height: 1; }
+    a em { font-style: normal; color: #5e7687; line-height: 1.5; }
+    @media (max-width: 760px) {
+      body { padding: 16px; }
+      .grid { grid-template-columns: 1fr; }
+      .hero { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span>Fixed-Width Extraction Console</span>
+      <h1>Two-Tier Shell Variants</h1>
+      <p>Ten shell-only design directions built around the same structure: source, input, and summary on top with parsed reports below. Open any concept to compare tone, spacing, and hierarchy without touching the real parser.</p>
+    </section>
+    <section class="grid">
+      <a href="12_Rivet_Control.html"><span>12</span><strong>Rivet Control</strong><em>Industrial command deck</em></a>
+      <a href="13_Porcelain_Matrix.html"><span>13</span><strong>Porcelain Matrix</strong><em>Soft precision interface</em></a>
+      <a href="14_Aero_Strip.html"><span>14</span><strong>Aero Strip</strong><em>Runway control aesthetic</em></a>
+      <a href="15_Redline_Desk.html"><span>15</span><strong>Redline Desk</strong><em>Marked-up review console</em></a>
+      <a href="16_Catalog_Hall.html"><span>16</span><strong>Catalog Hall</strong><em>Archival records room</em></a>
+      <a href="17_Electric_Docket.html"><span>17</span><strong>Electric Docket</strong><em>High-voltage operations shell</em></a>
+      <a href="18_Slate_Meridian.html"><span>18</span><strong>Slate Meridian</strong><em>Measured executive workspace</em></a>
+      <a href="19_Gilded_Grid.html"><span>19</span><strong>Gilded Grid</strong><em>Formal premium instrument</em></a>
+      <a href="20_Midnight_Ticket.html"><span>20</span><strong>Midnight Ticket</strong><em>Transit-inspired control board</em></a>
+      <a href="21_Oxblood_Roster.html"><span>21</span><strong>Oxblood Roster</strong><em>Boardroom archival ledger</em></a>
+      <a href="22_Export_Rail_Command.html"><span>22</span><strong>Export Rail Command</strong><em>Dedicated outbound action rail</em></a>
+    </section>
+  </main>
+</body>
+</html>

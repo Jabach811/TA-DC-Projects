@@ -16,9 +16,9 @@
 /* ══════════════════════════════════
    CHECKLIST PAGE
 ══════════════════════════════════ */
-.cl-layout{display:grid;grid-template-columns:minmax(360px,430px) 188px minmax(0,1fr) 260px;gap:18px;align-items:start;max-width:1720px;margin:0 auto;padding:22px 22px 44px;min-height:calc(100vh - 61px);}
+.cl-layout{display:grid;grid-template-columns:188px minmax(0,1fr) 260px;gap:18px;align-items:start;max-width:1720px;margin:0 auto;padding:22px 22px 44px;min-height:calc(100vh - 61px);}
 .check-utility-card{position:sticky;top:79px;height:calc(100vh - 101px);overflow:hidden;padding:18px 14px 16px;border:1px solid var(--border2);border-radius:18px;background:var(--surface);display:flex;flex-direction:column;box-shadow:0 18px 36px rgba(0,0,0,.12);}
-.plan-rail-col{display:flex;flex-direction:column;min-width:0;}
+.plan-rail-col{display:none;flex-direction:column;min-width:0;}
 .pr-section-title{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--border2);margin-bottom:14px;flex-shrink:0;}
 .pr-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-content:start;overflow:auto;padding-right:2px;}
 .pr-item{min-width:0;padding:11px 10px;border-radius:12px;border:1px solid var(--border);background:#ffffff06;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:8px;}
@@ -69,7 +69,7 @@ html:not(.dark-mode) .mc-go-today:hover{border-color:#94a3b8;color:var(--text);}
 /* ── STICKY PLAN BANNER ── */
 
 /* SIDEBAR */
-.sidebar{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:20px 16px;position:sticky;top:79px;height:calc(100vh - 101px);overflow-y:auto;display:flex;flex-direction:column;gap:16px;box-shadow:0 18px 36px rgba(0,0,0,.12);}
+.sidebar{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:20px 16px;position:sticky;top:79px;height:calc(100vh - 101px);overflow-y:auto;overflow-x:visible;display:flex;flex-direction:column;gap:16px;box-shadow:0 18px 36px rgba(0,0,0,.12);}
 .sb-section{display:flex;flex-direction:column;gap:6px;}
 .sb-label{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding:0 4px;margin-bottom:2px;}
 .sb-plan{background:#ffffff07;border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
@@ -87,13 +87,13 @@ html:not(.dark-mode) .mc-go-today:hover{border-color:#94a3b8;color:var(--text);}
 .sb-prog-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--yellow);}
 
 /* STATUS */
-.status-wrap{position:relative;}
+.status-wrap{position:relative;z-index:120;}
 .status-btn{width:100%;background:#ffffff07;border:1px solid var(--border2);border-radius:8px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .15s;}
 .status-btn:hover{border-color:#ffffff30;}
 .status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .status-name{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
 .status-caret{font-size:9px;color:var(--muted);}
-.status-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;z-index:100;display:none;}
+.status-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;z-index:300;display:none;}
 .status-dropdown.open{display:block;}
 .status-opt{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;transition:background .1s;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text);}
 .status-opt:hover{background:#ffffff08;}
@@ -122,7 +122,8 @@ html:not(.dark-mode) .mc-go-today:hover{border-color:#94a3b8;color:var(--text);}
 .plan-banner{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;position:sticky;top:0;z-index:40;transition:box-shadow .2s,border-color .2s,border-radius .15s;}
 .plan-banner.is-sticky{border-radius:0 0 12px 12px;border-top-color:transparent;}
 .pb-left{display:flex;flex-direction:column;gap:3px;}
-.pb-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);letter-spacing:.04em;}
+.pb-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);letter-spacing:.04em;font-weight:700;}
+.plan-banner.is-sticky .pb-title{font-size:32px;letter-spacing:.02em;}
 .pb-meta{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;}
 .pb-meta span{display:flex;align-items:center;gap:4px;}
 .pb-badges{display:flex;gap:6px;flex-wrap:wrap;}
@@ -326,11 +327,12 @@ html:not(.dark-mode) .mc-go-today:hover{border-color:#94a3b8;color:var(--text);}
 .cal-pill.future{border-left-color:#60a5fa;}
 .cal-side-list{display:flex;flex-direction:column;gap:10px;}
 .cal-side-item{padding:12px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);}
+.cal-side-plan{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
 .cal-side-day{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:var(--text);}
 .cal-side-date{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
 
 @media (max-width: 1400px){
-  .cl-layout{grid-template-columns:minmax(320px,1fr) 180px minmax(0,1fr);}
+  .cl-layout{grid-template-columns:180px minmax(0,1fr);}
   .sidebar{grid-column:1 / -1;position:relative;top:auto;height:auto;}
 }
 @media (max-width: 1180px){
@@ -1071,7 +1073,6 @@ function renderChecklist() {
           <div class="phase-prog-bar"><div class="phase-prog-fill" id="ppf-${p.id}" style="background:${p.color};width:0%"></div></div>
           <div class="phase-prog-txt" id="ppt-${p.id}">0/${p.tasks.length}</div>
         </div>
-        <button class="phase-bulk-btn" id="bulk-${p.id}" onclick="event.stopPropagation();bulkPhase('${p.id}')">&#10003; Complete All</button>
         <div class="phase-chevron">&#9662;</div>
       </div>
       <div class="phase-body" id="pt-${p.id}">${tHTML}</div>
@@ -1758,6 +1759,7 @@ function renderPayrollCalendar(){
   }
   const upcoming = allTasks.filter(t => t.date >= toYmd(new Date())).sort((a,b) => a.date.localeCompare(b.date)).slice(0,8).map(t => `
     <div class="cal-side-item">
+      <div class="cal-side-plan">${esc(S.planName || 'Untitled Plan')}</div>
       <div class="dash-plan-name">${esc(t.text)}</div>
       <div class="cal-side-date">${fmtDate(t.date)} · ${esc(t.phaseName)}</div>
     </div>`).join('');

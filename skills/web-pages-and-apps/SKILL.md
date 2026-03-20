@@ -33,6 +33,34 @@ Do not use this skill for:
 5. When adding dashboards or summaries, use the app's actual saved data and current state instead of inventing placeholder metrics.
 6. When doing any kind of design work, use Front End Skills to guide layout, styling, motion, and visual polish.
 
+## Integration Strategy
+
+For this workspace, large new parser flows or materially different app behaviors should usually be built in stages:
+
+1. Create a separate standalone prototype or provider-specific build first.
+2. Prove the parsing flow, layout behavior, and edge cases there.
+3. Only after that, wire the validated behavior into the main shared tool.
+
+This is the default approach when:
+- a new provider has unusual parsing rules
+- input mode changes, such as folder upload instead of file upload
+- the workflow introduces a different export or summary model
+- the risk of breaking the main app is non-trivial
+
+Integration rules:
+- Do not force major new flows directly into the main app first if a separate standalone will reduce risk and speed iteration.
+- Keep the standalone in its own app folder under `apps/`.
+- Once the flow is validated, port only the proven parts into the main app instead of copying unfinished experiments.
+- Tell the user when you are intentionally using a separate build as a safer staging layer.
+
+## Standalone File Rules
+
+When building standalone local tools in this workspace:
+- Prefer embedding JavaScript directly in the `.html` file.
+- Prefer embedding CSS directly in the `.html` file unless the user wants a reusable shared stylesheet.
+- Avoid separate `.js` dependencies for handoff files because they are harder for the user to attach, move, or share.
+- Only split JS into a separate file when there is a strong maintenance reason or when the user explicitly asks for that structure.
+
 ## Folder Standard
 
 For this workspace, new projects should be organized using this structure unless the user explicitly wants something else:

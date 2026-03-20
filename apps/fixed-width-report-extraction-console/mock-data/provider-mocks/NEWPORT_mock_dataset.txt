@@ -1,0 +1,9 @@
+TITLE1 NEWPORT MOCK DATA
+HD000000000NEWPORT MOCK SAVINGS PLAN          2025-12-31
+PT111223333                                                     JORDAN ADAMS                                                                                                                                                                                                   1988-04-12                                                                                                    AC                                           82000.50
+MT111223333EMP                         15250.75                                                                                                                                                 15250.75
+VA111223333EMPFUND000001         15250.75                         15250.75
+VA111223333RTHFUND000002          4800.20                          4800.20
+VA222334444MATFUND000001          9750.00                          9750.00
+PR1112233332024-01-01          6.0000                                                                                         3.5000
+FOOTER NEWPORT MOCK DATA
