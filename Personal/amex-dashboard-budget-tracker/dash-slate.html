@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AMEX Activity — Gerodias Family</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f7f5;
+    --card: #ffffff;
+    --text: #1c1a17;
+    --muted: #9c9891;
+    --border: #e8e4de;
+    --accent: #1c1a17;
+    --green: #3a6b4a;
+    --red: #8b2e2e;
+    --green-bg: #eef4f0;
+    --red-bg: #f8eded;
+  }
+
+  html { font-size: 14px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Header ─────────────────────────────────────────────── */
+  header {
+    background: var(--accent);
+    color: #f8f7f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 48px;
+    border-bottom: 1px solid #333;
+  }
+
+  header .brand {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  header .period {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(248,247,245,0.6);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Page wrapper ────────────────────────────────────────── */
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.5rem 2.5rem 4rem;
+  }
+
+  /* ── Section labels ──────────────────────────────────────── */
+  .section-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Stat cards ──────────────────────────────────────────── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+
+  .stat-card {
+    background: var(--card);
+    padding: 1.75rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .stat-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .stat-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.85rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+
+  /* ── Two-column sections ─────────────────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.75rem 1.5rem;
+  }
+
+  .panel-title {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── Monthly chart ───────────────────────────────────────── */
+  .chart-container {
+    position: relative;
+    height: 220px;
+  }
+
+  /* ── Category bars ───────────────────────────────────────── */
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cat-item {}
+
+  .cat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.35rem;
+  }
+
+  .cat-name {
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+
+  .cat-right {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .cat-amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .cat-pct {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  .bar-track {
+    height: 3px;
+    background: var(--border);
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.75;
+  }
+
+  /* ── Merchant list ───────────────────────────────────────── */
+  .merchant-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .merchant-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.75rem 0 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+
+  .merchant-item:first-child { border-top: 1px solid var(--border); }
+
+  .merchant-rank {
+    position: absolute;
+    left: -1.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .merchant-item.top-3 { border-left-color: var(--accent); }
+
+  .merchant-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .merchant-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .merchant-count {
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  .merchant-amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text);
+    text-align: right;
+  }
+
+  /* ── Budget goals ────────────────────────────────────────── */
+  .goal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .goal-item {}
+
+  .goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  .goal-name {
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+
+  .goal-amounts {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .goal-actual {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .goal-actual.over { color: var(--red); }
+  .goal-actual.under { color: var(--green); }
+
+  .goal-budget {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  .goal-track {
+    height: 3px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .goal-bar {
+    height: 100%;
+    max-width: 100%;
+  }
+
+  .goal-bar.under { background: var(--green); }
+  .goal-bar.over  { background: var(--red); }
+
+  .goal-marker {
+    position: absolute;
+    top: -2px;
+    width: 1px;
+    height: 7px;
+    background: var(--muted);
+    opacity: 0.5;
+  }
+
+  /* ── Transaction table ───────────────────────────────────── */
+  .table-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    width: fit-content;
+  }
+
+  .filter-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    transition: background 0.12s, color 0.12s;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+
+  .filter-tab:last-child { border-right: none; }
+
+  .filter-tab.active {
+    background: var(--card);
+    color: var(--text);
+  }
+
+  .filter-tab:hover:not(.active) {
+    background: var(--border);
+    color: var(--text);
+  }
+
+  .table-wrap {
+    border: 1px solid var(--border);
+    background: var(--card);
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  thead th.right { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.08s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #faf9f7; }
+
+  tbody td {
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  tbody td.date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  tbody td.amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  tbody td.category {
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  tbody td.member {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: transparent;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 3rem;
+  }
+
+  .footer-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 0.5rem;
+  }
+
+  .footer-stat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .footer-name {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .footer-amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+
+  .footer-pct {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  .footer-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 1rem;
+  }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Amex Activity</div>
+  <div class="period">Jan – Sep 2022</div>
+</header>
+
+<div class="page">
+
+  <!-- Stat Cards -->
+  <div class="stat-row" id="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Spend</div>
+      <div class="stat-value" id="stat-total"></div>
+      <div class="stat-sub">9 months, Jan – Sep 2022</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monthly Average</div>
+      <div class="stat-value" id="stat-avg"></div>
+      <div class="stat-sub">per month, all categories</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Transactions</div>
+      <div class="stat-value" id="stat-tx"></div>
+      <div class="stat-sub">charge transactions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Payments Made</div>
+      <div class="stat-value" id="stat-pay"></div>
+      <div class="stat-sub" id="stat-net"></div>
+    </div>
+  </div>
+
+  <!-- Monthly Chart + Category Bars -->
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-title">Monthly Charges vs Payments</div>
+      <div class="chart-container">
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Spend by Category</div>
+      <div class="cat-list" id="cat-list"></div>
+    </div>
+  </div>
+
+  <!-- Merchants + Budget Goals -->
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-title">Top Merchants</div>
+      <div class="merchant-list" id="merchant-list"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Monthly Budget Goals</div>
+      <div class="goal-list" id="goal-list"></div>
+    </div>
+  </div>
+
+  <!-- Transaction Table -->
+  <div class="table-section">
+    <div class="section-label">Recent Transactions</div>
+    <div class="filter-tabs" id="filter-tabs"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th class="right">Amount</th>
+            <th class="right">Member</th>
+          </tr>
+        </thead>
+        <tbody id="tx-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-label">Cardholders</span>
+    <div id="footer-members"></div>
+  </footer>
+
+</div>
+
+<script>
+const DATA = {"meta":{"name":"Gerodias Family","period":"Jan \u2013 Sep 2022","months":9,"total_charges":41400.14,"total_payments":37760.41,"net":3639.73,"tx_count":804,"monthly_avg":4600.02},"monthly":[{"month":"Jan","charges":5227.84,"payments":5293.38},{"month":"Feb","charges":3004.25,"payments":3145.61},{"month":"Mar","charges":4017.63,"payments":5095.13},{"month":"Apr","charges":4511.90,"payments":3570.97},{"month":"May","charges":5277.54,"payments":4703.77},{"month":"Jun","charges":5244.51,"payments":4959.16},{"month":"Jul","charges":5613.81,"payments":5071.36},{"month":"Aug","charges":5250.18,"payments":5849.07},{"month":"Sep","charges":3252.48,"payments":71.96}],"categories":[{"name":"Merchandise & Supplies","amount":19528.80,"pct":47.2},{"name":"Restaurant","amount":12960.49,"pct":31.3},{"name":"Other","amount":4339.10,"pct":10.5},{"name":"Transportation","amount":3224.16,"pct":7.8},{"name":"Business Services","amount":842.09,"pct":2.0},{"name":"Travel","amount":219.77,"pct":0.5},{"name":"Fees & Adjustments","amount":189.00,"pct":0.5},{"name":"Entertainment","amount":96.73,"pct":0.2}],"merchants":[{"name":"Save Mart #781","amount":3614.35,"count":90},{"name":"Safeway #2600","amount":3242.62,"count":52},{"name":"Meiko Sushi","amount":2101.82,"count":13},{"name":"FasTrak Tolls","amount":1765.00,"count":9},{"name":"Public Storage","amount":1720.00,"count":4},{"name":"Apple Online Store","amount":1519.84,"count":1},{"name":"Raley's","amount":1492.52,"count":40},{"name":"Amazon Marketplace","amount":1442.86,"count":30},{"name":"Apple.com/Bill","amount":1221.07,"count":47},{"name":"Tracy Honda","amount":945.24,"count":4}],"members":[{"name":"Margaret","amount":29707.00},{"name":"Marvin","amount":11693.14}],"transactions":[{"date":"09/14/2022","desc":"Amazing Kitchen Tracy","amount":15.94,"category":"Restaurant","member":"Margaret"},{"date":"09/14/2022","desc":"ARCO Gas Tracy","amount":51.72,"category":"Transportation","member":"Margaret"},{"date":"09/14/2022","desc":"McDonald's Pleasanton","amount":6.37,"category":"Restaurant","member":"Margaret"},{"date":"09/14/2022","desc":"Raley's Tracy","amount":25.20,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/14/2022","desc":"Safeway #2600 Tracy","amount":41.71,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/13/2022","desc":"Amazon.com","amount":108.10,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/13/2022","desc":"Amazon Marketplace","amount":30.30,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/12/2022","desc":"Safeway #2600 Tracy","amount":40.00,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/12/2022","desc":"Save Mart Tracy","amount":38.82,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/11/2022","desc":"DS135 Mountain Tracy","amount":30.29,"category":"Restaurant","member":"Margaret"},{"date":"09/11/2022","desc":"SP Hats in the Bel","amount":233.95,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/11/2022","desc":"Starbucks","amount":30.00,"category":"Restaurant","member":"Margaret"},{"date":"09/10/2022","desc":"Target Antioch","amount":83.76,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/10/2022","desc":"Tracy Honda","amount":233.08,"category":"Transportation","member":"Margaret"},{"date":"09/07/2022","desc":"Safeway #2600 Tracy","amount":71.88,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/07/2022","desc":"Save Mart Tracy","amount":71.37,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/06/2022","desc":"Amazing Kitchen Tracy","amount":26.58,"category":"Restaurant","member":"Margaret"},{"date":"09/06/2022","desc":"Safeway #2600 Tracy","amount":73.77,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/05/2022","desc":"Apple.com/Bill","amount":60.93,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/05/2022","desc":"Chick-fil-A Manteca","amount":36.62,"category":"Restaurant","member":"Margaret"},{"date":"09/04/2022","desc":"ARCO Gas Tracy","amount":64.17,"category":"Transportation","member":"Margaret"},{"date":"09/04/2022","desc":"Denny's Pleasanton","amount":54.81,"category":"Restaurant","member":"Margaret"},{"date":"09/04/2022","desc":"Raley's Tracy","amount":115.61,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/04/2022","desc":"Tommykatsu Livermore","amount":120.84,"category":"Restaurant","member":"Marvin"},{"date":"09/03/2022","desc":"Amazon Marketplace","amount":102.96,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/03/2022","desc":"Meiko Sushi Pleasanton","amount":110.00,"category":"Restaurant","member":"Marvin"},{"date":"08/29/2022","desc":"FasTrak CSC Tolls","amount":205.00,"category":"Other","member":"Margaret"},{"date":"08/28/2022","desc":"Raley's Tracy","amount":172.70,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"08/24/2022","desc":"Meiko Sushi Pleasanton","amount":119.09,"category":"Restaurant","member":"Marvin"},{"date":"08/20/2022","desc":"Public Storage","amount":430.00,"category":"Other","member":"Margaret"}]};
+
+const GOALS = [
+  { name: "Groceries",        budget: 1000, actual: 996  },
+  { name: "Restaurants",      budget: 800,  actual: 1440 },
+  { name: "Gas & Tolls",      budget: 400,  actual: 358  },
+  { name: "Online Shopping",  budget: 600,  actual: 651  },
+  { name: "Misc / Other",     budget: 300,  actual: 482  },
+  { name: "Total",            budget: 4500, actual: 4600 },
+];
+
+// ── Utilities ────────────────────────────────────────────────
+function fmt(n) {
+  return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtInt(n) {
+  return n.toLocaleString('en-US');
+}
+
+// ── Stat Cards ───────────────────────────────────────────────
+document.getElementById('stat-total').textContent = fmt(DATA.meta.total_charges);
+document.getElementById('stat-avg').textContent   = fmt(DATA.meta.monthly_avg);
+document.getElementById('stat-tx').textContent    = fmtInt(DATA.meta.tx_count);
+document.getElementById('stat-pay').textContent   = fmt(DATA.meta.total_payments);
+document.getElementById('stat-net').textContent   = fmt(DATA.meta.net) + ' outstanding balance';
+
+// ── Monthly Chart ────────────────────────────────────────────
+const ctx = document.getElementById('monthlyChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: DATA.monthly.map(m => m.month),
+    datasets: [
+      {
+        label: 'Charges',
+        data: DATA.monthly.map(m => m.charges),
+        backgroundColor: 'rgba(28,26,23,0.82)',
+        borderWidth: 0,
+        barPercentage: 0.55,
+        categoryPercentage: 0.75,
+      },
+      {
+        label: 'Payments',
+        data: DATA.monthly.map(m => m.payments),
+        backgroundColor: 'rgba(28,26,23,0.2)',
+        borderWidth: 0,
+        barPercentage: 0.55,
+        categoryPercentage: 0.75,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: { family: "'IBM Plex Sans'", size: 10 },
+          color: '#9c9891',
+          boxWidth: 10,
+          boxHeight: 10,
+          padding: 14,
+        }
+      },
+      tooltip: {
+        backgroundColor: '#1c1a17',
+        titleFont: { family: "'IBM Plex Sans'", size: 10, weight: '600' },
+        bodyFont: { family: "'IBM Plex Mono'", size: 11 },
+        padding: 10,
+        cornerRadius: 0,
+        callbacks: {
+          label: ctx => ' ' + fmt(ctx.raw)
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { color: '#e8e4de' },
+        ticks: {
+          font: { family: "'IBM Plex Sans'", size: 10 },
+          color: '#9c9891',
+        }
+      },
+      y: {
+        grid: { color: '#f0ede8', drawBorder: false },
+        border: { display: false, dash: [3, 3] },
+        ticks: {
+          font: { family: "'IBM Plex Mono'", size: 9 },
+          color: '#9c9891',
+          callback: v => '$' + (v / 1000).toFixed(0) + 'k',
+          maxTicksLimit: 6,
+        }
+      }
+    }
+  }
+});
+
+// ── Category Bars ────────────────────────────────────────────
+const catList = document.getElementById('cat-list');
+DATA.categories.forEach(cat => {
+  catList.innerHTML += `
+    <div class="cat-item">
+      <div class="cat-header">
+        <span class="cat-name">${cat.name}</span>
+        <div class="cat-right">
+          <span class="cat-amount">${fmt(cat.amount)}</span>
+          <span class="cat-pct">${cat.pct}%</span>
+        </div>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${cat.pct}%"></div>
+      </div>
+    </div>`;
+});
+
+// ── Merchant List ────────────────────────────────────────────
+const merchList = document.getElementById('merchant-list');
+DATA.merchants.forEach((m, i) => {
+  const top = i < 3 ? 'top-3' : '';
+  const txLabel = m.count === 1 ? 'transaction' : 'transactions';
+  merchList.innerHTML += `
+    <div class="merchant-item ${top}" style="position:relative;padding-left:1rem;">
+      <div class="merchant-left">
+        <span class="merchant-name">${m.name}</span>
+        <span class="merchant-count">${fmtInt(m.count)} ${txLabel}</span>
+      </div>
+      <span class="merchant-amount">${fmt(m.amount)}</span>
+    </div>`;
+});
+
+// ── Budget Goals ─────────────────────────────────────────────
+const goalList = document.getElementById('goal-list');
+GOALS.forEach(g => {
+  const over  = g.actual > g.budget;
+  const cls   = over ? 'over' : 'under';
+  // bar width: actual/budget capped at 100% for display, but visually show overflow indicator
+  const raw   = (g.actual / g.budget) * 100;
+  const barW  = Math.min(raw, 100);
+  const markerPct = Math.min((g.budget / Math.max(g.actual, g.budget)) * 100, 100);
+
+  goalList.innerHTML += `
+    <div class="goal-item">
+      <div class="goal-header">
+        <span class="goal-name">${g.name}</span>
+        <div class="goal-amounts">
+          <span class="goal-actual ${cls}">${fmt(g.actual)}</span>
+          <span class="goal-budget">/ ${fmt(g.budget)}</span>
+        </div>
+      </div>
+      <div class="goal-track">
+        <div class="goal-bar ${cls}" style="width:${barW}%"></div>
+        ${over ? `<div class="goal-marker" style="left:${markerPct}%"></div>` : ''}
+      </div>
+    </div>`;
+});
+
+// ── Transaction Table ────────────────────────────────────────
+const FILTER_CATS = ['All', 'Restaurant', 'Merchandise & Supplies', 'Transportation', 'Other'];
+let activeFilter = 'All';
+
+const tabsEl = document.getElementById('filter-tabs');
+FILTER_CATS.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-tab' + (cat === 'All' ? ' active' : '');
+  btn.textContent = cat;
+  btn.addEventListener('click', () => {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  });
+  tabsEl.appendChild(btn);
+});
+
+function renderTable() {
+  const tbody = document.getElementById('tx-body');
+  const rows = activeFilter === 'All'
+    ? DATA.transactions
+    : DATA.transactions.filter(t => t.category === activeFilter);
+
+  tbody.innerHTML = rows.map(t => `
+    <tr>
+      <td class="date">${t.date}</td>
+      <td>${t.desc}</td>
+      <td class="category">${t.category}</td>
+      <td class="amount">${fmt(t.amount)}</td>
+      <td class="member">${t.member}</td>
+    </tr>`).join('');
+}
+
+renderTable();
+
+// ── Footer Members ───────────────────────────────────────────
+const total = DATA.members.reduce((s, m) => s + m.amount, 0);
+const footerEl = document.getElementById('footer-members');
+DATA.members.forEach((m, i) => {
+  const pct = ((m.amount / total) * 100).toFixed(1);
+  if (i > 0) footerEl.innerHTML += `<span class="footer-divider"></span>`;
+  footerEl.innerHTML += `
+    <span class="footer-stat">
+      <span class="footer-name">${m.name}</span>
+      <span class="footer-amount">${fmt(m.amount)}</span>
+      <span class="footer-pct">${pct}%</span>
+    </span>`;
+});
+</script>
+</body>
+</html>

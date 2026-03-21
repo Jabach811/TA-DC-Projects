@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muted Minimal</title>
+  <style>
+    :root{--bg:#f4f1ec;--panel:#fff;--ink:#12100f;--muted:#746d66;--line:#d8d0c8;--accent:#2b5f78;--soft:#ece7e1;--good:#2f7b62;--bad:#b75a42}
+    *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+    .wrap{max-width:1260px;margin:0 auto;padding:26px}
+    .top{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px}
+    .k{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    h1{margin:8px 0 0;font:500 46px/1.04 Georgia,serif}
+    .filters{display:flex;gap:10px;flex-wrap:wrap}.pill{padding:11px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.75);color:var(--muted)}
+    .hero,.panel{background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:28px}
+    .hero{padding:28px;margin-bottom:18px}.hero p{margin:12px 0 0;max-width:760px;color:var(--muted);line-height:1.8}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+    .stat{padding:22px}.label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}.val{margin-top:14px;font-size:34px;font-weight:700}
+    .sub{margin-top:6px;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+    .panel{padding:22px}.panel h2{margin:0 0 14px;font:600 24px/1.1 Georgia,serif}
+    .bars{display:grid;gap:12px}.barrow{display:grid;grid-template-columns:180px 1fr 92px;gap:12px;align-items:center}.track{height:10px;background:var(--soft);border-radius:99px}.fill{height:100%;background:var(--accent);border-radius:99px}
+    .goals{display:grid;gap:12px}.goal{padding:14px;border:1px solid var(--line);border-radius:18px;background:#faf8f5}.goalhead{display:flex;justify-content:space-between;font-weight:600}.mini{margin-top:9px;height:8px;background:var(--soft);border-radius:99px;overflow:hidden}.mini>span{display:block;height:100%;background:var(--good)}
+    table{width:100%;border-collapse:collapse} th,td{padding:12px 0;border-bottom:1px solid var(--line);text-align:left;font-size:14px} th{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+    .neg{color:var(--bad)} .pos{color:var(--good)}
+    @media (max-width:980px){.stats,.grid{grid-template-columns:1fr}.barrow{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="k">Muted Minimal Prototype</div>
+        <h1>Amex budget dashboard</h1>
+      </div>
+      <div class="filters">
+        <div class="pill">Jan 2022 - Sep 2022</div>
+        <div class="pill">Margaret + Marvin</div>
+        <div class="pill">All categories</div>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="k">Overview</div>
+      <p>Built from the supplied Amex activity workbook. This concept keeps everything quiet and readable: soft cards, minimal charting, practical goal tracking, and merchant/category drill areas that can later become real filters.</p>
+    </section>
+
+    <section class="stats">
+      <div class="panel stat"><div class="label">Net Position</div><div class="val">$3,639.73</div><div class="sub">Payments and credits exceeded charges overall</div></div>
+      <div class="panel stat"><div class="label">Charges</div><div class="val">$41,400.14</div><div class="sub">824 transactions across the period</div></div>
+      <div class="panel stat"><div class="label">Payments</div><div class="val neg">-$37,760.41</div><div class="sub">Applied against the same statement window</div></div>
+      <div class="panel stat"><div class="label">Average Swipe</div><div class="val">$4.42</div><div class="sub">Average transaction amount in the detail sheet</div></div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Top categories</h2>
+        <div class="bars">
+          <div class="barrow"><div>Merchandise & Supplies</div><div class="track"><div class="fill" style="width:100%"></div></div><div>$19,167.91</div></div>
+          <div class="barrow"><div>Restaurant</div><div class="track"><div class="fill" style="width:68%"></div></div><div>$12,960.49</div></div>
+          <div class="barrow"><div>Other</div><div class="track"><div class="fill" style="width:23%"></div></div><div>$4,339.10</div></div>
+          <div class="barrow"><div>Transportation</div><div class="track"><div class="fill" style="width:17%"></div></div><div>$3,164.08</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Goal tracking</h2>
+        <div class="goals">
+          <div class="goal"><div class="goalhead"><span>Dining goal</span><span>$12,960 / $11,500</span></div><div class="mini"><span style="width:100%;background:#b75a42"></span></div></div>
+          <div class="goal"><div class="goalhead"><span>Fuel goal</span><span>$2,173 / $2,400</span></div><div class="mini"><span style="width:91%"></span></div></div>
+          <div class="goal"><div class="goalhead"><span>Groceries goal</span><span>$8,950 / $9,500</span></div><div class="mini"><span style="width:94%"></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" style="margin-top:18px">
+      <div class="panel">
+        <h2>Top merchants</h2>
+        <table>
+          <thead><tr><th>Merchant</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>SAVE MART #781.TRACY</td><td>$3,614.35</td></tr>
+            <tr><td>SAFEWAY #2600</td><td>$3,230.74</td></tr>
+            <tr><td>MEIKO SUSHI RESTAURA</td><td>$2,101.82</td></tr>
+            <tr><td>FASTRAK CSC TOLLS</td><td>$1,765.00</td></tr>
+            <tr><td>PUBLIC STORAGE 2912</td><td>$1,720.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>Monthly movement</h2>
+        <table>
+          <thead><tr><th>Month</th><th>Net</th></tr></thead>
+          <tbody>
+            <tr><td>January</td><td class="neg">-$65.54</td></tr>
+            <tr><td>March</td><td class="neg">-$1,077.50</td></tr>
+            <tr><td>April</td><td class="pos">$940.93</td></tr>
+            <tr><td>August</td><td class="neg">-$598.89</td></tr>
+            <tr><td>September</td><td class="pos">$3,180.52</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

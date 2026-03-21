@@ -1,0 +1,26 @@
+Case Number,Plan Name,Data Consultant,TM,TC,Effective Date,Conversion Status,Conversion Type,Payroll Vendor,Prior Recordkeeper
+C-26001,Acorn Industries 401(k) Plan,Ava Martin,Grace Miller,Zoe Bryant,2026-04-01,In Conversion,Conversion (Internal),ADP,Fidelity
+C-26002,Bridgeway Logistics Retirement Plan,Liam Brooks,Henry Collins,Leo Sanders,2026-04-01,In Conversion,Start-up (New Client),Paychex,
+C-26003,Crescent Medical Group 401(k),Mia Patel,Isla Bennett,Mila Ross,2026-05-01,Transitioned,Merger (External),Workday,Vanguard
+C-26004,Delta Freight Solutions Savings Plan,Noah Turner,Jack Perry,Wyatt Jenkins,2026-05-01,Transitioned (with o/s tasks),Conversion,Ceridian,Empower
+C-26005,Evergreen Capital Retirement Trust,Ella Kim,Chloe Foster,Aria Bell,2026-04-01,In Conversion,Conversion (Add-on),Paycom,Principal
+C-26006,Foundry Steel Works 401(k) Plan,Mason Reed,Logan Diaz,Isaac Fisher,2026-06-01,Cancelled,JUNK OR CANCELLED,ADP,Transamerica
+C-26007,Granite Construction Employee Plan,Sofia Carter,Nora Simmons,Layla Cooper,2026-05-01,Transitioned,Conversion (Internal),Gusto,Voya
+C-26008,Harbor View Financial Group Plan,Ethan Hayes,Owen Price,Julian Cox,2026-07-01,In Conversion,Start-up (Inforce Add),Paylocity,T. Rowe Price
+C-26009,Ironwood Manufacturing 401(k),Ava Martin,Grace Miller,Zoe Bryant,2026-04-01,Transitioned,Merger (Internal),UKG,John Hancock
+C-26010,Juniper Health Systems Pension Plan,Liam Brooks,Henry Collins,Leo Sanders,2026-06-01,In Conversion,Conversion (Internal),Paychex,MassMutual
+C-26011,Keystone Energy Retirement Plan,Mia Patel,Isla Bennett,Mila Ross,2026-05-01,Transitioned (with o/s tasks),Benefitfocus,Heartland,Lincoln Financial
+C-26012,Lakeside Brewing Co. 401(k) Plan,Noah Turner,Jack Perry,Wyatt Jenkins,2026-07-01,Transitioned,Spin-off (Internal),Paycor,Nationwide
+C-26013,Meridian Tech Solutions Savings Plan,Ella Kim,Chloe Foster,Aria Bell,2026-04-01,In Conversion,Start-up (New Client),Workday,
+C-26014,Northgate Realty Group 401(k),Mason Reed,Logan Diaz,Isaac Fisher,2026-06-01,Cancelled,JUNK OR CANCELLED,ADP,Fidelity
+C-26015,Oakwood Pharmaceuticals Retirement,Sofia Carter,Nora Simmons,Layla Cooper,2026-05-01,Transitioned,Conversion (Internal),Ceridian,TIAA
+C-26016,Pinnacle Aerospace Employee Plan,Ethan Hayes,Owen Price,Julian Cox,2026-04-01,In Conversion,Merger (External),Paycom,Ascensus
+C-26017,Redstone Ventures 401(k) Plan,Ava Martin,Grace Miller,Leo Sanders,2026-07-01,Transitioned (with o/s tasks),Conversion (Add-on),Gusto,Schwab
+C-26018,Silverline Staffing Retirement Plan,Liam Brooks,Henry Collins,Mila Ross,2026-05-01,In Conversion,Start-up (Inforce Add),Paylocity,Newport Group
+C-26019,Thornbury Foods 401(k) Plan,Mia Patel,Jack Perry,Wyatt Jenkins,2026-06-01,Transitioned,Conversion (Internal),UKG,Empower
+C-26020,United Fabricators Savings Plan,Noah Turner,Isla Bennett,Aria Bell,2026-04-01,In Conversion,Merger (Internal),Bamboo HR,Vanguard
+C-26021,Valor Defense Group Retirement,Ella Kim,Chloe Foster,Isaac Fisher,2026-07-01,Transitioned (with o/s tasks),Spin-off (Internal),Rippling,Principal
+C-26022,Westfield Consumer Brands 401(k),Mason Reed,Logan Diaz,Layla Cooper,2026-05-01,Cancelled,JUNK OR CANCELLED,Namely,Transamerica
+C-26023,Xcel Distribution Partners Plan,Sofia Carter,Nora Simmons,Julian Cox,2026-06-01,Transitioned,Benefitfocus,TriNet,John Hancock
+C-26024,Yellowstone Media Group 401(k),Ethan Hayes,Owen Price,Zoe Bryant,2026-04-01,In Conversion,Conversion (Internal),Paycor,T. Rowe Price
+C-26025,Zenith Renewable Energy Plan,Ava Martin,Grace Miller,Leo Sanders,2026-07-01,Transitioned,Start-up (New Client),ADP,

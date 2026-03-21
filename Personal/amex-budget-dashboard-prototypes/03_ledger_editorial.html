@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ledger Editorial</title>
+  <style>
+    :root{--paper:#f5f1eb;--paper2:#fff;--ink:#0f0d0a;--ink2:#3a3530;--muted:#9e9890;--rule:#e2ddd6;--red:#c8290a;--redbg:rgba(200,41,10,.06)}
+    *{box-sizing:border-box} body{margin:0;font-family:"IBM Plex Sans","Segoe UI",sans-serif;background:var(--paper);color:var(--ink)}
+    .layout{display:grid;grid-template-columns:210px 1fr;min-height:100vh}
+    .side{background:var(--paper2);border-right:1px solid var(--rule);padding:24px 20px}
+    .brand{font-family:"Bebas Neue",sans-serif;font-size:28px;letter-spacing:3px}.sub{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+    .nav{margin-top:28px;display:grid;gap:8px}.nav div{padding:10px 12px;border-left:2px solid transparent;color:var(--ink2)}.nav .active{border-left-color:var(--red);background:var(--redbg);color:var(--red)}
+    .main{padding:28px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.top h1{margin:0;font:500 22px/1 "Bebas Neue",sans-serif;letter-spacing:3px}.tag{font-size:11px;color:var(--muted)}
+    .lead{background:var(--paper2);border:1px solid var(--rule);padding:28px;margin-bottom:20px}
+    .leadk{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    .headline{margin:12px 0 12px;font:500 48px/1.04 "Playfair Display",Georgia,serif;max-width:760px}
+    .lead p{max-width:760px;line-height:1.9;color:var(--ink2)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .stat{background:var(--paper2);border:1px solid var(--rule);padding:22px}.sl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}.sv{margin-top:12px;font:500 38px/1 "Bebas Neue",sans-serif;letter-spacing:1px}.ss{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.7}
+    .two{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+    .panel{background:var(--paper2);border:1px solid var(--rule);padding:22px}
+    .panel h2{margin:0 0 14px;font:500 16px/1 "Bebas Neue",sans-serif;letter-spacing:2px}
+    .story{display:grid;gap:10px}
+    .story-item{padding:14px 0;border-bottom:1px solid var(--rule)} .story-item:last-child{border-bottom:none}
+    .story-title{font-size:14px;font-weight:600}.story-sub{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.7}
+    .bands{display:grid;gap:12px}.band .topline{display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px}.track{height:9px;background:#efebe5}.fill{height:100%;background:var(--red)}
+    @media (max-width:1020px){.layout{grid-template-columns:1fr}.side{display:none}.stats,.two{grid-template-columns:1fr}}
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <div class="brand">AMEX</div>
+      <div class="sub">Ledger Editorial</div>
+      <div class="nav">
+        <div class="active">Overview</div>
+        <div>Category Story</div>
+        <div>Merchant Story</div>
+        <div>Goals</div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="top"><h1>Budget Ledger</h1><div class="tag">Jan 01, 2022 to Sep 14, 2022</div></div>
+      <section class="lead">
+        <div class="leadk">Financial Snapshot</div>
+        <div class="headline">A narrative dashboard for spending, goals, and category drift.</div>
+        <p>This concept treats the workbook more like a budget publication than a software screen. It is built for someone who wants context, story, and category movement first, with the numbers framed like an editorial report.</p>
+      </section>
+      <section class="stats">
+        <div class="stat"><div class="sl">Total Charges</div><div class="sv">$41,400</div><div class="ss">Across 824 transactions in the source sheet.</div></div>
+        <div class="stat"><div class="sl">Credits</div><div class="sv">-$37,760</div><div class="ss">Payments and credits applied in the same statement range.</div></div>
+        <div class="stat"><div class="sl">Ending Total</div><div class="sv">$3,639</div><div class="ss">Net combined result from the summary tab.</div></div>
+        <div class="stat"><div class="sl">Largest Merchant</div><div class="sv">$3,614</div><div class="ss">Save Mart leads total spend in this snapshot.</div></div>
+      </section>
+      <section class="two">
+        <div class="panel">
+          <h2>What this file says</h2>
+          <div class="story">
+            <div class="story-item"><div class="story-title">Merchandise and supplies dominates the file.</div><div class="story-sub">$19,167.91 lands in that bucket, making it the largest planning target by far.</div></div>
+            <div class="story-item"><div class="story-title">Dining is not just dining.</div><div class="story-sub">Restaurants and bar/café spend combine into a meaningful lifestyle pattern that likely deserves its own tracked goal.</div></div>
+            <div class="story-item"><div class="story-title">September spikes hard positive.</div><div class="story-sub">The workbook shows $3,180.52 in September net movement, a major swing from the negative months earlier in the year.</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Category bands</h2>
+          <div class="bands">
+            <div class="band"><div class="topline"><span>Merchandise & Supplies</span><span>$19,167.91</span></div><div class="track"><div class="fill" style="width:100%"></div></div></div>
+            <div class="band"><div class="topline"><span>Restaurant</span><span>$12,960.49</span></div><div class="track"><div class="fill" style="width:67%"></div></div></div>
+            <div class="band"><div class="topline"><span>Transportation</span><span>$3,164.08</span></div><div class="track"><div class="fill" style="width:16%"></div></div></div>
+            <div class="band"><div class="topline"><span>Business Services</span><span>$842.09</span></div><div class="track"><div class="fill" style="width:4.4%"></div></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

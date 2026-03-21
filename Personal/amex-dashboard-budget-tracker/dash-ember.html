@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMEX Spending Report — Gerodias Family</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f2ede4;
+    --card: #ffffff;
+    --ink: #0f0d0a;
+    --muted: #9e9890;
+    --border: #e0dbd2;
+    --accent: #c8290a;
+    --accent-light: #f5e8e5;
+    --green: #1a6b3c;
+    --green-light: #e6f2ec;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── STICKY HEADER ── */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--ink);
+    color: #f2ede4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 60px;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .site-header .brand {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 0.06em;
+    color: #f2ede4;
+  }
+
+  .site-header .meta {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .site-header .meta .period {
+    color: #f2ede4;
+    font-weight: 600;
+  }
+
+  .site-header .meta .sep {
+    width: 1px;
+    height: 18px;
+    background: #3a3835;
+  }
+
+  .site-header .amex-badge {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px 2px;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  /* ── HERO RIBBON ── */
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 40px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .hero-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 40px;
+    position: relative;
+  }
+
+  .hero-stat:first-child { padding-left: 0; }
+  .hero-stat:last-child { padding-right: 0; }
+
+  .hero-stat + .hero-stat::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10%;
+    height: 80%;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .hero-stat .label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .hero-stat .value {
+    font-family: var(--font-display);
+    font-size: 80px;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .hero-stat.primary .value {
+    font-size: 100px;
+    color: var(--ink);
+  }
+
+  .hero-stat .value.accent { color: var(--accent); }
+
+  .hero-stat .sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .hero-dash {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--border);
+    font-family: var(--font-display);
+    font-size: 36px;
+    flex-shrink: 0;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 36px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── THREE-COLUMN GRID ── */
+  .three-col {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .three-col > * {
+    background: var(--card);
+    padding: 28px 28px 24px;
+  }
+
+  /* ── CHART PANEL ── */
+  .chart-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .chart-title .chart-sub {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 240px;
+  }
+
+  /* ── CATEGORY LIST ── */
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 12px;
+  }
+
+  .cat-row:last-child { margin-bottom: 0; }
+
+  .cat-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+  }
+
+  .cat-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+  }
+
+  .cat-amount {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .cat-bar-track {
+    height: 3px;
+    background: var(--border);
+    width: 100%;
+    position: relative;
+  }
+
+  .cat-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .cat-pct {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* ── MERCHANTS ── */
+  .merchant-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .merchant-row:last-child { border-bottom: none; }
+
+  .merchant-num {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--border);
+    line-height: 1;
+    width: 26px;
+    flex-shrink: 0;
+  }
+
+  .merchant-info {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .merchant-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .merchant-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .merchant-amount {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* ── BUDGET SECTION ── */
+  .budget-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .budget-card {
+    background: var(--card);
+    padding: 22px 20px 18px;
+    position: relative;
+    border-top: 3px solid transparent;
+  }
+
+  .budget-card.over { border-top-color: var(--accent); }
+  .budget-card.under { border-top-color: var(--green); }
+
+  .budget-cat {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+    line-height: 1.1;
+    min-height: 40px;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .budget-numbers {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .budget-actual {
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .budget-slash {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .budget-limit {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .budget-bar-track {
+    height: 4px;
+    background: var(--border);
+    width: 100%;
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .budget-bar-fill {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    max-width: 100%;
+  }
+
+  .budget-bar-fill.over { background: var(--accent); }
+  .budget-bar-fill.under { background: var(--green); }
+
+  .budget-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .budget-status.over { color: var(--accent); }
+  .budget-status.under { color: var(--green); }
+
+  .status-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .status-icon.over { background: var(--accent); color: white; }
+  .status-icon.under { background: var(--green); color: white; }
+
+  /* ── TRANSACTION TABLE ── */
+  .tx-section { margin-bottom: 60px; }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    padding: 10px 18px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+    font-family: var(--font-body);
+  }
+
+  .filter-tab:hover { color: var(--ink); }
+
+  .filter-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tx-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+  }
+
+  thead tr {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 10px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th.right { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg); }
+
+  td {
+    padding: 11px 16px;
+    font-size: 13px;
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  td.date-col {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  td.desc-col {
+    font-weight: 500;
+  }
+
+  td.amount-col {
+    font-family: var(--font-display);
+    font-size: 18px;
+    text-align: right;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  td.cat-col {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  td.member-col {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  td.member-col.margaret { color: var(--accent); }
+  td.member-col.marvin { color: var(--ink); }
+
+  .cat-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .tx-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding: 12px 0 0;
+    text-align: right;
+  }
+
+  /* ── FOOTER SPLIT ── */
+  .footer-split {
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .footer-member {
+    padding: 36px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .footer-member .f-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .footer-member .f-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .footer-member .f-amount {
+    font-family: var(--font-display);
+    font-size: 64px;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    margin-top: 4px;
+  }
+
+  .footer-member.margaret .f-amount { color: var(--accent); }
+  .footer-member.marvin .f-amount { color: var(--ink); }
+
+  .footer-member .f-pct {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .footer-divider {
+    background: var(--border);
+    width: 1px;
+  }
+
+  /* ── PAGE FOOTER ── */
+  .page-footer {
+    padding: 24px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  .page-footer .pf-brand {
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .page-footer .pf-note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── HIDDEN ROWS ── */
+  .tx-row { display: table-row; }
+  .tx-row.hidden { display: none; }
+
+  /* ── NET INDICATOR ── */
+  .net-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    margin-top: 8px;
+    letter-spacing: 0.06em;
+  }
+
+  .payment-note {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  @media (max-width: 1100px) {
+    .three-col { grid-template-columns: 1fr; }
+    .budget-grid { grid-template-columns: repeat(3, 1fr); }
+    .hero { flex-wrap: wrap; gap: 24px; }
+    .hero-stat::before { display: none; }
+    .hero-dash { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header class="site-header">
+  <div class="brand">AMEX SPENDING REPORT</div>
+  <div class="meta">
+    <span class="period">Jan – Sep 2022</span>
+    <span class="sep"></span>
+    <span>Gerodias Family</span>
+    <span class="sep"></span>
+    <span class="amex-badge">CARD MEMBER</span>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- HERO RIBBON -->
+  <div class="hero">
+    <div class="hero-stat primary">
+      <div class="label">Total Charges</div>
+      <div class="value">$41,400</div>
+      <div class="net-chip">Net balance $3,639.73</div>
+      <div class="payment-note">Payments: $37,760.41</div>
+    </div>
+
+    <div class="hero-dash">—</div>
+
+    <div class="hero-stat">
+      <div class="label">Monthly Average</div>
+      <div class="value accent">$4,600</div>
+      <div class="sub">over 9 months</div>
+    </div>
+
+    <div class="hero-dash">—</div>
+
+    <div class="hero-stat">
+      <div class="label">Transactions</div>
+      <div class="value">804</div>
+      <div class="sub">Jan – Sep 2022</div>
+    </div>
+
+    <div class="hero-dash">—</div>
+
+    <div class="hero-stat">
+      <div class="label">Top Category</div>
+      <div class="value" style="font-size:44px; line-height:1.05;">MERCH &amp; SUPPLIES</div>
+      <div class="sub">47.2% of spend — $19,528.80</div>
+    </div>
+  </div>
+
+  <!-- SECTION LABEL -->
+  <div class="section-label">Spend Analysis</div>
+
+  <!-- THREE-COLUMN -->
+  <div class="three-col">
+
+    <!-- COL 1: MONTHLY CHART -->
+    <div>
+      <div class="chart-title">
+        Monthly Charges
+        <span class="chart-sub">Charges vs Payments</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- COL 2: CATEGORIES -->
+    <div>
+      <div class="panel-title">By Category</div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Merchandise & Supplies</span>
+          <span class="cat-amount">$19,528.80</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:47.2%"></div></div>
+        <div class="cat-pct">47.2%</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Restaurant</span>
+          <span class="cat-amount">$12,960.49</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:31.3%"></div></div>
+        <div class="cat-pct">31.3%</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Other</span>
+          <span class="cat-amount">$4,339.10</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:10.5%"></div></div>
+        <div class="cat-pct">10.5%</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Transportation</span>
+          <span class="cat-amount">$3,224.16</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:7.8%"></div></div>
+        <div class="cat-pct">7.8%</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Business Services</span>
+          <span class="cat-amount">$842.09</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:2.0%"></div></div>
+        <div class="cat-pct">2.0%</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Travel</span>
+          <span class="cat-amount">$219.77</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:0.5%"></div></div>
+        <div class="cat-pct">0.5%</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Fees & Adjustments</span>
+          <span class="cat-amount">$189.00</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:0.5%"></div></div>
+        <div class="cat-pct">0.5%</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-meta">
+          <span class="cat-name">Entertainment</span>
+          <span class="cat-amount">$96.73</span>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:0.2%"></div></div>
+        <div class="cat-pct">0.2%</div>
+      </div>
+    </div>
+
+    <!-- COL 3: TOP MERCHANTS -->
+    <div>
+      <div class="panel-title">Top Merchants</div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">01</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Save Mart #781</div>
+          <div class="merchant-count">90 transactions</div>
+        </div>
+        <div class="merchant-amount">$3,614.35</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">02</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Safeway #2600</div>
+          <div class="merchant-count">52 transactions</div>
+        </div>
+        <div class="merchant-amount">$3,242.62</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">03</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Meiko Sushi</div>
+          <div class="merchant-count">13 transactions</div>
+        </div>
+        <div class="merchant-amount">$2,101.82</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">04</div>
+        <div class="merchant-info">
+          <div class="merchant-name">FasTrak Tolls</div>
+          <div class="merchant-count">9 transactions</div>
+        </div>
+        <div class="merchant-amount">$1,765.00</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">05</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Public Storage</div>
+          <div class="merchant-count">4 transactions</div>
+        </div>
+        <div class="merchant-amount">$1,720.00</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">06</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Apple Online Store</div>
+          <div class="merchant-count">1 transaction</div>
+        </div>
+        <div class="merchant-amount">$1,519.84</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">07</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Raley's</div>
+          <div class="merchant-count">40 transactions</div>
+        </div>
+        <div class="merchant-amount">$1,492.52</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">08</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Amazon Marketplace</div>
+          <div class="merchant-count">30 transactions</div>
+        </div>
+        <div class="merchant-amount">$1,442.86</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">09</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Apple.com/Bill</div>
+          <div class="merchant-count">47 transactions</div>
+        </div>
+        <div class="merchant-amount">$1,221.07</div>
+      </div>
+
+      <div class="merchant-row">
+        <div class="merchant-num">10</div>
+        <div class="merchant-info">
+          <div class="merchant-name">Tracy Honda</div>
+          <div class="merchant-count">4 transactions</div>
+        </div>
+        <div class="merchant-amount">$945.24</div>
+      </div>
+    </div>
+
+  </div><!-- /three-col -->
+
+  <!-- BUDGET SECTION -->
+  <div class="section-label">Monthly Budget Tracking</div>
+
+  <div class="budget-grid">
+
+    <!-- Groceries $1,000 actual $996 UNDER -->
+    <div class="budget-card under">
+      <div class="budget-cat">Groceries</div>
+      <div class="budget-numbers">
+        <div class="budget-actual">$996</div>
+        <div class="budget-slash">/</div>
+        <div class="budget-limit">$1,000</div>
+      </div>
+      <div class="budget-bar-track">
+        <div class="budget-bar-fill under" style="width:99.6%"></div>
+      </div>
+      <div class="budget-status under">
+        <div class="status-icon under">✓</div>
+        Under by $4
+      </div>
+    </div>
+
+    <!-- Restaurants $800 actual $1,440 OVER -->
+    <div class="budget-card over">
+      <div class="budget-cat">Restaurants</div>
+      <div class="budget-numbers">
+        <div class="budget-actual" style="color:var(--accent)">$1,440</div>
+        <div class="budget-slash">/</div>
+        <div class="budget-limit">$800</div>
+      </div>
+      <div class="budget-bar-track">
+        <div class="budget-bar-fill over" style="width:100%"></div>
+      </div>
+      <div class="budget-status over">
+        <div class="status-icon over">✕</div>
+        Over by $640
+      </div>
+    </div>
+
+    <!-- Gas $400 actual $358 UNDER -->
+    <div class="budget-card under">
+      <div class="budget-cat">Gas</div>
+      <div class="budget-numbers">
+        <div class="budget-actual">$358</div>
+        <div class="budget-slash">/</div>
+        <div class="budget-limit">$400</div>
+      </div>
+      <div class="budget-bar-track">
+        <div class="budget-bar-fill under" style="width:89.5%"></div>
+      </div>
+      <div class="budget-status under">
+        <div class="status-icon under">✓</div>
+        Under by $42
+      </div>
+    </div>
+
+    <!-- Online $600 actual $651 OVER -->
+    <div class="budget-card over">
+      <div class="budget-cat">Online</div>
+      <div class="budget-numbers">
+        <div class="budget-actual" style="color:var(--accent)">$651</div>
+        <div class="budget-slash">/</div>
+        <div class="budget-limit">$600</div>
+      </div>
+      <div class="budget-bar-track">
+        <div class="budget-bar-fill over" style="width:100%"></div>
+      </div>
+      <div class="budget-status over">
+        <div class="status-icon over">✕</div>
+        Over by $51
+      </div>
+    </div>
+
+    <!-- Misc $300 actual $482 OVER -->
+    <div class="budget-card over">
+      <div class="budget-cat">Misc</div>
+      <div class="budget-numbers">
+        <div class="budget-actual" style="color:var(--accent)">$482</div>
+        <div class="budget-slash">/</div>
+        <div class="budget-limit">$300</div>
+      </div>
+      <div class="budget-bar-track">
+        <div class="budget-bar-fill over" style="width:100%"></div>
+      </div>
+      <div class="budget-status over">
+        <div class="status-icon over">✕</div>
+        Over by $182
+      </div>
+    </div>
+
+    <!-- Total $4,500 actual $4,600 OVER -->
+    <div class="budget-card over" style="background:#fdf8f7;">
+      <div class="budget-cat">Total</div>
+      <div class="budget-numbers">
+        <div class="budget-actual" style="color:var(--accent); font-size:28px;">$4,600</div>
+        <div class="budget-slash">/</div>
+        <div class="budget-limit">$4,500</div>
+      </div>
+      <div class="budget-bar-track">
+        <div class="budget-bar-fill over" style="width:100%"></div>
+      </div>
+      <div class="budget-status over">
+        <div class="status-icon over">✕</div>
+        Over by $100
+      </div>
+    </div>
+
+  </div><!-- /budget-grid -->
+
+  <!-- TRANSACTION LOG -->
+  <div class="tx-section">
+    <div class="section-label">Transaction Log</div>
+
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="Merchandise &amp; Supplies">Merchandise</button>
+      <button class="filter-tab" data-filter="Restaurant">Restaurant</button>
+      <button class="filter-tab" data-filter="Transportation">Transportation</button>
+      <button class="filter-tab" data-filter="Other">Other</button>
+      <button class="filter-tab" data-filter="Margaret">Margaret</button>
+      <button class="filter-tab" data-filter="Marvin">Marvin</button>
+    </div>
+
+    <div class="tx-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Member</th>
+            <th class="right">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="txBody">
+          <tr class="tx-row" data-cat="Restaurant" data-member="Margaret">
+            <td class="date-col">09/14/2022</td>
+            <td class="desc-col">Amazing Kitchen Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$15.94</td>
+          </tr>
+          <tr class="tx-row" data-cat="Transportation" data-member="Margaret">
+            <td class="date-col">09/14/2022</td>
+            <td class="desc-col">ARCO Gas Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Transportation</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$51.72</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Margaret">
+            <td class="date-col">09/14/2022</td>
+            <td class="desc-col">McDonald's Pleasanton</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$6.37</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/14/2022</td>
+            <td class="desc-col">Raley's Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$25.20</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/14/2022</td>
+            <td class="desc-col">Safeway #2600 Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$41.71</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Marvin">
+            <td class="date-col">09/13/2022</td>
+            <td class="desc-col">Amazon.com</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col marvin">Marvin</td>
+            <td class="amount-col">$108.10</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Marvin">
+            <td class="date-col">09/13/2022</td>
+            <td class="desc-col">Amazon Marketplace</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col marvin">Marvin</td>
+            <td class="amount-col">$30.30</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/12/2022</td>
+            <td class="desc-col">Safeway #2600 Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$40.00</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/12/2022</td>
+            <td class="desc-col">Save Mart Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$38.82</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Margaret">
+            <td class="date-col">09/11/2022</td>
+            <td class="desc-col">DS135 Mountain Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$30.29</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Marvin">
+            <td class="date-col">09/11/2022</td>
+            <td class="desc-col">SP Hats in the Bel</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col marvin">Marvin</td>
+            <td class="amount-col">$233.95</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Margaret">
+            <td class="date-col">09/11/2022</td>
+            <td class="desc-col">Starbucks</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$30.00</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/10/2022</td>
+            <td class="desc-col">Target Antioch</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$83.76</td>
+          </tr>
+          <tr class="tx-row" data-cat="Transportation" data-member="Margaret">
+            <td class="date-col">09/10/2022</td>
+            <td class="desc-col">Tracy Honda</td>
+            <td class="cat-col"><span class="cat-pill">Transportation</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$233.08</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/07/2022</td>
+            <td class="desc-col">Safeway #2600 Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$71.88</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/07/2022</td>
+            <td class="desc-col">Save Mart Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$71.37</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Margaret">
+            <td class="date-col">09/06/2022</td>
+            <td class="desc-col">Amazing Kitchen Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$26.58</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/06/2022</td>
+            <td class="desc-col">Safeway #2600 Tracy</td>
+            <td class="cat-pill"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$73.77</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/05/2022</td>
+            <td class="desc-col">Apple.com/Bill</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$60.93</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Margaret">
+            <td class="date-col">09/05/2022</td>
+            <td class="desc-col">Chick-fil-A Manteca</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$36.62</td>
+          </tr>
+          <tr class="tx-row" data-cat="Transportation" data-member="Margaret">
+            <td class="date-col">09/04/2022</td>
+            <td class="desc-col">ARCO Gas Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Transportation</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$64.17</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Margaret">
+            <td class="date-col">09/04/2022</td>
+            <td class="desc-col">Denny's Pleasanton</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$54.81</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">09/04/2022</td>
+            <td class="desc-col">Raley's Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$115.61</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Marvin">
+            <td class="date-col">09/04/2022</td>
+            <td class="desc-col">Tommykatsu Livermore</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col marvin">Marvin</td>
+            <td class="amount-col">$120.84</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Marvin">
+            <td class="date-col">09/03/2022</td>
+            <td class="desc-col">Amazon Marketplace</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col marvin">Marvin</td>
+            <td class="amount-col">$102.96</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Marvin">
+            <td class="date-col">09/03/2022</td>
+            <td class="desc-col">Meiko Sushi Pleasanton</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col marvin">Marvin</td>
+            <td class="amount-col">$110.00</td>
+          </tr>
+          <tr class="tx-row" data-cat="Other" data-member="Margaret">
+            <td class="date-col">08/29/2022</td>
+            <td class="desc-col">FasTrak CSC Tolls</td>
+            <td class="cat-col"><span class="cat-pill">Other</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$205.00</td>
+          </tr>
+          <tr class="tx-row" data-cat="Merchandise & Supplies" data-member="Margaret">
+            <td class="date-col">08/28/2022</td>
+            <td class="desc-col">Raley's Tracy</td>
+            <td class="cat-col"><span class="cat-pill">Merchandise &amp; Supplies</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$172.70</td>
+          </tr>
+          <tr class="tx-row" data-cat="Restaurant" data-member="Marvin">
+            <td class="date-col">08/24/2022</td>
+            <td class="desc-col">Meiko Sushi Pleasanton</td>
+            <td class="cat-col"><span class="cat-pill">Restaurant</span></td>
+            <td class="member-col marvin">Marvin</td>
+            <td class="amount-col">$119.09</td>
+          </tr>
+          <tr class="tx-row" data-cat="Other" data-member="Margaret">
+            <td class="date-col">08/20/2022</td>
+            <td class="desc-col">Public Storage</td>
+            <td class="cat-col"><span class="cat-pill">Other</span></td>
+            <td class="member-col margaret">Margaret</td>
+            <td class="amount-col">$430.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tx-count" id="txCount">Showing 30 of 804 transactions — Jan through Sep 2022</div>
+  </div>
+
+  <!-- CARDHOLDER FOOTER -->
+  <div class="section-label">Cardholder Split</div>
+
+  <div class="footer-split">
+    <div class="footer-member margaret">
+      <div class="f-label">Primary Cardholder</div>
+      <div class="f-name">Margaret</div>
+      <div class="f-amount">$29,707</div>
+      <div class="f-pct">71.8% of total spend</div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-member marvin">
+      <div class="f-label">Additional Cardholder</div>
+      <div class="f-name">Marvin</div>
+      <div class="f-amount">$11,693</div>
+      <div class="f-pct">28.2% of total spend</div>
+    </div>
+  </div>
+
+  <!-- PAGE FOOTER -->
+  <div class="page-footer">
+    <div class="pf-brand">AMEX EMBER REPORT</div>
+    <div class="pf-note">Gerodias Family &nbsp;·&nbsp; Jan – Sep 2022 &nbsp;·&nbsp; 804 Transactions &nbsp;·&nbsp; $41,400.14 Total</div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  // ── CHART ──
+  const ctx = document.getElementById('monthlyChart').getContext('2d');
+
+  const monthly = [
+    { month: 'Jan', charges: 5227.84, payments: 5293.38 },
+    { month: 'Feb', charges: 3004.25, payments: 3145.61 },
+    { month: 'Mar', charges: 4017.63, payments: 5095.13 },
+    { month: 'Apr', charges: 4511.90, payments: 3570.97 },
+    { month: 'May', charges: 5277.54, payments: 4703.77 },
+    { month: 'Jun', charges: 5244.51, payments: 4959.16 },
+    { month: 'Jul', charges: 5613.81, payments: 5071.36 },
+    { month: 'Aug', charges: 5250.18, payments: 5849.07 },
+    { month: 'Sep', charges: 3252.48, payments: 71.96 }
+  ];
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: monthly.map(d => d.month),
+      datasets: [
+        {
+          label: 'Charges',
+          data: monthly.map(d => d.charges),
+          backgroundColor: '#c8290a',
+          borderRadius: 1,
+          barPercentage: 0.55,
+          categoryPercentage: 0.75
+        },
+        {
+          label: 'Payments',
+          data: monthly.map(d => d.payments),
+          backgroundColor: '#e0dbd2',
+          borderRadius: 1,
+          barPercentage: 0.55,
+          categoryPercentage: 0.75
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: "'IBM Plex Sans', sans-serif", size: 11 },
+            color: '#9e9890',
+            boxWidth: 10,
+            boxHeight: 10,
+            padding: 16
+          }
+        },
+        tooltip: {
+          backgroundColor: '#0f0d0a',
+          titleFont: { family: "'Bebas Neue', sans-serif", size: 16 },
+          bodyFont: { family: "'IBM Plex Mono', monospace", size: 12 },
+          padding: 12,
+          callbacks: {
+            label: ctx => {
+              const val = ctx.raw.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+              return ` ${ctx.dataset.label}: ${val}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: {
+            font: { family: "'IBM Plex Mono', monospace", size: 11 },
+            color: '#9e9890'
+          }
+        },
+        y: {
+          grid: {
+            color: '#e0dbd2',
+            lineWidth: 1
+          },
+          border: { display: false, dash: [2, 4] },
+          ticks: {
+            font: { family: "'IBM Plex Mono', monospace", size: 10 },
+            color: '#9e9890',
+            callback: val => '$' + (val / 1000).toFixed(0) + 'k'
+          }
+        }
+      }
+    }
+  });
+
+  // ── FILTER TABS ──
+  const tabs = document.querySelectorAll('.filter-tab');
+  const rows = document.querySelectorAll('.tx-row');
+  const txCount = document.getElementById('txCount');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filter = tab.dataset.filter;
+      let visible = 0;
+
+      rows.forEach(row => {
+        if (filter === 'all') {
+          row.classList.remove('hidden');
+          visible++;
+        } else {
+          const cat = row.dataset.cat;
+          const member = row.dataset.member;
+          const match = cat === filter || member === filter || cat.includes(filter);
+          if (match) {
+            row.classList.remove('hidden');
+            visible++;
+          } else {
+            row.classList.add('hidden');
+          }
+        }
+      });
+
+      if (filter === 'all') {
+        txCount.textContent = 'Showing 30 of 804 transactions — Jan through Sep 2022';
+      } else {
+        txCount.textContent = `Showing ${visible} of ${visible} filtered transactions`;
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Squircle Notes</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #E8E8ED;
+      --win-bg: rgba(255,255,255,0.68);
+      --win-border: rgba(0,0,0,0.12);
+      --bar-bg: rgba(248,248,250,0.92);
+      --col-bg: rgba(0,0,0,0.045);
+      --text: #1C1C1E;
+      --muted: #8A8A8E;
+      --accent: #007AFF;
+      --danger: #FF3B30;
+      --shadow-note: 0 2px 10px rgba(0,0,0,0.09), 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-note-hover: 0 8px 28px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.07);
+      --shadow-win: 0 24px 60px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg: #1C1C1E;
+      --win-bg: rgba(28,28,30,0.82);
+      --win-border: rgba(255,255,255,0.08);
+      --bar-bg: rgba(36,36,38,0.95);
+      --col-bg: rgba(255,255,255,0.05);
+      --text: #F2F2F7;
+      --muted: #636366;
+      --shadow-win: 0 24px 60px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    [data-theme="dark"] .note {
+      box-shadow:
+        inset 0  1px 0   rgba(255,255,255,0.12),
+        inset 0 -1px 0   rgba(0,0,0,0.25),
+        0  1px  3px  rgba(0,0,0,0.40),
+        0  4px  12px rgba(0,0,0,0.35),
+        0 14px  30px rgba(0,0,0,0.28);
+    }
+    [data-theme="dark"] .note:hover {
+      box-shadow:
+        inset 0  1px 0   rgba(255,255,255,0.14),
+        inset 0 -1px 0   rgba(0,0,0,0.25),
+        0  3px  8px  rgba(0,0,0,0.45),
+        0 10px  24px rgba(0,0,0,0.40),
+        0 24px  48px rgba(0,0,0,0.32);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 35%, rgba(118,100,210,0.09) 0%, transparent 100%),
+        radial-gradient(ellipse 50% 60% at 80% 15%, rgba(0,122,255,0.08) 0%, transparent 100%),
+        radial-gradient(ellipse 40% 50% at 55% 85%, rgba(52,199,89,0.05) 0%, transparent 100%),
+        var(--bg);
+      min-height: 100vh;
+      display: flex;
+      padding: 28px;
+      transition: background 0.35s ease;
+    }
+
+    /* ── Window ── */
+    .window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--win-bg);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--win-border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-win);
+      overflow: hidden;
+    }
+
+    /* ── Titlebar ── */
+    .titlebar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--bar-bg);
+      border-bottom: 1px solid var(--win-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .traffic-lights { display: flex; gap: 8px; }
+    .tl {
+      width: 13px; height: 13px; border-radius: 50%;
+      cursor: default; display: flex; align-items: center; justify-content: center;
+      font-size: 0; font-weight: 900; transition: filter 0.1s;
+    }
+    .tl:hover { font-size: 8px; filter: brightness(0.82); }
+    .tl.close    { background: #FF5F57; color: #870005; }
+    .tl.minimize { background: #FEBC2E; color: #6A4200; }
+    .tl.expand   { background: #28C840; color: #006214; }
+
+    .win-title {
+      flex: 1; text-align: center;
+      font-size: 13px; font-weight: 600;
+      color: var(--muted); letter-spacing: -0.1px;
+    }
+
+    .bar-actions { display: flex; gap: 6px; }
+
+    .bar-btn {
+      height: 28px; padding: 0 12px;
+      border: none; border-radius: 8px;
+      background: rgba(0,0,0,0.07);
+      color: var(--muted);
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 5px;
+      transition: all 0.15s;
+    }
+    [data-theme="dark"] .bar-btn { background: rgba(255,255,255,0.09); }
+    .bar-btn:hover { background: var(--accent); color: white; transform: translateY(-1px); }
+    .bar-btn.theme-btn { width: 28px; padding: 0; justify-content: center; font-size: 14px; }
+
+    /* ── Board ── */
+    .board {
+      flex: 1; display: flex; gap: 14px;
+      padding: 20px; overflow-x: auto; overflow-y: hidden;
+      align-items: flex-start;
+    }
+    .board::-webkit-scrollbar { height: 5px; }
+    .board::-webkit-scrollbar-track { background: transparent; }
+    .board::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+    [data-theme="dark"] .board::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+    /* ── Column ── */
+    .column {
+      width: 216px; flex-shrink: 0;
+      background: var(--col-bg);
+      border-radius: 14px;
+      padding: 11px 10px;
+      display: flex; flex-direction: column; gap: 8px;
+      max-height: 100%;
+    }
+
+    .col-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2px 4px 6px; gap: 6px;
+    }
+
+    .col-title-input {
+      flex: 1; background: none; border: none; outline: none;
+      font-family: inherit; font-size: 10.5px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px;
+      cursor: text; min-width: 0;
+    }
+    .col-title-input:focus {
+      background: rgba(0,122,255,0.1); border-radius: 4px;
+      padding: 2px 5px; margin: -2px -5px; letter-spacing: 0.5px;
+    }
+
+    .col-meta { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+    .col-count {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      background: rgba(0,0,0,0.07); border-radius: 10px;
+      padding: 1px 7px; min-width: 22px; text-align: center;
+    }
+    [data-theme="dark"] .col-count { background: rgba(255,255,255,0.1); }
+
+    .col-del-btn {
+      width: 16px; height: 16px; border-radius: 50%; border: none;
+      background: none; color: transparent; cursor: pointer; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; line-height: 1;
+    }
+    .column:hover .col-del-btn { color: var(--muted); }
+    .col-del-btn:hover { background: rgba(255,59,48,0.12) !important; color: var(--danger) !important; }
+
+    /* ── Drop Zone ── */
+    .drop-zone {
+      display: flex; flex-direction: column; gap: 8px;
+      min-height: 50px; border-radius: 10px; padding: 3px;
+      transition: background 0.2s, outline 0.2s;
+      overflow-y: auto; max-height: calc(100vh - 210px);
+    }
+    .drop-zone::-webkit-scrollbar { width: 0; }
+    .drop-zone.drag-over {
+      background: rgba(0,122,255,0.06);
+      outline: 2px dashed rgba(0,122,255,0.3);
+      outline-offset: -2px;
+    }
+
+    /* ── NOTE — The Star ── */
+    .note {
+      width: 100%; aspect-ratio: 1 / 1;
+      border-radius: 30%;
+      padding: 18px 16px 14px;
+      cursor: grab; display: flex; flex-direction: column;
+      position: relative; flex-shrink: 0;
+      /*
+        Fluent-style soft 3D:
+          inset top highlight  → gives the "raised button" top gleam
+          inset bottom edge    → grounds it with a subtle base shadow
+          layered drop shadows → soft floating depth, no hard lines
+      */
+      box-shadow:
+        inset 0  1px 0   rgba(255,255,255,0.82),
+        inset 0 -1px 0   rgba(0,0,0,0.06),
+        0  1px  2px rgba(0,0,0,0.07),
+        0  3px  8px rgba(0,0,0,0.06),
+        0 10px 22px rgba(0,0,0,0.05);
+      transition:
+        transform  0.22s cubic-bezier(0.34,1.56,0.64,1),
+        box-shadow 0.22s ease,
+        opacity    0.18s ease;
+    }
+    .note:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow:
+        inset 0  1px 0   rgba(255,255,255,0.88),
+        inset 0 -1px 0   rgba(0,0,0,0.06),
+        0  2px  4px  rgba(0,0,0,0.08),
+        0  8px  20px rgba(0,0,0,0.09),
+        0 20px  40px rgba(0,0,0,0.07);
+      z-index: 2;
+    }
+    .note:active { cursor: grabbing; transform: translateY(-1px) scale(1.01); }
+    .note.dragging { opacity: 0.35 !important; transform: scale(1.05) rotate(3deg) !important; }
+
+    /* Squircle palette */
+    .c-white  { background: #FFFFFF; }
+    .c-yellow { background: #FFF8C0; }
+    .c-pink   { background: #FFE2EE; }
+    .c-blue   { background: #DFF0FF; }
+    .c-green  { background: #E2F7E6; }
+    .c-purple { background: #EDE3FF; }
+    .c-orange { background: #FFF1D9; }
+    .c-mint   { background: #D9F7F2; }
+    .c-peach  { background: #FFE6DC; }
+
+    [data-theme="dark"] .c-white  { background: #3A3A3C; }
+    [data-theme="dark"] .c-yellow { background: #4A3E00; }
+    [data-theme="dark"] .c-pink   { background: #4A1A2C; }
+    [data-theme="dark"] .c-blue   { background: #002A4A; }
+    [data-theme="dark"] .c-green  { background: #0A3A18; }
+    [data-theme="dark"] .c-purple { background: #2E1A4A; }
+    [data-theme="dark"] .c-orange { background: #3E2200; }
+    [data-theme="dark"] .c-mint   { background: #0A2E28; }
+    [data-theme="dark"] .c-peach  { background: #3E1A0A; }
+
+    .note-text {
+      flex: 1; resize: none; border: none;
+      background: transparent; font-family: inherit;
+      font-size: 13px; line-height: 1.5; color: #1C1C1E;
+      outline: none; overflow: hidden;
+    }
+    [data-theme="dark"] .note-text { color: #ECECEC; }
+    .note-text::placeholder { color: rgba(0,0,0,0.22); }
+    [data-theme="dark"] .note-text::placeholder { color: rgba(255,255,255,0.2); }
+
+    .note-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 8px; opacity: 0; transition: opacity 0.15s;
+    }
+    .note:hover .note-footer { opacity: 1; }
+
+    .note-color-btn, .note-del-btn {
+      width: 22px; height: 22px; border-radius: 50%; border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; transition: all 0.15s; background: rgba(0,0,0,0.07);
+    }
+    [data-theme="dark"] .note-color-btn,
+    [data-theme="dark"] .note-del-btn { background: rgba(255,255,255,0.1); }
+
+    .note-color-btn { color: rgba(0,0,0,0.35); }
+    .note-color-btn:hover { transform: scale(1.15); background: rgba(0,0,0,0.11); }
+
+    .note-del-btn { color: rgba(255,59,48,0.5); background: rgba(255,59,48,0.07); }
+    .note-del-btn:hover { transform: scale(1.15); background: rgba(255,59,48,0.15); color: var(--danger); }
+
+    /* ── Add-note button (squircle-ish dashed) ── */
+    .add-note-btn {
+      width: 100%; aspect-ratio: 1 / 1;
+      border-radius: 22%;
+      border: 2px dashed rgba(0,0,0,0.12);
+      background: transparent; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: rgba(0,0,0,0.18);
+      transition: all 0.22s ease; flex-shrink: 0;
+    }
+    [data-theme="dark"] .add-note-btn {
+      border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.14);
+    }
+    .add-note-btn:hover {
+      border-color: rgba(0,122,255,0.45); color: rgba(0,122,255,0.7);
+      background: rgba(0,122,255,0.05); transform: scale(1.04);
+    }
+
+    /* ── Add-column button ── */
+    .add-col-btn {
+      width: 54px; height: 54px; flex-shrink: 0;
+      border-radius: 15px; border: 2px dashed rgba(0,0,0,0.12);
+      background: transparent; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: rgba(0,0,0,0.2);
+      transition: all 0.22s ease; align-self: center;
+    }
+    [data-theme="dark"] .add-col-btn {
+      border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.18);
+    }
+    .add-col-btn:hover {
+      border-color: rgba(0,122,255,0.5); color: var(--accent);
+      background: rgba(0,122,255,0.06); transform: scale(1.06);
+    }
+
+    /* ── Color popover ── */
+    .color-popover {
+      position: absolute; z-index: 100;
+      bottom: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%);
+      background: white; border-radius: 16px;
+      padding: 8px 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.16), 0 1px 4px rgba(0,0,0,0.08);
+      display: flex; gap: 7px; flex-wrap: wrap; max-width: 130px;
+      animation: popIn 0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    [data-theme="dark"] .color-popover { background: #2C2C2E; }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateX(-50%) scale(0.8) translateY(4px); }
+      to   { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+    }
+
+    .cpick {
+      width: 24px; height: 24px; border-radius: 50%;
+      cursor: pointer; border: 2.5px solid transparent;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      transition: transform 0.15s, border-color 0.15s;
+      flex-shrink: 0;
+    }
+    .cpick:hover { transform: scale(1.22); }
+    .cpick.selected { border-color: rgba(0,0,0,0.3); }
+    [data-theme="dark"] .cpick.selected { border-color: rgba(255,255,255,0.5); }
+
+    /* ── Drag ghost placeholder ── */
+    .drop-placeholder {
+      width: 100%; aspect-ratio: 1 / 1;
+      border-radius: 30%; border: 2px dashed rgba(0,122,255,0.35);
+      background: rgba(0,122,255,0.05); flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    /* ── Animations ── */
+    @keyframes noteAppear {
+      from { opacity: 0; transform: scale(0.75) rotate(var(--tilt, 0deg)); }
+      to   { opacity: 1; transform: scale(1.0)  rotate(var(--tilt, 0deg)); }
+    }
+    .note-appear { animation: noteAppear 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  </style>
+</head>
+<body>
+
+<div class="window">
+  <!-- Titlebar -->
+  <div class="titlebar">
+    <div class="traffic-lights">
+      <div class="tl close">✕</div>
+      <div class="tl minimize">−</div>
+      <div class="tl expand">⤢</div>
+    </div>
+    <span class="win-title">Squircle Notes</span>
+    <div class="bar-actions">
+      <button class="bar-btn theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle dark mode">◐</button>
+      <button class="bar-btn" onclick="addColumn()">+ Column</button>
+    </div>
+  </div>
+
+  <!-- Board -->
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+  /* ─── palette ─── */
+  const PALETTE = [
+    { cls: 'c-white',  hex: '#FFFFFF' },
+    { cls: 'c-yellow', hex: '#FFF8C0' },
+    { cls: 'c-pink',   hex: '#FFE2EE' },
+    { cls: 'c-blue',   hex: '#DFF0FF' },
+    { cls: 'c-green',  hex: '#E2F7E6' },
+    { cls: 'c-purple', hex: '#EDE3FF' },
+    { cls: 'c-orange', hex: '#FFF1D9' },
+    { cls: 'c-mint',   hex: '#D9F7F2' },
+    { cls: 'c-peach',  hex: '#FFE6DC' },
+  ];
+
+  const DARK_PALETTE = [
+    '#3A3A3C','#4A3E00','#4A1A2C','#002A4A',
+    '#0A3A18','#2E1A4A','#3E2200','#0A2E28','#3E1A0A',
+  ];
+
+  /* ─── state ─── */
+  let state = {
+    theme: 'light',
+    columns: [
+      {
+        id: 'c1', title: 'Ideas',
+        notes: [
+          { id: 'n1', text: 'Build something beautiful', color: 'c-purple' },
+          { id: 'n2', text: 'Squircles are ✨', color: 'c-yellow' },
+        ]
+      },
+      {
+        id: 'c2', title: 'In Progress',
+        notes: [
+          { id: 'n3', text: 'Design the kanban board', color: 'c-blue' },
+        ]
+      },
+      {
+        id: 'c3', title: 'Done',
+        notes: [
+          { id: 'n4', text: 'Set up the project', color: 'c-green' },
+          { id: 'n5', text: 'Pick a color palette', color: 'c-peach' },
+        ]
+      },
+    ]
+  };
+
+  /* ─── drag state ─── */
+  let dragNoteId = null;
+  let dragColId  = null;
+  let openPopoverId = null;
+
+  /* ─── utils ─── */
+  function uid() { return Math.random().toString(36).slice(2, 9); }
+
+  /** Deterministic resting tilt (-3° … +3°) derived from note id */
+  function tiltFromId(id) {
+    let h = 0;
+    for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return ((h % 1000) / 1000 - 0.5) * 6;
+  }
+
+
+  function save() { localStorage.setItem('sq-notes-v2', JSON.stringify(state)); }
+
+  function load() {
+    try {
+      const s = localStorage.getItem('sq-notes-v2');
+      if (s) state = JSON.parse(s);
+    } catch(e) {}
+  }
+
+  /* ─── theme ─── */
+  function toggleTheme() {
+    state.theme = state.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = state.theme;
+    document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '○' : '◐';
+    save();
+  }
+
+  /* ─── columns ─── */
+  function addColumn() {
+    const col = { id: uid(), title: 'New', notes: [] };
+    state.columns.push(col);
+    save(); render();
+    requestAnimationFrame(() => {
+      const inputs = document.querySelectorAll('.col-title-input');
+      const last = inputs[inputs.length - 1];
+      if (last) { last.focus(); last.select(); }
+    });
+  }
+
+  function deleteColumn(id) {
+    if (state.columns.length <= 1) return;
+    state.columns = state.columns.filter(c => c.id !== id);
+    save(); render();
+  }
+
+  function updateColTitle(id, val) {
+    const c = state.columns.find(c => c.id === id);
+    if (c) c.title = val || 'Untitled';
+    save();
+  }
+
+  /* ─── notes ─── */
+  function cycleColor(noteColors) {
+    const cycle = ['c-yellow','c-blue','c-pink','c-purple','c-green','c-orange','c-mint','c-peach','c-white'];
+    return cycle[noteColors.length % cycle.length];
+  }
+
+  function addNote(colId) {
+    const col = state.columns.find(c => c.id === colId);
+    if (!col) return;
+    const note = { id: uid(), text: '', color: cycleColor(col.notes) };
+    col.notes.push(note);
+    save(); render();
+    requestAnimationFrame(() => {
+      const ta = document.querySelector(`[data-note="${note.id}"] .note-text`);
+      if (ta) ta.focus();
+    });
+  }
+
+  function deleteNote(colId, noteId) {
+    const col = state.columns.find(c => c.id === colId);
+    if (col) col.notes = col.notes.filter(n => n.id !== noteId);
+    save(); render();
+  }
+
+  function updateNoteText(colId, noteId, text) {
+    const col = state.columns.find(c => c.id === colId);
+    if (!col) return;
+    const note = col.notes.find(n => n.id === noteId);
+    if (note) note.text = text;
+    save();
+  }
+
+  function setNoteColor(colId, noteId, color) {
+    const col = state.columns.find(c => c.id === colId);
+    if (!col) return;
+    const note = col.notes.find(n => n.id === noteId);
+    if (note) note.color = color;
+    save();
+    closePopovers();
+    // Just update the note element class — no full re-render to preserve focus
+    const el = document.querySelector(`[data-note="${noteId}"]`);
+    if (el) {
+      PALETTE.forEach(p => el.classList.remove(p.cls));
+      el.classList.add(color);
+      const btn = el.querySelector('.note-color-btn');
+      if (btn) btn.style.color = getCurrentPaletteHex(color);
+    }
+  }
+
+  function getCurrentPaletteHex(cls) {
+    const p = PALETTE.find(p => p.cls === cls);
+    if (!p) return '#ccc';
+    // in dark mode return the dark variant
+    if (state.theme === 'dark') {
+      const i = PALETTE.indexOf(p);
+      return DARK_PALETTE[i] || '#3A3A3C';
+    }
+    return p.hex;
+  }
+
+  /* ─── color popover ─── */
+  function closePopovers() {
+    document.querySelectorAll('.color-popover').forEach(p => p.remove());
+    openPopoverId = null;
+  }
+
+  function showColorPicker(colId, noteId, anchorBtn, currentColor) {
+    if (openPopoverId === noteId) { closePopovers(); return; }
+    closePopovers();
+    openPopoverId = noteId;
+
+    const pop = document.createElement('div');
+    pop.className = 'color-popover';
+    pop.addEventListener('mousedown', e => e.stopPropagation());
+
+    PALETTE.forEach((p, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'cpick' + (p.cls === currentColor ? ' selected' : '');
+      dot.style.background = state.theme === 'dark' ? DARK_PALETTE[i] : p.hex;
+      dot.title = p.cls.replace('c-','');
+      dot.addEventListener('click', () => setNoteColor(colId, noteId, p.cls));
+      pop.appendChild(dot);
+    });
+
+    const noteEl = document.querySelector(`[data-note="${noteId}"]`);
+    if (noteEl) {
+      noteEl.style.position = 'relative';
+      noteEl.appendChild(pop);
+    }
+  }
+
+  /* ─── drag & drop ─── */
+  function onDragStart(e, colId, noteId) {
+    dragNoteId = noteId; dragColId = colId;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', noteId);
+    setTimeout(() => {
+      const el = document.querySelector(`[data-note="${noteId}"]`);
+      if (el) el.classList.add('dragging');
+    }, 0);
+  }
+
+  function onDragEnd(noteId) {
+    const el = document.querySelector(`[data-note="${noteId}"]`);
+    if (el) el.classList.remove('dragging');
+    document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+    document.querySelectorAll('.drop-placeholder').forEach(p => p.remove());
+  }
+
+  function onDrop(e, targetColId) {
+    e.preventDefault();
+    document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+    document.querySelectorAll('.drop-placeholder').forEach(p => p.remove());
+    if (!dragNoteId || dragColId === targetColId) { dragNoteId = null; dragColId = null; return; }
+
+    const src = state.columns.find(c => c.id === dragColId);
+    const tgt = state.columns.find(c => c.id === targetColId);
+    if (!src || !tgt) return;
+
+    const note = src.notes.find(n => n.id === dragNoteId);
+    src.notes = src.notes.filter(n => n.id !== dragNoteId);
+    tgt.notes.push(note);
+
+    dragNoteId = null; dragColId = null;
+    save(); render();
+  }
+
+  /* ─── render ─── */
+  function render() {
+    const board = document.getElementById('board');
+    // Save focus info before wiping DOM
+    const focused = document.activeElement;
+    const focusedNoteId = focused?.closest('[data-note]')?.dataset.note;
+    const focusedColId  = focused?.closest('[data-col]')?.dataset.col;
+    const isTitleFocus  = focused?.classList.contains('col-title-input');
+    const focusedTitleColId = isTitleFocus ? focused?.dataset.col : null;
+    const selStart = focused?.selectionStart;
+
+    board.innerHTML = '';
+
+    state.columns.forEach(col => {
+      /* column wrapper */
+      const colEl = document.createElement('div');
+      colEl.className = 'column';
+      colEl.dataset.col = col.id;
+
+      /* header */
+      const header = document.createElement('div');
+      header.className = 'col-header';
+
+      const titleInput = document.createElement('input');
+      titleInput.className = 'col-title-input';
+      titleInput.dataset.col = col.id;
+      titleInput.value = col.title;
+      titleInput.maxLength = 24;
+      titleInput.addEventListener('input',  e => updateColTitle(col.id, e.target.value));
+      titleInput.addEventListener('blur',   e => updateColTitle(col.id, e.target.value));
+      titleInput.addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
+
+      const meta = document.createElement('div');
+      meta.className = 'col-meta';
+
+      const count = document.createElement('span');
+      count.className = 'col-count';
+      count.textContent = col.notes.length;
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'col-del-btn';
+      delBtn.title = 'Delete column';
+      delBtn.textContent = '×';
+      delBtn.addEventListener('click', () => deleteColumn(col.id));
+
+      meta.appendChild(count);
+      meta.appendChild(delBtn);
+      header.appendChild(titleInput);
+      header.appendChild(meta);
+      colEl.appendChild(header);
+
+      /* drop zone */
+      const zone = document.createElement('div');
+      zone.className = 'drop-zone';
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+      });
+      zone.addEventListener('dragleave', e => {
+        if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
+      });
+      zone.addEventListener('drop', e => onDrop(e, col.id));
+
+      /* notes */
+      col.notes.forEach(note => {
+        const noteEl = document.createElement('div');
+        noteEl.className = `note ${note.color} note-appear`;
+        noteEl.dataset.note = note.id;
+        noteEl.draggable = true;
+        noteEl.addEventListener('dragstart', e => onDragStart(e, col.id, note.id));
+        noteEl.addEventListener('dragend',   () => onDragEnd(note.id));
+
+        /* Unique resting tilt per note — applied after appear animation */
+        const baseTilt = tiltFromId(note.id);
+        noteEl.style.setProperty('--tilt', `${baseTilt}deg`);
+        noteEl.addEventListener('animationend', () => {
+          noteEl.style.transform = `rotate(${baseTilt}deg)`;
+        }, { once: true });
+
+        const ta = document.createElement('textarea');
+        ta.className = 'note-text';
+        ta.value = note.text;
+        ta.placeholder = 'write something…';
+        ta.rows = 1;
+        ta.addEventListener('mousedown', e => e.stopPropagation());
+        ta.addEventListener('dragstart',  e => e.stopPropagation());
+        ta.addEventListener('input', e => {
+          updateNoteText(col.id, note.id, e.target.value);
+        });
+
+        const footer = document.createElement('div');
+        footer.className = 'note-footer';
+
+        const colorBtn = document.createElement('button');
+        colorBtn.className = 'note-color-btn';
+        colorBtn.title = 'Change color';
+        colorBtn.innerHTML = '⬤';
+        colorBtn.style.color = getCurrentPaletteHex(note.color);
+        colorBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          showColorPicker(col.id, note.id, colorBtn, note.color);
+        });
+
+        const delBtn2 = document.createElement('button');
+        delBtn2.className = 'note-del-btn';
+        delBtn2.title = 'Delete note';
+        delBtn2.textContent = '×';
+        delBtn2.addEventListener('click', e => {
+          e.stopPropagation();
+          noteEl.style.transition = 'transform 0.2s ease, opacity 0.18s ease';
+          noteEl.style.transform = 'scale(0.5) rotate(8deg)';
+          noteEl.style.opacity = '0';
+          setTimeout(() => deleteNote(col.id, note.id), 200);
+        });
+
+        footer.appendChild(colorBtn);
+        footer.appendChild(delBtn2);
+        noteEl.appendChild(ta);
+        noteEl.appendChild(footer);
+        zone.appendChild(noteEl);
+      });
+
+      /* add-note button */
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-note-btn';
+      addBtn.title = 'Add note';
+      addBtn.textContent = '+';
+      addBtn.addEventListener('click', () => addNote(col.id));
+      zone.appendChild(addBtn);
+
+      colEl.appendChild(zone);
+      board.appendChild(colEl);
+    });
+
+    /* add-column button */
+    const addColBtn = document.createElement('button');
+    addColBtn.className = 'add-col-btn';
+    addColBtn.title = 'New column';
+    addColBtn.textContent = '+';
+    addColBtn.addEventListener('click', addColumn);
+    board.appendChild(addColBtn);
+
+    /* restore focus */
+    requestAnimationFrame(() => {
+      if (focusedTitleColId) {
+        const inp = document.querySelector(`[data-col="${focusedTitleColId}"].col-title-input`);
+        if (inp) { inp.focus(); try { inp.setSelectionRange(selStart, selStart); } catch(e){} }
+      } else if (focusedNoteId) {
+        const ta = document.querySelector(`[data-note="${focusedNoteId}"] .note-text`);
+        if (ta) { ta.focus(); try { ta.setSelectionRange(selStart, selStart); } catch(e){} }
+      }
+    });
+  }
+
+  /* ─── close popover on outside click ─── */
+  document.addEventListener('mousedown', e => {
+    if (!e.target.closest('.color-popover') && !e.target.closest('.note-color-btn')) {
+      closePopovers();
+    }
+  });
+
+  /* ─── boot ─── */
+  load();
+  document.documentElement.dataset.theme = state.theme;
+  document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '○' : '◐';
+  render();
+</script>
+</body>
+</html>

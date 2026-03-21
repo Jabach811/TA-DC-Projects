@@ -1,0 +1,916 @@
+{
+  "meta": {
+    "name": "Gerodias Family",
+    "period": "Jan \u2013 Sep 2022",
+    "months": 9,
+    "total_charges": 41400.14,
+    "total_payments": 37760.41,
+    "net": 3639.73,
+    "tx_count": 804,
+    "monthly_avg": 4600.02
+  },
+  "monthly": [
+    {
+      "month": "Jan",
+      "charges": 5227.84,
+      "payments": 5293.38,
+      "net": -65.54
+    },
+    {
+      "month": "Feb",
+      "charges": 3004.25,
+      "payments": 3145.61,
+      "net": -141.36
+    },
+    {
+      "month": "Mar",
+      "charges": 4017.63,
+      "payments": 5095.13,
+      "net": -1077.5
+    },
+    {
+      "month": "Apr",
+      "charges": 4511.9,
+      "payments": 3570.97,
+      "net": 940.93
+    },
+    {
+      "month": "May",
+      "charges": 5277.54,
+      "payments": 4703.77,
+      "net": 573.77
+    },
+    {
+      "month": "Jun",
+      "charges": 5244.51,
+      "payments": 4959.16,
+      "net": 285.35
+    },
+    {
+      "month": "Jul",
+      "charges": 5613.81,
+      "payments": 5071.36,
+      "net": 542.45
+    },
+    {
+      "month": "Aug",
+      "charges": 5250.18,
+      "payments": 5849.07,
+      "net": -598.89
+    },
+    {
+      "month": "Sep",
+      "charges": 3252.48,
+      "payments": 71.96,
+      "net": 3180.52
+    }
+  ],
+  "categories": [
+    {
+      "name": "Merchandise & Supplies",
+      "amount": 19528.8,
+      "pct": 47.2
+    },
+    {
+      "name": "Restaurant",
+      "amount": 12960.49,
+      "pct": 31.3
+    },
+    {
+      "name": "Other",
+      "amount": 4339.1,
+      "pct": 10.5
+    },
+    {
+      "name": "Transportation",
+      "amount": 3224.16,
+      "pct": 7.8
+    },
+    {
+      "name": "Business Services",
+      "amount": 842.09,
+      "pct": 2.0
+    },
+    {
+      "name": "Travel",
+      "amount": 219.77,
+      "pct": 0.5
+    },
+    {
+      "name": "Fees & Adjustments",
+      "amount": 189.0,
+      "pct": 0.5
+    },
+    {
+      "name": "Entertainment",
+      "amount": 96.73,
+      "pct": 0.2
+    }
+  ],
+  "subcategories": [
+    {
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "amount": 10426.68
+    },
+    {
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "amount": 8961.56
+    },
+    {
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "amount": 5857.86
+    },
+    {
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "amount": 2533.81
+    },
+    {
+      "category": "Other",
+      "sub": "Miscellaneous",
+      "amount": 2460.25
+    },
+    {
+      "category": "Transportation",
+      "sub": "Fuel",
+      "amount": 2173.1
+    },
+    {
+      "category": "Other",
+      "sub": "Government Services",
+      "amount": 1799.0
+    },
+    {
+      "category": "Merchandise & Supplies",
+      "sub": "Clothing Stores",
+      "amount": 1343.51
+    },
+    {
+      "category": "Transportation",
+      "sub": "Vehicle Leasing & Purchase",
+      "amount": 945.24
+    },
+    {
+      "category": "Business Services",
+      "sub": "Other Services",
+      "amount": 625.74
+    },
+    {
+      "category": "Travel",
+      "sub": "Travel Agencies",
+      "amount": 219.77
+    },
+    {
+      "category": "Fees & Adjustments",
+      "sub": "Fees & Adjustments",
+      "amount": 189.0
+    },
+    {
+      "category": "Transportation",
+      "sub": "Auto Services",
+      "amount": 105.82
+    },
+    {
+      "category": "Business Services",
+      "sub": "Professional Services",
+      "amount": 99.0
+    },
+    {
+      "category": "Other",
+      "sub": "Charities",
+      "amount": 79.85
+    }
+  ],
+  "merchants": [
+    {
+      "name": "SAVE MART #781.TRACYTRACY",
+      "amount": 3614.35,
+      "count": 90
+    },
+    {
+      "name": "SAFEWAY #2600 2600",
+      "amount": 3242.62,
+      "count": 52
+    },
+    {
+      "name": "MEIKO SUSHI RESTAURAPLEASANTON",
+      "amount": 2101.82,
+      "count": 13
+    },
+    {
+      "name": "FASTRAK CSC TOLLS",
+      "amount": 1765.0,
+      "count": 9
+    },
+    {
+      "name": "PUBLIC STORAGE 29127800-567-0759",
+      "amount": 1720.0,
+      "count": 4
+    },
+    {
+      "name": "APPLE ONLINE STORE",
+      "amount": 1519.84,
+      "count": 1
+    },
+    {
+      "name": "RALEY'S",
+      "amount": 1492.52,
+      "count": 40
+    },
+    {
+      "name": "AMAZON MARKEPLACE NA PA",
+      "amount": 1442.86,
+      "count": 30
+    },
+    {
+      "name": "APPLE.COM/BILL",
+      "amount": 1221.07,
+      "count": 47
+    },
+    {
+      "name": "TRACY HONDA 00-08035TRACY",
+      "amount": 945.24,
+      "count": 4
+    },
+    {
+      "name": "SP+AFF* MAX & LILY",
+      "amount": 708.47,
+      "count": 4
+    },
+    {
+      "name": "SHIRASONI JAPANESE RBRENTWOOD",
+      "amount": 658.25,
+      "count": 1
+    },
+    {
+      "name": "AMAZING KITCHEN INC TRACY",
+      "amount": 628.64,
+      "count": 23
+    },
+    {
+      "name": "MIKASA ASIAN BISTRO TRACY",
+      "amount": 621.95,
+      "count": 12
+    },
+    {
+      "name": "SP AERA STORE",
+      "amount": 620.86,
+      "count": 4
+    }
+  ],
+  "members": [
+    {
+      "name": "MARGARET O GERODIAS",
+      "amount": 29707.0
+    },
+    {
+      "name": "MARVIN O GERODIAS",
+      "amount": 11693.14
+    }
+  ],
+  "transactions": [
+    {
+      "date": "09/14/2022",
+      "desc": "AMAZING KITCHEN INC TRACY               CA",
+      "amount": 15.94,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/14/2022",
+      "desc": "ARCO#83333PACIFICWESTRACY               CA",
+      "amount": 51.72,
+      "category": "Transportation",
+      "sub": "Fuel",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/14/2022",
+      "desc": "MCDONALD'S          PLEASANTON          CA",
+      "amount": 6.37,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/14/2022",
+      "desc": "RALEY'S             TRACY               CA",
+      "amount": 25.2,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/14/2022",
+      "desc": "SAFEWAY #2600 2600  TRACY               CA",
+      "amount": 41.71,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/13/2022",
+      "desc": "AMAZON.COM*1F9QZ1D42AMZN.COM/BILL       WA",
+      "amount": 108.1,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/13/2022",
+      "desc": "AMAZON MARKEPLACE NA PA",
+      "amount": 30.3,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/12/2022",
+      "desc": "SAFEWAY #2600 2600  TRACY               CA",
+      "amount": 40.0,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/12/2022",
+      "desc": "SAVE MART #781.TRACYTRACY               CA",
+      "amount": 38.82,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/11/2022",
+      "desc": "DS135INC  MOUNTAIN MTRACY               CA",
+      "amount": 30.29,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/11/2022",
+      "desc": "SP HATS IN THE BEL  MILLERSVILLE        MD",
+      "amount": 233.95,
+      "category": "Merchandise & Supplies",
+      "sub": "Clothing Stores",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/11/2022",
+      "desc": "STARBUCKS           800-782-7282        WA",
+      "amount": 30.0,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/10/2022",
+      "desc": "TARGET        018192ANTIOCH             CA",
+      "amount": 83.76,
+      "category": "Merchandise & Supplies",
+      "sub": "Wholesale Stores",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/10/2022",
+      "desc": "TRACY HONDA 00-08035TRACY               CA",
+      "amount": 233.08,
+      "category": "Transportation",
+      "sub": "Vehicle Leasing & Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/08/2022",
+      "desc": "BT*DD *DOORDASH ELPOSAN FRANCISCO       CA",
+      "amount": 50.56,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/07/2022",
+      "desc": "DOLLAR SHAVE CLUB   (866)223-2780       CA",
+      "amount": 12.82,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/07/2022",
+      "desc": "SAFEWAY #2600 2600  TRACY               CA",
+      "amount": 71.88,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/07/2022",
+      "desc": "SAVE MART #781.TRACYTRACY               CA",
+      "amount": 71.37,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/06/2022",
+      "desc": "AMAZING KITCHEN INC TRACY               CA",
+      "amount": 26.58,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/06/2022",
+      "desc": "PY *NEXT GENERATION MANTECA             CA",
+      "amount": 150.0,
+      "category": "Business Services",
+      "sub": "Other Services",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/06/2022",
+      "desc": "SAFEWAY #2600 2600  TRACY               CA",
+      "amount": 73.77,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/05/2022",
+      "desc": "APPLE.COM/BILL      INTERNET CHARGE     CA",
+      "amount": 29.95,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/05/2022",
+      "desc": "APPLE.COM/BILL      INTERNET CHARGE     CA",
+      "amount": 30.98,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/05/2022",
+      "desc": "BT*DD *DOORDASH MIKASAN FRANCISCO       CA",
+      "amount": 32.52,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/05/2022",
+      "desc": "CHICK-FIL-A #04047 0MANTECA             CA",
+      "amount": 36.62,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/05/2022",
+      "desc": "MIKASA ASIAN BISTRO TRACY               CA",
+      "amount": 22.0,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/05/2022",
+      "desc": "UNIQLO STONERIDGE   PLEASANTON          CA",
+      "amount": 43.99,
+      "category": "Merchandise & Supplies",
+      "sub": "Clothing Stores",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/05/2022",
+      "desc": "UNIQLO STONERIDGE   PLEASANTON          CA",
+      "amount": 99.11,
+      "category": "Merchandise & Supplies",
+      "sub": "Clothing Stores",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/04/2022",
+      "desc": "ARCO#83333PACIFICWESTRACY               CA",
+      "amount": 64.17,
+      "category": "Transportation",
+      "sub": "Fuel",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/04/2022",
+      "desc": "BT*DD *DOORDASH POP SAN FRANCISCO       CA",
+      "amount": 42.33,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/04/2022",
+      "desc": "BT*DD *DOORDASH SUBWSAN FRANCISCO       CA",
+      "amount": 66.53,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/04/2022",
+      "desc": "DENNY'S #9642 000000Pleasanton          CA",
+      "amount": 54.81,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/04/2022",
+      "desc": "PEET'S COFFEE & TEA DUBLIN              CA",
+      "amount": 12.1,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/04/2022",
+      "desc": "RALEY'S             TRACY               CA",
+      "amount": 115.61,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/04/2022",
+      "desc": "TOMMYKATSU          LIVERMORE           CA",
+      "amount": 120.84,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "AMAZON MARKEPLACE NA PA",
+      "amount": 102.96,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "AUTOZONE #3315 00000TRACY               CA",
+      "amount": 53.03,
+      "category": "Transportation",
+      "sub": "Auto Services",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "Audible             audible.com         NJ",
+      "amount": 14.95,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "BT*DD *DOORDASH LLHASAN FRANCISCO       CA",
+      "amount": 115.43,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "MCDONALD'S F32054 00TRACY               CA",
+      "amount": 6.7,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "RALEY'S             TRACY               CA",
+      "amount": 29.05,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "SP AERA STORE       MILWAUKEE           WI",
+      "amount": 313.4,
+      "category": "Merchandise & Supplies",
+      "sub": "Clothing Stores",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "STARBUCKS STORE 1564TRACY               CA",
+      "amount": 17.95,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "TRACY HONDA 00-08035TRACY               CA",
+      "amount": 60.08,
+      "category": "Transportation",
+      "sub": "Vehicle Leasing & Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/03/2022",
+      "desc": "TRACY HONDA 00-08035TRACY               CA",
+      "amount": 65.0,
+      "category": "Transportation",
+      "sub": "Vehicle Leasing & Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/02/2022",
+      "desc": "AMAZON.COM*1V3BV9IU0AMZN.COM/BILL       WA",
+      "amount": 31.7,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/02/2022",
+      "desc": "AMAZON MARKEPLACE NA PA",
+      "amount": 63.82,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "09/02/2022",
+      "desc": "MEIKO SUSHI RESTAURAPLEASANTON          CA",
+      "amount": 110.0,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/01/2022",
+      "desc": "AMAZON.COM*DP5581R13AMZN.COM/BILL       WA",
+      "amount": 51.41,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/01/2022",
+      "desc": "AplPay CHEVRON 02081TRACY               CA",
+      "amount": 0.6,
+      "category": "Transportation",
+      "sub": "Fuel",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/01/2022",
+      "desc": "AplPay CHEVRON 02081TRACY               CA",
+      "amount": 1.43,
+      "category": "Transportation",
+      "sub": "Fuel",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "09/01/2022",
+      "desc": "MCDONALD'S F32054 00TRACY               CA",
+      "amount": 17.19,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/31/2022",
+      "desc": "7-ELEVEN 39575 00073LIVERMORE           CA",
+      "amount": 9.09,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/31/2022",
+      "desc": "AMAZING KITCHEN INC TRACY               CA",
+      "amount": 26.58,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/31/2022",
+      "desc": "PRIME VIDEO*1V5BH4QG888-802-3080        WA",
+      "amount": 7.99,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/30/2022",
+      "desc": "AplPay JAMBA JUICE  LIVERMORE           CA",
+      "amount": 15.46,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/30/2022",
+      "desc": "MCDONALD'S F32054 00TRACY               CA",
+      "amount": 6.7,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/30/2022",
+      "desc": "SAVE MART #781.TRACYTRACY               CA",
+      "amount": 43.72,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/30/2022",
+      "desc": "SP+AFF* MAX & LILY  SAN FRANCISCO       CA",
+      "amount": 177.11,
+      "category": "Merchandise & Supplies",
+      "sub": "General Retail",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/29/2022",
+      "desc": "AplPay HOMEGOODS    TRACY               CA",
+      "amount": 49.72,
+      "category": "Merchandise & Supplies",
+      "sub": "Furnishing",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/29/2022",
+      "desc": "FASTRAK CSC TOLLS   OAKLAND             CA",
+      "amount": 205.0,
+      "category": "Other",
+      "sub": "Government Services",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/29/2022",
+      "desc": "MIKASA ASIAN BISTRO TRACY               CA",
+      "amount": 35.0,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/29/2022",
+      "desc": "SAFEWAY FUEL STN    TRACY               CA",
+      "amount": 37.87,
+      "category": "Transportation",
+      "sub": "Fuel",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/29/2022",
+      "desc": "STARBUCKS STORE 1564TRACY               CA",
+      "amount": 9.7,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/28/2022",
+      "desc": "DONUT & YOGURT 69055TRACY               CA",
+      "amount": 15.49,
+      "category": "Other",
+      "sub": "Miscellaneous",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/28/2022",
+      "desc": "MCDONALD'S F32054 00TRACY               CA",
+      "amount": 6.7,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/28/2022",
+      "desc": "RALEY'S             TRACY               CA",
+      "amount": 172.7,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/28/2022",
+      "desc": "STARBUCKS STORE 1564TRACY               CA",
+      "amount": 9.7,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/27/2022",
+      "desc": "SAVE MART #781.TRACYTRACY               CA",
+      "amount": 95.57,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/26/2022",
+      "desc": "AMAZON KIDS+*OH7UC5T888-802-3080        WA",
+      "amount": 4.99,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/26/2022",
+      "desc": "AMAZON MARKEPLACE NA PA",
+      "amount": 16.23,
+      "category": "Merchandise & Supplies",
+      "sub": "Internet Purchase",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "08/26/2022",
+      "desc": "DUNKIN #354145 3541 TRACY               CA",
+      "amount": 14.99,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/26/2022",
+      "desc": "MCDONALD'S          TRACY               CA",
+      "amount": 9.72,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/26/2022",
+      "desc": "STARBUCKS           800-782-7282        WA",
+      "amount": 30.0,
+      "category": "Restaurant",
+      "sub": "Bar & Caf\u00e9",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/26/2022",
+      "desc": "TST* SANSAR INDIAN CTRACY               CA",
+      "amount": 5.85,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/25/2022",
+      "desc": "SAVE MART #781.TRACYTRACY               CA",
+      "amount": 9.88,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/24/2022",
+      "desc": "AMAZING KITCHEN INC TRACY               CA",
+      "amount": 26.58,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/24/2022",
+      "desc": "CHEVRON 0208117/CHEVTRACY               CA",
+      "amount": 62.95,
+      "category": "Transportation",
+      "sub": "Fuel",
+      "member": "MARGARET O GERODIAS"
+    },
+    {
+      "date": "08/24/2022",
+      "desc": "MEIKO SUSHI RESTAURAPLEASANTON          CA",
+      "amount": 119.09,
+      "category": "Restaurant",
+      "sub": "Restaurant",
+      "member": "MARVIN O GERODIAS"
+    },
+    {
+      "date": "08/24/2022",
+      "desc": "SAVE MART #781.TRACYTRACY               CA",
+      "amount": 22.32,
+      "category": "Merchandise & Supplies",
+      "sub": "Groceries",
+      "member": "MARGARET O GERODIAS"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amex Budget Dashboard Concepts</title>
+  <style>
+    :root{
+      --bg:#f3efe9;--ink:#14110f;--muted:#6f675f;--line:#d9d0c7;--card:#ffffff;--accent:#b44a21;
+      --serif:Georgia,"Times New Roman",serif;--sans:"Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#f6f1eb,#ede4d8);color:var(--ink)}
+    .wrap{max-width:1220px;margin:0 auto;padding:40px 24px 60px}
+    .hero{background:rgba(255,255,255,.78);border:1px solid var(--line);padding:32px;border-radius:28px;margin-bottom:24px}
+    .hero-k{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    h1{margin:10px 0 12px;font-family:var(--serif);font-size:48px;font-weight:500}
+    .hero p{margin:0;max-width:850px;color:var(--muted);line-height:1.8}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:16px}
+    .num{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    .title{font-family:var(--serif);font-size:28px}
+    .desc{color:var(--muted);line-height:1.7;min-height:78px}
+    .meta{font-size:13px;color:#3a332d;line-height:1.7}
+    .btn{display:inline-block;text-decoration:none;background:var(--ink);color:#fff;padding:12px 16px;border-radius:14px;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-k">Amex Workbook Concepts</div>
+      <h1>Five directions for the budget tracking app.</h1>
+      <p>
+        These concepts use the same Amex source snapshot: 824 transactions from January 1, 2022 to September 14, 2022,
+        with $41,400.14 in charges, -$37,760.41 in payments and credits, and a net total of $3,639.73.
+      </p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="num">01</div>
+        <div class="title">Muted Minimal</div>
+        <div class="desc">Quiet, premium, and finance-forward. Clean cards, soft lines, muted palette, and practical charts.</div>
+        <div class="meta">Good fit if you want calm and highly readable.</div>
+        <a class="btn" href="./01_muted_minimal.html">Open Concept</a>
+      </article>
+      <article class="card">
+        <div class="num">02</div>
+        <div class="title">Mac Desk</div>
+        <div class="desc">Soft glass cards, roomy spacing, gentle shadows, and a polished desktop feel inspired by modern Mac utility apps.</div>
+        <div class="meta">Good fit if you want familiar and modern.</div>
+        <a class="btn" href="./02_mac_desk.html">Open Concept</a>
+      </article>
+      <article class="card">
+        <div class="num">03</div>
+        <div class="title">Ledger Editorial</div>
+        <div class="desc">Magazine-style budgeting with serif headlines, red action accents, and a money-journal vibe.</div>
+        <div class="meta">Good fit if you want “financial newspaper” energy.</div>
+        <a class="btn" href="./03_ledger_editorial.html">Open Concept</a>
+      </article>
+      <article class="card">
+        <div class="num">04</div>
+        <div class="title">Glass Control</div>
+        <div class="desc">Dark glass dashboard with high-contrast metric tiles, ring gauges, and a more app-like command center feel.</div>
+        <div class="meta">Good fit if you want modern and dramatic.</div>
+        <a class="btn" href="./04_glass_control.html">Open Concept</a>
+      </article>
+      <article class="card">
+        <div class="num">05</div>
+        <div class="title">Canvas Budget</div>
+        <div class="desc">Warm, creative, and visual. Uses boards, goal strips, and category color blocks to feel more like a planning studio.</div>
+        <div class="meta">Good fit if you want personality without losing function.</div>
+        <a class="btn" href="./05_canvas_budget.html">Open Concept</a>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

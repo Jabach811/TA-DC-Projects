@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --paper:  #f5f1eb;
+  --paper2: #ffffff;
+  --paper3: #ede9e2;
+  --ink:    #0f0d0a;
+  --ink2:   #3a3530;
+  --muted:  #9e9890;
+  --rule:   #e2ddd6;
+  --red:    #c8290a;
+  --red2:   #a82208;
+  --red-bg: rgba(200,41,10,.06);
+  --sans:   'IBM Plex Sans', sans-serif;
+  --mono:   'IBM Plex Mono', monospace;
+  --display:'Bebas Neue', sans-serif;
+  --serif:  'Playfair Display', serif;
+}
+html,body{height:100%;font-family:var(--sans);background:var(--paper);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--paper);}
+::-webkit-scrollbar-thumb{background:var(--rule);}
+::-webkit-scrollbar-thumb:hover{background:#ccc7bf;}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:200px 1fr;height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  background:var(--paper2);border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sidebar-logo{
+  padding:24px 22px 20px;border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:11px;flex-shrink:0;
+}
+.logo-mark{
+  width:32px;height:32px;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.logo-mark span{font-family:var(--display);color:var(--paper2);font-size:17px;line-height:1;}
+.logo-text{line-height:1.15;}
+.logo-title{font-family:var(--display);font-size:17px;letter-spacing:2px;color:var(--ink);}
+.logo-sub{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+.sidebar-nav{flex:1;padding:10px 0;overflow-y:auto;}
+.nav-group{padding:20px 22px 6px;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 22px;
+  font-size:13px;font-weight:400;color:var(--ink2);cursor:pointer;
+  border-left:2px solid transparent;transition:all .15s;
+}
+.nav-item:hover{background:var(--paper);color:var(--ink);}
+.nav-item.active{color:var(--red);border-left-color:var(--red);background:var(--red-bg);font-weight:500;}
+.nav-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;opacity:.6;}
+.nav-item.active .nav-icon{opacity:1;}
+
+.sidebar-footer{
+  padding:16px 20px;border-top:1px solid var(--rule);flex-shrink:0;
+}
+.footer-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.footer-val{
+  font-family:var(--mono);font-size:10px;color:var(--ink2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  cursor:pointer;transition:color .15s;
+}
+.footer-val:hover{color:var(--red);}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;overflow:hidden;}
+
+.topbar{
+  height:54px;background:var(--paper2);border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;padding:0 32px;gap:16px;flex-shrink:0;
+}
+.topbar-title{font-family:var(--display);font-size:22px;letter-spacing:3px;color:var(--ink);flex:1;}
+.topbar-tag{font-size:11px;color:var(--muted);letter-spacing:.5px;}
+
+.page{display:none;flex:1;overflow-y:auto;padding:32px;}
+.page.active{display:block;}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+.stat-card{background:var(--paper2);border:1px solid var(--rule);padding:22px 20px;}
+.stat-label{font-size:11px;font-weight:500;letter-spacing:.5px;color:var(--muted);margin-bottom:12px;}
+.stat-val{font-family:var(--display);font-size:38px;letter-spacing:1px;color:var(--ink);line-height:1;}
+.stat-val.accent{color:var(--red);}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:7px;}
+.stat-rule{height:1px;background:var(--rule);margin-top:16px;}
+.stat-rule-fill{height:100%;background:var(--red);transition:width .7s;}
+
+/* ── TYPE BARS ── */
+.type-bar-item{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.type-bar-label{font-size:11px;color:var(--muted);width:70px;flex-shrink:0;}
+.type-bar-track{flex:1;height:3px;background:var(--rule);}
+.type-bar-fill{height:100%;background:var(--ink2);transition:width .7s;}
+.type-bar-fill.po{background:var(--red);}
+.type-bar-fill.invoice{background:var(--ink);}
+.type-bar-count{font-size:11px;color:var(--ink2);width:28px;text-align:right;flex-shrink:0;}
+
+/* ── SECTION HEADERS ── */
+.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-family:var(--display);font-size:16px;letter-spacing:2px;color:var(--ink);}
+.section-link{font-size:11px;color:var(--red);cursor:pointer;background:none;border:none;font-family:var(--sans);}
+.section-link:hover{text-decoration:underline;}
+
+/* ── DASH LAYOUT ── */
+.dash-grid{display:grid;grid-template-columns:1fr 300px;gap:24px;}
+.dash-left{display:flex;flex-direction:column;gap:24px;}
+.dash-right{display:flex;flex-direction:column;gap:24px;}
+
+/* ── WIDGET ── */
+.widget{background:var(--paper2);border:1px solid var(--rule);padding:20px;}
+.widget-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+
+/* ── RECENT FEED ── */
+.feed-item{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 0;border-bottom:1px solid var(--rule);
+  cursor:pointer;transition:background .12s;
+}
+.feed-item:last-child{border-bottom:none;}
+.feed-item:hover{color:var(--red);}
+.feed-pip{width:3px;height:28px;flex-shrink:0;border-radius:2px;background:var(--rule);}
+.feed-pip.quote{background:#b0b8c1;}
+.feed-pip.po{background:var(--red);}
+.feed-pip.invoice{background:var(--ink);}
+.feed-info{flex:1;min-width:0;}
+.feed-title{font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.feed-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.feed-amount{font-family:var(--display);font-size:18px;color:var(--ink2);flex-shrink:0;}
+.feed-date{font-size:10px;color:var(--muted);flex-shrink:0;width:60px;text-align:right;}
+
+/* ── TOP CUSTOMERS MINI ── */
+.top-cust-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--rule);cursor:pointer;
+}
+.top-cust-item:last-child{border-bottom:none;}
+.top-cust-item:hover .top-cust-name{color:var(--red);}
+.top-cust-rank{font-family:var(--display);font-size:20px;color:var(--rule);width:22px;flex-shrink:0;}
+.top-cust-info{flex:1;min-width:0;}
+.top-cust-name{font-size:12px;font-weight:500;color:var(--ink);transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.top-cust-count{font-size:10px;color:var(--muted);margin-top:1px;}
+.top-cust-val{font-family:var(--display);font-size:15px;color:var(--red);flex-shrink:0;}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--paper2);border:1px solid var(--rule);overflow:hidden;}
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{
+  font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--muted);padding:11px 16px;text-align:left;
+  border-bottom:1px solid var(--rule);background:var(--paper);
+  position:sticky;top:0;z-index:10;
+}
+.data-table td{
+  padding:11px 16px;font-size:12.5px;color:var(--ink);
+  border-bottom:1px solid var(--rule);vertical-align:middle;
+}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--paper);cursor:pointer;}
+.amount-cell{font-family:var(--mono);font-size:12px;color:var(--ink);}
+.dim-cell{color:var(--muted);}
+
+/* ── TYPE CHIPS ── */
+.chip{
+  display:inline-block;font-size:9px;font-weight:600;letter-spacing:.8px;
+  text-transform:uppercase;padding:2px 8px;border-radius:2px;
+}
+.chip.quote  {background:#eef0f3;color:#6b7280;}
+.chip.po     {background:var(--red-bg);color:var(--red);}
+.chip.invoice{background:#f0efec;color:var(--ink2);}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:10px;margin-bottom:16px;}
+.filter-input{
+  flex:1;background:var(--paper2);border:1px solid var(--rule);
+  padding:9px 14px;font-family:var(--sans);font-size:13px;color:var(--ink);
+  outline:none;transition:border-color .15s;
+}
+.filter-input:focus{border-color:var(--ink);}
+.filter-input::placeholder{color:var(--muted);}
+.filter-select{
+  background:var(--paper2);border:1px solid var(--rule);
+  padding:9px 14px;font-family:var(--sans);font-size:13px;color:var(--ink);
+  outline:none;cursor:pointer;
+}
+.filter-btn{
+  background:var(--ink);color:var(--paper2);border:none;
+  padding:9px 22px;font-family:var(--sans);font-size:13px;font-weight:500;
+  cursor:pointer;transition:background .15s;
+}
+.filter-btn:hover{background:var(--ink2);}
+
+/* ── ACTION BUTTONS (table) ── */
+.action-cell{display:flex;gap:6px;}
+.tbl-btn{
+  background:none;border:1px solid var(--rule);color:var(--muted);
+  font-size:10px;font-weight:500;letter-spacing:.5px;padding:3px 9px;
+  cursor:pointer;transition:all .15s;font-family:var(--sans);
+}
+.tbl-btn:hover{border-color:var(--ink);color:var(--ink);}
+.tbl-btn.del:hover{border-color:var(--red);color:var(--red);}
+
+/* ── BATCH PAGE ── */
+.batch-drop{
+  border:1px dashed var(--rule);background:var(--paper2);
+  padding:52px 32px;display:flex;flex-direction:column;
+  align-items:center;gap:12px;cursor:pointer;transition:all .2s;
+  margin-bottom:20px;
+}
+.batch-drop:hover,.batch-drop.drag-over{border-color:var(--ink);background:var(--paper);}
+.batch-drop-icon{font-size:28px;color:var(--muted);}
+.batch-drop-text{font-size:13px;color:var(--muted);text-align:center;line-height:1.8;}
+.batch-drop-text strong{color:var(--ink);}
+.batch-browse-btn{
+  background:none;border:1px solid var(--ink);color:var(--ink);
+  padding:9px 28px;font-family:var(--sans);font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .15s;
+}
+.batch-browse-btn:hover{background:var(--ink);color:var(--paper2);}
+
+.batch-options{display:flex;gap:16px;margin-bottom:20px;}
+.option-group{background:var(--paper2);border:1px solid var(--rule);padding:18px 20px;flex:1;}
+.option-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.mode-btns{display:flex;gap:8px;}
+.mode-btn{
+  flex:1;padding:9px 8px;font-size:12px;font-weight:500;
+  background:var(--paper);border:1px solid var(--rule);color:var(--muted);
+  cursor:pointer;transition:all .15s;text-align:center;
+}
+.mode-btn.active{background:var(--ink);border-color:var(--ink);color:var(--paper2);}
+.mode-desc{margin-top:10px;font-size:11px;color:var(--muted);line-height:1.6;}
+
+.type-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.type-btn{
+  padding:7px 12px;font-size:11px;font-weight:500;
+  background:var(--paper);border:1px solid var(--rule);color:var(--muted);
+  cursor:pointer;transition:all .15s;
+}
+.type-btn.active{background:var(--ink);border-color:var(--ink);color:var(--paper2);}
+
+.batch-file-list{margin-bottom:20px;}
+.batch-file-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;background:var(--paper2);border:1px solid var(--rule);
+  margin-bottom:2px;
+}
+.batch-file-name{font-size:12.5px;color:var(--ink);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.batch-file-status{font-size:11px;font-weight:500;flex-shrink:0;}
+.batch-file-status.pending{color:var(--muted);}
+.batch-file-status.running{color:var(--ink2);}
+.batch-file-status.done{color:#2d7a47;}
+.batch-file-status.error{color:var(--red);}
+.batch-file-remove{
+  background:none;border:none;color:var(--muted);
+  cursor:pointer;font-size:13px;flex-shrink:0;transition:color .15s;padding:0 2px;
+}
+.batch-file-remove:hover{color:var(--red);}
+
+.btn-run{
+  background:var(--red);color:var(--paper2);border:none;
+  padding:14px;font-family:var(--display);font-size:18px;letter-spacing:3px;
+  cursor:pointer;transition:background .15s;width:100%;
+}
+.btn-run:hover:not(:disabled){background:var(--red2);}
+.btn-run:disabled{background:var(--rule);color:var(--muted);cursor:not-allowed;}
+
+.progress-wrap{margin-top:14px;}
+.progress-track{height:2px;background:var(--rule);}
+.progress-fill{height:100%;background:var(--red);transition:width .3s;}
+.progress-label{font-size:11px;color:var(--muted);margin-top:7px;}
+
+/* ── CUSTOMER GRID ── */
+.customer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+.customer-card{
+  background:var(--paper2);border:1px solid var(--rule);padding:22px 20px;
+  cursor:pointer;transition:all .18s;
+}
+.customer-card:hover{border-color:var(--ink2);box-shadow:0 2px 12px rgba(15,13,10,.06);}
+.cust-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px;line-height:1.3;}
+.cust-value{font-family:var(--display);font-size:30px;letter-spacing:1px;color:var(--red);line-height:1;}
+.cust-value-label{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.5px;}
+.cust-chips{display:flex;gap:5px;margin-top:14px;flex-wrap:wrap;}
+.cust-chip{font-size:10px;padding:2px 8px;border:1px solid var(--rule);color:var(--muted);border-radius:2px;}
+.cust-last{font-size:10px;color:var(--muted);margin-top:10px;}
+
+/* ── DETAIL PANEL ── */
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(15,13,10,.35);z-index:200;}
+.detail-overlay.open{display:flex;justify-content:flex-end;}
+.detail-panel{
+  background:var(--paper2);border-left:1px solid var(--rule);
+  width:640px;height:100vh;display:flex;flex-direction:column;overflow:hidden;
+  animation:slideIn .2s ease;
+}
+@keyframes slideIn{from{transform:translateX(30px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.detail-header{
+  padding:20px 24px;border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:14px;flex-shrink:0;background:var(--paper2);
+}
+.detail-close{
+  background:none;border:1px solid var(--rule);color:var(--muted);
+  font-size:14px;cursor:pointer;padding:5px 10px;transition:all .15s;line-height:1;
+}
+.detail-close:hover{border-color:var(--ink);color:var(--ink);}
+.detail-title{font-family:var(--display);font-size:19px;letter-spacing:2px;flex:1;color:var(--ink);}
+.detail-actions{display:flex;gap:8px;}
+.detail-btn{
+  font-size:11px;font-weight:500;padding:6px 16px;cursor:pointer;
+  border:1px solid var(--rule);color:var(--muted);background:none;transition:all .15s;
+}
+.detail-btn:hover{border-color:var(--ink);color:var(--ink);}
+.detail-btn.primary{background:var(--red);color:var(--paper2);border-color:var(--red);}
+.detail-btn.primary:hover{background:var(--red2);border-color:var(--red2);}
+.detail-body{flex:1;overflow-y:auto;padding:24px;}
+
+.detail-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:20px;}
+.detail-meta-item{background:var(--paper2);padding:14px 16px;}
+.detail-meta-label{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.detail-meta-val{font-size:13px;color:var(--ink);font-weight:500;}
+
+.detail-total-bar{
+  display:flex;align-items:baseline;justify-content:space-between;
+  padding:16px 18px;border:1px solid var(--rule);margin-bottom:20px;background:var(--paper);
+}
+.detail-total-label{font-size:11px;font-weight:500;color:var(--muted);}
+.detail-total-val{font-family:var(--display);font-size:30px;color:var(--red);}
+.items-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+
+/* ── EMPTY STATES ── */
+.empty-state{padding:64px 20px;text-align:center;}
+.empty-icon{font-size:36px;margin-bottom:14px;opacity:.4;}
+.empty-title{font-family:var(--display);font-size:20px;letter-spacing:2px;color:var(--muted);margin-bottom:8px;}
+.empty-sub{font-size:13px;color:var(--muted);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);
+  background:var(--ink);color:var(--paper2);font-size:12px;
+  padding:10px 22px;opacity:0;transition:all .28s;pointer-events:none;z-index:999;
+}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--red);}
+
+/* ── SPINNER ── */
+.spinner{width:14px;height:14px;border:2px solid var(--rule);border-top-color:var(--ink);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><span>F</span></div>
+      <div class="logo-text">
+        <div class="logo-title">FORMA</div>
+        <div class="logo-sub">Pro Edition</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">Main</div>
+      <div class="nav-item active" onclick="goTo('dashboard')">
+        <span class="nav-icon">▪</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="goTo('batch')">
+        <span class="nav-icon">↑</span> Batch Upload
+      </div>
+
+      <div class="nav-group">Repository</div>
+      <div class="nav-item" onclick="goTo('repo')">
+        <span class="nav-icon">≡</span> All Documents
+      </div>
+      <div class="nav-item" onclick="goTo('customers')">
+        <span class="nav-icon">○</span> Customers
+      </div>
+
+      <div class="nav-group">Tools</div>
+      <div class="nav-item" onclick="window.open('http://localhost:5175','_blank')">
+        <span class="nav-icon">↗</span> Single Extract
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="footer-label">Output Root</div>
+      <div class="footer-val" id="sidebar-root" onclick="changeOutputFolder()" title="Click to change">—</div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-tag" id="topbar-tag">Forma Pro</div>
+    </div>
+
+    <!-- ════ DASHBOARD ════ -->
+    <div class="page active" id="page-dashboard">
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Documents</div>
+          <div class="stat-val" id="stat-total">—</div>
+          <div class="stat-sub" id="stat-month">— this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Value Extracted</div>
+          <div class="stat-val accent" id="stat-value">—</div>
+          <div class="stat-sub">across all documents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Customers on File</div>
+          <div class="stat-val" id="stat-customers">—</div>
+          <div class="stat-sub">unique companies</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Document Breakdown</div>
+          <div id="type-bars" style="margin-top:4px;">
+            <div class="type-bar-item">
+              <div class="type-bar-label">Quotes</div>
+              <div class="type-bar-track"><div class="type-bar-fill quote" id="bar-quote" style="width:0%"></div></div>
+              <div class="type-bar-count" id="ct-quote">0</div>
+            </div>
+            <div class="type-bar-item">
+              <div class="type-bar-label">POs</div>
+              <div class="type-bar-track"><div class="type-bar-fill po" id="bar-po" style="width:0%"></div></div>
+              <div class="type-bar-count" id="ct-po">0</div>
+            </div>
+            <div class="type-bar-item">
+              <div class="type-bar-label">Invoices</div>
+              <div class="type-bar-track"><div class="type-bar-fill invoice" id="bar-invoice" style="width:0%"></div></div>
+              <div class="type-bar-count" id="ct-invoice">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-left">
+          <div>
+            <div class="section-header">
+              <div class="section-title">Recent Activity</div>
+              <button class="section-link" onclick="goTo('repo')">View all →</button>
+            </div>
+            <div class="widget" style="padding:0 20px;">
+              <div id="recent-feed" style="padding:4px 0;">
+                <div class="empty-state"><div class="empty-icon">◌</div><div class="empty-title">No data yet</div><div class="empty-sub">Run an extraction to see activity here</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-right">
+          <div>
+            <div class="section-header">
+              <div class="section-title">Top Customers</div>
+              <button class="section-link" onclick="goTo('customers')">View all →</button>
+            </div>
+            <div class="widget" style="padding:0 20px;">
+              <div id="top-customers-list" style="padding:4px 0;">
+                <div style="color:var(--muted);font-size:12px;padding:20px 0;">No data yet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ BATCH UPLOAD ════ -->
+    <div class="page" id="page-batch">
+
+      <div class="batch-drop" id="batch-drop"
+           ondragover="batchDragOver(event)" ondragleave="batchDragLeave(event)" ondrop="batchDrop(event)">
+        <div class="batch-drop-icon">↑</div>
+        <div class="batch-drop-text">
+          <strong>Drag and drop PDF files here</strong><br>
+          or use the button below to browse
+        </div>
+        <button class="batch-browse-btn" onclick="batchBrowse()">Select Files</button>
+      </div>
+
+      <div class="batch-options">
+        <div class="option-group">
+          <div class="option-label">Processing Mode</div>
+          <div class="mode-btns">
+            <div class="mode-btn active" id="mode-extract"   onclick="setMode('extract')">Extract + Save</div>
+            <div class="mode-btn"        id="mode-populate"  onclick="setMode('populate')">Repo Only</div>
+          </div>
+          <div class="mode-desc" id="mode-desc">Runs OCR, generates the Excel file, and logs everything to the repository.</div>
+        </div>
+        <div class="option-group">
+          <div class="option-label">Document Type</div>
+          <div class="type-btns">
+            <div class="type-btn active" id="btype-auto"    onclick="setBatchType('auto')">Auto-detect</div>
+            <div class="type-btn"        id="btype-quote"   onclick="setBatchType('quote')">Quotation</div>
+            <div class="type-btn"        id="btype-po"      onclick="setBatchType('po')">Purchase Order</div>
+            <div class="type-btn"        id="btype-invoice" onclick="setBatchType('invoice')">Pick-up</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="batch-file-list" id="batch-file-list"></div>
+
+      <button class="btn-run" id="btn-run-batch" onclick="runBatch()" disabled>Run Batch Extraction</button>
+
+      <div class="progress-wrap" id="batch-progress-wrap" style="display:none;">
+        <div class="progress-track"><div class="progress-fill" id="batch-bar" style="width:0%"></div></div>
+        <div class="progress-label" id="batch-progress-label">Initializing...</div>
+      </div>
+    </div>
+
+    <!-- ════ REPOSITORY ════ -->
+    <div class="page" id="page-repo">
+      <div class="filter-bar">
+        <input class="filter-input" id="filter-customer" placeholder="Search by customer..." oninput="loadRepo()">
+        <select class="filter-select" id="filter-type" onchange="loadRepo()">
+          <option value="">All Types</option>
+          <option value="quote">Quotation</option>
+          <option value="po">Purchase Order</option>
+          <option value="invoice">Pick-up Ticket</option>
+        </select>
+        <button class="filter-btn" onclick="loadRepo()">Filter</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Customer</th>
+              <th>Doc #</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="repo-tbody">
+            <tr><td colspan="7" style="text-align:center;padding:48px;color:var(--muted);">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--muted);" id="repo-count"></div>
+    </div>
+
+    <!-- ════ CUSTOMERS ════ -->
+    <div class="page" id="page-customers">
+      <div class="customer-grid" id="customer-grid">
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">◌</div>
+          <div class="empty-title">Loading</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ══ DETAIL PANEL ══ -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" onclick="event.stopPropagation()">
+    <div class="detail-header">
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+      <div class="detail-title" id="detail-title">Document</div>
+      <div class="detail-actions">
+        <button class="detail-btn" id="detail-btn-folder" onclick="detailOpenFolder()">Open Folder</button>
+        <button class="detail-btn primary" id="detail-btn-file" onclick="detailOpenFile()">Open File</button>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-meta-grid" id="detail-meta-grid"></div>
+      <div class="detail-total-bar">
+        <div class="detail-total-label">Total Amount</div>
+        <div class="detail-total-val" id="detail-total">$0.00</div>
+      </div>
+      <div class="items-label">Line Items</div>
+      <div class="table-wrap">
+        <table class="data-table" style="font-size:11.5px;">
+          <thead>
+            <tr>
+              <th>Product ID</th><th>Description</th><th>Qty</th><th>U/M</th><th>Price</th><th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="detail-items-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────
+const state = {
+  page:'dashboard', outputRoot:'',
+  batchFiles:[], batchMode:'extract', batchType:'auto',
+  batchJobId:null, batchPollTimer:null,
+  detailPath:'', detailFolder:'',
+};
+
+const fmt    = n => n == null ? '—' : '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtDate = s => s ? s.slice(0,10) : '—';
+const chip   = t => `<span class="chip ${t}">${t==='quote'?'Quotation':t==='po'?'Purchase Order':'Pick-up'}</span>`;
+
+// ─── NAVIGATION ──────────────────────────────────────────────────
+function goTo(page) {
+  state.page = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelector(`.nav-item[onclick="goTo('${page}')"]`)?.classList.add('active');
+  const titles = {dashboard:'Dashboard', batch:'Batch Upload', repo:'All Documents', customers:'Customers'};
+  document.getElementById('topbar-title').textContent = titles[page] || page;
+  if (page === 'dashboard') loadDashboard();
+  if (page === 'repo')      loadRepo();
+  if (page === 'customers') loadCustomers();
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [stats, recent] = await Promise.all([
+      fetch('/api/repo/stats').then(r=>r.json()),
+      fetch('/api/repo/recent?limit=10').then(r=>r.json()),
+    ]);
+
+    document.getElementById('stat-total').textContent     = stats.total_extractions.toLocaleString();
+    document.getElementById('stat-month').textContent     = `${stats.this_month} this month`;
+    document.getElementById('stat-value').textContent     = fmt(stats.total_value);
+    document.getElementById('stat-customers').textContent = stats.customers;
+
+    const total = stats.total_extractions || 1;
+    const bt = stats.by_type || {};
+    ['quote','po','invoice'].forEach(t => {
+      const c = bt[t] || 0;
+      document.getElementById('bar-'+t).style.width = Math.round(c/total*100)+'%';
+      document.getElementById('ct-'+t).textContent  = c;
+    });
+
+    // Recent feed
+    const feed = document.getElementById('recent-feed');
+    if (!recent.length) {
+      feed.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><div class="empty-title">No data yet</div><div class="empty-sub">Run your first extraction</div></div>`;
+    } else {
+      feed.innerHTML = recent.map(r => `
+        <div class="feed-item" onclick="openDetail(${r.id})">
+          <div class="feed-pip ${r.doc_type}"></div>
+          <div class="feed-info">
+            <div class="feed-title">${r.customer}</div>
+            <div class="feed-meta">${r.doc_number || '—'} &middot; ${r.doc_type} &middot; ${r.item_count} items</div>
+          </div>
+          <div class="feed-amount">${fmt(r.total_amount)}</div>
+          <div class="feed-date">${fmtDate(r.created_at)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Top customers
+    const tcl = document.getElementById('top-customers-list');
+    if (!stats.top_customers?.length) {
+      tcl.innerHTML = `<div style="color:var(--muted);font-size:12px;padding:20px 0;">No data yet</div>`;
+    } else {
+      tcl.innerHTML = stats.top_customers.map((c,i) => `
+        <div class="top-cust-item" onclick="openCustomer('${encodeURIComponent(c.customer)}')">
+          <div class="top-cust-rank">${i+1}</div>
+          <div class="top-cust-info">
+            <div class="top-cust-name">${c.customer}</div>
+            <div class="top-cust-count">${c.cnt} documents</div>
+          </div>
+          <div class="top-cust-val">${fmt(c.val)}</div>
+        </div>
+      `).join('');
+    }
+  } catch(e) { showToast('Error loading dashboard', true); }
+}
+
+// ─── BATCH ───────────────────────────────────────────────────────
+function setMode(mode) {
+  state.batchMode = mode;
+  document.getElementById('mode-extract').classList.toggle('active', mode==='extract');
+  document.getElementById('mode-populate').classList.toggle('active', mode==='populate');
+  document.getElementById('mode-desc').textContent = mode === 'extract'
+    ? 'Runs OCR, generates the Excel file, and logs everything to the repository.'
+    : 'Runs OCR and logs data to the repository only. No Excel file is created.';
+}
+
+function setBatchType(type) {
+  state.batchType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btype-'+type).classList.add('active');
+}
+
+async function batchBrowse() {
+  try {
+    const res  = await fetch('/api/browse-pdfs', {method:'POST'});
+    const data = await res.json();
+    if (data.ok && data.paths?.length) addBatchFiles(data.paths);
+  } catch(e) { showToast('Could not open file browser', true); }
+}
+
+function addBatchFiles(paths) {
+  paths.forEach(p => {
+    if (!state.batchFiles.find(f => f.path === p))
+      state.batchFiles.push({path:p, name:p.replace(/\\/g,'/').split('/').pop(), status:'pending', result:null});
+  });
+  renderBatchList();
+}
+
+function removeBatchFile(idx) { state.batchFiles.splice(idx,1); renderBatchList(); }
+
+function renderBatchList() {
+  const el = document.getElementById('batch-file-list');
+  if (!state.batchFiles.length) { el.innerHTML=''; document.getElementById('btn-run-batch').disabled=true; return; }
+  el.innerHTML = state.batchFiles.map((f,i) => `
+    <div class="batch-file-item">
+      <div class="batch-file-name" title="${f.path}">${f.name}</div>
+      <div class="batch-file-status ${f.status}">${
+        f.status==='running' ? '<span class="spinner"></span> Processing…' :
+        f.status==='done'   ? (f.result?.ok ? '✓ Done' : '✗ Error') :
+        f.status==='pending' ? 'Pending' : f.status
+      }</div>
+      ${f.status==='pending'?`<button class="batch-file-remove" onclick="removeBatchFile(${i})">✕</button>`:'<div style="width:20px"></div>'}
+    </div>
+  `).join('');
+  document.getElementById('btn-run-batch').disabled = !state.batchFiles.length || !!state.batchJobId;
+}
+
+function batchDragOver(e)  { e.preventDefault(); document.getElementById('batch-drop').classList.add('drag-over'); }
+function batchDragLeave(e) { document.getElementById('batch-drop').classList.remove('drag-over'); }
+function batchDrop(e) {
+  e.preventDefault(); document.getElementById('batch-drop').classList.remove('drag-over');
+  showToast('Drag-drop detected — click Select Files to confirm paths.');
+  batchBrowse();
+}
+
+async function runBatch() {
+  if (!state.batchFiles.length) return;
+  const files = state.batchFiles.map(f => ({path:f.path, type:state.batchType==='auto'?null:state.batchType}));
+  state.batchFiles.forEach(f => f.status = 'pending');
+  renderBatchList();
+  document.getElementById('batch-progress-wrap').style.display = 'block';
+  document.getElementById('btn-run-batch').disabled = true;
+  try {
+    const res  = await fetch('/api/batch/start', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({files, output_root:state.outputRoot, mode:state.batchMode}),
+    });
+    const data = await res.json();
+    if (!data.ok) { showToast('Batch failed to start: '+data.error, true); return; }
+    state.batchJobId = data.job_id;
+    pollBatch();
+  } catch(e) { showToast('Error: '+e.message, true); }
+}
+
+function pollBatch() {
+  state.batchPollTimer = setInterval(async () => {
+    try {
+      const data = await fetch(`/api/batch/status/${state.batchJobId}`).then(r=>r.json());
+      const progress = data.total ? Math.round((data.current/data.total)*100) : 0;
+      document.getElementById('batch-bar').style.width = progress+'%';
+      document.getElementById('batch-progress-label').textContent =
+        data.status==='done'
+          ? `Complete — ${data.results.filter(r=>r.ok).length} of ${data.total} succeeded`
+          : `Processing ${data.current_file || '…'} (${data.current} of ${data.total})`;
+      data.results.forEach((result,idx) => {
+        if (state.batchFiles[idx]) {
+          state.batchFiles[idx].status = result.ok ? 'done' : 'error';
+          state.batchFiles[idx].result = result;
+        }
+      });
+      if (data.current > data.results.length && state.batchFiles[data.current-1])
+        state.batchFiles[data.current-1].status = 'running';
+      renderBatchList();
+      if (data.status === 'done') {
+        clearInterval(state.batchPollTimer);
+        state.batchJobId = null;
+        document.getElementById('btn-run-batch').disabled = false;
+        showToast(`Batch complete — ${data.results.filter(r=>r.ok).length}/${data.total} files processed.`);
+        if (state.page === 'dashboard') loadDashboard();
+      }
+    } catch(e) {}
+  }, 1500);
+}
+
+// ─── REPOSITORY ──────────────────────────────────────────────────
+async function loadRepo() {
+  const customer = document.getElementById('filter-customer').value.trim();
+  const type     = document.getElementById('filter-type').value;
+  const url = `/api/repo/extractions?limit=100&offset=0${type?'&type='+type:''}${customer?'&customer='+encodeURIComponent(customer):''}`;
+  try {
+    const data  = await fetch(url).then(r=>r.json());
+    const tbody = document.getElementById('repo-tbody');
+    document.getElementById('repo-count').textContent = `${data.total.toLocaleString()} documents`;
+    if (!data.rows.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--muted);">No documents found</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.rows.map(r => `
+      <tr onclick="openDetail(${r.id})">
+        <td class="dim-cell">${fmtDate(r.created_at)}</td>
+        <td>${chip(r.doc_type)}</td>
+        <td style="font-weight:500">${r.customer}</td>
+        <td class="dim-cell">${r.doc_number || '—'}</td>
+        <td class="dim-cell">${r.item_count}</td>
+        <td class="amount-cell">${fmt(r.total_amount)}</td>
+        <td onclick="event.stopPropagation()" class="action-cell">
+          <button class="tbl-btn" onclick="quickOpen('${r.output_path}',false)">File</button>
+          <button class="tbl-btn" onclick="quickOpen('${r.output_path}',true)">Folder</button>
+          <button class="tbl-btn del" onclick="deleteExtraction(${r.id},this)">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) { showToast('Error loading repository', true); }
+}
+
+async function deleteExtraction(id, btn) {
+  if (!confirm('Delete this record from the repository?')) return;
+  await fetch(`/api/repo/extraction/${id}`, {method:'DELETE'});
+  btn.closest('tr').remove();
+  showToast('Record deleted.');
+}
+
+// ─── CUSTOMERS ───────────────────────────────────────────────────
+async function loadCustomers() {
+  try {
+    const data = await fetch('/api/repo/customers').then(r=>r.json());
+    const grid = document.getElementById('customer-grid');
+    if (!data.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">○</div><div class="empty-title">No customers yet</div><div class="empty-sub">Run extractions to build your roster</div></div>`;
+      return;
+    }
+    grid.innerHTML = data.map(c => `
+      <div class="customer-card" onclick="openCustomer('${encodeURIComponent(c.customer)}')">
+        <div class="cust-name">${c.customer}</div>
+        <div class="cust-value">${fmt(c.total_value)}</div>
+        <div class="cust-value-label">Total Value</div>
+        <div class="cust-chips">
+          ${c.quotes   ? `<div class="cust-chip">${c.quotes} Quotes</div>`   : ''}
+          ${c.pos      ? `<div class="cust-chip">${c.pos} POs</div>`         : ''}
+          ${c.invoices ? `<div class="cust-chip">${c.invoices} Invoices</div>` : ''}
+        </div>
+        <div class="cust-last">Last activity: ${fmtDate(c.last_activity)}</div>
+      </div>
+    `).join('');
+  } catch(e) { showToast('Error loading customers', true); }
+}
+
+async function openCustomer(encodedName) {
+  const name = decodeURIComponent(encodedName);
+  document.getElementById('filter-customer').value = name;
+  document.getElementById('filter-type').value = '';
+  goTo('repo');
+}
+
+// ─── DETAIL PANEL ────────────────────────────────────────────────
+async function openDetail(id) {
+  try {
+    const data = await fetch(`/api/repo/extraction/${id}`).then(r=>r.json());
+    state.detailPath   = data.output_path || '';
+    state.detailFolder = data.output_path || '';
+    document.getElementById('detail-title').textContent =
+      `${data.doc_type === 'po' ? 'Purchase Order' : data.doc_type === 'quote' ? 'Quotation' : 'Pick-up'} — ${data.doc_number || 'No Doc #'}`;
+    document.getElementById('detail-meta-grid').innerHTML = [
+      ['Customer',   data.customer],
+      ['Doc Number', data.doc_number || '—'],
+      ['Doc Date',   data.doc_date || '—'],
+      ['Type',       data.doc_type],
+      ['Line Items', data.item_count],
+      ['Logged',     fmtDate(data.created_at)],
+    ].map(([l,v]) => `
+      <div class="detail-meta-item">
+        <div class="detail-meta-label">${l}</div>
+        <div class="detail-meta-val">${v}</div>
+      </div>
+    `).join('');
+    document.getElementById('detail-total').textContent = fmt(data.total_amount);
+    const tbody = document.getElementById('detail-items-tbody');
+    if (!data.items?.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">No line items</td></tr>`;
+    } else {
+      tbody.innerHTML = data.items.map(i => `
+        <tr>
+          <td style="font-family:var(--mono);font-size:11px;">${i.product_id || '—'}</td>
+          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.description || '—'}</td>
+          <td class="dim-cell">${i.quantity || '—'}</td>
+          <td class="dim-cell">${i.unit || '—'}</td>
+          <td class="dim-cell">${i.price ? fmt(i.price) : '—'}</td>
+          <td class="amount-cell">${fmt(i.amount)}</td>
+        </tr>
+      `).join('');
+    }
+    document.getElementById('detail-overlay').classList.add('open');
+  } catch(e) { showToast('Error loading document', true); }
+}
+
+function closeDetail(e) {
+  if (!e || e.target === document.getElementById('detail-overlay'))
+    document.getElementById('detail-overlay').classList.remove('open');
+}
+async function detailOpenFile()   { await quickOpen(state.detailPath, false); }
+async function detailOpenFolder() { await quickOpen(state.detailPath, true);  }
+async function quickOpen(path, folder) {
+  if (!path) { showToast('No file path available', true); return; }
+  await fetch('/api/open', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path,folder})});
+}
+
+// ─── CONFIG ──────────────────────────────────────────────────────
+async function loadConfig() {
+  try {
+    const data = await fetch('/api/config').then(r=>r.json());
+    state.outputRoot = data.output_root;
+    document.getElementById('sidebar-root').textContent = data.output_root;
+  } catch(e) {}
+}
+
+async function changeOutputFolder() {
+  try {
+    const res  = await fetch('/api/browse-folder', {method:'POST'});
+    const data = await res.json();
+    if (data.ok && data.path) {
+      state.outputRoot = data.path;
+      document.getElementById('sidebar-root').textContent = data.path;
+      await fetch('/api/config', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({output_root:data.path})});
+      showToast('Output root updated.');
+    }
+  } catch(e) { showToast('Error: '+e.message, true); }
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let _t = null;
+function showToast(msg, isError=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast visible' + (isError?' error':'');
+  clearTimeout(_t);
+  _t = setTimeout(() => el.classList.remove('visible'), 4000);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+loadConfig();
+loadDashboard();
+</script>
+</body>
+</html>

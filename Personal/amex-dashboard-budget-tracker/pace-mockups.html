@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pace View — Option Mockups</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0d0d0f;
+    color: #f5f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+  h1 { font-size: 13px; font-weight: 600; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 28px; }
+  .option-wrap { margin-bottom: 40px; }
+  .option-label {
+    font-size: 11px; font-weight: 600; color: #666; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .option-label span { color: #444; font-weight: 400; font-size: 11px; text-transform: none; letter-spacing: 0; }
+  .card {
+    background: #1c1c1e;
+    border-radius: 18px;
+    padding: 20px 22px;
+    border: 1px solid rgba(255,255,255,0.07);
+    max-width: 740px;
+  }
+
+  /* ── Shared data ── */
+  :root {
+    --green:  #30d158;
+    --amber:  #ff9f0a;
+    --red:    #ff453a;
+    --blue:   #007aff;
+    --purple: #af52de;
+    --teal:   #32ade6;
+    --indigo: #5856d6;
+    --muted:  #888;
+    --text:   #f5f5f7;
+    --track:  rgba(255,255,255,0.07);
+  }
+
+  /* ════════════════════════════════════════
+     OPTION A — THE RUNWAY
+  ════════════════════════════════════════ */
+  .rw-wrap { display: flex; flex-direction: column; gap: 18px; }
+  .rw-header { display: flex; justify-content: space-between; align-items: flex-end; }
+  .rw-title { font-size: 12px; color: var(--muted); }
+  .rw-num { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .rw-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .rw-tracks { display: flex; flex-direction: column; gap: 10px; }
+  .rw-row { display: flex; align-items: center; gap: 12px; }
+  .rw-row-label { font-size: 10px; color: var(--muted); width: 38px; text-align: right; flex-shrink: 0; letter-spacing: 0.05em; text-transform: uppercase; }
+  .rw-track {
+    flex: 1; height: 28px; background: var(--track);
+    border-radius: 8px; position: relative; overflow: hidden;
+  }
+  .rw-track-fill {
+    height: 100%; border-radius: 8px;
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+    position: relative;
+  }
+  .rw-track-fill.time { background: rgba(255,255,255,0.12); }
+  .rw-track-fill.money {
+    background: linear-gradient(90deg, #007aff 29%, #ff9f0a 29% 50%, #5856d6 50% 67%, #32ade6 67% 78%, #af52de 78%);
+  }
+  .rw-today-flag {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 2px; background: rgba(255,255,255,0.7);
+    box-shadow: 0 0 6px rgba(255,255,255,0.4);
+  }
+  .rw-today-flag::after {
+    content: 'TODAY'; font-size: 8px; color: #fff; position: absolute;
+    top: 50%; transform: translateY(-50%) translateX(4px);
+    white-space: nowrap; letter-spacing: 0.05em;
+  }
+  .rw-limit-flag {
+    position: absolute; right: 0; top: -3px; bottom: -3px;
+    width: 2px; background: rgba(255,255,255,0.2);
+  }
+  .rw-limit-flag::after {
+    content: 'LIMIT'; font-size: 8px; color: var(--muted); position: absolute;
+    top: 50%; transform: translateY(-50%) translateX(4px);
+    white-space: nowrap; letter-spacing: 0.05em;
+  }
+  .rw-ticks { display: flex; justify-content: space-between; font-size: 10px; color: #555; padding: 0 2px; margin-top: -4px; }
+  .rw-footer { display: flex; gap: 20px; }
+  .rw-stat { display: flex; flex-direction: column; }
+  .rw-stat-val { font-size: 14px; font-weight: 600; }
+  .rw-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  /* ════════════════════════════════════════
+     OPTION B — THE BAND
+  ════════════════════════════════════════ */
+  .band-wrap { display: flex; flex-direction: column; gap: 20px; }
+  .band-header { display: flex; justify-content: space-between; align-items: center; }
+  .band-big { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+  .band-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .band-pct { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: var(--amber); text-align: right; }
+
+  .band-container {
+    height: 60px; border-radius: 14px; overflow: hidden;
+    position: relative; background: var(--track);
+  }
+  .band-top {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 50%; display: flex; overflow: hidden; border-radius: 14px 14px 0 0;
+  }
+  .band-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 50%; overflow: hidden; border-radius: 0 0 14px 14px;
+  }
+  .band-top-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #007aff 29%, #ff9f0a 29% 50%, #5856d6 50% 67%, #32ade6 67% 78%, #af52de 78%);
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .band-bottom-fill {
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .band-divider {
+    position: absolute; top: 50%; left: 0; right: 0;
+    height: 1px; background: rgba(255,255,255,0.08);
+    transform: translateY(-50%);
+  }
+  .band-divider::before { content:'SPEND'; font-size:8px; color:#555; position:absolute; left:6px; top:-8px; letter-spacing:0.05em; }
+  .band-divider::after  { content:'TIME';  font-size:8px; color:#555; position:absolute; left:6px; bottom:-8px; letter-spacing:0.05em; }
+  .band-gap-label {
+    position: absolute; top: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: var(--amber); white-space: nowrap; pointer-events: none;
+    right: 24%; font-weight: 600; letter-spacing: 0.05em;
+  }
+  .band-footer { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+  .band-footer strong { color: var(--text); }
+
+  /* ════════════════════════════════════════
+     OPTION C — THE SLOPE
+  ════════════════════════════════════════ */
+  .slope-wrap { display: flex; flex-direction: column; gap: 12px; }
+  .slope-header { display: flex; justify-content: space-between; align-items: flex-end; }
+  .slope-canvas-wrap {
+    position: relative; height: 160px; border-radius: 12px; overflow: hidden;
+    background: var(--track);
+  }
+  canvas.slope-canvas { width: 100%; height: 100%; display: block; }
+  .slope-footer { display: flex; gap: 20px; font-size: 11px; color: var(--muted); }
+  .slope-footer strong { color: var(--text); }
+  .slope-legend { display: flex; gap: 16px; font-size: 11px; color: var(--muted); }
+  .slope-legend-item { display: flex; align-items: center; gap: 5px; }
+  .slope-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ════════════════════════════════════════
+     OPTION D — THE FUEL GAUGE ROW
+  ════════════════════════════════════════ */
+  .fg-wrap { display: flex; flex-direction: column; gap: 16px; }
+  .fg-header { display: flex; justify-content: space-between; align-items: center; }
+  .fg-big { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+  .fg-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .fg-gauge-wrap { display: flex; flex-direction: column; gap: 4px; }
+  .fg-gauge {
+    height: 44px; border-radius: 100px;
+    position: relative; overflow: hidden;
+    background: linear-gradient(90deg,
+      rgba(48,209,88,0.15)   0%  55%,
+      rgba(255,159,10,0.15) 55%  80%,
+      rgba(255,69,58,0.15)  80% 100%
+    );
+  }
+  .fg-zone-labels {
+    display: flex; font-size: 9px; color: #555;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0 12px; justify-content: space-between;
+    position: absolute; top: 4px; left: 0; right: 0;
+  }
+  .fg-zone-labels span:nth-child(1) { color: rgba(48,209,88,0.5); }
+  .fg-zone-labels span:nth-child(2) { color: rgba(255,159,10,0.5); }
+  .fg-zone-labels span:nth-child(3) { color: rgba(255,69,58,0.5); }
+  .fg-marker-wrap {
+    position: absolute; top: 0; bottom: 0;
+    display: flex; align-items: center;
+    transition: left 1.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .fg-marker {
+    width: 4px; height: 100%; border-radius: 100px;
+    background: #fff;
+    box-shadow: 0 0 12px rgba(255,255,255,0.8), 0 0 24px rgba(255,255,255,0.3);
+    position: relative;
+  }
+  .fg-marker::after {
+    content: attr(data-label);
+    position: absolute; bottom: -18px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px; color: var(--text); white-space: nowrap;
+    font-weight: 600;
+  }
+  .fg-zone-markers {
+    display: flex; font-size: 9px; color: #555;
+    padding: 0 0px;
+    position: relative; height: 16px; margin-top: 4px;
+  }
+  .fg-zone-m { position: absolute; transform: translateX(-50%); }
+
+  .fg-ratio-track {
+    height: 6px; border-radius: 3px; background: var(--track);
+    margin-top: 18px; position: relative; overflow: hidden;
+  }
+  .fg-ratio-fill {
+    height: 100%; border-radius: 3px;
+    background: rgba(255,255,255,0.12);
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+    position: relative;
+  }
+  .fg-ratio-fill::after {
+    content: ''; position: absolute; right: 0; top: 0; bottom: 0;
+    width: 2px; background: rgba(255,255,255,0.5);
+    box-shadow: 0 0 6px rgba(255,255,255,0.4);
+  }
+  .fg-ratio-labels { display: flex; justify-content: space-between; font-size: 10px; color: #555; margin-top: 4px; }
+  .fg-stats-row { display: flex; gap: 0; }
+  .fg-stat { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .fg-stat:not(:first-child) { padding-left: 16px; border-left: 1px solid rgba(255,255,255,0.07); margin-left: 16px; }
+  .fg-stat-val { font-size: 16px; font-weight: 700; }
+  .fg-stat-lbl { font-size: 10px; color: var(--muted); }
+
+  /* ════════════════════════════════════════
+     OPTION E — THE SPLIT BAR
+  ════════════════════════════════════════ */
+  .sp-wrap { display: flex; flex-direction: column; gap: 16px; }
+  .sp-header { display: flex; justify-content: space-between; align-items: center; }
+  .sp-big { font-size: 26px; font-weight: 800; letter-spacing: -1px; }
+  .sp-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .sp-bar-wrap {
+    display: flex; align-items: stretch;
+    height: 56px; gap: 3px;
+    position: relative;
+  }
+  .sp-left {
+    flex: 1; border-radius: 14px 4px 4px 14px;
+    background: var(--track); overflow: hidden; position: relative;
+    display: flex; align-items: center;
+  }
+  .sp-right {
+    flex: 1; border-radius: 4px 14px 14px 4px;
+    background: var(--track); overflow: hidden; position: relative;
+    display: flex; align-items: center; justify-content: flex-start;
+  }
+  .sp-left-fill {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, #007aff 30%, #ff9f0a 55%, #5856d6 72%, #32ade6 84%, #af52de 100%);
+    border-radius: 14px 4px 4px 14px;
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+    width: 0%;
+  }
+  .sp-right-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: rgba(48,209,88,0.2);
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+    width: 0%;
+  }
+  .sp-left-label {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 11px; color: rgba(255,255,255,0.5); z-index: 1; pointer-events: none;
+    white-space: nowrap;
+  }
+  .sp-right-label {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 11px; color: rgba(48,209,88,0.7); z-index: 1; pointer-events: none;
+    white-space: nowrap;
+  }
+  .sp-center {
+    width: 3px; background: rgba(255,255,255,0.2); border-radius: 2px;
+    position: relative; flex-shrink: 0;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .sp-center-label {
+    position: absolute; bottom: -18px;
+    font-size: 10px; color: var(--muted); white-space: nowrap;
+  }
+  .sp-footer { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); padding: 0 2px; }
+  .sp-footer strong { color: var(--text); }
+  .sp-mini-row {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .sp-mini-label { font-size: 11px; color: var(--muted); width: 90px; }
+  .sp-mini-track { flex:1; height: 5px; background: var(--track); border-radius: 3px; overflow: hidden; }
+  .sp-mini-fill { height: 100%; border-radius: 3px; transition: width 1.4s cubic-bezier(0.22,1,0.36,1); }
+  .sp-mini-val { font-size: 11px; color: var(--muted); width: 70px; text-align: right; }
+</style>
+</head>
+<body>
+
+<h1>Pace View — Option Mockups &nbsp;·&nbsp; Feb 2026 &nbsp;·&nbsp; Day 18 of 28 &nbsp;·&nbsp; $1,987 spent of $3,800</h1>
+
+<!-- ══════════════════════════════════════════════════════════
+     OPTION A — THE RUNWAY
+══════════════════════════════════════════════════════════ -->
+<div class="option-wrap">
+  <div class="option-label">A — The Runway <span>Two parallel tracks: time on top, money on bottom. See immediately if spend is ahead or behind the clock.</span></div>
+  <div class="card">
+    <div class="rw-wrap">
+      <div class="rw-tracks">
+        <div class="rw-row">
+          <div class="rw-row-label">Time</div>
+          <div class="rw-track">
+            <div class="rw-track-fill time" id="rwTime" style="width:0%">
+              <div class="rw-today-flag"></div>
+            </div>
+          </div>
+        </div>
+        <div class="rw-row">
+          <div class="rw-row-label">Spend</div>
+          <div class="rw-track">
+            <div class="rw-track-fill money" id="rwMoney" style="width:0%">
+              <div class="rw-limit-flag"></div>
+            </div>
+            <div class="rw-limit-flag"></div>
+          </div>
+        </div>
+        <div class="rw-ticks">
+          <span>1</span><span>7</span><span>14</span><span>21</span><span>28</span>
+        </div>
+      </div>
+      <div class="rw-footer">
+        <div class="rw-stat"><div class="rw-stat-val">$1,987</div><div class="rw-stat-lbl">spent</div></div>
+        <div class="rw-stat"><div class="rw-stat-val" style="color:var(--amber)">$2,443</div><div class="rw-stat-lbl">on-pace target</div></div>
+        <div class="rw-stat"><div class="rw-stat-val" style="color:var(--green)">$1,813</div><div class="rw-stat-lbl">remaining</div></div>
+        <div class="rw-stat"><div class="rw-stat-val">$3,138</div><div class="rw-stat-lbl">projected</div></div>
+        <div class="rw-stat"><div class="rw-stat-val" style="color:var(--green)">+$456 ahead</div><div class="rw-stat-lbl">vs pace</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     OPTION B — THE BAND
+══════════════════════════════════════════════════════════ -->
+<div class="option-wrap">
+  <div class="option-label">B — The Band <span>Spend on top half, time on bottom half. The gap between them shows pace divergence at a glance.</span></div>
+  <div class="card">
+    <div class="band-wrap">
+      <div class="band-header">
+        <div>
+          <div class="band-big">$1,987</div>
+          <div class="band-sub">spent this month</div>
+        </div>
+        <div>
+          <div class="band-pct">52%</div>
+          <div class="band-sub" style="text-align:right">of $3,800 budget</div>
+        </div>
+      </div>
+      <div class="band-container">
+        <div class="band-top">
+          <div class="band-top-fill" id="bandSpend" style="width:0%"></div>
+        </div>
+        <div class="band-divider"></div>
+        <div class="band-bottom">
+          <div class="band-bottom-fill" id="bandTime" style="width:0%"></div>
+        </div>
+        <div class="band-gap-label">↑ $456 ahead of pace</div>
+      </div>
+      <div class="band-footer">
+        <span>Day 18 of 28 · <strong>$1,813 remaining</strong></span>
+        <span>Projected: <strong>$3,138</strong> — $662 under budget</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     OPTION C — THE SLOPE
+══════════════════════════════════════════════════════════ -->
+<div class="option-wrap">
+  <div class="option-label">C — The Slope <span>Ideal pace as a diagonal. Actual spend as a stepped line. Above the diagonal = over pace, below = on track.</span></div>
+  <div class="card">
+    <div class="slope-wrap">
+      <div class="slope-header">
+        <div>
+          <div class="rw-num">$1,987 <span style="font-size:14px;font-weight:400;color:var(--muted)">spent</span></div>
+          <div class="rw-sub">Day 18 of 28 · $3,800 budget</div>
+        </div>
+        <div class="slope-legend">
+          <div class="slope-legend-item"><div class="slope-legend-dot" style="background:rgba(255,255,255,0.2)"></div> Ideal pace</div>
+          <div class="slope-legend-item"><div class="slope-legend-dot" style="background:var(--green)"></div> Actual spend</div>
+        </div>
+      </div>
+      <div class="slope-canvas-wrap">
+        <canvas class="slope-canvas" id="slopeCanvas"></canvas>
+      </div>
+      <div class="slope-footer">
+        <span>Projected <strong>$3,138</strong> by month end</span>
+        <span style="color:var(--green)">$456 under pace · $662 under budget</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     OPTION D — THE FUEL GAUGE ROW
+══════════════════════════════════════════════════════════ -->
+<div class="option-wrap">
+  <div class="option-label">D — The Fuel Gauge <span>A glowing needle on a tricolor gauge. Instant read — Safe, Watch, or Over. Secondary bar shows days vs budget remaining.</span></div>
+  <div class="card">
+    <div class="fg-wrap">
+      <div class="fg-header">
+        <div>
+          <div class="fg-big">$1,987</div>
+          <div class="fg-sub">spent · $3,800 budget · 52% used</div>
+        </div>
+        <div style="text-align:right">
+          <div class="fg-big" style="color:var(--green)">$1,813</div>
+          <div class="fg-sub">remaining · 13 days left</div>
+        </div>
+      </div>
+      <div class="fg-gauge-wrap">
+        <div class="fg-gauge" id="fgGauge">
+          <div class="fg-zone-labels">
+            <span>SAFE</span><span>WATCH</span><span>OVER</span>
+          </div>
+          <div class="fg-marker-wrap" id="fgMarker" style="left:0%">
+            <div class="fg-marker" data-label="$1,987 · 52%"></div>
+          </div>
+        </div>
+        <div class="fg-zone-markers">
+          <div class="fg-zone-m" style="left:0%"><span style="font-size:9px;color:#555">$0</span></div>
+          <div class="fg-zone-m" style="left:55%"><span style="font-size:9px;color:rgba(255,159,10,0.5)">$2,090</span></div>
+          <div class="fg-zone-m" style="left:80%"><span style="font-size:9px;color:rgba(255,69,58,0.4)">$3,040</span></div>
+          <div class="fg-zone-m" style="left:100%"><span style="font-size:9px;color:#555">$3,800</span></div>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px">
+          <span>Days elapsed vs Budget remaining</span>
+          <span>Day 18 of 28 &nbsp;·&nbsp; $1,813 of $3,800 left</span>
+        </div>
+        <div class="fg-ratio-track">
+          <div class="fg-ratio-fill" id="fgRatio" style="width:0%"></div>
+        </div>
+        <div class="fg-ratio-labels">
+          <span>Start of month</span><span>64% of days used · 48% of budget used</span><span>End of month</span>
+        </div>
+      </div>
+      <div class="fg-stats-row">
+        <div class="fg-stat"><div class="fg-stat-val">$110</div><div class="fg-stat-lbl">daily avg</div></div>
+        <div class="fg-stat"><div class="fg-stat-val">$136</div><div class="fg-stat-lbl">daily goal</div></div>
+        <div class="fg-stat"><div class="fg-stat-val" style="color:var(--green)">$3,138</div><div class="fg-stat-lbl">projected total</div></div>
+        <div class="fg-stat"><div class="fg-stat-val" style="color:var(--green)">$662 under</div><div class="fg-stat-lbl">vs budget</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     OPTION E — THE SPLIT BAR
+══════════════════════════════════════════════════════════ -->
+<div class="option-wrap">
+  <div class="option-label">E — The Split Bar <span>Spent fills from the right toward center. Remaining fills from the left toward center. Budget limit on each outer edge.</span></div>
+  <div class="card">
+    <div class="sp-wrap">
+      <div class="sp-header">
+        <div>
+          <div class="sp-big">$1,987 <span style="font-size:15px;font-weight:500;color:var(--muted)">spent</span></div>
+          <div class="sp-sub">Day 18 of 28 · $3,800 budget</div>
+        </div>
+        <div style="text-align:right">
+          <div class="sp-big" style="color:var(--green)">$1,813 <span style="font-size:15px;font-weight:500;color:var(--muted)">left</span></div>
+          <div class="sp-sub">13 days remaining</div>
+        </div>
+      </div>
+      <div class="sp-bar-wrap">
+        <div class="sp-left">
+          <div class="sp-left-fill" id="spLeft" style="width:0%"></div>
+          <div class="sp-left-label">← SPENT</div>
+        </div>
+        <div class="sp-center">
+          <div class="sp-center-label">today</div>
+        </div>
+        <div class="sp-right">
+          <div class="sp-right-fill" id="spRight" style="width:0%"></div>
+          <div class="sp-right-label">REMAINING →</div>
+        </div>
+      </div>
+      <div class="sp-footer">
+        <span>$0 <span style="margin-left:4px;color:#444">limit →</span></span>
+        <span>Projected <strong>$3,138</strong> · $662 under budget</span>
+        <span><span style="color:#444">← limit</span> $3,800</span>
+      </div>
+      <!-- Mini category bars -->
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+        <div class="sp-mini-row"><div class="sp-mini-label" style="color:#007aff">🛒 Groceries</div><div class="sp-mini-track"><div class="sp-mini-fill" data-w="74.9" style="background:#007aff;width:0%"></div></div><div class="sp-mini-val">$824 / $1,100</div></div>
+        <div class="sp-mini-row"><div class="sp-mini-label" style="color:#ff9f0a">🍽 Restaurants</div><div class="sp-mini-track"><div class="sp-mini-fill" data-w="79.1" style="background:#ff9f0a;width:0%"></div></div><div class="sp-mini-val">$712 / $900</div></div>
+        <div class="sp-mini-row"><div class="sp-mini-label" style="color:#5856d6">🎓 Education</div><div class="sp-mini-track"><div class="sp-mini-fill" data-w="74.9" style="background:#5856d6;width:0%"></div></div><div class="sp-mini-val">$487 / $650</div></div>
+        <div class="sp-mini-row"><div class="sp-mini-label" style="color:#32ade6">⛽ Gas & Auto</div><div class="sp-mini-track"><div class="sp-mini-fill" data-w="64.2" style="background:#32ade6;width:0%"></div></div><div class="sp-mini-val">$321 / $500</div></div>
+        <div class="sp-mini-row"><div class="sp-mini-label" style="color:#af52de">🛍 Shopping</div><div class="sp-mini-track"><div class="sp-mini-fill" data-w="80" style="background:#af52de;width:0%"></div></div><div class="sp-mini-val">$320 / $400</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // ── Shared data ──────────────────────────────────────────
+  const BUDGET    = 3800;
+  const SPENT     = 1987;
+  const DAYS_EL   = 18;
+  const DAYS_IN   = 28;
+  const PROJECTED = 3138;
+  const spentPct  = SPENT / BUDGET * 100;   // 52.3%
+  const timePct   = DAYS_EL / DAYS_IN * 100; // 64.3%
+
+  // ── Animate all fills on load ─────────────────────────────
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+
+      // A — Runway
+      document.getElementById('rwTime').style.width  = timePct + '%';
+      document.getElementById('rwMoney').style.width = spentPct + '%';
+
+      // B — Band
+      document.getElementById('bandSpend').style.width = spentPct + '%';
+      document.getElementById('bandTime').style.width  = timePct + '%';
+
+      // D — Fuel gauge
+      // Gauge runs $0→$3,800 mapped to 2%→98% so needle doesn't clip edges
+      const gaugeLeft = 2 + (spentPct / 100) * 96;
+      document.getElementById('fgMarker').style.left = gaugeLeft + '%';
+      document.getElementById('fgRatio').style.width = timePct + '%';
+
+      // E — Split bar
+      // Left side: spent fills FROM the right edge, so "width" pushes in from center
+      // Spent 52% of budget → fills 52% of the left half
+      document.getElementById('spLeft').style.width  = Math.min(spentPct, 100) + '%';
+      // Right side: remaining 48% fills 48% of right half
+      const remainPct = (BUDGET - SPENT) / BUDGET * 100;
+      document.getElementById('spRight').style.width = Math.min(remainPct, 100) + '%';
+
+      // Mini bars
+      document.querySelectorAll('.sp-mini-fill').forEach(el => {
+        el.style.width = el.dataset.w + '%';
+      });
+
+      // C — Slope (canvas)
+      drawSlope();
+    }));
+  });
+
+  // ── Option C: Slope chart ─────────────────────────────────
+  function drawSlope() {
+    const canvas = document.getElementById('slopeCanvas');
+    const dpr    = window.devicePixelRatio || 1;
+    const rect   = canvas.parentElement.getBoundingClientRect();
+    canvas.width  = rect.width  * dpr;
+    canvas.height = rect.height * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const W = rect.width, H = rect.height;
+    const PAD = { t: 12, r: 16, b: 28, l: 52 };
+    const gW  = W - PAD.l - PAD.r;
+    const gH  = H - PAD.t - PAD.b;
+
+    // Helper: x for day, y for dollar
+    const xd = d => PAD.l + (d / DAYS_IN) * gW;
+    const y$  = v => PAD.t + gH - (v / BUDGET) * gH;
+
+    // Subtle grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1;
+    [1000,2000,3000,BUDGET].forEach(v => {
+      ctx.beginPath(); ctx.moveTo(PAD.l, y$(v)); ctx.lineTo(PAD.l+gW, y$(v)); ctx.stroke();
+    });
+    [0,7,14,21,28].forEach(d => {
+      ctx.beginPath(); ctx.moveTo(xd(d), PAD.t); ctx.lineTo(xd(d), PAD.t+gH); ctx.stroke();
+    });
+
+    // Y-axis labels
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.font = '10px -apple-system,sans-serif';
+    ctx.textAlign = 'right';
+    [1000,2000,3000].forEach(v => {
+      ctx.fillText('$' + (v/1000) + 'k', PAD.l - 6, y$(v) + 3);
+    });
+    // X-axis labels
+    ctx.textAlign = 'center';
+    [1,7,14,21,28].forEach(d => {
+      ctx.fillText(d, xd(d), PAD.t + gH + 14);
+    });
+
+    // Budget limit line
+    ctx.setLineDash([4,4]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PAD.l, y$(BUDGET)); ctx.lineTo(PAD.l+gW, y$(BUDGET)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Ideal pace diagonal
+    const grad = ctx.createLinearGradient(PAD.l, 0, PAD.l+gW, 0);
+    grad.addColorStop(0,    'rgba(255,255,255,0.08)');
+    grad.addColorStop(0.55, 'rgba(255,159,10,0.15)');
+    grad.addColorStop(1,    'rgba(255,69,58,0.2)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(PAD.l, PAD.t+gH);
+    ctx.lineTo(PAD.l+gW, PAD.t);
+    ctx.lineTo(PAD.l+gW, PAD.t+gH);
+    ctx.closePath(); ctx.fill();
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(PAD.l, PAD.t+gH); ctx.lineTo(PAD.l+gW, PAD.t); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Actual spend line — realistic daily data (cumulative)
+    const dailyTotals = [
+      0,62,62,122,195,195,252,252,320,398,471,471,530,
+      620,620,720,812,920,987 // up to day 18 = $1,987 total... approximate
+    ];
+    // scale so day 18 = 1987
+    const scale = SPENT / dailyTotals[DAYS_EL];
+    const points = dailyTotals.map((v,i) => ({ x: xd(i), y: y$(v * scale) }));
+
+    // Area fill under actual line
+    const areaGrad = ctx.createLinearGradient(0, PAD.t, 0, PAD.t+gH);
+    areaGrad.addColorStop(0,   'rgba(48,209,88,0.25)');
+    areaGrad.addColorStop(0.7, 'rgba(48,209,88,0.05)');
+    areaGrad.addColorStop(1,   'rgba(48,209,88,0)');
+    ctx.fillStyle = areaGrad;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, PAD.t+gH);
+    points.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.lineTo(points[points.length-1].x, PAD.t+gH);
+    ctx.closePath(); ctx.fill();
+
+    // Actual line
+    ctx.strokeStyle = '#30d158';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    points.forEach((p,i) => i === 0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.stroke();
+
+    // Projected dashed continuation
+    const projY = y$(PROJECTED);
+    ctx.strokeStyle = 'rgba(48,209,88,0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    ctx.moveTo(points[points.length-1].x, points[points.length-1].y);
+    ctx.lineTo(PAD.l+gW, projY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Today dot
+    const todayPt = points[DAYS_EL];
+    ctx.fillStyle = '#30d158';
+    ctx.shadowColor = '#30d158'; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.arc(todayPt.x, todayPt.y, 5, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Today vertical line
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(todayPt.x, PAD.t); ctx.lineTo(todayPt.x, PAD.t+gH); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // "TODAY" label
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '9px -apple-system,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('TODAY', todayPt.x, PAD.t + 8);
+  }
+</script>
+</body>
+</html>

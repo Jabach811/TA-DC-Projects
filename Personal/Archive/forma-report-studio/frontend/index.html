@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forma Report Studio</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar-title">Forma Report Studio</div>
+    </header>
+
+    <main class="main">
+      <section class="hero">
+        <div class="hero-kicker">HIPCO Report Extraction</div>
+        <h1>Pick the report. Pick the file. The app does the rest.</h1>
+        <p>
+          Choose <strong>PO</strong>, <strong>Quote</strong>, or <strong>Invoice</strong>,
+          select the PDF, and Forma will quickly check that the report type looks right before running the extraction.
+        </p>
+      </section>
+
+      <section class="selection-panel">
+        <div class="section-label">1. Choose Report Type</div>
+        <div class="report-buttons">
+          <button class="report-btn" data-report="PO">PO</button>
+          <button class="report-btn" data-report="Quote">Quote</button>
+          <button class="report-btn" data-report="Invoice">Invoice</button>
+        </div>
+      </section>
+
+      <section class="selection-panel">
+        <div class="section-label">2. Choose PDF</div>
+        <div class="file-row">
+          <button class="file-btn" id="pick-file-btn">Select PDF</button>
+          <div class="file-display" id="file-display">No file selected yet.</div>
+        </div>
+      </section>
+
+      <section class="status-panel">
+        <div class="status-card" id="status-card">
+          <div class="status-label">Status</div>
+          <div class="status-title" id="status-title">Waiting to begin</div>
+          <div class="status-copy" id="status-copy">Choose a report type and a PDF file.</div>
+        </div>
+      </section>
+
+      <section class="result-panel" id="result-panel">
+        <div class="result-head">
+          <div>
+            <div class="section-label">Result</div>
+            <h2 id="result-title">No extraction run yet</h2>
+          </div>
+        </div>
+        <div class="result-grid">
+          <div class="result-item">
+            <div class="result-label">Selected Type</div>
+            <div class="result-value" id="result-selected">-</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Detected Type</div>
+            <div class="result-value" id="result-detected">-</div>
+          </div>
+          <div class="result-item result-item-wide">
+            <div class="result-label">Saved File</div>
+            <div class="result-value path-value" id="result-output">-</div>
+          </div>
+          <div class="result-item result-item-wide">
+            <div class="result-label">Message</div>
+            <div class="result-value" id="result-message">Nothing has been processed yet.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

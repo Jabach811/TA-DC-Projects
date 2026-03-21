@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma — Document Extractor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:     #0f0d0a;
+    --ink2:    #1e1b16;
+    --paper:   #f2ede4;
+    --paper2:  #e8e2d6;
+    --paper3:  #ddd7c9;
+    --red:     #c8290a;
+    --red2:    #a01f04;
+    --dim:     #7a7060;
+    --gold:    #fbbf24;
+    --green:   #16a34a;
+    --serif:   'Playfair Display', Georgia, serif;
+    --sans:    'IBM Plex Sans', sans-serif;
+    --mono:    'IBM Plex Mono', monospace;
+    --brut:    'Bebas Neue', sans-serif;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    border-bottom: 4px solid var(--red);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-logo {
+    width: 42px;
+    height: 42px;
+    background: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .header-logo span {
+    font-family: var(--brut);
+    color: #fff;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .header-title {
+    font-family: var(--brut);
+    color: #fff;
+    font-size: 22px;
+    letter-spacing: 3px;
+    flex: 1;
+  }
+
+  .header-title em {
+    color: var(--red);
+    font-style: normal;
+  }
+
+  .header-sub {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: rgba(255,255,255,.4);
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .settings-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,.15);
+    color: rgba(255,255,255,.5);
+    padding: 6px 14px;
+    font-family: var(--brut);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .settings-btn:hover {
+    border-color: rgba(255,255,255,.4);
+    color: #fff;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+  }
+  .screen.active {
+    display: flex;
+  }
+
+  /* ── SCREEN: TYPE SELECT ── */
+  #screen-type {
+    align-items: center;
+    justify-content: center;
+    padding: 56px 32px;
+  }
+
+  .type-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .type-headline {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.05;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .type-sub {
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--dim);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .type-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 840px;
+    margin-bottom: 32px;
+  }
+
+  .type-card {
+    background: #fff;
+    border: 2px solid var(--paper3);
+    padding: 32px 24px 28px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    user-select: none;
+  }
+
+  .type-card:hover {
+    border-color: var(--ink);
+    background: var(--paper);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(15,13,10,.1);
+  }
+
+  .type-card.selected {
+    border-color: var(--red);
+    background: #fff5f3;
+  }
+
+  .type-card.selected .type-card-icon {
+    background: var(--red);
+    color: #fff;
+  }
+
+  .type-card-icon {
+    width: 54px;
+    height: 54px;
+    background: var(--paper2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: all .2s;
+  }
+
+  .type-card-label {
+    font-family: var(--brut);
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .type-card-desc {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--dim);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .type-card-ext {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--dim);
+    background: var(--paper2);
+    padding: 2px 8px;
+    letter-spacing: 1px;
+  }
+
+  .auto-detect-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .auto-detect-row input[type="checkbox"] { display: none; }
+
+  .auto-toggle {
+    width: 38px;
+    height: 22px;
+    background: var(--paper3);
+    border-radius: 11px;
+    position: relative;
+    transition: background .2s;
+    flex-shrink: 0;
+  }
+
+  .auto-toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+
+  .auto-detect-row.on .auto-toggle {
+    background: var(--red);
+  }
+  .auto-detect-row.on .auto-toggle::after {
+    transform: translateX(16px);
+  }
+
+  .auto-detect-label {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .auto-detect-note {
+    font-size: 12px;
+    color: var(--dim);
+    font-family: var(--sans);
+  }
+
+  .btn-next {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 16px 52px;
+    font-family: var(--brut);
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all .18s;
+  }
+
+  .btn-next:hover:not(:disabled) {
+    background: var(--red);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(200,41,10,.3);
+  }
+
+  .btn-next:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+  }
+
+  /* ── SCREEN: FILE SELECT ── */
+  #screen-file {
+    padding: 40px 0;
+    align-items: center;
+  }
+
+  .file-wrap {
+    width: 100%;
+    max-width: 680px;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color .15s;
+  }
+  .back-btn:hover { color: var(--ink); }
+
+  .file-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--paper3);
+  }
+
+  .file-type-badge {
+    font-family: var(--brut);
+    font-size: 13px;
+    letter-spacing: 2px;
+    background: var(--red);
+    color: #fff;
+    padding: 4px 12px;
+  }
+
+  .file-section-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 900;
+  }
+
+  /* Drop zone */
+  .drop-zone {
+    border: 2px dashed var(--paper3);
+    background: #fff;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+  }
+
+  .drop-zone:hover,
+  .drop-zone.drag-over {
+    border-color: var(--red);
+    background: #fff5f3;
+  }
+
+  .drop-zone.has-file {
+    border-color: var(--green);
+    border-style: solid;
+    background: #f0fdf4;
+  }
+
+  .drop-icon {
+    font-size: 32px;
+    color: var(--paper3);
+    transition: color .2s;
+  }
+  .drop-zone:hover .drop-icon,
+  .drop-zone.drag-over .drop-icon { color: var(--red); }
+  .drop-zone.has-file .drop-icon { color: var(--green); }
+
+  .drop-text {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--dim);
+    text-align: center;
+  }
+
+  .drop-text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .drop-browse {
+    font-family: var(--brut);
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .drop-browse:hover { background: var(--red); }
+
+  .file-chosen {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0 4px;
+  }
+  .drop-zone.has-file .file-chosen { display: flex; }
+  .drop-zone.has-file .drop-hint    { display: none; }
+
+  .file-chosen-icon {
+    font-size: 22px;
+    color: var(--green);
+    flex-shrink: 0;
+  }
+
+  .file-chosen-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-chosen-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-chosen-path {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+
+  .file-clear {
+    background: none;
+    border: 1px solid var(--paper3);
+    color: var(--dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all .15s;
+  }
+  .file-clear:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* Output folder row */
+  .folder-row {
+    background: #fff;
+    border: 1px solid var(--paper3);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .folder-row-icon {
+    font-size: 20px;
+    color: var(--dim);
+    flex-shrink: 0;
+  }
+
+  .folder-row-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .folder-row-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .folder-row-path {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 3px;
+  }
+
+  .folder-change-btn {
+    background: none;
+    border: 1px solid var(--paper3);
+    color: var(--dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    transition: all .15s;
+  }
+  .folder-change-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  /* Auto-detect result badge */
+  .detect-result {
+    display: none;
+    padding: 10px 16px;
+    background: var(--paper2);
+    border-left: 3px solid var(--ink);
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--dim);
+    align-items: center;
+    gap: 8px;
+  }
+  .detect-result.visible { display: flex; }
+  .detect-result.strong { border-color: var(--green); }
+  .detect-result.low    { border-color: var(--gold); }
+
+  .detect-result strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Generate button */
+  .btn-generate {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 18px;
+    font-family: var(--brut);
+    font-size: 22px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all .18s;
+    width: 100%;
+  }
+
+  .btn-generate:hover:not(:disabled) {
+    background: var(--red2);
+    box-shadow: 0 6px 24px rgba(200,41,10,.3);
+  }
+
+  .btn-generate:disabled {
+    opacity: .3;
+    cursor: not-allowed;
+  }
+
+  /* ── SCREEN: PROCESSING ── */
+  #screen-processing {
+    align-items: center;
+    justify-content: center;
+    padding: 80px 32px;
+    gap: 32px;
+  }
+
+  .processing-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--paper3);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .processing-label {
+    font-family: var(--brut);
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--ink);
+  }
+
+  .processing-sub {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--dim);
+    text-align: center;
+  }
+
+  .processing-log {
+    background: var(--ink);
+    color: rgba(255,255,255,.7);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 580px;
+    min-height: 60px;
+    max-height: 120px;
+    overflow-y: auto;
+    line-height: 1.7;
+  }
+
+  /* ── SCREEN: RESULTS ── */
+  #screen-results {
+    align-items: center;
+    justify-content: center;
+    padding: 64px 32px;
+  }
+
+  .results-wrap {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .result-success-icon {
+    font-size: 52px;
+    text-align: center;
+  }
+
+  .result-headline {
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .result-headline em {
+    color: var(--red);
+    font-style: normal;
+  }
+
+  .result-card {
+    background: #fff;
+    border: 2px solid var(--paper3);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .result-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .result-row-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .result-row-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+    word-break: break-all;
+  }
+
+  .result-divider {
+    height: 1px;
+    background: var(--paper3);
+  }
+
+  .result-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .btn-action {
+    border: none;
+    padding: 14px;
+    font-family: var(--brut);
+    font-size: 17px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all .18s;
+  }
+
+  .btn-action.primary {
+    background: var(--ink);
+    color: #fff;
+  }
+  .btn-action.primary:hover {
+    background: var(--red);
+  }
+
+  .btn-action.secondary {
+    background: var(--paper2);
+    color: var(--ink);
+  }
+  .btn-action.secondary:hover {
+    background: var(--paper3);
+  }
+
+  .btn-another {
+    background: none;
+    border: 2px solid var(--paper3);
+    color: var(--dim);
+    padding: 14px;
+    font-family: var(--brut);
+    font-size: 17px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all .18s;
+    width: 100%;
+  }
+  .btn-another:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  /* ── SETTINGS PANEL ── */
+  .settings-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,13,10,.6);
+    z-index: 200;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+  .settings-overlay.open { display: flex; }
+
+  .settings-panel {
+    background: var(--paper);
+    width: 400px;
+    min-height: 100vh;
+    border-left: 4px solid var(--red);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .settings-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .settings-panel-title {
+    font-family: var(--brut);
+    font-size: 22px;
+    letter-spacing: 3px;
+  }
+
+  .settings-close {
+    background: none;
+    border: 1px solid var(--paper3);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 10px;
+    color: var(--dim);
+    transition: all .15s;
+  }
+  .settings-close:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .settings-divider {
+    height: 2px;
+    background: var(--paper3);
+  }
+
+  .settings-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+
+  .settings-desc {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--dim);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .settings-path-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .settings-path-input {
+    flex: 1;
+    background: #fff;
+    border: 1px solid var(--paper3);
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .settings-path-input:focus { border-color: var(--ink); }
+
+  .settings-browse {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    font-family: var(--brut);
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .15s;
+  }
+  .settings-browse:hover { background: var(--red); }
+
+  .settings-save {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 13px;
+    font-family: var(--brut);
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background .15s;
+    width: 100%;
+  }
+  .settings-save:hover { background: var(--red2); }
+
+  /* ── ERROR TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 12px 22px;
+    border-left: 4px solid var(--red);
+    opacity: 0;
+    transition: all .3s;
+    pointer-events: none;
+    z-index: 999;
+    max-width: 520px;
+    word-break: break-word;
+  }
+  .toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── ERROR SCREEN ── */
+  #screen-error {
+    align-items: center;
+    justify-content: center;
+    padding: 64px 32px;
+    gap: 20px;
+  }
+
+  .error-icon { font-size: 48px; text-align: center; }
+
+  .error-headline {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .error-msg {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--dim);
+    background: var(--paper2);
+    padding: 16px 20px;
+    max-width: 640px;
+    width: 100%;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .btn-retry {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 14px 40px;
+    font-family: var(--brut);
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-retry:hover { background: var(--red2); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo"><span>F</span></div>
+  <div>
+    <div class="header-title">FORMA <em>//</em> DOC EXTRACTOR</div>
+    <div class="header-sub">Harrington Industrial — PDF to Excel</div>
+  </div>
+  <div class="header-right">
+    <button class="settings-btn" onclick="openSettings()">⚙ SETTINGS</button>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ══ SCREEN 1: TYPE SELECT ══ -->
+  <div id="screen-type" class="screen active">
+    <div class="type-kicker">Step 1 of 2</div>
+    <h1 class="type-headline">What are we<br>extracting today?</h1>
+    <p class="type-sub">Select the document type or enable auto-detect.</p>
+
+    <div class="type-cards">
+      <div class="type-card" data-type="quote" onclick="selectType('quote', this)">
+        <div class="type-card-icon">📋</div>
+        <div class="type-card-label">QUOTATION</div>
+        <div class="type-card-desc">Customer price quotations with product line items, quantities, and pricing.</div>
+        <div class="type-card-ext">→ Quotes/</div>
+      </div>
+      <div class="type-card" data-type="po" onclick="selectType('po', this)">
+        <div class="type-card-icon">📦</div>
+        <div class="type-card-label">PURCHASE ORDER</div>
+        <div class="type-card-desc">Vendor purchase orders with line items, delivery dates, and freight terms.</div>
+        <div class="type-card-ext">→ POs/</div>
+      </div>
+      <div class="type-card" data-type="invoice" onclick="selectType('invoice', this)">
+        <div class="type-card-icon">🚚</div>
+        <div class="type-card-label">PICK-UP TICKET</div>
+        <div class="type-card-desc">Customer pick-up tickets and invoices with ship-via and bin amounts.</div>
+        <div class="type-card-ext">→ Pick Ticket Orders/</div>
+      </div>
+    </div>
+
+    <label class="auto-detect-row" id="auto-detect-toggle" onclick="toggleAutoDetect()">
+      <input type="checkbox" id="auto-detect-cb">
+      <div class="auto-toggle"></div>
+      <div>
+        <div class="auto-detect-label">Auto-detect document type</div>
+        <div class="auto-detect-note">Forma will analyze the PDF and pick the type for you</div>
+      </div>
+    </label>
+
+    <button class="btn-next" id="btn-type-next" onclick="goToFileScreen()" disabled>
+      NEXT &rarr;
+    </button>
+  </div>
+
+  <!-- ══ SCREEN 2: FILE SELECT ══ -->
+  <div id="screen-file" class="screen">
+    <div class="file-wrap">
+
+      <button class="back-btn" onclick="goToTypeScreen()">← Back</button>
+
+      <div class="file-section-header">
+        <div class="file-type-badge" id="file-type-badge">QUOTATION</div>
+        <div class="file-section-title">Select your PDF</div>
+      </div>
+
+      <!-- Drag and drop zone -->
+      <div class="drop-zone" id="drop-zone"
+           ondragover="handleDragOver(event)"
+           ondragleave="handleDragLeave(event)"
+           ondrop="handleDrop(event)">
+
+        <div class="drop-hint" style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+          <div class="drop-icon">⬆</div>
+          <div class="drop-text">
+            <strong>Drag and drop</strong> your PDF here<br>
+            <span style="font-size:12px">or use the button below to browse</span>
+          </div>
+          <button class="drop-browse" onclick="browsePdf(event)">BROWSE FILES</button>
+        </div>
+
+        <div class="file-chosen">
+          <div class="file-chosen-icon">✓</div>
+          <div class="file-chosen-info">
+            <div class="file-chosen-name" id="file-chosen-name">—</div>
+            <div class="file-chosen-path" id="file-chosen-path">—</div>
+          </div>
+          <button class="file-clear" onclick="clearFile(event)">CLEAR</button>
+        </div>
+      </div>
+
+      <!-- Auto-detect result -->
+      <div class="detect-result" id="detect-result">
+        <span>🔍</span>
+        <span id="detect-result-text">Detected: —</span>
+      </div>
+
+      <!-- Output folder -->
+      <div class="folder-row">
+        <div class="folder-row-icon">📁</div>
+        <div class="folder-row-info">
+          <div class="folder-row-label">Output Folder</div>
+          <div class="folder-row-path" id="folder-path-display">Loading...</div>
+        </div>
+        <button class="folder-change-btn" onclick="changeOutputFolder()">CHANGE</button>
+      </div>
+
+      <!-- Generate -->
+      <button class="btn-generate" id="btn-generate" onclick="startExtraction()" disabled>
+        GENERATE REPORT
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: PROCESSING ══ -->
+  <div id="screen-processing" class="screen">
+    <div class="processing-spinner"></div>
+    <div class="processing-label">EXTRACTING</div>
+    <div class="processing-sub" id="processing-sub">Running OCR at 300 DPI — this may take 30–60 seconds</div>
+    <div class="processing-log" id="processing-log">Initializing...</div>
+  </div>
+
+  <!-- ══ SCREEN 4: RESULTS ══ -->
+  <div id="screen-results" class="screen">
+    <div class="results-wrap">
+      <div class="result-success-icon">✅</div>
+      <h2 class="result-headline">Report <em>Generated</em></h2>
+
+      <div class="result-card">
+        <div class="result-row">
+          <div class="result-row-label">Output File</div>
+          <div class="result-row-value" id="result-file-name">—</div>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-row">
+          <div class="result-row-label">Saved To</div>
+          <div class="result-row-value" id="result-file-path">—</div>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-action primary" onclick="openFile()">OPEN FILE</button>
+        <button class="btn-action secondary" onclick="openFolder()">OPEN FOLDER</button>
+      </div>
+
+      <button class="btn-another" onclick="goToTypeScreen()">↩ PROCESS ANOTHER DOCUMENT</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 5: ERROR ══ -->
+  <div id="screen-error" class="screen">
+    <div class="error-icon">⚠️</div>
+    <h2 class="error-headline">Extraction Failed</h2>
+    <div class="error-msg" id="error-msg">—</div>
+    <button class="btn-retry" onclick="goToFileScreen()">← TRY AGAIN</button>
+  </div>
+
+</main>
+
+<!-- SETTINGS PANEL -->
+<div class="settings-overlay" id="settings-overlay" onclick="closeSettingsIfOutside(event)">
+  <div class="settings-panel" onclick="event.stopPropagation()">
+    <div class="settings-panel-header">
+      <div class="settings-panel-title">SETTINGS</div>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-divider"></div>
+
+    <div>
+      <div class="settings-label">Output Root Folder</div>
+      <div class="settings-desc">
+        All generated Excel files are organized here under customer name subfolders.
+        This path is shared with the desktop Forma launcher.
+      </div>
+      <div class="settings-path-row">
+        <input type="text" class="settings-path-input" id="settings-root-input" placeholder="C:\Users\...">
+        <button class="settings-browse" onclick="browseSettingsFolder()">BROWSE</button>
+      </div>
+    </div>
+
+    <button class="settings-save" onclick="saveSettings()">SAVE SETTINGS</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+const state = {
+  selectedType: null,   // 'quote' | 'po' | 'invoice'
+  autoDetect:   false,
+  pdfPath:      '',
+  outputRoot:   '',
+  resultPath:   '',
+};
+
+const TYPE_LABELS = {
+  quote:   'QUOTATION',
+  po:      'PURCHASE ORDER',
+  invoice: 'PICK-UP TICKET',
+};
+
+// ═══════════════════════════════════════════════════════
+// SCREEN NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goToTypeScreen() {
+  state.pdfPath = '';
+  state.selectedType = null;
+  state.autoDetect = false;
+
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('auto-detect-toggle').classList.remove('on');
+  document.getElementById('btn-type-next').disabled = true;
+
+  clearDropZone();
+  showScreen('screen-type');
+}
+
+function goToFileScreen() {
+  const badge = document.getElementById('file-type-badge');
+  badge.textContent = state.autoDetect ? 'AUTO-DETECT' : (TYPE_LABELS[state.selectedType] || '');
+
+  document.getElementById('detect-result').classList.remove('visible', 'strong', 'low');
+  updateGenerateBtn();
+  showScreen('screen-file');
+}
+
+// ═══════════════════════════════════════════════════════
+// TYPE SELECTION
+// ═══════════════════════════════════════════════════════
+function selectType(type, el) {
+  if (state.autoDetect) return;
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selectedType = type;
+  document.getElementById('btn-type-next').disabled = false;
+}
+
+function toggleAutoDetect() {
+  state.autoDetect = !state.autoDetect;
+  const toggle = document.getElementById('auto-detect-toggle');
+  toggle.classList.toggle('on', state.autoDetect);
+
+  if (state.autoDetect) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    state.selectedType = null;
+    document.getElementById('btn-type-next').disabled = false;
+  } else {
+    document.getElementById('btn-type-next').disabled = (state.selectedType === null);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// FILE SELECTION
+// ═══════════════════════════════════════════════════════
+async function browsePdf(e) {
+  e.stopPropagation();
+  try {
+    const res = await fetch('/api/browse-pdf', { method: 'POST' });
+    const data = await res.json();
+    if (data.ok && data.path) {
+      setChosenFile(data.path);
+    }
+  } catch (err) {
+    showToast('Could not open file browser: ' + err.message);
+  }
+}
+
+function setChosenFile(fullPath) {
+  state.pdfPath = fullPath;
+  const parts = fullPath.replace(/\\/g, '/').split('/');
+  const name = parts[parts.length - 1];
+
+  document.getElementById('file-chosen-name').textContent = name;
+  document.getElementById('file-chosen-path').textContent = fullPath;
+  document.getElementById('drop-zone').classList.add('has-file');
+
+  if (state.autoDetect) runAutoDetect(fullPath);
+  updateGenerateBtn();
+}
+
+function clearFile(e) {
+  e && e.stopPropagation();
+  clearDropZone();
+  state.pdfPath = '';
+  document.getElementById('detect-result').classList.remove('visible', 'strong', 'low');
+  updateGenerateBtn();
+}
+
+function clearDropZone() {
+  document.getElementById('drop-zone').classList.remove('has-file', 'drag-over');
+  document.getElementById('file-chosen-name').textContent = '—';
+  document.getElementById('file-chosen-path').textContent = '—';
+}
+
+// Drag and drop (visual only — actual path from server browse or drop data)
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+  document.getElementById('drop-zone').classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  const files = e.dataTransfer.files;
+  if (files && files.length > 0) {
+    // Browsers don't give full path from drag-drop for security.
+    // Show the name and prompt user to Browse if path is needed.
+    const f = files[0];
+    if (!f.name.toLowerCase().endsWith('.pdf')) {
+      showToast('Please select a PDF file.');
+      return;
+    }
+    // We can't get the full path from drag-drop in browser.
+    // Show a friendly message and open the native browse dialog.
+    showToast('Drag-drop detected — click BROWSE to confirm the full file path.');
+    browsePdf(e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// AUTO-DETECT
+// ═══════════════════════════════════════════════════════
+async function runAutoDetect(pdfPath) {
+  const el = document.getElementById('detect-result');
+  const txt = document.getElementById('detect-result-text');
+  el.classList.add('visible');
+  el.classList.remove('strong', 'low');
+  txt.textContent = '🔍 Analyzing document...';
+
+  try {
+    const res = await fetch('/api/detect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: pdfPath }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      state.selectedType = data.type;
+      const conf = data.confidence;
+      el.classList.toggle('strong', conf === 'strong');
+      el.classList.toggle('low', conf === 'low');
+      txt.innerHTML = `Detected: <strong>${data.label}</strong> &mdash; confidence: ${conf}`;
+      document.getElementById('file-type-badge').textContent = TYPE_LABELS[data.type] || data.label;
+      updateGenerateBtn();
+    } else {
+      txt.textContent = 'Detection failed — please select type manually.';
+    }
+  } catch (err) {
+    txt.textContent = 'Detection error: ' + err.message;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// OUTPUT FOLDER
+// ═══════════════════════════════════════════════════════
+async function loadOutputRoot() {
+  try {
+    const res = await fetch('/api/config');
+    const data = await res.json();
+    state.outputRoot = data.output_root;
+    document.getElementById('folder-path-display').textContent = data.output_root;
+    document.getElementById('settings-root-input').value = data.output_root;
+  } catch (e) {
+    document.getElementById('folder-path-display').textContent = 'Error loading config';
+  }
+}
+
+async function changeOutputFolder() {
+  try {
+    const res = await fetch('/api/browse-folder', { method: 'POST' });
+    const data = await res.json();
+    if (data.ok && data.path) {
+      state.outputRoot = data.path;
+      document.getElementById('folder-path-display').textContent = data.path;
+      document.getElementById('settings-root-input').value = data.path;
+      await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ output_root: data.path }),
+      });
+      showToast('Output folder updated.');
+    }
+  } catch (err) {
+    showToast('Could not open folder browser: ' + err.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// GENERATE
+// ═══════════════════════════════════════════════════════
+function updateGenerateBtn() {
+  const ready = state.pdfPath && (state.selectedType || state.autoDetect);
+  document.getElementById('btn-generate').disabled = !ready;
+}
+
+async function startExtraction() {
+  if (!state.pdfPath) return;
+  if (!state.selectedType && !state.autoDetect) return;
+
+  showScreen('screen-processing');
+  const logEl = document.getElementById('processing-log');
+  logEl.textContent = 'Starting extraction...\n';
+
+  const addLog = (msg) => {
+    logEl.textContent += msg + '\n';
+    logEl.scrollTop = logEl.scrollHeight;
+  };
+
+  addLog(`PDF: ${state.pdfPath}`);
+  addLog(`Type: ${TYPE_LABELS[state.selectedType] || 'Auto'}`);
+  addLog(`Output: ${state.outputRoot || 'default'}`);
+  addLog('OCR processing — please wait...');
+
+  try {
+    const res = await fetch('/api/extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        path:        state.pdfPath,
+        type:        state.selectedType,
+        output_root: state.outputRoot,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      addLog(`Done! → ${data.path}`);
+      state.resultPath = data.path;
+      document.getElementById('result-file-name').textContent = data.name;
+      document.getElementById('result-file-path').textContent = data.path;
+      showScreen('screen-results');
+    } else {
+      addLog('ERROR: ' + data.error);
+      document.getElementById('error-msg').textContent =
+        (data.error || 'Unknown error') + (data.trace ? '\n\n' + data.trace : '');
+      showScreen('screen-error');
+    }
+  } catch (err) {
+    document.getElementById('error-msg').textContent = err.message;
+    showScreen('screen-error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// OPEN FILE / FOLDER
+// ═══════════════════════════════════════════════════════
+async function openFile() {
+  await fetch('/api/open', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path: state.resultPath, folder: false }),
+  });
+}
+
+async function openFolder() {
+  await fetch('/api/open', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path: state.resultPath, folder: true }),
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+function openSettings() {
+  document.getElementById('settings-overlay').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settings-overlay').classList.remove('open');
+}
+
+function closeSettingsIfOutside(e) {
+  if (e.target === document.getElementById('settings-overlay')) closeSettings();
+}
+
+async function browseSettingsFolder() {
+  try {
+    const res = await fetch('/api/browse-folder', { method: 'POST' });
+    const data = await res.json();
+    if (data.ok && data.path) {
+      document.getElementById('settings-root-input').value = data.path;
+    }
+  } catch (err) {
+    showToast('Could not open folder browser.');
+  }
+}
+
+async function saveSettings() {
+  const newRoot = document.getElementById('settings-root-input').value.trim();
+  if (!newRoot) { showToast('Please enter a valid folder path.'); return; }
+
+  try {
+    await fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ output_root: newRoot }),
+    });
+    state.outputRoot = newRoot;
+    document.getElementById('folder-path-display').textContent = newRoot;
+    closeSettings();
+    showToast('Settings saved.');
+  } catch (err) {
+    showToast('Failed to save settings: ' + err.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+let _toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('visible');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('visible'), 4000);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  loadOutputRoot();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AMEX TRACKER — ONYX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #09090b;
+    --card: #111113;
+    --border: #27272a;
+    --text: #fafafa;
+    --muted: #71717a;
+    --cyan: #22d3ee;
+    --green: #4ade80;
+    --red: #f87171;
+    --amber: #fbbf24;
+    --card-hover: #161618;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    height: 48px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: 32px;
+  }
+
+  .topbar-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .period-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.25);
+    padding: 2px 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-tab {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0 20px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-tab:hover { color: var(--text); }
+
+  .nav-tab.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+  }
+
+  .topbar-spacer { flex: 1; }
+
+  .topbar-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .topbar-meta span { white-space: nowrap; }
+  .topbar-meta .val { color: var(--text); }
+
+  /* ─── MAIN ─── */
+  .main {
+    padding: 20px 24px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-left: 1px;
+  }
+
+  /* ─── KPI CARDS ─── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    padding: 18px 20px;
+    position: relative;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cyan) 0%, transparent 60%);
+    opacity: 0.4;
+  }
+
+  .kpi-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(34,211,238,0.3), 0 0 40px rgba(34,211,238,0.1);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .kpi-value.green {
+    color: var(--green);
+    text-shadow: 0 0 20px rgba(74,222,128,0.3), 0 0 40px rgba(74,222,128,0.1);
+  }
+
+  .kpi-value.amber {
+    color: var(--amber);
+    text-shadow: 0 0 20px rgba(251,191,36,0.3), 0 0 40px rgba(251,191,36,0.1);
+  }
+
+  .kpi-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ─── CHART CARD ─── */
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+
+  .chart-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .chart-card-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+  }
+
+  /* ─── TWO COLUMN ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .data-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+  }
+
+  .data-card-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  /* ─── CATEGORY BARS ─── */
+  .cat-row {
+    margin-bottom: 10px;
+  }
+
+  .cat-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+
+  .cat-name {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .cat-stats {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+  }
+
+  .cat-amt {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cyan);
+  }
+
+  .cat-pct {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .cat-bar-track {
+    height: 3px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .cat-bar-fill {
+    height: 100%;
+    background: var(--cyan);
+    position: absolute;
+    top: 0; left: 0;
+    box-shadow: 0 0 6px rgba(34,211,238,0.4);
+  }
+
+  /* ─── MERCHANT LIST ─── */
+  .merchant-row {
+    display: grid;
+    grid-template-columns: 20px 1fr auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(39,39,42,0.5);
+  }
+
+  .merchant-row:last-child { border-bottom: none; }
+
+  .merchant-rank {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .merchant-name {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .merchant-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .merchant-amt {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cyan);
+    text-align: right;
+    white-space: nowrap;
+    min-width: 80px;
+  }
+
+  /* ─── CARDHOLDER SPLIT ─── */
+  .split-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .split-card {
+    background: var(--card);
+    padding: 18px 20px;
+  }
+
+  .split-name {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .split-amount {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(34,211,238,0.3);
+    margin-bottom: 4px;
+  }
+
+  .split-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .split-bar-track {
+    height: 2px;
+    background: var(--border);
+    margin-top: 12px;
+    position: relative;
+  }
+
+  .split-bar-fill {
+    height: 100%;
+    background: var(--cyan);
+    box-shadow: 0 0 6px rgba(34,211,238,0.4);
+  }
+
+  /* ─── TRANSACTIONS ─── */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .filter-select {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 180px;
+  }
+
+  .filter-select:focus { border-color: var(--cyan); }
+
+  .filter-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .tx-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .tx-table thead tr {
+    background: #0d0d0f;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tx-table thead th {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .tx-table thead th:last-child { text-align: right; }
+
+  .tx-table tbody tr {
+    border-bottom: 1px solid rgba(39,39,42,0.4);
+    transition: background 0.1s;
+  }
+
+  .tx-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.012); }
+  .tx-table tbody tr:hover { background: var(--card-hover); }
+
+  .tx-table tbody td {
+    padding: 9px 14px;
+    font-size: 12px;
+  }
+
+  .tx-date {
+    font-family: var(--mono);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .tx-desc {
+    font-family: var(--sans);
+    color: var(--text);
+    max-width: 260px;
+  }
+
+  .tx-category {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .tx-member {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .tx-amount {
+    font-family: var(--mono);
+    color: var(--text);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .border-restaurant { border-left: 3px solid var(--cyan); }
+  .border-merch { border-left: 3px solid var(--green); }
+  .border-transport { border-left: 3px solid var(--amber); }
+  .border-other { border-left: 3px solid #52525b; }
+
+  /* ─── BUDGET ─── */
+  .budget-summary-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 12px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .budget-summary-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .budget-summary-stat {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .budget-summary-stat.good { color: var(--green); }
+  .budget-summary-stat.bad { color: var(--red); }
+
+  .budget-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .budget-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+  }
+
+  .budget-card.over-budget {
+    border-color: rgba(248,113,113,0.4);
+    background: rgba(248,113,113,0.04);
+  }
+
+  .budget-card.near-budget {
+    border-color: rgba(251,191,36,0.3);
+  }
+
+  .budget-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .budget-name {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .budget-status-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+  }
+
+  .badge-ok {
+    color: var(--green);
+    background: rgba(74,222,128,0.1);
+    border: 1px solid rgba(74,222,128,0.25);
+  }
+
+  .badge-over {
+    color: var(--red);
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.3);
+  }
+
+  .badge-close {
+    color: var(--amber);
+    background: rgba(251,191,36,0.1);
+    border: 1px solid rgba(251,191,36,0.25);
+  }
+
+  .budget-amounts {
+    margin-bottom: 10px;
+  }
+
+  .budget-spent-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3px;
+  }
+
+  .budget-spent-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .budget-spent-val {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .budget-spent-val.ok {
+    color: var(--green);
+    text-shadow: 0 0 16px rgba(74,222,128,0.25);
+  }
+
+  .budget-spent-val.over {
+    color: var(--red);
+    text-shadow: 0 0 16px rgba(248,113,113,0.25);
+  }
+
+  .budget-spent-val.close {
+    color: var(--amber);
+    text-shadow: 0 0 16px rgba(251,191,36,0.25);
+  }
+
+  .budget-limit-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .budget-limit-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .budget-limit-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .budget-bar-track {
+    height: 3px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .budget-bar-fill {
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    max-width: 100%;
+  }
+
+  .budget-bar-fill.ok { background: var(--green); box-shadow: 0 0 6px rgba(74,222,128,0.4); }
+  .budget-bar-fill.over { background: var(--red); box-shadow: 0 0 6px rgba(248,113,113,0.4); width: 100% !important; }
+  .budget-bar-fill.close { background: var(--amber); box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+
+  .budget-overage {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--red);
+    margin-top: 8px;
+  }
+
+  .budget-savings {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── TOPBAR ─── -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-title">AMEX TRACKER</span>
+    <span class="period-badge">JAN – SEP 2022</span>
+  </div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('overview', this)">Overview</button>
+    <button class="nav-tab" onclick="switchTab('transactions', this)">Transactions</button>
+    <button class="nav-tab" onclick="switchTab('budget', this)">Budget</button>
+  </nav>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-meta">
+    <span>GERODIAS FAMILY</span>
+    <span>9 MO &nbsp;<span class="val">804 TX</span></span>
+    <span>AVG/MO &nbsp;<span class="val">$4,600.02</span></span>
+  </div>
+</div>
+
+<!-- ─── MAIN ─── -->
+<div class="main">
+
+  <!-- ══════════════════════════════════════════════
+       OVERVIEW TAB
+  ═══════════════════════════════════════════════ -->
+  <div id="tab-overview" class="tab-panel active">
+
+    <!-- KPI ROW -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Charges</div>
+        <div class="kpi-value">$41,400.14</div>
+        <div class="kpi-sub">Jan – Sep 2022 &nbsp;·&nbsp; 9 months</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Payments</div>
+        <div class="kpi-value amber">$37,760.41</div>
+        <div class="kpi-sub">Applied to balance</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Net Balance</div>
+        <div class="kpi-value" style="color:var(--red);text-shadow:0 0 20px rgba(248,113,113,0.3);">$3,639.73</div>
+        <div class="kpi-sub">Charges – Payments</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Transactions</div>
+        <div class="kpi-value green">804</div>
+        <div class="kpi-sub">Monthly avg &nbsp;$4,600.02</div>
+      </div>
+    </div>
+
+    <!-- MONTHLY CHART -->
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <span class="chart-card-title">Monthly Charges vs Payments</span>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--cyan);"></div>
+            <span>Charges</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--amber);"></div>
+            <span>Payments</span>
+          </div>
+        </div>
+      </div>
+      <canvas id="monthlyChart" height="90"></canvas>
+    </div>
+
+    <!-- TWO COLUMN -->
+    <div class="two-col">
+
+      <!-- CATEGORY BREAKDOWN -->
+      <div class="data-card">
+        <div class="data-card-title">Spend by Category</div>
+        <div id="cat-list"></div>
+      </div>
+
+      <!-- TOP MERCHANTS -->
+      <div class="data-card">
+        <div class="data-card-title">Top 10 Merchants</div>
+        <div id="merchant-list"></div>
+      </div>
+
+    </div>
+
+    <!-- CARDHOLDER SPLIT -->
+    <div class="section-label">Cardholder Split</div>
+    <div class="split-row">
+      <div class="split-card">
+        <div class="split-name">Margaret</div>
+        <div class="split-amount">$29,707.00</div>
+        <div class="split-sub">71.8% of total charges</div>
+        <div class="split-bar-track">
+          <div class="split-bar-fill" style="width:71.8%;"></div>
+        </div>
+      </div>
+      <div class="split-card">
+        <div class="split-name">Marvin</div>
+        <div class="split-amount" style="color:var(--amber);text-shadow:0 0 20px rgba(251,191,36,0.3);">$11,693.14</div>
+        <div class="split-sub">28.2% of total charges</div>
+        <div class="split-bar-track">
+          <div class="split-bar-fill" style="width:28.2%;background:var(--amber);box-shadow:0 0 6px rgba(251,191,36,0.4);"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+  <!-- ══════════════════════════════════════════════
+       TRANSACTIONS TAB
+  ═══════════════════════════════════════════════ -->
+  <div id="tab-transactions" class="tab-panel">
+
+    <div class="filter-bar">
+      <span class="filter-label">Category</span>
+      <select class="filter-select" id="filterCategory" onchange="filterTx()">
+        <option value="">All Categories</option>
+        <option value="Restaurant">Restaurant</option>
+        <option value="Merchandise & Supplies">Merchandise &amp; Supplies</option>
+        <option value="Transportation">Transportation</option>
+        <option value="Other">Other</option>
+      </select>
+      <span class="filter-label" style="margin-left:12px;">Member</span>
+      <select class="filter-select" id="filterMember" onchange="filterTx()">
+        <option value="">All Members</option>
+        <option value="Margaret">Margaret</option>
+        <option value="Marvin">Marvin</option>
+      </select>
+      <span class="filter-count" id="tx-count"></span>
+    </div>
+
+    <table class="tx-table" id="tx-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Member</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="tx-tbody"></tbody>
+    </table>
+
+  </div><!-- /transactions -->
+
+  <!-- ══════════════════════════════════════════════
+       BUDGET TAB
+  ═══════════════════════════════════════════════ -->
+  <div id="tab-budget" class="tab-panel">
+
+    <div class="budget-summary-bar">
+      <span class="budget-summary-label">Goals On Track</span>
+      <span class="budget-summary-stat bad">2 of 6 on track</span>
+      <span class="budget-summary-label" style="margin-left:24px;">Monthly Budget</span>
+      <span class="budget-summary-stat bad">$4,600.00 spent vs $4,500.00 limit</span>
+      <span class="budget-summary-label" style="margin-left:24px;">Overage</span>
+      <span class="budget-summary-stat bad">+$100.00 (2.2%)</span>
+    </div>
+
+    <div class="budget-grid" id="budget-grid"></div>
+
+  </div><!-- /budget -->
+
+</div><!-- /main -->
+
+<script>
+  /* ─────────────────────────────────────────
+     DATA
+  ───────────────────────────────────────── */
+  const DATA = {"meta":{"name":"Gerodias Family","period":"Jan – Sep 2022","months":9,"total_charges":41400.14,"total_payments":37760.41,"net":3639.73,"tx_count":804,"monthly_avg":4600.02},"monthly":[{"month":"Jan","charges":5227.84,"payments":5293.38},{"month":"Feb","charges":3004.25,"payments":3145.61},{"month":"Mar","charges":4017.63,"payments":5095.13},{"month":"Apr","charges":4511.90,"payments":3570.97},{"month":"May","charges":5277.54,"payments":4703.77},{"month":"Jun","charges":5244.51,"payments":4959.16},{"month":"Jul","charges":5613.81,"payments":5071.36},{"month":"Aug","charges":5250.18,"payments":5849.07},{"month":"Sep","charges":3252.48,"payments":71.96}],"categories":[{"name":"Merchandise & Supplies","amount":19528.80,"pct":47.2},{"name":"Restaurant","amount":12960.49,"pct":31.3},{"name":"Other","amount":4339.10,"pct":10.5},{"name":"Transportation","amount":3224.16,"pct":7.8},{"name":"Business Services","amount":842.09,"pct":2.0},{"name":"Travel","amount":219.77,"pct":0.5},{"name":"Fees & Adjustments","amount":189.00,"pct":0.5},{"name":"Entertainment","amount":96.73,"pct":0.2}],"merchants":[{"name":"Save Mart #781","amount":3614.35,"count":90},{"name":"Safeway #2600","amount":3242.62,"count":52},{"name":"Meiko Sushi","amount":2101.82,"count":13},{"name":"FasTrak Tolls","amount":1765.00,"count":9},{"name":"Public Storage","amount":1720.00,"count":4},{"name":"Apple Online Store","amount":1519.84,"count":1},{"name":"Raley's","amount":1492.52,"count":40},{"name":"Amazon Marketplace","amount":1442.86,"count":30},{"name":"Apple.com/Bill","amount":1221.07,"count":47},{"name":"Tracy Honda","amount":945.24,"count":4}],"members":[{"name":"Margaret","amount":29707.00},{"name":"Marvin","amount":11693.14}],"transactions":[{"date":"09/14/2022","desc":"Amazing Kitchen Tracy","amount":15.94,"category":"Restaurant","member":"Margaret"},{"date":"09/14/2022","desc":"ARCO Gas Tracy","amount":51.72,"category":"Transportation","member":"Margaret"},{"date":"09/14/2022","desc":"McDonald's Pleasanton","amount":6.37,"category":"Restaurant","member":"Margaret"},{"date":"09/14/2022","desc":"Raley's Tracy","amount":25.20,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/14/2022","desc":"Safeway #2600 Tracy","amount":41.71,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/13/2022","desc":"Amazon.com","amount":108.10,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/13/2022","desc":"Amazon Marketplace","amount":30.30,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/12/2022","desc":"Safeway #2600 Tracy","amount":40.00,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/12/2022","desc":"Save Mart Tracy","amount":38.82,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/11/2022","desc":"DS135 Mountain Tracy","amount":30.29,"category":"Restaurant","member":"Margaret"},{"date":"09/11/2022","desc":"SP Hats in the Bel","amount":233.95,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/11/2022","desc":"Starbucks","amount":30.00,"category":"Restaurant","member":"Margaret"},{"date":"09/10/2022","desc":"Target Antioch","amount":83.76,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/10/2022","desc":"Tracy Honda","amount":233.08,"category":"Transportation","member":"Margaret"},{"date":"09/07/2022","desc":"Safeway #2600 Tracy","amount":71.88,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/07/2022","desc":"Save Mart Tracy","amount":71.37,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/06/2022","desc":"Amazing Kitchen Tracy","amount":26.58,"category":"Restaurant","member":"Margaret"},{"date":"09/06/2022","desc":"Safeway #2600 Tracy","amount":73.77,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/05/2022","desc":"Apple.com/Bill","amount":60.93,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/05/2022","desc":"Chick-fil-A Manteca","amount":36.62,"category":"Restaurant","member":"Margaret"},{"date":"09/04/2022","desc":"ARCO Gas Tracy","amount":64.17,"category":"Transportation","member":"Margaret"},{"date":"09/04/2022","desc":"Denny's Pleasanton","amount":54.81,"category":"Restaurant","member":"Margaret"},{"date":"09/04/2022","desc":"Raley's Tracy","amount":115.61,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"09/04/2022","desc":"Tommykatsu Livermore","amount":120.84,"category":"Restaurant","member":"Marvin"},{"date":"09/03/2022","desc":"Amazon Marketplace","amount":102.96,"category":"Merchandise & Supplies","member":"Marvin"},{"date":"09/03/2022","desc":"Meiko Sushi Pleasanton","amount":110.00,"category":"Restaurant","member":"Marvin"},{"date":"08/29/2022","desc":"FasTrak CSC Tolls","amount":205.00,"category":"Other","member":"Margaret"},{"date":"08/28/2022","desc":"Raley's Tracy","amount":172.70,"category":"Merchandise & Supplies","member":"Margaret"},{"date":"08/24/2022","desc":"Meiko Sushi Pleasanton","amount":119.09,"category":"Restaurant","member":"Marvin"},{"date":"08/20/2022","desc":"Public Storage","amount":430.00,"category":"Other","member":"Margaret"}]};
+
+  const BUDGETS = [
+    { name: "Groceries",    budget: 1000, spent: 996   },
+    { name: "Restaurants",  budget: 800,  spent: 1440  },
+    { name: "Gas",          budget: 400,  spent: 358   },
+    { name: "Online",       budget: 600,  spent: 651   },
+    { name: "Misc",         budget: 300,  spent: 482   },
+    { name: "Total",        budget: 4500, spent: 4600  }
+  ];
+
+  /* ─────────────────────────────────────────
+     UTILS
+  ───────────────────────────────────────── */
+  function fmt(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  /* ─────────────────────────────────────────
+     TAB SWITCHING
+  ───────────────────────────────────────── */
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  /* ─────────────────────────────────────────
+     MONTHLY CHART
+  ───────────────────────────────────────── */
+  (function buildMonthlyChart() {
+    const labels = DATA.monthly.map(m => m.month);
+    const charges = DATA.monthly.map(m => m.charges);
+    const payments = DATA.monthly.map(m => m.payments);
+
+    const ctx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Charges',
+            data: charges,
+            backgroundColor: 'rgba(34,211,238,0.7)',
+            borderColor: 'rgba(34,211,238,0.9)',
+            borderWidth: 1,
+            borderRadius: 0,
+            barPercentage: 0.7,
+            categoryPercentage: 0.75
+          },
+          {
+            label: 'Payments',
+            data: payments,
+            backgroundColor: 'rgba(251,191,36,0.6)',
+            borderColor: 'rgba(251,191,36,0.85)',
+            borderWidth: 1,
+            borderRadius: 0,
+            barPercentage: 0.7,
+            categoryPercentage: 0.75
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111113',
+            borderColor: '#27272a',
+            borderWidth: 1,
+            titleColor: '#71717a',
+            bodyColor: '#fafafa',
+            titleFont: { family: "'IBM Plex Mono', monospace", size: 10 },
+            bodyFont: { family: "'IBM Plex Mono', monospace", size: 12 },
+            callbacks: {
+              label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y)
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(39,39,42,0.6)', drawBorder: false },
+            ticks: {
+              font: { family: "'IBM Plex Mono', monospace", size: 11 },
+              color: '#71717a'
+            },
+            border: { color: 'transparent' }
+          },
+          y: {
+            grid: { color: 'rgba(39,39,42,0.6)', drawBorder: false },
+            ticks: {
+              font: { family: "'IBM Plex Mono', monospace", size: 10 },
+              color: '#71717a',
+              callback: v => '$' + (v / 1000).toFixed(0) + 'k'
+            },
+            border: { color: 'transparent' }
+          }
+        }
+      }
+    });
+  })();
+
+  /* ─────────────────────────────────────────
+     CATEGORY BARS
+  ───────────────────────────────────────── */
+  (function buildCategoryList() {
+    const container = document.getElementById('cat-list');
+    DATA.categories.forEach(cat => {
+      const row = document.createElement('div');
+      row.className = 'cat-row';
+      row.innerHTML = `
+        <div class="cat-meta">
+          <span class="cat-name">${cat.name}</span>
+          <div class="cat-stats">
+            <span class="cat-amt">${fmt(cat.amount)}</span>
+            <span class="cat-pct">${cat.pct}%</span>
+          </div>
+        </div>
+        <div class="cat-bar-track">
+          <div class="cat-bar-fill" style="width:${cat.pct}%;"></div>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  })();
+
+  /* ─────────────────────────────────────────
+     MERCHANT LIST
+  ───────────────────────────────────────── */
+  (function buildMerchantList() {
+    const container = document.getElementById('merchant-list');
+    DATA.merchants.forEach((m, i) => {
+      const row = document.createElement('div');
+      row.className = 'merchant-row';
+      row.innerHTML = `
+        <span class="merchant-rank">${i + 1}</span>
+        <span class="merchant-name">${m.name}</span>
+        <span class="merchant-count">${m.count} tx</span>
+        <span class="merchant-amt">${fmt(m.amount)}</span>
+      `;
+      container.appendChild(row);
+    });
+  })();
+
+  /* ─────────────────────────────────────────
+     TRANSACTIONS
+  ───────────────────────────────────────── */
+  function getCatClass(category) {
+    if (category === 'Restaurant') return 'border-restaurant';
+    if (category === 'Merchandise & Supplies') return 'border-merch';
+    if (category === 'Transportation') return 'border-transport';
+    return 'border-other';
+  }
+
+  function filterTx() {
+    const catFilter = document.getElementById('filterCategory').value;
+    const memberFilter = document.getElementById('filterMember').value;
+    const tbody = document.getElementById('tx-tbody');
+    tbody.innerHTML = '';
+    let count = 0;
+
+    DATA.transactions.forEach(tx => {
+      if (catFilter && tx.category !== catFilter) return;
+      if (memberFilter && tx.member !== memberFilter) return;
+      count++;
+      const tr = document.createElement('tr');
+      tr.className = getCatClass(tx.category);
+      tr.innerHTML = `
+        <td class="tx-date">${tx.date}</td>
+        <td class="tx-desc">${tx.desc}</td>
+        <td class="tx-category">${tx.category}</td>
+        <td class="tx-member">${tx.member}</td>
+        <td class="tx-amount">${fmt(tx.amount)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('tx-count').textContent = count + ' transactions shown';
+  }
+
+  filterTx();
+
+  /* ─────────────────────────────────────────
+     BUDGET
+  ───────────────────────────────────────── */
+  (function buildBudget() {
+    const grid = document.getElementById('budget-grid');
+
+    BUDGETS.forEach(b => {
+      const pct = b.spent / b.budget;
+      const isOver = b.spent > b.budget;
+      const isClose = !isOver && pct >= 0.85;
+      const isOk = !isOver && !isClose;
+
+      let cardClass = 'budget-card';
+      if (isOver) cardClass += ' over-budget';
+      else if (isClose) cardClass += ' near-budget';
+
+      let statusBadge = '';
+      let spentClass = '';
+      let barClass = '';
+
+      if (isOver) {
+        statusBadge = '<span class="budget-status-badge badge-over">OVER</span>';
+        spentClass = 'over';
+        barClass = 'over';
+      } else if (isClose) {
+        statusBadge = '<span class="budget-status-badge badge-close">CLOSE</span>';
+        spentClass = 'close';
+        barClass = 'close';
+      } else {
+        statusBadge = '<span class="budget-status-badge badge-ok">ON TRACK</span>';
+        spentClass = 'ok';
+        barClass = 'ok';
+      }
+
+      const barWidth = Math.min(pct * 100, 100).toFixed(1);
+      const diff = Math.abs(b.spent - b.budget);
+      const diffLine = isOver
+        ? `<div class="budget-overage">+${fmt(diff)} over budget (${((pct - 1) * 100).toFixed(1)}%)</div>`
+        : `<div class="budget-savings">${fmt(diff)} remaining (${((1 - pct) * 100).toFixed(1)}%)</div>`;
+
+      const card = document.createElement('div');
+      card.className = cardClass;
+      card.innerHTML = `
+        <div class="budget-card-header">
+          <span class="budget-name">${b.name}</span>
+          ${statusBadge}
+        </div>
+        <div class="budget-amounts">
+          <div class="budget-spent-line">
+            <span class="budget-spent-label">Spent</span>
+            <span class="budget-spent-val ${spentClass}">${fmt(b.spent)}</span>
+          </div>
+        </div>
+        <div class="budget-limit-line">
+          <span class="budget-limit-label">Budget</span>
+          <span class="budget-limit-val">${fmt(b.budget)}</span>
+        </div>
+        <div class="budget-bar-track">
+          <div class="budget-bar-fill ${barClass}" style="width:${barWidth}%;"></div>
+        </div>
+        ${diffLine}
+      `;
+      grid.appendChild(card);
+    });
+  })();
+</script>
+</body>
+</html>

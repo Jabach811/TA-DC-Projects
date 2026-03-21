@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIPCO Redesign Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09131b;
+  --bg-2: #101f2b;
+  --panel: rgba(14, 30, 42, 0.78);
+  --panel-2: rgba(18, 37, 51, 0.92);
+  --line: rgba(159, 184, 201, 0.16);
+  --line-strong: rgba(159, 184, 201, 0.28);
+  --text: #ecf3f7;
+  --muted: #9fb0bb;
+  --steel: #bdd2de;
+  --copper: #d67f43;
+  --copper-2: #f1a15f;
+  --green: #58c19b;
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(214, 127, 67, 0.18), transparent 22%),
+    radial-gradient(circle at 85% 15%, rgba(88, 193, 155, 0.12), transparent 18%),
+    linear-gradient(180deg, #081019 0%, #09131b 36%, #0c1822 100%);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.58), transparent 85%);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.shell {
+  width: min(1320px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(18px);
+  background: rgba(7, 15, 22, 0.74);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.topbar-inner {
+  width: min(1320px, calc(100% - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(214,127,67,0.18), rgba(255,255,255,0.06));
+  border: 1px solid rgba(214,127,67,0.34);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-copy strong {
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+  font-size: 21px;
+  letter-spacing: 0.04em;
+}
+
+.brand-copy span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nav a,
+.nav button {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 11px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.nav a:hover,
+.nav button:hover {
+  color: var(--text);
+  border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+
+.nav .cta {
+  color: var(--text);
+  border-color: rgba(214,127,67,0.44);
+  background: linear-gradient(180deg, rgba(214,127,67,0.22), rgba(214,127,67,0.12));
+}
+
+.hero {
+  padding: 34px 0 26px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.18fr 0.82fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.hero-main,
+.hero-side,
+.section-card,
+.footer-panel {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(10, 25, 35, 0.92), rgba(11, 23, 31, 0.82));
+  box-shadow: var(--shadow);
+}
+
+.hero-main,
+.hero-side {
+  border-radius: 28px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: rise 0.8s ease forwards;
+}
+
+.hero-side { animation-delay: 0.12s; }
+
+.hero-main-inner {
+  padding: 36px 34px 34px;
+  position: relative;
+  min-height: 560px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--copper-2);
+  margin-bottom: 18px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 38px;
+  height: 1px;
+  background: rgba(214,127,67,0.62);
+}
+
+.hero-title {
+  margin: 0;
+  max-width: 760px;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+  font-size: clamp(52px, 7vw, 94px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.hero-title .accent {
+  color: var(--copper-2);
+}
+
+.hero-copy {
+  max-width: 690px;
+  margin: 22px 0 30px;
+  color: var(--steel);
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: all 0.18s ease;
+}
+
+.btn.primary {
+  background: linear-gradient(180deg, rgba(214,127,67,0.26), rgba(214,127,67,0.12));
+  border-color: rgba(214,127,67,0.54);
+}
+
+.btn.secondary {
+  background: rgba(255,255,255,0.04);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.hero-strip {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.strip-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.strip-card strong {
+  display: block;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.strip-card span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.hero-side-inner {
+  padding: 22px;
+  display: grid;
+  gap: 16px;
+  height: 100%;
+}
+
+.panel-title {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.quote-card,
+.coverage-card,
+.resource-card {
+  border-radius: 22px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+}
+
+.quote-card h3,
+.coverage-card h3,
+.resource-card h3 {
+  margin: 0 0 8px;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+}
+
+.quote-card p,
+.coverage-card p,
+.resource-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: 14px;
+}
+
+.coverage-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.coverage-item {
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+
+.coverage-item strong {
+  display: block;
+  font-size: 24px;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+}
+
+.coverage-item span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.section {
+  padding: 18px 0 0;
+}
+
+.section-card {
+  border-radius: 28px;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 24px 26px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(214,127,67,0.06));
+}
+
+.section-head .label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--copper-2);
+  margin-bottom: 10px;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+  font-size: clamp(34px, 4vw, 54px);
+  line-height: 0.94;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
+.section-head p {
+  margin: 0;
+  max-width: 520px;
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: 14px;
+}
+
+.product-grid,
+.cap-grid,
+.industry-grid,
+.kb-grid {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.product-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.product-card,
+.cap-card,
+.industry-card,
+.kb-card {
+  border-radius: 22px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  min-height: 220px;
+}
+
+.product-card .num,
+.kb-card .num {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.product-card h3,
+.cap-card h3,
+.industry-card h3,
+.kb-card h3 {
+  margin: 14px 0 10px;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+  font-size: 30px;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.product-card p,
+.cap-card p,
+.industry-card p,
+.kb-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: 14px;
+}
+
+.product-card ul,
+.cap-card ul,
+.industry-card ul {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.product-card li,
+.cap-card li,
+.industry-card li {
+  position: relative;
+  padding-left: 16px;
+  color: var(--steel);
+  font-size: 13px;
+}
+
+.product-card li::before,
+.cap-card li::before,
+.industry-card li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--copper);
+}
+
+.cap-grid,
+.industry-grid,
+.kb-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cap-card,
+.industry-card,
+.kb-card {
+  min-height: 210px;
+}
+
+.locations-band {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 16px;
+  padding: 20px;
+}
+
+.map-panel,
+.ops-panel {
+  border-radius: 24px;
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+}
+
+.state-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.state-chip {
+  padding: 10px 12px;
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--steel);
+}
+
+.ops-list {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.ops-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.ops-row:last-child {
+  border-bottom: none;
+}
+
+.ops-row strong {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ops-row span {
+  color: var(--steel);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.footer {
+  padding: 10px 0 40px;
+}
+
+.footer-panel {
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.footer-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 30px 28px;
+}
+
+.footer-copy h2 {
+  margin: 0 0 10px;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
+  font-size: 42px;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.footer-copy p {
+  margin: 0;
+  max-width: 680px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.micro {
+  width: min(1320px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 0 0 26px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1120px) {
+  .hero-grid,
+  .locations-band,
+  .footer-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .product-grid,
+  .cap-grid,
+  .industry-grid,
+  .kb-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar-inner,
+  .shell,
+  .micro {
+    width: calc(100% - 24px);
+  }
+
+  .hero-main-inner,
+  .section-head,
+  .footer-inner {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hero-strip,
+  .coverage-grid,
+  .state-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .ops-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-strip,
+  .coverage-grid,
+  .state-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-title {
+    font-size: 48px;
+  }
+
+  .section-head h2,
+  .footer-copy h2 {
+    font-size: 34px;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="HIPCO Logo.jpg" alt="HIPCO logo">
+        </div>
+        <div class="brand-copy">
+          <strong>Harrington Process Solutions</strong>
+          <span>Industrial Plastics Since 1959</span>
+        </div>
+      </div>
+      <div class="nav">
+        <a href="#products">Products</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#industries">Industries</a>
+        <a href="#locations">Locations</a>
+        <a href="#knowledge">Knowledge Base</a>
+        <a class="cta" href="#contact">Request Quote</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <article class="hero-main">
+          <div class="hero-main-inner">
+            <div class="eyebrow">Industrial Flow Systems | Distribution | Fabrication</div>
+            <h1 class="hero-title">Modern industrial supply for <span class="accent">critical fluid systems</span>.</h1>
+            <p class="hero-copy">This redesign keeps HIPCO grounded in its real strengths: deep product inventory, technical capability, broad industry coverage, and responsive branch support. The goal is to feel more current, more engineered, and easier to navigate without losing the credibility of a long-established industrial distributor.</p>
+            <div class="hero-actions">
+              <a class="btn primary" href="#contact">Product Quote</a>
+              <a class="btn secondary" href="#products">Explore Products</a>
+              <a class="btn secondary" href="#knowledge">Engineering Resources</a>
+            </div>
+            <div class="hero-strip">
+              <div class="strip-card">
+                <strong>1959</strong>
+                <span>Longstanding industrial plastics and process solutions partner.</span>
+              </div>
+              <div class="strip-card">
+                <strong>30+</strong>
+                <span>State and branch presence positioned for regional support.</span>
+              </div>
+              <div class="strip-card">
+                <strong>11</strong>
+                <span>Core product families spanning fluid handling and process systems.</span>
+              </div>
+              <div class="strip-card">
+                <strong>12+</strong>
+                <span>Industry verticals including chemical, life sciences, water, and data centers.</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <aside class="hero-side">
+          <div class="hero-side-inner">
+            <div class="quote-card">
+              <div class="panel-title">Fastest Path In</div>
+              <h3>Quote, Catalog, or Branch Support</h3>
+              <p>Reduce top-level clutter by turning the highest-value actions into a clean command panel instead of burying them above the fold.</p>
+              <div class="hero-actions" style="margin-top:18px;">
+                <a class="btn primary" href="#contact">Get a Quote</a>
+                <a class="btn secondary" href="#knowledge">Catalog</a>
+              </div>
+            </div>
+
+            <div class="coverage-card">
+              <div class="panel-title">Service Model</div>
+              <h3>Technical product depth with branch-level responsiveness.</h3>
+              <p>Position HIPCO as more than a product catalog: a process solutions partner with local access, engineering utility, and application-specific guidance.</p>
+              <div class="coverage-grid">
+                <div class="coverage-item">
+                  <strong>Products</strong>
+                  <span>Piping, valves, filtration, pumps, tanks, instrumentation, and more.</span>
+                </div>
+                <div class="coverage-item">
+                  <strong>Capabilities</strong>
+                  <span>Fabrication, FRP, lined steel, actuation, rentals, and repair support.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="resource-card">
+              <div class="panel-title">Knowledge Layer</div>
+              <h3>Turn technical resources into a differentiator.</h3>
+              <p>Materials guides, engineering handbooks, joining techniques, and comparison tools should feel like a front-door advantage, not an afterthought.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="products">
+      <div class="section-card">
+        <div class="section-head">
+          <div>
+            <div class="label">Product Architecture</div>
+            <h2>Organize the catalog around systems, not just categories.</h2>
+          </div>
+          <p>Keep the depth of the current product offering, but present it in broader industrial system groupings that are easier to scan at a glance.</p>
+        </div>
+        <div class="product-grid">
+          <article class="product-card">
+            <div class="num">01 | Piping Systems</div>
+            <h3>Pipes, Fittings, Containment</h3>
+            <p>Pressure pipe, acid waste, double containment, and high-performance materials presented as one system family.</p>
+            <ul>
+              <li>PVC, CPVC, polypropylene, PVDF, Halar</li>
+              <li>Pressure and acid waste systems</li>
+              <li>Double containment and lined steel</li>
+            </ul>
+          </article>
+          <article class="product-card">
+            <div class="num">02 | Flow Control</div>
+            <h3>Valves, Actuation, Instrumentation</h3>
+            <p>Combine valves and instrumentation into a cleaner control-system view for industrial buyers comparing total assemblies.</p>
+            <ul>
+              <li>Ball, butterfly, diaphragm, solenoid, control valves</li>
+              <li>Actuators and valve accessories</li>
+              <li>Pressure, flow, pH, conductivity instrumentation</li>
+            </ul>
+          </article>
+          <article class="product-card">
+            <div class="num">03 | Transfer & Process</div>
+            <h3>Pumps, Filtration, Tanks</h3>
+            <p>Highlight process movement and separation equipment as a unified engineering offer, not isolated product silos.</p>
+            <ul>
+              <li>Centrifugal, diaphragm, metering, barrel pumps</li>
+              <li>Filter media, housings, bag systems</li>
+              <li>Bulk storage, accessories, mixers, heaters</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="capabilities">
+      <div class="section-card">
+        <div class="section-head">
+          <div>
+            <div class="label">Capabilities</div>
+            <h2>Make technical services feel like engineered value.</h2>
+          </div>
+          <p>The live site lists the capabilities. This version turns them into a clearer commercial story for specifiers, contractors, and operations teams.</p>
+        </div>
+        <div class="cap-grid">
+          <article class="cap-card">
+            <h3>Fabrication & System Buildout</h3>
+            <p>Use this area to spotlight custom plastic fabrication, lined system needs, and engineered assemblies with stronger visual weight.</p>
+            <ul>
+              <li>Custom fabrication and assemblies</li>
+              <li>Plastic-lined steel support</li>
+              <li>FRP and structural solutions</li>
+            </ul>
+          </article>
+          <article class="cap-card">
+            <h3>Service, Repair & Field Utility</h3>
+            <p>Position pump repair, valve actuation support, and rental access as practical operational support, not side departments.</p>
+            <ul>
+              <li>Pump repair and maintenance</li>
+              <li>Valve actuation support</li>
+              <li>Tool rental and jobsite utility</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="industries">
+      <div class="section-card">
+        <div class="section-head">
+          <div>
+            <div class="label">Industries Served</div>
+            <h2>Show the market relevance up front.</h2>
+          </div>
+          <p>Industry landing paths should be stronger. The current categories are useful; this redesign makes them easier to understand and visually segment.</p>
+        </div>
+        <div class="industry-grid">
+          <article class="industry-card">
+            <h3>Process & Chemical</h3>
+            <p>Emphasize corrosion resistance, fluid handling, and system reliability for heavy-duty environments.</p>
+            <ul>
+              <li>Chemical and petrochemical</li>
+              <li>Industrial fluid handling</li>
+              <li>Metal finishing and pulp & paper</li>
+            </ul>
+          </article>
+          <article class="industry-card">
+            <h3>High Purity & Growth Markets</h3>
+            <p>Bring modern sectors forward to signal current relevance, including life sciences, microelectronics, data centers, and battery-related work.</p>
+            <ul>
+              <li>Life sciences and food processing</li>
+              <li>Microelectronics and data centers</li>
+              <li>Lithium mining and EV battery infrastructure</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="locations">
+      <div class="section-card">
+        <div class="section-head">
+          <div>
+            <div class="label">Branch Network</div>
+            <h2>Coverage should feel operational, not just geographic.</h2>
+          </div>
+          <p>Instead of a long raw state list only, combine coverage with what branch support means: access, speed, inventory, and application support.</p>
+        </div>
+        <div class="locations-band">
+          <div class="map-panel">
+            <div class="panel-title">Regional Reach</div>
+            <h3 style="margin:8px 0 0;font-family:'IBM Plex Sans Condensed',sans-serif;font-size:32px;text-transform:uppercase;">Coast-to-coast support with local branch access.</h3>
+            <div class="state-grid">
+              <div class="state-chip">CA</div>
+              <div class="state-chip">AZ</div>
+              <div class="state-chip">CO</div>
+              <div class="state-chip">TX</div>
+              <div class="state-chip">FL</div>
+              <div class="state-chip">OH</div>
+              <div class="state-chip">PA</div>
+              <div class="state-chip">WA</div>
+              <div class="state-chip">NY</div>
+              <div class="state-chip">NC</div>
+              <div class="state-chip">UT</div>
+              <div class="state-chip">More</div>
+            </div>
+          </div>
+          <div class="ops-panel">
+            <div class="panel-title">Why It Matters</div>
+            <div class="ops-list">
+              <div class="ops-row">
+                <strong>Availability</strong>
+                <span>Make branch coverage feel connected to faster sourcing, project continuity, and practical response time.</span>
+              </div>
+              <div class="ops-row">
+                <strong>Specification</strong>
+                <span>Help engineers and project buyers move quickly from application need to the right category, material, and branch contact.</span>
+              </div>
+              <div class="ops-row">
+                <strong>Execution</strong>
+                <span>Pair local support with fabrication, repair, and technical resources so HIPCO reads like an operating partner, not just a distributor.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="knowledge">
+      <div class="section-card">
+        <div class="section-head">
+          <div>
+            <div class="label">Knowledge Base</div>
+            <h2>Use technical content to build authority.</h2>
+          </div>
+          <p>The current site already has useful resources. This redesign promotes them into a visible, modern resource layer that supports conversion.</p>
+        </div>
+        <div class="kb-grid">
+          <article class="kb-card">
+            <div class="num">01 | Engineering Tools</div>
+            <h3>Guides, comparison references, and design support.</h3>
+            <p>Materials guides, chemical resistance, joining techniques, Schedule 40 vs 80, and engineering handbooks should be accessible as decision tools.</p>
+          </article>
+          <article class="kb-card">
+            <div class="num">02 | Buyer Enablement</div>
+            <h3>Make the catalog, line cards, and checklists easier to find.</h3>
+            <p>Product catalogs, line cards, and automation checklists should live in a stronger resource hub that supports engineers and purchasing teams equally.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer" id="contact">
+      <div class="footer-panel">
+        <div class="footer-inner">
+          <div class="footer-copy">
+            <h2>Industrial supply, presented with more confidence.</h2>
+            <p>This concept keeps HIPCO relevant to its market: serious, technical, credible, and easier to navigate. It modernizes the shell without pretending the company is a startup or a lifestyle brand.</p>
+          </div>
+          <div class="footer-actions">
+            <a class="btn primary" href="#">Contact Sales</a>
+            <a class="btn secondary" href="#">Request Product Quote</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="micro">HIPCO redesign concept | modern industrial web direction | homepage prototype</div>
+</body>
+</html>

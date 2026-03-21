@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Budget</title>
+  <style>
+    :root{--bg:#f4ead9;--ink:#1f1a17;--muted:#73655a;--cream:#fffaf2;--line:#ddcfbc;--teal:#1f7a72;--gold:#d48a2f;--brick:#b75439;--olive:#6d7a41}
+    *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",sans-serif;background:linear-gradient(180deg,#f6efe4,#eadcc9);color:var(--ink)}
+    .wrap{max-width:1320px;margin:0 auto;padding:28px}
+    .hero{display:grid;grid-template-columns:1fr 300px;gap:18px;margin-bottom:18px}.panel{background:var(--cream);border:1px solid var(--line);border-radius:30px;padding:24px}
+    .k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}.hero h1{margin:10px 0 12px;font:500 48px/1.05 Georgia,serif}.hero p{margin:0;max-width:720px;color:var(--muted);line-height:1.85}
+    .note{display:grid;gap:12px}.chip{padding:10px 12px;border-radius:14px;font-weight:700;color:#fff}.c1{background:var(--teal)}.c2{background:var(--gold)}.c3{background:var(--brick)}
+    .board{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+    .stack{display:grid;gap:18px}.section-title{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:14px}
+    .goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.goal{padding:16px;border-radius:24px;color:#fff;min-height:150px}.goal h3{margin:10px 0 8px;font-size:24px}.goal p{margin:0;line-height:1.7;font-size:13px}
+    .g1{background:linear-gradient(180deg,var(--teal),#185f59)}.g2{background:linear-gradient(180deg,var(--gold),#b87422)}.g3{background:linear-gradient(180deg,var(--olive),#586336)}
+    .ledger{display:grid;gap:12px}.item{padding:14px;border:1px solid var(--line);border-radius:18px;background:#fff}.item-top{display:flex;justify-content:space-between;font-weight:700}.item-sub{margin-top:6px;color:var(--muted);font-size:13px}
+    .swatches{display:grid;gap:12px}.sw{padding:16px;border-radius:22px;color:#fff}.sw h4{margin:0 0 8px;font-size:18px}.sw p{margin:0;line-height:1.7;font-size:13px}
+    .s1{background:#2f5b7c}.s2{background:#91543f}.s3{background:#5b7e5b}.s4{background:#7d5c8b}
+    @media (max-width:1080px){.hero,.board,.goal-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="panel">
+        <div class="k">Canvas Budget Concept</div>
+        <h1>A warmer planning studio for goals, themes, and category buckets.</h1>
+        <p>This one is less “finance terminal” and more “budget workshop.” It is still grounded in the same Amex workbook metrics, but the UI is organized like a planning board where goals, category stories, and merchant clusters feel visual and approachable.</p>
+      </div>
+      <div class="panel note">
+        <div class="chip c1">824 transactions imported</div>
+        <div class="chip c2">$41,400.14 in charges</div>
+        <div class="chip c3">$3,639.73 net total</div>
+      </div>
+    </section>
+
+    <section class="board">
+      <div class="stack">
+        <div class="panel">
+          <div class="section-title">Goal boards</div>
+          <div class="goal-grid">
+            <div class="goal g1"><div class="k" style="color:rgba(255,255,255,.75)">Dining</div><h3>$12,960</h3><p>Over the sample dining target. Strong candidate for a monthly cap, restaurant split, and weekend/weekday views.</p></div>
+            <div class="goal g2"><div class="k" style="color:rgba(255,255,255,.75)">Groceries</div><h3>$8,950</h3><p>High but steady. This concept would make grocery spend one of the first user-adjustable “big buckets.”</p></div>
+            <div class="goal g3"><div class="k" style="color:rgba(255,255,255,.75)">Transportation</div><h3>$3,164</h3><p>Mostly fuel and toll behavior. Ideal for commute planning and recurring travel watchlists.</p></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="section-title">Merchant ledger</div>
+          <div class="ledger">
+            <div class="item"><div class="item-top"><span>SAVE MART #781.TRACY</span><span>$3,614.35</span></div><div class="item-sub">Largest merchant total in the workbook. Grocery anchor.</div></div>
+            <div class="item"><div class="item-top"><span>SAFEWAY #2600</span><span>$3,230.74</span></div><div class="item-sub">Second-largest merchant. Supports a grocery planning lens.</div></div>
+            <div class="item"><div class="item-top"><span>APPLE ONLINE STORE</span><span>$1,519.84</span></div><div class="item-sub">Signals tech purchases and “one-off big spend” review value.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="panel">
+          <div class="section-title">Category canvases</div>
+          <div class="swatches">
+            <div class="sw s1"><h4>Merchandise & Supplies</h4><p>$19,167.91. Biggest budget canvas. Would likely get its own drill view and merchant cluster breakdown.</p></div>
+            <div class="sw s2"><h4>Restaurant</h4><p>$12,960.49. Could split into dining, café, quick stops, and treat spending.</p></div>
+            <div class="sw s3"><h4>Transportation</h4><p>$3,164.08. Strong candidate for recurring spend tracking and route-related budgeting.</p></div>
+            <div class="sw s4"><h4>Other</h4><p>$4,339.10. This concept would push users to reclassify and tame this bucket over time.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

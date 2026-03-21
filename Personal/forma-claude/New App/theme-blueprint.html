@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma — Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #07111f;
+  --bg2:     #0b1928;
+  --bg3:     #0f2236;
+  --grid:    rgba(0,180,216,.06);
+  --border:  rgba(0,180,216,.15);
+  --border2: rgba(0,180,216,.3);
+  --cyan:    #00b4d8;
+  --cyan2:   #0096c7;
+  --amber:   #f59e0b;
+  --green:   #00d4a0;
+  --red:     #ef4444;
+  --text:    #caf0f8;
+  --muted:   rgba(202,240,248,.45);
+  --dim:     rgba(202,240,248,.2);
+  --brut:    'Bebas Neue', sans-serif;
+  --sans:    'IBM Plex Sans', sans-serif;
+  --mono:    'IBM Plex Mono', monospace;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+* { position: relative; z-index: 1; }
+
+.header {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--cyan);
+  padding: 0 32px;
+  height: 64px;
+  display: flex; align-items: center; gap: 16px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,180,216,.15);
+}
+
+.header-logo {
+  width: 40px; height: 40px;
+  border: 2px solid var(--cyan);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 16px rgba(0,180,216,.3), inset 0 0 16px rgba(0,180,216,.05);
+  flex-shrink: 0;
+}
+.header-logo span { font-family: var(--brut); color: var(--cyan); font-size: 22px; letter-spacing: 1px; }
+
+.header-title {
+  font-family: var(--brut);
+  font-size: 24px; letter-spacing: 5px; color: var(--text); flex: 1;
+}
+.header-title em { color: var(--cyan); font-style: normal; }
+
+.header-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-top: 2px; text-transform: uppercase; }
+
+.header-coords {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  letter-spacing: 1px; border: 1px solid var(--border); padding: 4px 12px;
+}
+
+.settings-btn {
+  background: none; border: 1px solid var(--border2); color: var(--muted);
+  padding: 7px 16px; font-family: var(--mono); font-size: 11px; letter-spacing: 2px;
+  cursor: pointer; text-transform: uppercase; transition: all .15s;
+}
+.settings-btn:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 12px rgba(0,180,216,.2); }
+
+.main { min-height: calc(100vh - 64px); display: flex; flex-direction: column; }
+.screen { display: none; flex: 1; flex-direction: column; }
+.screen.active { display: flex; }
+
+#screen-type { align-items: center; justify-content: center; padding: 60px 32px; }
+
+.type-kicker {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  color: var(--cyan); margin-bottom: 14px; text-align: center;
+  text-transform: uppercase;
+}
+
+.type-headline {
+  font-family: var(--brut); font-size: 52px; letter-spacing: 5px;
+  text-align: center; margin-bottom: 8px; line-height: 1;
+  text-shadow: 0 0 40px rgba(0,180,216,.3);
+}
+
+.type-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 52px; letter-spacing: 1px; }
+
+.type-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; width: 100%; max-width: 840px; margin-bottom: 32px;
+}
+
+.type-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 28px 22px;
+  cursor: pointer; transition: all .2s;
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+}
+
+.type-card::before {
+  content: attr(data-num);
+  position: absolute; top: 8px; right: 16px;
+  font-family: var(--mono); font-size: 9px; color: var(--dim); letter-spacing: 1px;
+}
+
+.type-card::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 16px; height: 16px;
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background: var(--bg);
+  transition: all .2s;
+}
+
+.type-card:hover { border-color: var(--border2); background: var(--bg3); box-shadow: 0 0 24px rgba(0,180,216,.12), inset 0 1px 0 rgba(0,180,216,.1); }
+.type-card:hover::after { background: rgba(0,180,216,.1); }
+.type-card.selected { border-color: var(--cyan); background: rgba(0,180,216,.06); box-shadow: 0 0 30px rgba(0,180,216,.2); }
+
+.type-card-label { font-family: var(--brut); font-size: 20px; letter-spacing: 3px; color: var(--text); }
+.type-card.selected .type-card-label { color: var(--cyan); }
+
+.type-card-desc { font-family: var(--sans); font-size: 12px; color: var(--muted); line-height: 1.7; }
+.type-card-ext { font-family: var(--mono); font-size: 10px; color: var(--cyan); opacity: .6; letter-spacing: 1px; }
+
+.type-card-divider { height: 1px; background: var(--border); }
+
+.auto-detect-row {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 40px;
+  cursor: pointer; user-select: none; padding: 14px 20px;
+  background: var(--bg2); border: 1px solid var(--border);
+  width: 100%; max-width: 840px; transition: all .2s;
+}
+.auto-detect-row.on { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,180,216,.1); }
+.auto-detect-row input[type="checkbox"] { display: none; }
+.auto-toggle { width: 38px; height: 20px; background: var(--bg3); border: 1px solid var(--border); position: relative; transition: all .2s; flex-shrink: 0; }
+.auto-toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background: var(--dim); transition: all .2s; }
+.auto-detect-row.on .auto-toggle { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,180,216,.2); }
+.auto-detect-row.on .auto-toggle::after { transform: translateX(18px); background: var(--cyan); box-shadow: 0 0 8px rgba(0,180,216,.6); }
+.auto-detect-label { font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--text); }
+.auto-detect-note { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .5px; margin-top: 2px; }
+
+.btn-next {
+  background: var(--cyan); color: var(--bg); border: none;
+  padding: 15px 56px; font-family: var(--brut); font-size: 22px;
+  letter-spacing: 4px; cursor: pointer; transition: all .18s;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.btn-next:hover:not(:disabled) { background: var(--cyan2); box-shadow: 0 0 40px rgba(0,180,216,.4); }
+.btn-next:disabled { opacity: .2; cursor: not-allowed; }
+
+#screen-file { padding: 44px 0; align-items: center; }
+.file-wrap { width: 100%; max-width: 660px; padding: 0 24px; display: flex; flex-direction: column; gap: 18px; }
+
+.back-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; transition: color .15s; }
+.back-btn:hover { color: var(--cyan); }
+
+.file-section-header { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+
+.file-type-badge {
+  font-family: var(--brut); font-size: 13px; letter-spacing: 2px;
+  background: var(--cyan); color: var(--bg); padding: 4px 12px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+.file-section-title { font-family: var(--brut); font-size: 26px; letter-spacing: 3px; color: var(--text); }
+
+.drop-zone {
+  border: 1px dashed var(--border2); background: var(--bg2);
+  padding: 42px 24px; display: flex; flex-direction: column;
+  align-items: center; gap: 14px; cursor: pointer; transition: all .2s;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--cyan); background: rgba(0,180,216,.04); box-shadow: 0 0 30px rgba(0,180,216,.1), inset 0 0 30px rgba(0,180,216,.03); }
+.drop-zone.has-file { border-color: var(--green); border-style: solid; background: rgba(0,212,160,.04); }
+
+.drop-icon { font-size: 30px; color: var(--border2); transition: color .2s; }
+.drop-zone:hover .drop-icon, .drop-zone.drag-over .drop-icon { color: var(--cyan); text-shadow: 0 0 20px rgba(0,180,216,.5); }
+.drop-zone.has-file .drop-icon { color: var(--green); }
+
+.drop-text { font-family: var(--sans); font-size: 13px; color: var(--muted); text-align: center; line-height: 1.7; }
+.drop-text strong { color: var(--text); font-weight: 600; }
+
+.drop-browse {
+  font-family: var(--brut); font-size: 16px; letter-spacing: 2px;
+  background: none; border: 1px solid var(--border2); color: var(--cyan);
+  padding: 10px 28px; cursor: pointer; transition: all .15s;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+.drop-browse:hover { background: rgba(0,180,216,.08); border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,180,216,.2); }
+
+.file-chosen { display: none; align-items: center; gap: 10px; width: 100%; }
+.drop-zone.has-file .file-chosen { display: flex; }
+.drop-zone.has-file .drop-hint { display: none; }
+.file-chosen-icon { font-size: 18px; color: var(--green); flex-shrink: 0; }
+.file-chosen-info { flex: 1; min-width: 0; }
+.file-chosen-name { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-chosen-path { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.file-clear { background: none; border: 1px solid var(--border); color: var(--dim); font-family: var(--mono); font-size: 10px; letter-spacing: 1px; padding: 4px 10px; cursor: pointer; flex-shrink: 0; text-transform: uppercase; transition: all .15s; }
+.file-clear:hover { border-color: var(--red); color: var(--red); }
+
+.detect-result { display: none; padding: 10px 16px; background: var(--bg2); border-left: 2px solid var(--cyan); font-family: var(--mono); font-size: 11px; color: var(--muted); align-items: center; gap: 8px; letter-spacing: .5px; }
+.detect-result.visible { display: flex; }
+.detect-result strong { color: var(--cyan); font-weight: 600; }
+
+.folder-row { background: var(--bg2); border: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+.folder-row-icon { font-size: 16px; color: var(--dim); flex-shrink: 0; }
+.folder-row-info { flex: 1; min-width: 0; }
+.folder-row-label { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); }
+.folder-row-path { font-family: var(--mono); font-size: 11px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
+.folder-change-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 1px; padding: 5px 12px; cursor: pointer; flex-shrink: 0; text-transform: uppercase; transition: all .15s; }
+.folder-change-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.btn-generate {
+  background: var(--cyan); color: var(--bg); border: none; padding: 16px;
+  font-family: var(--brut); font-size: 20px; letter-spacing: 4px;
+  cursor: pointer; transition: all .18s; width: 100%;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+.btn-generate:hover:not(:disabled) { background: var(--cyan2); box-shadow: 0 0 40px rgba(0,180,216,.35); }
+.btn-generate:disabled { opacity: .2; cursor: not-allowed; }
+
+#screen-processing { align-items: center; justify-content: center; padding: 80px 32px; gap: 28px; }
+
+.processing-spinner {
+  width: 56px; height: 56px;
+  border: 1px solid var(--border);
+  border-top-color: var(--cyan);
+  border-right-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  box-shadow: 0 0 30px rgba(0,180,216,.2);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.processing-label { font-family: var(--brut); font-size: 32px; letter-spacing: 6px; color: var(--cyan); text-shadow: 0 0 30px rgba(0,180,216,.4); }
+.processing-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: center; letter-spacing: 1px; }
+.processing-log { background: var(--bg2); border: 1px solid var(--border); color: rgba(0,180,216,.7); font-family: var(--mono); font-size: 11px; padding: 16px 18px; width: 100%; max-width: 560px; min-height: 80px; max-height: 130px; overflow-y: auto; line-height: 1.8; letter-spacing: .3px; }
+
+#screen-results { align-items: center; justify-content: center; padding: 64px 32px; }
+.results-wrap { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 22px; }
+.result-success-icon { font-size: 44px; text-align: center; }
+.result-headline { font-family: var(--brut); font-size: 42px; letter-spacing: 5px; text-align: center; color: var(--text); text-shadow: 0 0 30px rgba(0,180,216,.2); }
+.result-headline em { color: var(--cyan); font-style: normal; }
+.result-card { background: var(--bg2); border: 1px solid var(--border); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+.result-row { display: flex; flex-direction: column; gap: 4px; }
+.result-row-label { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); }
+.result-row-value { font-family: var(--mono); font-size: 12px; color: var(--text); word-break: break-all; }
+.result-divider { height: 1px; background: var(--border); }
+.result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-action { border: none; padding: 13px; font-family: var(--brut); font-size: 16px; letter-spacing: 2px; cursor: pointer; transition: all .15s; }
+.btn-action.primary { background: var(--cyan); color: var(--bg); }
+.btn-action.primary:hover { background: var(--cyan2); box-shadow: 0 0 24px rgba(0,180,216,.3); }
+.btn-action.secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); }
+.btn-action.secondary:hover { border-color: var(--cyan); }
+.btn-another { background: none; border: 1px solid var(--border2); color: var(--muted); padding: 13px; font-family: var(--brut); font-size: 16px; letter-spacing: 2px; cursor: pointer; transition: all .15s; width: 100%; }
+.btn-another:hover { border-color: var(--cyan); color: var(--cyan); }
+
+#screen-error { align-items: center; justify-content: center; padding: 64px 32px; gap: 18px; }
+.error-icon { font-size: 44px; text-align: center; }
+.error-headline { font-family: var(--brut); font-size: 30px; letter-spacing: 4px; text-align: center; color: var(--red); }
+.error-msg { font-family: var(--mono); font-size: 11px; color: var(--muted); background: var(--bg2); border: 1px solid var(--border); padding: 16px 18px; max-width: 640px; width: 100%; line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
+.btn-retry { background: none; border: 1px solid var(--border2); color: var(--text); padding: 12px 36px; font-family: var(--brut); font-size: 16px; letter-spacing: 2px; cursor: pointer; transition: all .15s; }
+.btn-retry:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.settings-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; align-items: flex-start; justify-content: flex-end; }
+.settings-overlay.open { display: flex; }
+.settings-panel { background: var(--bg2); border-left: 1px solid var(--border); width: 380px; min-height: 100vh; padding: 28px 24px; display: flex; flex-direction: column; gap: 22px; }
+.settings-panel-header { display: flex; align-items: center; justify-content: space-between; }
+.settings-panel-title { font-family: var(--brut); font-size: 22px; letter-spacing: 4px; color: var(--cyan); }
+.settings-close { background: none; border: 1px solid var(--border2); font-size: 16px; cursor: pointer; padding: 4px 10px; color: var(--muted); transition: all .15s; }
+.settings-close:hover { border-color: var(--red); color: var(--red); }
+.settings-divider { height: 1px; background: var(--border); }
+.settings-label { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+.settings-desc { font-family: var(--sans); font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 12px; }
+.settings-path-row { display: flex; gap: 8px; }
+.settings-path-input { flex: 1; background: var(--bg3); border: 1px solid var(--border2); padding: 9px 12px; font-family: var(--mono); font-size: 11px; color: var(--text); outline: none; transition: border-color .15s; }
+.settings-path-input:focus { border-color: var(--cyan); }
+.settings-browse { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); padding: 9px 14px; font-family: var(--brut); font-size: 13px; letter-spacing: 1px; cursor: pointer; flex-shrink: 0; transition: all .15s; }
+.settings-browse:hover { border-color: var(--cyan); color: var(--cyan); }
+.settings-save { background: var(--cyan); color: var(--bg); border: none; padding: 13px; font-family: var(--brut); font-size: 18px; letter-spacing: 3px; cursor: pointer; width: 100%; transition: background .15s; }
+.settings-save:hover { background: var(--cyan2); }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(12px); background: var(--bg2); color: var(--text); border: 1px solid var(--cyan); font-family: var(--mono); font-size: 11px; padding: 11px 22px; letter-spacing: .5px; opacity: 0; transition: all .3s; pointer-events: none; z-index: 999; box-shadow: 0 0 20px rgba(0,180,216,.2); }
+.toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-logo"><span>F</span></div>
+  <div style="flex:1">
+    <div class="header-title">FORMA <em>//</em> EXTRACTOR</div>
+    <div class="header-sub">SYS: HARRINGTON INDUSTRIAL · PDF → XLSX</div>
+  </div>
+  <div class="header-coords">LOC: 5175</div>
+  <button class="settings-btn" onclick="openSettings()">[ CFG ]</button>
+</header>
+
+<main class="main">
+  <div id="screen-type" class="screen active">
+    <div class="type-kicker">// INPUT: SELECT DOC TYPE</div>
+    <h1 class="type-headline">DOCUMENT CLASS</h1>
+    <p class="type-sub">// initialize extraction module — select target schema</p>
+    <div class="type-cards">
+      <div class="type-card" data-type="quote" data-num="DOC-01" onclick="selectType('quote', this)">
+        <div class="type-card-label">QUOTATION</div>
+        <div class="type-card-divider"></div>
+        <div class="type-card-desc">Customer price quotes with line items, quantities, pricing and expiry dates.</div>
+        <div class="type-card-ext">OUTPUT: /Quotes/*.xlsx</div>
+      </div>
+      <div class="type-card" data-type="po" data-num="DOC-02" onclick="selectType('po', this)">
+        <div class="type-card-label">PURCHASE ORDER</div>
+        <div class="type-card-divider"></div>
+        <div class="type-card-desc">Vendor POs with delivery dates, freight terms and sales order references.</div>
+        <div class="type-card-ext">OUTPUT: /POs/*.xlsx</div>
+      </div>
+      <div class="type-card" data-type="invoice" data-num="DOC-03" onclick="selectType('invoice', this)">
+        <div class="type-card-label">PICK-UP TICKET</div>
+        <div class="type-card-divider"></div>
+        <div class="type-card-desc">Customer pick-up invoices with ship-via method and bin amount data.</div>
+        <div class="type-card-ext">OUTPUT: /Pick Ticket Orders/*.xlsx</div>
+      </div>
+    </div>
+    <label class="auto-detect-row" id="auto-detect-toggle" onclick="toggleAutoDetect()">
+      <input type="checkbox" id="auto-detect-cb">
+      <div class="auto-toggle"></div>
+      <div>
+        <div class="auto-detect-label">Auto-detect document schema</div>
+        <div class="auto-detect-note">// run signature analysis on PDF text content to determine doc class</div>
+      </div>
+    </label>
+    <button class="btn-next" id="btn-type-next" onclick="goToFileScreen()" disabled>INITIALIZE →</button>
+  </div>
+
+  <div id="screen-file" class="screen">
+    <div class="file-wrap">
+      <button class="back-btn" onclick="goToTypeScreen()">← ABORT / RESELECT</button>
+      <div class="file-section-header">
+        <div class="file-type-badge" id="file-type-badge">QUOTATION</div>
+        <div class="file-section-title">INPUT FILE</div>
+      </div>
+      <div class="drop-zone" id="drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+        <div class="drop-hint" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+          <div class="drop-icon">↑</div>
+          <div class="drop-text"><strong>Drag and drop</strong> target PDF<br><span style="font-size:11px">or use the file browser below</span></div>
+          <button class="drop-browse" onclick="browsePdf(event)">[ BROWSE ]</button>
+        </div>
+        <div class="file-chosen">
+          <div class="file-chosen-icon">✓</div>
+          <div class="file-chosen-info">
+            <div class="file-chosen-name" id="file-chosen-name">—</div>
+            <div class="file-chosen-path" id="file-chosen-path">—</div>
+          </div>
+          <button class="file-clear" onclick="clearFile(event)">CLR</button>
+        </div>
+      </div>
+      <div class="detect-result" id="detect-result"><span>></span><span id="detect-result-text">—</span></div>
+      <div class="folder-row">
+        <div class="folder-row-icon">📁</div>
+        <div class="folder-row-info">
+          <div class="folder-row-label">OUTPUT ROOT</div>
+          <div class="folder-row-path" id="folder-path-display">Loading...</div>
+        </div>
+        <button class="folder-change-btn" onclick="changeOutputFolder()">[ SET ]</button>
+      </div>
+      <button class="btn-generate" id="btn-generate" onclick="startExtraction()" disabled>EXECUTE EXTRACTION</button>
+    </div>
+  </div>
+
+  <div id="screen-processing" class="screen">
+    <div class="processing-spinner"></div>
+    <div class="processing-label">PROCESSING</div>
+    <div class="processing-sub">// ocr pipeline active — 300 dpi rasterization in progress</div>
+    <div class="processing-log" id="processing-log">sys: initializing...</div>
+  </div>
+
+  <div id="screen-results" class="screen">
+    <div class="results-wrap">
+      <div class="result-success-icon">✅</div>
+      <h2 class="result-headline">EXTRACTION <em>COMPLETE</em></h2>
+      <div class="result-card">
+        <div class="result-row"><div class="result-row-label">OUTPUT FILE</div><div class="result-row-value" id="result-file-name">—</div></div>
+        <div class="result-divider"></div>
+        <div class="result-row"><div class="result-row-label">FILE PATH</div><div class="result-row-value" id="result-file-path">—</div></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-action primary" onclick="openFile()">OPEN FILE</button>
+        <button class="btn-action secondary" onclick="openFolder()">OPEN DIR</button>
+      </div>
+      <button class="btn-another" onclick="goToTypeScreen()">↩ NEW EXTRACTION</button>
+    </div>
+  </div>
+
+  <div id="screen-error" class="screen">
+    <div class="error-icon">⛔</div>
+    <h2 class="error-headline">EXTRACTION FAILED</h2>
+    <div class="error-msg" id="error-msg">—</div>
+    <button class="btn-retry" onclick="goToFileScreen()">← RETRY</button>
+  </div>
+</main>
+
+<div class="settings-overlay" id="settings-overlay" onclick="closeSettingsIfOutside(event)">
+  <div class="settings-panel" onclick="event.stopPropagation()">
+    <div class="settings-panel-header">
+      <div class="settings-panel-title">CONFIG</div>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-divider"></div>
+    <div>
+      <div class="settings-label">OUTPUT ROOT DIRECTORY</div>
+      <div class="settings-desc">All generated Excel files are organized here under customer name subfolders. Shared with the desktop launcher via root_config.txt.</div>
+      <div class="settings-path-row">
+        <input type="text" class="settings-path-input" id="settings-root-input" placeholder="C:\Users\...">
+        <button class="settings-browse" onclick="browseSettingsFolder()">BROWSE</button>
+      </div>
+    </div>
+    <button class="settings-save" onclick="saveSettings()">WRITE CONFIG</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const state={selectedType:null,autoDetect:false,pdfPath:'',outputRoot:'',resultPath:''};
+const TYPE_LABELS={quote:'QUOTATION',po:'PURCHASE ORDER',invoice:'PICK-UP TICKET'};
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goToTypeScreen(){state.pdfPath='';state.selectedType=null;state.autoDetect=false;document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));document.getElementById('auto-detect-toggle').classList.remove('on');document.getElementById('btn-type-next').disabled=true;clearDropZone();showScreen('screen-type');}
+function goToFileScreen(){document.getElementById('file-type-badge').textContent=state.autoDetect?'AUTO-DETECT':(TYPE_LABELS[state.selectedType]||'');document.getElementById('detect-result').classList.remove('visible');updateGenerateBtn();showScreen('screen-file');}
+function selectType(type,el){if(state.autoDetect)return;document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');state.selectedType=type;document.getElementById('btn-type-next').disabled=false;}
+function toggleAutoDetect(){state.autoDetect=!state.autoDetect;document.getElementById('auto-detect-toggle').classList.toggle('on',state.autoDetect);if(state.autoDetect){document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));state.selectedType=null;document.getElementById('btn-type-next').disabled=false;}else{document.getElementById('btn-type-next').disabled=(state.selectedType===null);}}
+async function browsePdf(e){e.stopPropagation();try{const res=await fetch('/api/browse-pdf',{method:'POST'});const data=await res.json();if(data.ok&&data.path)setChosenFile(data.path);}catch(err){showToast('ERR: '+err.message);}}
+function setChosenFile(fullPath){state.pdfPath=fullPath;const parts=fullPath.replace(/\\/g,'/').split('/');document.getElementById('file-chosen-name').textContent=parts[parts.length-1];document.getElementById('file-chosen-path').textContent=fullPath;document.getElementById('drop-zone').classList.add('has-file');if(state.autoDetect)runAutoDetect(fullPath);updateGenerateBtn();}
+function clearFile(e){e&&e.stopPropagation();clearDropZone();state.pdfPath='';document.getElementById('detect-result').classList.remove('visible');updateGenerateBtn();}
+function clearDropZone(){document.getElementById('drop-zone').classList.remove('has-file','drag-over');document.getElementById('file-chosen-name').textContent='—';document.getElementById('file-chosen-path').textContent='—';}
+function handleDragOver(e){e.preventDefault();document.getElementById('drop-zone').classList.add('drag-over');}
+function handleDragLeave(e){document.getElementById('drop-zone').classList.remove('drag-over');}
+function handleDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('drag-over');const files=e.dataTransfer.files;if(files&&files.length>0){if(!files[0].name.toLowerCase().endsWith('.pdf')){showToast('ERR: not a PDF');return;}showToast('NOTICE: use [ BROWSE ] to confirm path');browsePdf(e);}}
+async function runAutoDetect(pdfPath){const el=document.getElementById('detect-result');const txt=document.getElementById('detect-result-text');el.classList.add('visible');txt.textContent='// running signature analysis...';try{const res=await fetch('/api/detect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:pdfPath})});const data=await res.json();if(data.ok){state.selectedType=data.type;txt.innerHTML=`// detected: <strong>${data.label}</strong> [conf: ${data.confidence}]`;document.getElementById('file-type-badge').textContent=TYPE_LABELS[data.type]||data.label;updateGenerateBtn();}else{txt.textContent='// detection failed — select schema manually';}}catch(err){txt.textContent='// error: '+err.message;}}
+async function loadOutputRoot(){try{const res=await fetch('/api/config');const data=await res.json();state.outputRoot=data.output_root;document.getElementById('folder-path-display').textContent=data.output_root;document.getElementById('settings-root-input').value=data.output_root;}catch(e){}}
+async function changeOutputFolder(){try{const res=await fetch('/api/browse-folder',{method:'POST'});const data=await res.json();if(data.ok&&data.path){state.outputRoot=data.path;document.getElementById('folder-path-display').textContent=data.path;document.getElementById('settings-root-input').value=data.path;await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({output_root:data.path})});showToast('output root updated');}}catch(err){showToast('ERR: '+err.message);}}
+function updateGenerateBtn(){document.getElementById('btn-generate').disabled=!(state.pdfPath&&(state.selectedType||state.autoDetect));}
+async function startExtraction(){if(!state.pdfPath||(!state.selectedType&&!state.autoDetect))return;showScreen('screen-processing');const logEl=document.getElementById('processing-log');logEl.textContent='';const addLog=msg=>{logEl.textContent+=msg+'\n';logEl.scrollTop=logEl.scrollHeight;};addLog('sys: pdf='+state.pdfPath);addLog('sys: schema='+(TYPE_LABELS[state.selectedType]||'auto'));addLog('sys: output='+state.outputRoot);addLog('ocr: rasterizing at 300dpi...');try{const res=await fetch('/api/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:state.pdfPath,type:state.selectedType,output_root:state.outputRoot})});const data=await res.json();if(data.ok){addLog('sys: done → '+data.path);state.resultPath=data.path;document.getElementById('result-file-name').textContent=data.name;document.getElementById('result-file-path').textContent=data.path;showScreen('screen-results');}else{addLog('ERR: '+data.error);document.getElementById('error-msg').textContent=(data.error||'Unknown error')+(data.trace?'\n\n'+data.trace:'');showScreen('screen-error');}}catch(err){document.getElementById('error-msg').textContent=err.message;showScreen('screen-error');}}
+async function openFile(){await fetch('/api/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:state.resultPath,folder:false})});}
+async function openFolder(){await fetch('/api/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:state.resultPath,folder:true})});}
+function openSettings(){document.getElementById('settings-overlay').classList.add('open');}
+function closeSettings(){document.getElementById('settings-overlay').classList.remove('open');}
+function closeSettingsIfOutside(e){if(e.target===document.getElementById('settings-overlay'))closeSettings();}
+async function browseSettingsFolder(){try{const res=await fetch('/api/browse-folder',{method:'POST'});const data=await res.json();if(data.ok&&data.path)document.getElementById('settings-root-input').value=data.path;}catch(err){}}
+async function saveSettings(){const newRoot=document.getElementById('settings-root-input').value.trim();if(!newRoot){showToast('ERR: path required');return;}await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({output_root:newRoot})});state.outputRoot=newRoot;document.getElementById('folder-path-display').textContent=newRoot;closeSettings();showToast('config written');}
+let _t=null;function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('visible');clearTimeout(_t);_t=setTimeout(()=>el.classList.remove('visible'),4000);}
+document.addEventListener('DOMContentLoaded',loadOutputRoot);
+</script>
+</body>
+</html>

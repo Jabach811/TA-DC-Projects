@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Percentage Display — Options</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #0d0d0f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  padding: 36px 28px;
+  color: #f5f5f7;
+}
+h1 { font-size:11px; font-weight:600; color:#555; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:32px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.tile {
+  background: #1c1c1e;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 160px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.tile:hover { border-color: rgba(255,255,255,0.18); }
+.tile-label {
+  font-size: 10px; color: #555; letter-spacing: 0.06em;
+  text-transform: uppercase; text-align: center; margin-top: 4px;
+}
+
+/* shared */
+:root { --c: #ff9f0a; --c2: #ff6b00; }
+
+/* ── 1. Bare huge ── */
+.opt1 { font-size:60px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1; }
+
+/* ── 2. Gradient text ── */
+.opt2 {
+  font-size:60px; font-weight:800; letter-spacing:-3px; line-height:1;
+  background: linear-gradient(135deg, #ffcc00, #ff9f0a, #ff6b00);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+/* ── 3. Glow only ── */
+.opt3 {
+  font-size:60px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1;
+  text-shadow: 0 0 40px rgba(255,159,10,0.7), 0 0 80px rgba(255,159,10,0.3);
+}
+
+/* ── 4. Squircle badge (current) ── */
+.opt4-wrap {
+  background: rgba(255,159,10,0.1);
+  border-radius: 20px;
+  padding: 12px 24px 10px;
+  box-shadow: 0 0 28px rgba(255,159,10,0.2), inset 0 1px 0 rgba(255,159,10,0.15);
+}
+.opt4 { font-size:52px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1; }
+
+/* ── 5. Circular ring ── */
+.opt5-wrap { position:relative; width:110px; height:110px; }
+.opt5-wrap svg { position:absolute; top:0; left:0; transform:rotate(-90deg); }
+.opt5-num {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:28px; font-weight:800; letter-spacing:-1px; color:var(--c); line-height:1;
+  text-align:center;
+}
+
+/* ── 6. Split % superscript ── */
+.opt6-wrap { display:flex; align-items:flex-start; gap:2px; line-height:1; }
+.opt6-num { font-size:68px; font-weight:800; letter-spacing:-4px; color:var(--c); }
+.opt6-sym { font-size:28px; font-weight:700; color:var(--c); margin-top:10px; opacity:0.7; }
+
+/* ── 7. Outlined / stroke ── */
+.opt7 {
+  font-size:60px; font-weight:800; letter-spacing:-3px; line-height:1;
+  -webkit-text-stroke: 2px var(--c);
+  color: transparent;
+}
+
+/* ── 8. Chip pill ── */
+.opt8-wrap {
+  background: var(--c);
+  border-radius: 100px;
+  padding: 8px 22px;
+}
+.opt8 { font-size:42px; font-weight:800; letter-spacing:-2px; color:#000; line-height:1; }
+
+/* ── 9. Stacked with bar ── */
+.opt9-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; }
+.opt9-num { font-size:54px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1; }
+.opt9-bar-track { width:80%; height:3px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+.opt9-bar { height:100%; border-radius:2px; background:var(--c); width:74%; }
+
+/* ── 10. Dark glass card ── */
+.opt10-wrap {
+  background: rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px;
+  padding: 14px 22px 12px;
+  backdrop-filter: blur(10px);
+}
+.opt10 { font-size:50px; font-weight:800; letter-spacing:-3px; color:#fff; line-height:1; }
+.opt10-sub { font-size:10px; color:#666; margin-top:4px; letter-spacing:0.04em; text-align:center; }
+
+/* ── 11. Dot indicator ── */
+.opt11-wrap { display:flex; align-items:center; gap:12px; }
+.opt11-dot { width:14px; height:14px; border-radius:50%; background:var(--c); box-shadow:0 0 14px var(--c); flex-shrink:0; }
+.opt11 { font-size:54px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1; }
+
+/* ── 12. Split line ── */
+.opt12-wrap { display:flex; flex-direction:column; align-items:center; gap:0; }
+.opt12-num { font-size:58px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1; }
+.opt12-line { width:40px; height:2px; background:var(--c); border-radius:1px; margin:6px 0 5px; opacity:0.5; }
+.opt12-sub { font-size:10px; color:#555; letter-spacing:0.1em; text-transform:uppercase; }
+
+/* ── 13. Arc label (semi-ring) ── */
+.opt13-wrap { position:relative; width:120px; height:70px; overflow:visible; }
+.opt13-wrap svg { position:absolute; top:0; left:0; }
+.opt13-num {
+  position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  font-size:32px; font-weight:800; letter-spacing:-1px; color:var(--c); line-height:1;
+}
+
+/* ── 14. Neon outline ── */
+.opt14 {
+  font-size:58px; font-weight:800; letter-spacing:-3px; line-height:1;
+  color: var(--c);
+  text-shadow:
+    0 0 10px rgba(255,159,10,0.9),
+    0 0 30px rgba(255,159,10,0.6),
+    0 0 60px rgba(255,159,10,0.3),
+    0 0 100px rgba(255,159,10,0.15);
+}
+
+/* ── 15. Number + context line ── */
+.opt15-wrap { display:flex; flex-direction:column; align-items:center; }
+.opt15-num { font-size:56px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1; }
+.opt15-ctx { font-size:11px; color:#555; margin-top:5px; }
+.opt15-ctx strong { color:#888; }
+
+/* ── 16. Two-tone split ── */
+.opt16-wrap { display:flex; align-items:baseline; gap:3px; }
+.opt16-a { font-size:68px; font-weight:900; letter-spacing:-4px; color:var(--c); line-height:1; }
+.opt16-b { font-size:28px; font-weight:400; color:#555; }
+
+/* ── 17. Monospace terminal ── */
+.opt17-wrap {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.opt17-label { font-size:9px; color:#444; letter-spacing:0.15em; text-transform:uppercase; }
+.opt17-num { font-size:52px; font-weight:700; color:var(--c); letter-spacing:-1px; line-height:1; }
+.opt17-bar { font-size:11px; color:#333; letter-spacing:0; }
+.opt17-fill { color: var(--c); }
+
+/* ── 18. Frosted ring ── */
+.opt18-wrap {
+  position:relative; width:110px; height:110px;
+  display:flex; align-items:center; justify-content:center;
+}
+.opt18-bg {
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  border-radius:50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,159,10,0.12), rgba(255,159,10,0.04));
+  border: 1.5px solid rgba(255,159,10,0.2);
+  box-shadow: 0 0 30px rgba(255,159,10,0.12);
+}
+.opt18-num { font-size:34px; font-weight:800; letter-spacing:-2px; color:var(--c); position:relative; }
+
+/* ── 19. Vertical stack ── */
+.opt19-wrap { display:flex; gap:12px; align-items:center; }
+.opt19-track { width:4px; height:80px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; position:relative; }
+.opt19-fill { position:absolute; bottom:0; left:0; right:0; background:var(--c); border-radius:2px; height:74%; }
+.opt19-num { font-size:54px; font-weight:800; letter-spacing:-3px; color:var(--c); line-height:1; }
+
+/* ── 20. Bold minimal (just huge) ── */
+.opt20 { font-size:72px; font-weight:900; letter-spacing:-5px; color:#fff; line-height:1; opacity:0.9; }
+</style>
+</head>
+<body>
+
+<h1>Percentage Display — 20 Options · 74% used · Day 23 of 28</h1>
+
+<div class="grid">
+
+  <!-- 1 -->
+  <div class="tile">
+    <div class="opt1">74%</div>
+    <div class="tile-label">1 — Bare bold</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="tile">
+    <div class="opt2">74%</div>
+    <div class="tile-label">2 — Gradient text</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="tile">
+    <div class="opt3">74%</div>
+    <div class="tile-label">3 — Glow only</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="tile">
+    <div class="opt4-wrap">
+      <div class="opt4">74%</div>
+    </div>
+    <div class="tile-label">4 — Squircle badge (current)</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="tile">
+    <div class="opt5-wrap">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+        <circle cx="55" cy="55" r="46" fill="none" stroke="#ff9f0a" stroke-width="6"
+          stroke-linecap="round"
+          stroke-dasharray="289.0"
+          stroke-dashoffset="75.1"/>
+      </svg>
+      <div class="opt5-num">74%<br><span style="font-size:10px;font-weight:400;color:#555;letter-spacing:0">used</span></div>
+    </div>
+    <div class="tile-label">5 — Circular ring</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="tile">
+    <div class="opt6-wrap">
+      <div class="opt6-num">74</div>
+      <div class="opt6-sym">%</div>
+    </div>
+    <div class="tile-label">6 — Split superscript %</div>
+  </div>
+
+  <!-- 7 -->
+  <div class="tile">
+    <div class="opt7">74%</div>
+    <div class="tile-label">7 — Outlined / stroke</div>
+  </div>
+
+  <!-- 8 -->
+  <div class="tile">
+    <div class="opt8-wrap">
+      <div class="opt8">74%</div>
+    </div>
+    <div class="tile-label">8 — Solid color chip</div>
+  </div>
+
+  <!-- 9 -->
+  <div class="tile" style="width:100%;">
+    <div class="opt9-wrap">
+      <div class="opt9-num">74%</div>
+      <div class="opt9-bar-track"><div class="opt9-bar"></div></div>
+    </div>
+    <div class="tile-label">9 — Number + micro bar</div>
+  </div>
+
+  <!-- 10 -->
+  <div class="tile">
+    <div class="opt10-wrap">
+      <div class="opt10">74%</div>
+      <div class="opt10-sub">OF BUDGET USED</div>
+    </div>
+    <div class="tile-label">10 — Frosted glass card</div>
+  </div>
+
+  <!-- 11 -->
+  <div class="tile">
+    <div class="opt11-wrap">
+      <div class="opt11-dot"></div>
+      <div class="opt11">74%</div>
+    </div>
+    <div class="tile-label">11 — Glowing dot + number</div>
+  </div>
+
+  <!-- 12 -->
+  <div class="tile">
+    <div class="opt12-wrap">
+      <div class="opt12-num">74%</div>
+      <div class="opt12-line"></div>
+      <div class="opt12-sub">of budget</div>
+    </div>
+    <div class="tile-label">12 — Number + divider + label</div>
+  </div>
+
+  <!-- 13 -->
+  <div class="tile">
+    <div class="opt13-wrap">
+      <svg width="120" height="70" viewBox="0 0 120 70">
+        <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#ff9f0a" stroke-width="6"
+          stroke-linecap="round"
+          stroke-dasharray="157.1"
+          stroke-dashoffset="40.8"/>
+      </svg>
+      <div class="opt13-num">74%</div>
+    </div>
+    <div class="tile-label">13 — Semi-arc gauge</div>
+  </div>
+
+  <!-- 14 -->
+  <div class="tile">
+    <div class="opt14">74%</div>
+    <div class="tile-label">14 — Neon glow</div>
+  </div>
+
+  <!-- 15 -->
+  <div class="tile">
+    <div class="opt15-wrap">
+      <div class="opt15-num">74%</div>
+      <div class="opt15-ctx">Day 23 · <strong>$1,318 left</strong></div>
+    </div>
+    <div class="tile-label">15 — Number + context</div>
+  </div>
+
+  <!-- 16 -->
+  <div class="tile">
+    <div class="opt16-wrap">
+      <div class="opt16-a">74</div>
+      <div class="opt16-b">%</div>
+    </div>
+    <div class="tile-label">16 — Two-tone % suffix</div>
+  </div>
+
+  <!-- 17 -->
+  <div class="tile">
+    <div class="opt17-wrap">
+      <div class="opt17-label">budget used</div>
+      <div class="opt17-num">74%</div>
+      <div class="opt17-bar">
+        [<span class="opt17-fill">████████████████████████</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+      </div>
+    </div>
+    <div class="tile-label">17 — Terminal / monospace</div>
+  </div>
+
+  <!-- 18 -->
+  <div class="tile">
+    <div class="opt18-wrap">
+      <div class="opt18-bg"></div>
+      <div class="opt18-num">74%</div>
+    </div>
+    <div class="tile-label">18 — Frosted circle</div>
+  </div>
+
+  <!-- 19 -->
+  <div class="tile">
+    <div class="opt19-wrap">
+      <div class="opt19-track"><div class="opt19-fill"></div></div>
+      <div class="opt19-num">74%</div>
+    </div>
+    <div class="tile-label">19 — Side fill bar</div>
+  </div>
+
+  <!-- 20 -->
+  <div class="tile">
+    <div class="opt20">74%</div>
+    <div class="tile-label">20 — Maximum bare</div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forma Editorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-mark"><span>F</span></div>
+        <div class="logo-text">
+          <div class="logo-title">FORMA</div>
+          <div class="logo-sub">Editorial Extract</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="nav-group">Workflow</div>
+        <div class="nav-item active">
+          <span class="nav-icon">1</span> Choose Report
+        </div>
+        <div class="nav-item active">
+          <span class="nav-icon">2</span> Select PDF
+        </div>
+        <div class="nav-item active">
+          <span class="nav-icon">3</span> Validate + Extract
+        </div>
+
+        <div class="nav-group">Current Run</div>
+        <div class="sidebar-kv">
+          <div class="sidebar-k">Selected</div>
+          <div class="sidebar-v" id="side-selected">-</div>
+        </div>
+        <div class="sidebar-kv">
+          <div class="sidebar-k">Detected</div>
+          <div class="sidebar-v" id="side-detected">-</div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="footer-label">Output Root</div>
+        <div class="footer-val" id="sidebar-root">-</div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-title">Single Extract</div>
+        <div class="topbar-tag">Forma Report Studio</div>
+      </div>
+
+      <div class="page active">
+        <section class="hero-card">
+          <div class="hero-copy">
+            <div class="hero-kicker">HIPCO PDF Extraction</div>
+            <h1>Pick the report and file. The app handles the rest.</h1>
+            <p>
+              This version keeps the workflow simple for everyday use. Choose the report type,
+              select the PDF, and Forma will validate the match before running the extraction.
+            </p>
+          </div>
+          <div class="hero-side">
+            <div class="hero-stat-label">Status</div>
+            <div class="hero-stat-val" id="hero-status">Ready</div>
+            <div class="hero-stat-sub" id="hero-status-sub">Waiting for a report selection.</div>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-header">
+            <div class="section-title">Report Type</div>
+          </div>
+          <div class="type-grid">
+            <button class="type-card" data-report="PO">
+              <span class="type-card-kicker">Document</span>
+              <span class="type-card-title">PO</span>
+              <span class="type-card-sub">Purchase orders</span>
+            </button>
+            <button class="type-card" data-report="Quote">
+              <span class="type-card-kicker">Document</span>
+              <span class="type-card-title">Quote</span>
+              <span class="type-card-sub">Quotation packets</span>
+            </button>
+            <button class="type-card" data-report="Invoice">
+              <span class="type-card-kicker">Document</span>
+              <span class="type-card-title">Invoice</span>
+              <span class="type-card-sub">Pick-up and invoice files</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-header">
+            <div class="section-title">PDF File</div>
+          </div>
+          <div class="picker-row">
+            <button class="browse-btn" id="pick-file-btn">Select PDF</button>
+            <div class="picker-display" id="file-display">No file selected yet.</div>
+          </div>
+        </section>
+
+        <section class="status-strip" id="status-strip">
+          <div class="status-strip-label">Current Status</div>
+          <div class="status-strip-title" id="status-title">Waiting to begin</div>
+          <div class="status-strip-copy" id="status-copy">Choose the report type and PDF to begin.</div>
+        </section>
+
+        <section class="result-shell">
+          <div class="section-header">
+            <div class="section-title">Run Result</div>
+          </div>
+          <div class="result-grid">
+            <div class="result-card">
+              <div class="result-label">Selected Type</div>
+              <div class="result-value" id="result-selected">-</div>
+            </div>
+            <div class="result-card">
+              <div class="result-label">Detected Type</div>
+              <div class="result-value" id="result-detected">-</div>
+            </div>
+            <div class="result-card result-wide">
+              <div class="result-label">Saved File</div>
+              <div class="result-value mono" id="result-output">-</div>
+            </div>
+            <div class="result-card result-wide">
+              <div class="result-label">Message</div>
+              <div class="result-value" id="result-message">Nothing has been processed yet.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
