@@ -70,6 +70,44 @@ input, select { font-family: var(--font); }
 .page { display: none; }
 .page.active { display: block; }
 
+/* ── STICKY DASH BAR ── */
+.sticky-dash-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(28,28,30,0.96);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sdb-identity {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 32px 10px;
+}
+.sdb-avatar { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+.sdb-name { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+.sdb-level { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+.sdb-xp-wrap { flex: 1; max-width: 220px; }
+.sdb-xp-bar { height: 4px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; margin-bottom: 3px; }
+.sdb-xp-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #5ac8fa); border-radius: 2px; transition: width 0.5s ease; }
+.sdb-xp-text { font-size: 10px; color: rgba(255,255,255,0.35); white-space: nowrap; }
+.sdb-pills { display: flex; gap: 6px; margin-left: auto; }
+.sdb-pill { display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); white-space: nowrap; }
+.sdb-pill.rank { background: rgba(0,122,255,0.25); color: #5ac8fa; }
+.sdb-pill.count { background: rgba(52,199,89,0.2); color: #34c759; }
+
+.sdb-filters {
+  padding: 0 32px 10px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.sdb-filter-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sdb-filter-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.28); width: 60px; flex-shrink: 0; }
+.sdb-chip { padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1.5px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); background: transparent; transition: all 0.13s; user-select: none; white-space: nowrap; }
+.sdb-chip:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+.sdb-chip.active-status  { background: var(--blue);   border-color: var(--blue);   color: #fff; }
+.sdb-chip.active-cat     { background: #2c2c2e;       border-color: rgba(255,255,255,0.3); color: #fff; }
+.sdb-chip.active-rookie  { background: rgba(52,199,89,0.25);  border-color: #34c759; color: #34c759; }
+.sdb-chip.active-pro     { background: rgba(0,122,255,0.25);  border-color: #007aff; color: #5ac8fa; }
+.sdb-chip.active-expert  { background: rgba(175,82,222,0.25); border-color: #af52de; color: #c77dff; }
+.sdb-divider { width: 1px; height: 14px; background: rgba(255,255,255,0.1); margin: 0 2px; flex-shrink: 0; }
+
 /* ── DASHBOARD ── */
 .hero-banner { background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 55%, #1a1a2e 100%); padding: 40px 40px 36px; position: relative; overflow: hidden; }
 .hero-banner::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse at 80% 50%, rgba(0,122,255,0.2) 0%, transparent 60%); pointer-events:none; }
@@ -496,6 +534,8 @@ const LS_KEY = 'dc_hub_data';
 let data = { profiles: [], activeProfileId: null };
 let currentPage = 'dashboard';
 let dashFilter = 'all';
+let dashCatFilter = 'all';
+let dashTierFilter = 'all';
 let catalogFilter = { cat: 'all', rarity: 'all', search: '' };
 let catalogViewProfileId = null;
 let lbSort = 'xp';
@@ -764,12 +804,53 @@ function renderDashboard() {
   const pct = Math.round(earned/total*100);
   const stats = catStats(p);
 
-  // Filter achievements
+  // Filter achievements — status + category + tier
   let filtered = ACHIEVEMENTS;
-  if (dashFilter === 'earned') filtered = ACHIEVEMENTS.filter(a => p.earnedIds.includes(a.id));
-  else if (dashFilter === 'locked') filtered = ACHIEVEMENTS.filter(a => !p.earnedIds.includes(a.id));
+  if (dashFilter === 'earned') filtered = filtered.filter(a => p.earnedIds.includes(a.id));
+  else if (dashFilter === 'locked') filtered = filtered.filter(a => !p.earnedIds.includes(a.id));
+  if (dashCatFilter !== 'all') filtered = filtered.filter(a => a.cat === dashCatFilter);
+  if (dashTierFilter !== 'all') filtered = filtered.filter(a => getTier(a.rarity) === dashTierFilter);
+
+  const tierChipClass = t => dashTierFilter === t ? `active-${t}` : '';
 
   wrap.innerHTML = `
+    <!-- ── STICKY BAR ── -->
+    <div class="sticky-dash-bar">
+      <div class="sdb-identity">
+        <div class="sdb-avatar">${p.avatar}</div>
+        <div>
+          <div class="sdb-name">${p.name}</div>
+          <div class="sdb-level">${lvl.emoji} ${lvl.title} · Level ${lvl.lvl}</div>
+        </div>
+        <div class="sdb-xp-wrap">
+          <div class="sdb-xp-bar"><div class="sdb-xp-fill" style="width:${prog*100}%"></div></div>
+          <div class="sdb-xp-text">${xp.toLocaleString()} XP${nxt ? ` · ${(nxt.xp-xp).toLocaleString()} to next level` : ' · MAX LEVEL'}</div>
+        </div>
+        <div class="sdb-pills">
+          <div class="sdb-pill count">🏅 ${earned}/${total}</div>
+          <div class="sdb-pill rank">#${rank} Team</div>
+        </div>
+      </div>
+      <div class="sdb-filters">
+        <div class="sdb-filter-row">
+          <div class="sdb-filter-label">Status</div>
+          <div class="sdb-chip ${dashFilter==='all'?'active-status':''}" data-status="all">All</div>
+          <div class="sdb-chip ${dashFilter==='earned'?'active-status':''}" data-status="earned">✓ Earned</div>
+          <div class="sdb-chip ${dashFilter==='locked'?'active-status':''}" data-status="locked">⬡ Locked</div>
+          <div class="sdb-divider"></div>
+          <div class="sdb-filter-label" style="width:auto">Tier</div>
+          <div class="sdb-chip ${dashTierFilter==='all'?'active-status':''}" data-tier="all">All Tiers</div>
+          <div class="sdb-chip ${tierChipClass('rookie')}" data-tier="rookie">🟢 Rookie</div>
+          <div class="sdb-chip ${tierChipClass('pro')}" data-tier="pro">🔵 Pro</div>
+          <div class="sdb-chip ${tierChipClass('expert')}" data-tier="expert">🟣 Expert</div>
+        </div>
+        <div class="sdb-filter-row">
+          <div class="sdb-filter-label">Category</div>
+          <div class="sdb-chip ${dashCatFilter==='all'?'active-cat':''}" data-cat="all">All</div>
+          ${CATEGORIES.map(c => `<div class="sdb-chip ${dashCatFilter===c.id?'active-cat':''}" data-cat="${c.id}">${c.icon} ${c.title.split(' ')[0]}</div>`).join('')}
+        </div>
+      </div>
+    </div>
     <div class="hero-banner">
       <div class="hero-inner">
         <div class="hero-rank-pill">${rank <= data.profiles.length ? `#${rank} of ${data.profiles.length}` : '#1'} on Team</div>
@@ -810,11 +891,7 @@ function renderDashboard() {
       }).join('')}</div>
     </div>
     <div class="grid-section">
-      <div class="section-title">Achievements</div>
-      <div class="filter-bar">
-        ${['all','earned','locked'].map(f => `<div class="f-pill ${dashFilter===f?'active':''}" data-f="${f}">${f==='all'?'All':f==='earned'?'✓ Earned':'⬡ Locked'}</div>`).join('')}
-        <div style="margin-left:auto;font-size:12px;color:var(--muted);">${filtered.length} shown</div>
-      </div>
+      <div class="section-title" style="display:flex;align-items:center;gap:8px;">Achievements <span style="font-size:12px;font-weight:500;color:var(--muted);">${filtered.length} shown</span></div>
       ${CATEGORIES.map(cat => {
         const catAchs = filtered.filter(a => a.cat === cat.id);
         if (!catAchs.length) return '';
@@ -856,10 +933,17 @@ function renderDashboard() {
     });
   }, 50);
 
-  // Filter pills
-  wrap.querySelectorAll('.f-pill[data-f]').forEach(el => {
-    el.addEventListener('click', () => { dashFilter = el.dataset.f; renderDashboard(); });
+  // Sticky bar chips
+  wrap.querySelectorAll('.sdb-chip[data-status]').forEach(el => {
+    el.addEventListener('click', () => { dashFilter = el.dataset.status; renderDashboard(); });
   });
+  wrap.querySelectorAll('.sdb-chip[data-tier]').forEach(el => {
+    el.addEventListener('click', () => { dashTierFilter = el.dataset.tier; renderDashboard(); });
+  });
+  wrap.querySelectorAll('.sdb-chip[data-cat]').forEach(el => {
+    el.addEventListener('click', () => { dashCatFilter = el.dataset.cat; renderDashboard(); });
+  });
+
 
   // Ach card clicks
   wrap.querySelectorAll('.ach-card[data-id]').forEach(el => {
