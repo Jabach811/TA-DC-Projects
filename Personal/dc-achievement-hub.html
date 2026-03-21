@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DC Hub — Achievement Tracker</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f2f2f7; --card: #ffffff; --text: #1c1c1e; --muted: #8e8e93;
+  --sep: #e5e5ea; --blue: #007aff; --green: #34c759; --red: #ff3b30;
+  --orange: #ff9f0a; --purple: #af52de; --indigo: #5856d6; --teal: #32ade6;
+  --pink: #ff2d55; --gold: #b8860b;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.09), 0 8px 24px rgba(0,0,0,0.06);
+  --radius: 14px; --radius-sm: 10px;
+  --font: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  --sidebar: 270px;
+}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; -webkit-font-smoothing: antialiased; }
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+input, select { font-family: var(--font); }
+
+/* ── LAYOUT ── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+.sidebar { width: var(--sidebar); min-width: var(--sidebar); background: #1c1c1e; display: flex; flex-direction: column; overflow: hidden; }
+.main-area { flex: 1; overflow-y: auto; background: var(--bg); }
+
+/* ── SIDEBAR ── */
+.sb-top { padding: 20px 16px 0; }
+.sb-logo { display: flex; align-items: center; gap: 10px; padding: 0 4px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sb-logo-icon { width: 38px; height: 38px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.sb-logo-text { line-height: 1.2; }
+.sb-logo-title { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.4px; }
+.sb-logo-sub { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; }
+
+.sb-profile-card { margin: 16px 0 4px; background: rgba(255,255,255,0.06); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; gap: 10px; }
+.sb-avatar { width: 46px; height: 46px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.sb-profile-info { flex: 1; min-width: 0; }
+.sb-profile-name { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-profile-level { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 1px; }
+.sb-xp-bar { height: 3px; background: rgba(255,255,255,0.12); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.sb-xp-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.4s ease; }
+
+.sb-nav { padding: 12px 8px 0; }
+.sb-nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.65); font-size: 13.5px; font-weight: 500; transition: all 0.14s; margin-bottom: 2px; border-left: 2.5px solid transparent; }
+.sb-nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.sb-nav-item.active { background: rgba(0,122,255,0.2); color: #fff; border-left-color: var(--blue); font-weight: 600; }
+.sb-nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.sb-section-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.28); text-transform: uppercase; letter-spacing: 1px; padding: 14px 18px 6px; }
+.sb-roster { flex: 1; overflow-y: auto; padding: 0 8px; }
+.sb-roster::-webkit-scrollbar { width: 4px; }
+.sb-roster::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+.sb-member { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; cursor: pointer; transition: all 0.14s; margin-bottom: 2px; }
+.sb-member:hover { background: rgba(255,255,255,0.06); }
+.sb-member.active-member { background: rgba(255,255,255,0.1); }
+.sb-member-avatar { width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.sb-member-info { flex: 1; min-width: 0; }
+.sb-member-name { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-member-xp { font-size: 10.5px; color: rgba(255,255,255,0.35); }
+.sb-member-xpbar { height: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; margin-top: 3px; overflow: hidden; }
+.sb-member-xpfill { height: 100%; background: rgba(0,122,255,0.6); border-radius: 1px; }
+
+.sb-bottom { padding: 10px 8px 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+.sb-add-btn { width: 100%; padding: 9px; border-radius: 8px; background: rgba(0,122,255,0.18); color: var(--blue); font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; border: none; transition: all 0.14s; }
+.sb-add-btn:hover { background: rgba(0,122,255,0.28); }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── DASHBOARD ── */
+.hero-banner { background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 55%, #1a1a2e 100%); padding: 40px 40px 36px; position: relative; overflow: hidden; }
+.hero-banner::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse at 80% 50%, rgba(0,122,255,0.2) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { position: relative; max-width: 900px; }
+.hero-rank-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 16px; }
+.hero-level { font-size: 52px; font-weight: 900; color: #fff; letter-spacing: -2px; line-height: 1; }
+.hero-level span { color: var(--blue); }
+.hero-title { font-size: 17px; color: rgba(255,255,255,0.55); margin-top: 4px; font-weight: 500; }
+.hero-xp-row { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+.hero-xp-bar { flex: 1; max-width: 360px; height: 8px; background: rgba(255,255,255,0.12); border-radius: 4px; overflow: hidden; }
+.hero-xp-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #5ac8fa); border-radius: 4px; transition: width 0.6s cubic-bezier(.25,.46,.45,.94); }
+.hero-xp-text { font-size: 13px; color: rgba(255,255,255,0.5); white-space: nowrap; }
+.hero-ach-count { margin-top: 12px; font-size: 14px; color: rgba(255,255,255,0.5); }
+.hero-ach-count strong { color: #fff; }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 24px 32px; }
+.stat-card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-sm); }
+.stat-card-val { font-size: 30px; font-weight: 800; letter-spacing: -1px; color: var(--text); }
+.stat-card-lbl { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 3px; }
+.stat-card-icon { font-size: 22px; margin-bottom: 8px; }
+
+/* ── CATEGORY RINGS ── */
+.rings-section { padding: 0 32px 24px; }
+.section-title { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; margin-bottom: 16px; }
+.rings-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+.ring-card { background: var(--card); border-radius: var(--radius); padding: 16px 10px; box-shadow: var(--shadow-sm); text-align: center; }
+.ring-wrap { position: relative; width: 64px; height: 64px; margin: 0 auto 10px; }
+.ring-svg { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--sep); stroke-width: 6; }
+.ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.8s cubic-bezier(.25,.46,.45,.94); }
+.ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--text); }
+.ring-icon { font-size: 20px; margin-bottom: 4px; }
+.ring-name { font-size: 10.5px; color: var(--muted); font-weight: 500; line-height: 1.3; }
+.ring-count { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ── ACHIEVEMENT GRID ── */
+.grid-section { padding: 0 32px 60px; }
+.filter-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.f-pill { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--sep); background: var(--card); color: var(--muted); transition: all 0.14s; user-select: none; white-space: nowrap; }
+.f-pill:hover { border-color: var(--blue); color: var(--blue); }
+.f-pill.active { background: var(--blue); border-color: var(--blue); color: white; }
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+/* ── DASHBOARD CATEGORY SECTIONS ── */
+.dash-cat-section { margin-bottom: 36px; }
+.dash-cat-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 2px solid var(--sep); }
+.dash-cat-icon { font-size: 22px; line-height: 1; }
+.dash-cat-title { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; flex: 1; }
+.dash-cat-progress { font-size: 12px; color: var(--muted); font-weight: 600; background: var(--bg); padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.dash-cat-progress.complete { background: rgba(52,199,89,0.12); color: var(--green); }
+
+/* ── TIER ROWS within category sections ── */
+.tier-block { margin-bottom: 20px; }
+.tier-block:last-child { margin-bottom: 0; }
+.tier-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 7px 12px; border-radius: var(--radius-sm); }
+.tier-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.tier-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
+.tier-desc { font-size: 11px; color: var(--muted); font-weight: 500; margin-left: 2px; }
+.tier-count { margin-left: auto; font-size: 11px; font-weight: 600; opacity: 0.7; }
+
+/* Achievement cards */
+.ach-card { background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.14s, box-shadow 0.14s; position: relative; }
+.ach-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ach-card.earned { box-shadow: var(--shadow-sm), 0 0 0 1.5px rgba(52,199,89,0.45); }
+.ach-card.locked { opacity: 0.62; filter: grayscale(0.4); border: 1.5px dashed var(--sep); box-shadow: none; }
+.ach-card.locked:hover { opacity: 0.88; filter: grayscale(0.1); border-color: var(--blue); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ach-lock-badge { font-size: 9px; font-weight: 700; color: var(--muted); background: var(--bg); padding: 2px 7px; border-radius: 6px; letter-spacing: 0.3px; }
+.ach-tier-tag { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-top: 6px; align-self: flex-start; letter-spacing: 0.3px; }
+.tier-tag-rookie { background: rgba(52,199,89,0.10);  color: #34c759; }
+.tier-tag-pro    { background: rgba(0,122,255,0.10);  color: #007aff; }
+.tier-tag-expert { background: rgba(175,82,222,0.10); color: #af52de; }
+.ach-body { padding: 14px; display: flex; flex-direction: column; }
+.ach-top-bar { height: 3px; width: 100%; }
+.ach-body { padding: 14px; }
+.ach-icon-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.ach-icon { font-size: 28px; }
+.ach-check { width: 22px; height: 22px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; }
+.ach-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
+.ach-desc { font-size: 11px; color: var(--muted); line-height: 1.45; margin-bottom: 8px; }
+.ach-footer { display: flex; align-items: center; justify-content: space-between; }
+.ach-rarity { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.ach-xp { font-size: 11px; font-weight: 700; color: var(--muted); }
+
+/* Rarity colors */
+.r-common .ach-top-bar { background: #8e8e93; }
+.r-common .ach-rarity { color: #8e8e93; }
+.r-uncommon .ach-top-bar { background: var(--green); }
+.r-uncommon .ach-rarity { color: var(--green); }
+.r-rare .ach-top-bar { background: var(--blue); }
+.r-rare .ach-rarity { color: var(--blue); }
+.r-epic .ach-top-bar { background: var(--purple); }
+.r-epic .ach-rarity { color: var(--purple); }
+.r-legendary .ach-top-bar { background: var(--gold); }
+.r-legendary .ach-rarity { color: var(--gold); }
+
+/* ── WELCOME CARD ── */
+.welcome-wrap { padding: 80px 32px; display: flex; justify-content: center; }
+.welcome-card { background: var(--card); border-radius: 20px; padding: 48px 40px; text-align: center; max-width: 440px; box-shadow: var(--shadow-md); }
+.welcome-emoji { font-size: 56px; margin-bottom: 20px; }
+.welcome-title { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 10px; }
+.welcome-sub { font-size: 15px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+.btn-primary { background: var(--blue); color: white; padding: 12px 28px; border-radius: 12px; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: all 0.14s; }
+.btn-primary:hover { background: #0066dd; transform: translateY(-1px); }
+
+/* ── LEADERBOARD ── */
+.lb-header { padding: 32px 32px 0; }
+.lb-title { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.7px; }
+.lb-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.lb-toggles { display: flex; gap: 6px; margin-top: 16px; margin-bottom: 24px; }
+.toggle-btn { padding: 7px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 600; border: 1.5px solid var(--sep); background: var(--card); color: var(--muted); cursor: pointer; transition: all 0.14s; }
+.toggle-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+.lb-list { padding: 0 32px 60px; display: flex; flex-direction: column; gap: 10px; }
+.lb-card { background: var(--card); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 16px; border: 1.5px solid transparent; transition: all 0.2s; }
+.lb-card.rank-1 { background: linear-gradient(135deg, #fffbea, #fff3c4); border-color: #f0c040; }
+.lb-card.rank-2 { background: linear-gradient(135deg, #f5f5f7, #e8e8ed); border-color: #b0b0b8; }
+.lb-card.rank-3 { background: linear-gradient(135deg, #fff3ea, #ffe8d0); border-color: #d4956a; }
+.lb-card.current-profile { border-color: var(--blue) !important; box-shadow: var(--shadow-sm), 0 0 0 1px var(--blue); }
+.lb-rank { font-size: 22px; font-weight: 900; color: var(--muted); width: 36px; text-align: center; flex-shrink: 0; }
+.lb-rank.rank-1-num { color: #b8860b; }
+.lb-rank.rank-2-num { color: #8e8e93; }
+.lb-rank.rank-3-num { color: #c06020; }
+.lb-avatar { width: 48px; height: 48px; border-radius: 13px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.lb-info { flex: 1; min-width: 0; }
+.lb-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.lb-role { font-size: 12px; color: var(--muted); }
+.lb-level-badge { font-size: 11px; font-weight: 600; background: rgba(0,122,255,0.1); color: var(--blue); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 2px; }
+.lb-xp-bar-wrap { margin-top: 6px; height: 4px; background: var(--sep); border-radius: 2px; overflow: hidden; max-width: 200px; }
+.lb-xp-bar-fill { height: 100%; background: var(--blue); border-radius: 2px; width: 0; transition: width 0.8s cubic-bezier(.25,.46,.45,.94); }
+.lb-stats { text-align: right; flex-shrink: 0; }
+.lb-xp-val { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.lb-ach-val { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.lb-crown { font-size: 20px; margin-left: 4px; }
+.lb-cat-dots { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.lb-dot { width: 8px; height: 8px; border-radius: 50%; opacity: 0.7; }
+
+/* ── ALL ACHIEVEMENTS PAGE ── */
+.all-ach-header { padding: 32px 32px 0; }
+.all-ach-title { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.7px; }
+.all-ach-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; margin-bottom: 6px; }
+.profile-selector { padding: 7px 12px; border-radius: 10px; border: 1.5px solid var(--sep); background: var(--card); font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; }
+.search-input { padding: 7px 14px; border-radius: 10px; border: 1.5px solid var(--sep); background: var(--card); font-size: 13px; color: var(--text); outline: none; width: 200px; }
+.search-input:focus { border-color: var(--blue); }
+.all-ach-grid-wrap { padding: 16px 32px 60px; }
+.all-ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+/* All-ach card extras */
+.ach-award-btn { margin-top: 8px; width: 100%; padding: 6px; border-radius: 8px; font-size: 11.5px; font-weight: 600; background: rgba(0,122,255,0.1); color: var(--blue); border: none; cursor: pointer; transition: all 0.14s; }
+.ach-award-btn:hover { background: rgba(0,122,255,0.2); }
+.ach-remove-btn { margin-top: 8px; width: 100%; padding: 6px; border-radius: 8px; font-size: 11.5px; font-weight: 600; background: rgba(255,59,48,0.08); color: var(--red); border: none; cursor: pointer; transition: all 0.14s; }
+.ach-remove-btn:hover { background: rgba(255,59,48,0.15); }
+
+/* ── MANAGE TEAM ── */
+.manage-header { padding: 32px 32px 0; display: flex; align-items: center; justify-content: space-between; }
+.manage-title { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.7px; }
+.manage-actions { display: flex; gap: 8px; }
+.btn-outline { padding: 8px 16px; border-radius: 10px; border: 1.5px solid var(--sep); background: var(--card); font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.14s; }
+.btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+.profiles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; padding: 24px 32px 60px; }
+.profile-card { background: var(--card); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm); text-align: center; cursor: pointer; transition: all 0.14s; position: relative; }
+.profile-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.profile-card-avatar { font-size: 40px; margin-bottom: 10px; }
+.profile-card-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.profile-card-role { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.profile-card-level { font-size: 12px; font-weight: 600; background: rgba(0,122,255,0.1); color: var(--blue); padding: 3px 10px; border-radius: 6px; display: inline-block; margin-bottom: 12px; }
+.profile-card-xp { font-size: 13px; color: var(--muted); }
+.profile-card-xp strong { color: var(--text); }
+.profile-card-ach { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.profile-card-actions { display: flex; gap: 6px; margin-top: 14px; justify-content: center; }
+.btn-sm-edit { padding: 5px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; background: rgba(0,122,255,0.1); color: var(--blue); border: none; cursor: pointer; }
+.btn-sm-del { padding: 5px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; background: rgba(255,59,48,0.08); color: var(--red); border: none; cursor: pointer; }
+.btn-sm-edit:hover { background: rgba(0,122,255,0.18); }
+.btn-sm-del:hover { background: rgba(255,59,48,0.15); }
+.profile-card-import-export { display: flex; gap: 8px; padding: 0 32px 24px; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-sheet { background: var(--card); border-radius: 20px 20px 0 0; padding: 28px; width: 100%; max-width: 520px; transform: translateY(100%); transition: transform 0.32s cubic-bezier(.32,0,.67,0); max-height: 90vh; overflow-y: auto; }
+.modal-overlay.open .modal-sheet { transform: translateY(0); transition: transform 0.32s cubic-bezier(.33,1,.68,1); }
+.modal-handle { width: 36px; height: 4px; background: var(--sep); border-radius: 2px; margin: 0 auto 24px; }
+.modal-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+.form-input { width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--sep); background: var(--bg); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.14s; }
+.form-input:focus { border-color: var(--blue); background: #fff; }
+.form-select { width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--sep); background: var(--bg); font-size: 14px; color: var(--text); outline: none; appearance: none; cursor: pointer; }
+.emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 6px; }
+.emoji-opt { width: 100%; aspect-ratio: 1; border-radius: 10px; background: var(--bg); border: 2px solid transparent; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.14s; }
+.emoji-opt:hover { background: var(--sep); }
+.emoji-opt.selected { border-color: var(--blue); background: rgba(0,122,255,0.1); }
+.modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+.btn-cancel { flex: 1; padding: 12px; border-radius: 12px; border: 1.5px solid var(--sep); background: var(--bg); font-size: 15px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.btn-submit { flex: 2; padding: 12px; border-radius: 12px; background: var(--blue); color: white; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: all 0.14s; }
+.btn-submit:hover { background: #0066dd; }
+.btn-danger { flex: 1; padding: 12px; border-radius: 12px; background: rgba(255,59,48,0.1); color: var(--red); font-size: 15px; font-weight: 700; border: none; cursor: pointer; }
+
+/* ── XP TOAST ── */
+.xp-float { position: fixed; font-size: 18px; font-weight: 800; color: var(--green); pointer-events: none; z-index: 9999; animation: xpFloat 1.2s ease-out forwards; }
+@keyframes xpFloat { 0% { opacity:1; transform: translateY(0) scale(1); } 100% { opacity:0; transform: translateY(-60px) scale(1.2); } }
+
+.toast-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1c1c1e; color: white; padding: 12px 20px; border-radius: 14px; font-size: 14px; font-weight: 600; z-index: 9998; transition: transform 0.36s cubic-bezier(.33,1,.68,1), opacity 0.36s; opacity: 0; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+.toast-bar.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ── CONFETTI ── */
+#confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 9997; }
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state-emoji { font-size: 40px; margin-bottom: 12px; }
+.empty-state-text { font-size: 14px; }
+
+/* ── HINT ── */
+.ach-hint { font-size: 10.5px; color: var(--teal); font-style: italic; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+<div class="toast-bar" id="toastBar"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-top">
+      <div class="sb-logo">
+        <div class="sb-logo-icon">🏆</div>
+        <div class="sb-logo-text">
+          <div class="sb-logo-title">DC Hub</div>
+          <div class="sb-logo-sub">Achievement Tracker</div>
+        </div>
+      </div>
+      <div id="sbProfileCard" class="sb-profile-card" style="display:none">
+        <div class="sb-avatar" id="sbAvatar"></div>
+        <div class="sb-profile-info">
+          <div class="sb-profile-name" id="sbName"></div>
+          <div class="sb-profile-level" id="sbLevelLabel"></div>
+          <div class="sb-xp-bar"><div class="sb-xp-fill" id="sbXpFill"></div></div>
+        </div>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-nav-item active" data-page="dashboard"><span class="sb-nav-icon">🏠</span> Dashboard</div>
+        <div class="sb-nav-item" data-page="leaderboard"><span class="sb-nav-icon">🥇</span> Leaderboard</div>
+        <div class="sb-nav-item" data-page="catalog"><span class="sb-nav-icon">📚</span> All Achievements</div>
+        <div class="sb-nav-item" data-page="manage"><span class="sb-nav-icon">⚙️</span> Manage Team</div>
+      </nav>
+    </div>
+    <div class="sb-section-label">Team Roster</div>
+    <div class="sb-roster" id="sbRoster"></div>
+    <div class="sb-bottom">
+      <button class="sb-add-btn" id="sbAddBtn">+ Add Profile</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-area" id="mainArea">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div id="dashboardContent"></div>
+    </div>
+    <!-- LEADERBOARD -->
+    <div class="page" id="page-leaderboard">
+      <div id="leaderboardContent"></div>
+    </div>
+    <!-- CATALOG -->
+    <div class="page" id="page-catalog">
+      <div id="catalogContent"></div>
+    </div>
+    <!-- MANAGE -->
+    <div class="page" id="page-manage">
+      <div id="manageContent"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+'use strict';
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const XP_MAP = { common:50, uncommon:150, rare:350, epic:750, legendary:2000 };
+
+const TIERS = [
+  { id:'rookie', label:'Rookie',  emoji:'🟢', color:'#34c759', bg:'rgba(52,199,89,0.06)',  rarities:['common','uncommon'], desc:'Quick wins — great place to start' },
+  { id:'pro',    label:'Pro',     emoji:'🔵', color:'#007aff', bg:'rgba(0,122,255,0.06)',   rarities:['rare'],              desc:'Solid experience required' },
+  { id:'expert', label:'Expert',  emoji:'🟣', color:'#af52de', bg:'rgba(175,82,222,0.06)', rarities:['epic','legendary'],   desc:'Elite territory — earn your stripes' },
+];
+
+function getTier(rarity) {
+  if (['common','uncommon'].includes(rarity)) return 'rookie';
+  if (rarity === 'rare') return 'pro';
+  return 'expert';
+}
+
+const CATEGORIES = [
+  { id:'onboarding', icon:'🌱', title:'Onboarding & Discovery', color:'#34c759' },
+  { id:'workflow',   icon:'⚙️', title:'Workflow Warrior',        color:'#007aff' },
+  { id:'data',       icon:'📊', title:'Data Precision',          color:'#32ade6' },
+  { id:'tools',      icon:'🔧', title:'Tool Master',             color:'#ff9f0a' },
+  { id:'expert',     icon:'🎓', title:'Process Expert',          color:'#af52de' },
+  { id:'team',       icon:'🤝', title:'Team Player',             color:'#ff2d55' },
+  { id:'legend',     icon:'🏆', title:'Legend',                  color:'#b8860b' },
+];
+
+const ACHIEVEMENTS = [
+  { id:'welcome',        cat:'onboarding', rarity:'common',    term:'short',  icon:'🚪', color:'#34c759', name:'Welcome to the Portal',      desc:'Accessed the Data Consultant Portal for the first time.',                       hint:'Just open it. You\'re already here.' },
+  { id:'explorer',       cat:'onboarding', rarity:'common',    term:'short',  icon:'🗺️', color:'#34c759', name:'Explorer',                    desc:'Visited all 11 main sections of the portal.',                                  hint:'Click through every section in the nav.' },
+  { id:'search_pro',     cat:'onboarding', rarity:'common',    term:'short',  icon:'🔍', color:'#007aff', name:'Search Pro',                  desc:'Used the global search (press "/") to find a procedure.',                       hint:'Press "/" and search for anything.' },
+  { id:'template_grab',  cat:'onboarding', rarity:'common',    term:'short',  icon:'📄', color:'#8e8e93', name:'Template Grabber',            desc:'Downloaded your first standard template from Documents & Templates.',           hint:'TO Mapping, Remittance, or Implementation Form.' },
+  { id:'form_submit',    cat:'onboarding', rarity:'common',    term:'short',  icon:'📋', color:'#ff9f0a', name:'Form Submitter',              desc:'Submitted your first Microsoft Form from the portal.',                         hint:'Any of the 6 forms counts.' },
+  { id:'org_nav',        cat:'onboarding', rarity:'uncommon',  term:'short',  icon:'👥', color:'#5856d6', name:'Org Chart Navigator',         desc:'Located the correct escalation contact using the Organization section.',         hint:'Find the right person for a real issue.' },
+  { id:'first_flow',     cat:'onboarding', rarity:'uncommon',  term:'short',  icon:'📺', color:'#007aff', name:'First Walkthrough',           desc:'Completed your first full interactive walkthrough from start to finish.',       hint:'Any of the 7 flows counts.' },
+  { id:'informatica_q',  cat:'onboarding', rarity:'uncommon',  term:'short',  icon:'🧪', color:'#32ade6', name:'Informatica Curious',         desc:'Visited the Informatica Reference section and reviewed a workflow name.',       hint:'Look up CITS_BALANCES or Day of Wire.' },
+  { id:'eds_familiar',   cat:'onboarding', rarity:'uncommon',  term:'short',  icon:'📖', color:'#ff9f0a', name:'EDS Familiar',                desc:'Read through the EDS Reference section — field specs, formatting rules.',       hint:'Key knowledge for any implementation.' },
+  { id:'full_house',     cat:'onboarding', rarity:'rare',      term:'medium', icon:'🌐', color:'#007aff', name:'Full House',                  desc:'Visited all 11 sections AND used global search AND submitted a form in one week.',hint:'A complete tour of the portal in one week.' },
+  { id:'task_dash',      cat:'onboarding', rarity:'rare',      term:'medium', icon:'📆', color:'#5856d6', name:'Task Dashboard Pilot',        desc:'Opened the Task Dashboard and loaded a CSV project file.',                     hint:'Use the Kanban view to track real work.' },
+  { id:'payroll_pioneer',cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'💸', color:'#007aff', name:'Payroll Pioneer',             desc:'Completed the Payroll Integration interactive flow from vendor ID through live run.',hint:'All 11 steps. Both decision gates.' },
+  { id:'tik_tracker',    cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'🔄', color:'#32ade6', name:'TIK Tracker',                 desc:'Completed the TIK / Re-Registration interactive walkthrough.',                 hint:'4-week deadline, fund arrival checklist, share verification.' },
+  { id:'cash_convert',   cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'💰', color:'#34c759', name:'Cash Converter',              desc:'Completed a Balance Import using the Cash method.',                             hint:'Blank mapping, CITS_BALANCES workflow.' },
+  { id:'map_maven',      cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'🗂️', color:'#ff9f0a', name:'Mapping Maven',               desc:'Completed a Balance Import using the Mapping method.',                         hint:'Full TOA, fund mapping, Day of Wire, Re-Reg = N.' },
+  { id:'tik_complete',   cat:'workflow',   rarity:'rare',      term:'medium', icon:'📦', color:'#af52de', name:'TIK Transfer Complete',       desc:'Completed a Balance Import using the TIK method with share records.',           hint:'Re-Reg = Y, backdated ref numbers, Online not Immediate.' },
+  { id:'loan_officer',   cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'🏦', color:'#5856d6', name:'Loan Officer',                desc:'Completed the Loan Setup & Processing interactive flow.',                       hint:'P3 setup, Informatica workflow, loan integration.' },
+  { id:'elig_expert',    cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'📋', color:'#34c759', name:'Eligibility Expert',          desc:'Completed the Eligibility Rules & Audit interactive flow.',                    hint:'Auto-enroll detection, eligibility determination.' },
+  { id:'deferral_doc',   cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'⚖️', color:'#ff9f0a', name:'Deferral Doctor',             desc:'Completed the Deferral Elections flow with the live IRS limit calculator.',   hint:'Pre-tax, Roth, flat dollar. EDS decimal formatter.' },
+  { id:'roth_ranger',    cat:'workflow',   rarity:'rare',      term:'medium', icon:'🏛️', color:'#af52de', name:'Roth Ranger',                 desc:'Completed the Roth & After-Tax Basis interactive flow.',                       hint:'All 3 source forks, 5-year rule, reconciliation checklist.' },
+  { id:'full_seven',     cat:'workflow',   rarity:'rare',      term:'medium', icon:'7️⃣', color:'#007aff', name:'The Full Seven',              desc:'Completed all 7 interactive walkthroughs at least once.',                      hint:'Payroll · TIK · Balance Import · Loans · Eligibility · Deferrals · Roth' },
+  { id:'round_tripper',  cat:'workflow',   rarity:'epic',      term:'long',   icon:'🔁', color:'#5856d6', name:'Round Tripper',               desc:'Completed all 7 interactive flows AND all 7 static walkthroughs.',              hint:'Both formats. Full coverage.' },
+  { id:'payroll_shake',  cat:'workflow',   rarity:'uncommon',  term:'short',  icon:'📡', color:'#32ade6', name:'Payroll Handshake',           desc:'Successfully completed vendor contact ID and template delivery in payroll flow.',hint:'Steps 1-4: vendor ID → contact → template → delivery.' },
+  { id:'live_run',       cat:'workflow',   rarity:'rare',      term:'medium', icon:'🏁', color:'#34c759', name:'Live Run Ready',              desc:'Reached the live run scheduling step in the Payroll Integration flow.',         hint:'OnePayroll cleared, client coordinated, date set.' },
+  { id:'clean_pass',     cat:'data',       rarity:'common',    term:'short',  icon:'✅', color:'#34c759', name:'Clean First Pass',            desc:'Submitted a payroll test file that passed EDS validation on the first attempt.',hint:'No format errors, no layout failures. First try.' },
+  { id:'date_whisper',   cat:'data',       rarity:'common',    term:'short',  icon:'📅', color:'#32ade6', name:'Date Whisperer',              desc:'Correctly formatted all date fields as MMDDYYYY for EDS submission.',           hint:'The format EDS expects. No slashes, no dashes, no ISO.' },
+  { id:'decimal_disc',   cat:'data',       rarity:'uncommon',  term:'short',  icon:'🔢', color:'#5856d6', name:'Decimal Discipline',          desc:'Correctly formatted a deferral % for EDS (3% = 0.03, not 3).',                hint:'Tiny number, huge difference. Get it right.' },
+  { id:'pre_submit',     cat:'data',       rarity:'uncommon',  term:'short',  icon:'📝', color:'#007aff', name:'Pre-Submit Certified',        desc:'Completed a full pre-submit validation checklist before an EDS submission.',   hint:'Every checkbox. Every field. No skipping.' },
+  { id:'zero_defect',    cat:'data',       rarity:'rare',      term:'medium', icon:'🎯', color:'#34c759', name:'Zero Defect',                 desc:'Completed a full implementation without a single EDS validation error.',        hint:'Clean data, clean file, clean submission.' },
+  { id:'err_surgeon',    cat:'data',       rarity:'uncommon',  term:'short',  icon:'🩺', color:'#ff9f0a', name:'Error Surgeon',               desc:'Resolved an EDS validation error by identifying the exact field and correcting.', hint:'Read the error code, find the field, fix it.' },
+  { id:'onepay_clear',   cat:'data',       rarity:'rare',      term:'medium', icon:'🔬', color:'#af52de', name:'OnePayroll Clear',            desc:'Passed OnePayroll validation without needing any tweaks or corrections.',       hint:'Straight through. No adjustments needed.' },
+  { id:'bal_verify',     cat:'data',       rarity:'uncommon',  term:'short',  icon:'⚖️', color:'#32ade6', name:'Balance Verified',            desc:'Confirmed wire booking and ran CITS_BALANCES Informatica workflow successfully.',hint:'Wire booked → P3 → Informatica → confirmed.' },
+  { id:'fund_mapper',    cat:'data',       rarity:'rare',      term:'medium', icon:'🔗', color:'#5856d6', name:'Fund Mapper',                 desc:'Completed a full fund mapping file with all fund names matched to plan lineup.', hint:'Every fund. Every row. Matched and verified.' },
+  { id:'perfect_rec',    cat:'data',       rarity:'epic',      term:'long',   icon:'💯', color:'#34c759', name:'Perfect Record',              desc:'Completed 5 consecutive EDS submissions with zero validation errors.',           hint:'Five in a row. Spotless.' },
+  { id:'irs_guru',       cat:'data',       rarity:'uncommon',  term:'short',  icon:'🏧', color:'#ff9f0a', name:'IRS Limit Guru',              desc:'Correctly calculated catch-up contribution limits using the live calculator.',  hint:'$23,500 base + catch-up rules. Know the number.' },
+  { id:'five_year',      cat:'data',       rarity:'rare',      term:'medium', icon:'⏳', color:'#af52de', name:'Five Year Rule',              desc:'Applied the Roth 5-year rule correctly using the live calculator in the Roth flow.',hint:'Distribution date, account opening date, qualified vs not.' },
+  { id:'basis_rec',      cat:'data',       rarity:'uncommon',  term:'short',  icon:'🧮', color:'#007aff', name:'Basis Reconciler',            desc:'Completed the Roth & After-Tax basis reconciliation checklist with all fields verified.',hint:'Source type, basis amount, date validation — all checked.' },
+  { id:'first_check',    cat:'tools',      rarity:'common',    term:'short',  icon:'📋', color:'#ff9f0a', name:'First Checklist',             desc:'Generated your first Implementation Checklist using the checklist generator.',  hint:'Select plan type, set characteristics, add contacts — generate.' },
+  { id:'payroll_check',  cat:'tools',      rarity:'common',    term:'short',  icon:'💵', color:'#34c759', name:'Payroll Checklist Pro',        desc:'Generated a Payroll Setup Checklist using the payroll checklist generator.',   hint:'Vendor + client + plan type → custom checklist.' },
+  { id:'email_build',    cat:'tools',      rarity:'common',    term:'short',  icon:'📧', color:'#007aff', name:'Email Builder',               desc:'Generated a formatted client email using the Outlook Email Generator.',         hint:'Select template, fill fields, copy to Outlook.' },
+  { id:'sql_sling',      cat:'tools',      rarity:'uncommon',  term:'short',  icon:'🗄️', color:'#5856d6', name:'SQL Slinger',                 desc:'Used the SQL Query Extractor to format or extract a query.',                   hint:'Input → format → ready for Informatica or P2.' },
+  { id:'macro_launch',   cat:'tools',      rarity:'uncommon',  term:'short',  icon:'⚡', color:'#ff9f0a', name:'Macro Launcher',              desc:'Used your first VBA macro from the VBA Repository.',                           hint:'Any macro: Custom Table Generator, TOA to Table...' },
+  { id:'toa_transform',  cat:'tools',      rarity:'rare',      term:'medium', icon:'🔄', color:'#af52de', name:'TOA Transformer',             desc:'Used the TOA to Table macro to convert a TOA document into a structured table.',hint:'Feed it the TOA → get a clean table. Hours saved.' },
+  { id:'auto_fill',      cat:'tools',      rarity:'rare',      term:'medium', icon:'🤖', color:'#32ade6', name:'Auto-Fill Artist',            desc:'Used the TOA to Rereg Form macro to auto-populate a registration form.',       hint:'The macro fills the form. You verify. Automation wins.' },
+  { id:'template_coll',  cat:'tools',      rarity:'uncommon',  term:'short',  icon:'📁', color:'#ff9f0a', name:'Template Collector',          desc:'Downloaded all 3 standard templates: TO Mapping, Remittance, and Impl Form.',  hint:'All three. Have them ready.' },
+  { id:'full_toolkit',   cat:'tools',      rarity:'rare',      term:'medium', icon:'🛠️', color:'#007aff', name:'Full Toolkit',                desc:'Used all 5 tools in the Projects section at least once.',                       hint:'Impl. Checklist · Payroll Checklist · Email Gen · SQL · VBA Guide' },
+  { id:'macro_master',   cat:'tools',      rarity:'epic',      term:'long',   icon:'🧙', color:'#af52de', name:'Macro Master',                desc:'Used every VBA macro in the repository at least once.',                         hint:'All of them. Custom Table, TOA to Table, Text Splitter...' },
+  { id:'start_check',    cat:'tools',      rarity:'uncommon',  term:'short',  icon:'🏗️', color:'#34c759', name:'Startup Checklist',           desc:'Generated an Implementation Checklist for a Startup plan type.',               hint:'Select Startup → configure → generate.' },
+  { id:'conv_check',     cat:'tools',      rarity:'uncommon',  term:'short',  icon:'🔀', color:'#5856d6', name:'Conversion Checklist',        desc:'Generated an Implementation Checklist for a Conversion plan type.',             hint:'Select Conversion → configure → generate.' },
+  { id:'merg_check',     cat:'tools',      rarity:'uncommon',  term:'short',  icon:'🔗', color:'#ff9f0a', name:'Merger Checklist',            desc:'Generated an Implementation Checklist for a Merger plan type.',                hint:'Select Merger → configure → generate.' },
+  { id:'all_three_chk',  cat:'tools',      rarity:'rare',      term:'medium', icon:'🎯', color:'#007aff', name:'All Three Plan Types',        desc:'Generated checklists for Startup, Conversion, AND Merger plan types.',         hint:'One of each. All three flavors of implementation.' },
+  { id:'chk_factory',    cat:'tools',      rarity:'epic',      term:'long',   icon:'🏭', color:'#ff9f0a', name:'Checklist Factory',           desc:'Generated 20+ implementation checklists across all plan types.',               hint:'20 plans in. Efficiency compounding every time.' },
+  { id:'vendor_whisp',   cat:'expert',     rarity:'rare',      term:'medium', icon:'🕵️', color:'#af52de', name:'Vendor Whisperer',            desc:'Completed a payroll integration requiring 3+ test iterations and still resolved.',hint:'Persistence beats perfection. Loop until it passes.' },
+  { id:'tik_spec',       cat:'expert',     rarity:'rare',      term:'medium', icon:'📦', color:'#32ade6', name:'TIK Specialist',              desc:'Tracked 5+ funds through the TIK process simultaneously.',                     hint:'Per-fund tracker, arrival checklist, share verification — all 5+.' },
+  { id:'full_conv',      cat:'expert',     rarity:'epic',      term:'long',   icon:'🚀', color:'#007aff', name:'Full Conversion',             desc:'Completed a full Conversion implementation from intake through live payroll.',  hint:'All phases: intake → mapping → balance import → payroll → live.' },
+  { id:'start_live',     cat:'expert',     rarity:'epic',      term:'long',   icon:'🌟', color:'#34c759', name:'Startup to Live',             desc:'Completed a full Startup plan implementation from zero to live.',               hint:'Start with nothing. End with a running plan.' },
+  { id:'merg_cond',      cat:'expert',     rarity:'epic',      term:'long',   icon:'🔗', color:'#ff9f0a', name:'Merger Conductor',            desc:'Successfully completed a Merger implementation with all steps verified.',       hint:'Two plans become one. Every step tracked.' },
+  { id:'triple_method',  cat:'expert',     rarity:'rare',      term:'medium', icon:'3️⃣', color:'#af52de', name:'Triple Method',               desc:'Completed all 3 Balance Import methods: Cash, Mapping, and TIK.',              hint:'Cash → Mapping → TIK. Each different. All three mastered.' },
+  { id:'informatica_in', cat:'expert',     rarity:'rare',      term:'medium', icon:'🌀', color:'#5856d6', name:'Informatica Insider',         desc:'Successfully ran both CITS_BALANCES and Day of Wire Informatica workflows.',   hint:'Cash = CITS_BALANCES. Mapping/TIK = Day of Wire.' },
+  { id:'roth_scholar',   cat:'expert',     rarity:'epic',      term:'long',   icon:'📜', color:'#b8860b', name:'Roth Scholar',                desc:'Applied all 3 Roth source types correctly across separate cases.',              hint:'Each source has different rules, basis treatment, 5-year clock.' },
+  { id:'p3_cert',        cat:'expert',     rarity:'rare',      term:'medium', icon:'🔐', color:'#007aff', name:'P3 Certified',                desc:'Correctly configured all P3 settings for different import methods.',            hint:'Cash/Mapping: Immediate. TIK: Do NOT Process Immediate.' },
+  { id:'loop_bust',      cat:'expert',     rarity:'rare',      term:'medium', icon:'🏋️', color:'#32ade6', name:'Loop Buster',                 desc:'Resolved an EDS/OnePayroll failure loop in under 3 iterations.',               hint:'Find the bug fast. Fix it right. Fewer loops = more expert.' },
+  { id:'deadline_keep',  cat:'expert',     rarity:'epic',      term:'long',   icon:'⏰', color:'#af52de', name:'Deadline Keeper',             desc:'Completed a TIK Re-Registration with more than 1 week before the 4-week deadline.',hint:'High priority = under 2 weeks. Beat the clock.' },
+  { id:'deep_tissue',    cat:'expert',     rarity:'legendary', term:'long',   icon:'🧬', color:'#b8860b', name:'Deep Tissue',                 desc:'Managed 3 active implementations across different plan types — all reached live payroll.',hint:'Conversion + Startup + Merger. All 3. All live.' },
+  { id:'auto_enroll',    cat:'expert',     rarity:'epic',      term:'long',   icon:'📐', color:'#5856d6', name:'Auto-Enroll Architect',       desc:'Correctly configured auto-enrollment with custom entry dates and deferral defaults.',hint:'Auto-detect, eligibility, deferral defaults — all aligned.' },
+  { id:'field_spec',     cat:'expert',     rarity:'rare',      term:'medium', icon:'🧩', color:'#ff9f0a', name:'Field Specialist',            desc:'Memorized and applied EDS field specs without referencing the guide.',          hint:'MMDDYYYY. 0.03 not 3. No lookups needed.' },
+  { id:'first_feedback', cat:'team',       rarity:'common',    term:'short',  icon:'📣', color:'#ff2d55', name:'First Feedback',              desc:'Submitted your first feedback item, feature request, or bug report.',          hint:'Section 09 → any of the 4 feedback options.' },
+  { id:'bug_hunt',       cat:'team',       rarity:'uncommon',  term:'short',  icon:'🐛', color:'#ff3b30', name:'Bug Hunter',                  desc:'Reported an error in a walkthrough or procedure that was confirmed and corrected.',hint:'Wrong step, broken link, outdated info — report it.' },
+  { id:'bright_idea',    cat:'team',       rarity:'uncommon',  term:'short',  icon:'💡', color:'#ff9f0a', name:'Bright Idea',                 desc:'Suggested an improvement or workflow enhancement via the Suggest Improvement form.',hint:'The changelog exists because people contribute.' },
+  { id:'shipped_it',     cat:'team',       rarity:'rare',      term:'medium', icon:'🛠️', color:'#5856d6', name:'Shipped It',                  desc:'Suggested an improvement that was reviewed, approved, and added to the portal.', hint:'Your idea became a feature. See it in the changelog.' },
+  { id:'esc_expert',     cat:'team',       rarity:'uncommon',  term:'short',  icon:'📞', color:'#32ade6', name:'Escalation Expert',           desc:'Used the Organization section to route an issue to the correct contact.',        hint:'Right person, right role, right outcome.' },
+  { id:'mentor_mode',    cat:'team',       rarity:'rare',      term:'medium', icon:'🎓', color:'#34c759', name:'Mentor Mode',                 desc:'Walked a new team member through a portal workflow and helped them complete it.', hint:'Teach it. Watch them do it. Mastery confirmed.' },
+  { id:'know_builder',   cat:'team',       rarity:'epic',      term:'long',   icon:'📚', color:'#af52de', name:'Knowledge Builder',           desc:'Contributed 5+ feedback items, bug reports, or improvement suggestions over time.',hint:'Consistent contribution. The portal is better because of you.' },
+  { id:'changelog_reg',  cat:'team',       rarity:'rare',      term:'medium', icon:'🗓️', color:'#007aff', name:'Changelog Regular',           desc:'Checked the portal Changelog at least 5 times to stay current on updates.',     hint:'Know what\'s new. Stay ahead of the team.' },
+  { id:'ambassador',     cat:'team',       rarity:'epic',      term:'long',   icon:'🏅', color:'#ff2d55', name:'Portal Ambassador',           desc:'Introduced 3 new team members to the portal and helped them complete first walkthroughs.',hint:'Onboard three. The knowledge multiplies.' },
+  { id:'form_complete',  cat:'team',       rarity:'uncommon',  term:'short',  icon:'📨', color:'#ff9f0a', name:'Form Completionist',          desc:'Submitted all 6 Microsoft Forms available in the portal.',                     hint:'All 6: request forms, intake forms, and feedback.' },
+  { id:'data_consultant',cat:'legend',     rarity:'epic',      term:'long',   icon:'🦅', color:'#b8860b', name:'Data Consultant',             desc:'Completed your first full implementation — intake, balance import, payroll, live run.',hint:'All phases. One plan. Fully live.' },
+  { id:'full_journey',   cat:'legend',     rarity:'legendary', term:'long',   icon:'🗺️', color:'#b8860b', name:'Full Journey',                desc:'Completed all 7 flows, all 3 plan type checklists, and all 3 balance import methods.',hint:'Every path. Every method. End to end.' },
+  { id:'holy_trinity',   cat:'legend',     rarity:'legendary', term:'long',   icon:'🔱', color:'#b8860b', name:'The Holy Trinity',            desc:'Completed a Startup, Conversion, AND Merger implementation all the way to live payroll.',hint:'Three plan types. Three full implementations. Legend.' },
+  { id:'error_zero',     cat:'legend',     rarity:'legendary', term:'long',   icon:'💎', color:'#b8860b', name:'Error Zero Season',           desc:'Completed an entire quarter without a single EDS validation error across all submissions.',hint:'A perfect quarter. No errors. Not one.' },
+  { id:'trophy_25',      cat:'legend',     rarity:'epic',      term:'long',   icon:'🏆', color:'#b8860b', name:'Trophy Hunter',               desc:'Earned 25 or more achievements across all categories.',                        hint:'25 down. The catalog is deeper than you think.' },
+  { id:'ach_master',     cat:'legend',     rarity:'legendary', term:'long',   icon:'👑', color:'#b8860b', name:'Achievement Master',          desc:'Earned 50 or more achievements across all categories.',                        hint:'50. Half the catalog. You are the portal.' },
+  { id:'one_year',       cat:'legend',     rarity:'legendary', term:'long',   icon:'🌠', color:'#b8860b', name:'One Year Strong',             desc:'Actively used the portal for 12 consecutive months.',                          hint:'52 weeks. Showing up, every time.' },
+  { id:'encyclopedia',   cat:'legend',     rarity:'epic',      term:'long',   icon:'🧠', color:'#5856d6', name:'Encyclopedia',                desc:'Accessed every section, used every tool, completed every walkthrough, submitted every form.',hint:'There\'s nothing left unexplored.' },
+  { id:'the_goat',       cat:'legend',     rarity:'legendary', term:'long',   icon:'🐐', color:'#b8860b', name:'The GOAT',                    desc:'Earned every single achievement in the catalog.',                              hint:'Every achievement. No exceptions. Legendary.' },
+  { id:'velocity',       cat:'legend',     rarity:'epic',      term:'long',   icon:'🚀', color:'#af52de', name:'Velocity',                    desc:'Completed 3 full implementations in a single month.',                          hint:'Three plans, fully live, within 30 days.' },
+  { id:'six_month_vet',  cat:'legend',     rarity:'rare',      term:'long',   icon:'📖', color:'#007aff', name:'Six Month Veteran',           desc:'Used the portal consistently for 6 months.',                                  hint:'Half a year. The knowledge is compounding.' },
+  { id:'portal_pillar',  cat:'legend',     rarity:'epic',      term:'long',   icon:'🌐', color:'#34c759', name:'Portal Pillar',               desc:'Contributed feedback that was shipped, mentored a teammate, completed all 7 flows.',hint:'Built, taught, and mastered. A true portal pillar.' },
+];
+
+const LEVELS = [
+  { lvl:1,  xp:0,     title:'Portal Rookie',      emoji:'🌱' },
+  { lvl:2,  xp:150,   title:'Procedure Reader',    emoji:'📖' },
+  { lvl:3,  xp:400,   title:'Flow Starter',        emoji:'⚙️' },
+  { lvl:4,  xp:800,   title:'Data Handler',        emoji:'📊' },
+  { lvl:5,  xp:1400,  title:'EDS Apprentice',      emoji:'📝' },
+  { lvl:6,  xp:2200,  title:'Payroll Apprentice',  emoji:'💸' },
+  { lvl:7,  xp:3200,  title:'Workflow Builder',    emoji:'🔧' },
+  { lvl:8,  xp:4500,  title:'Implementation Pro',  emoji:'🏗️' },
+  { lvl:9,  xp:6200,  title:'TIK Specialist',      emoji:'📦' },
+  { lvl:10, xp:8500,  title:'Balance Import Ace',  emoji:'⚖️' },
+  { lvl:11, xp:11000, title:'Process Expert',      emoji:'🎓' },
+  { lvl:12, xp:14000, title:'Conversion Master',   emoji:'🔱' },
+  { lvl:13, xp:18000, title:'DC Veteran',          emoji:'🦅' },
+  { lvl:14, xp:23000, title:'Portal Legend',       emoji:'👑' },
+  { lvl:15, xp:30000, title:'The GOAT',            emoji:'🐐' },
+];
+
+const AVATAR_OPTIONS = ['🦅','👨‍💻','👩‍💻','🎯','🧠','💡','🚀','⚡','🌟','💎','🔥','🏆','🦊','🐐','🧙','🥷','📊','🔧','📋','🎓','💸','🔍','📈','🏗️'];
+const ROLES = ['Data Consultant','Implementation Manager','QA Analyst','Implementation Associate','Operations Manager'];
+const LS_KEY = 'dc_hub_data';
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let data = { profiles: [], activeProfileId: null };
+let currentPage = 'dashboard';
+let dashFilter = 'all';
+let catalogFilter = { cat: 'all', rarity: 'all', search: '' };
+let catalogViewProfileId = null;
+let lbSort = 'xp';
+
+// ── PERSIST ───────────────────────────────────────────────────────────────────
+function save() { localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+function load() {
+  try { const d = localStorage.getItem(LS_KEY); if (d) data = JSON.parse(d); } catch(e) {}
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function genId() { return Math.random().toString(36).substr(2,9); }
+function getProfile(id) { return data.profiles.find(p => p.id === id); }
+function activeProfile() { return getProfile(data.activeProfileId); }
+
+function calcXP(earnedIds) {
+  return earnedIds.reduce((sum, id) => {
+    const a = ACHIEVEMENTS.find(a => a.id === id);
+    return sum + (a ? XP_MAP[a.rarity] : 0);
+  }, 0);
+}
+
+function getLevel(xp) {
+  let lvl = LEVELS[0];
+  for (const l of LEVELS) { if (xp >= l.xp) lvl = l; }
+  return lvl;
+}
+
+function getNextLevel(xp) {
+  for (const l of LEVELS) { if (xp < l.xp) return l; }
+  return null;
+}
+
+function xpProgress(xp) {
+  const cur = getLevel(xp);
+  const nxt = getNextLevel(xp);
+  if (!nxt) return 1;
+  const range = nxt.xp - cur.xp;
+  const done  = xp - cur.xp;
+  return Math.min(done / range, 1);
+}
+
+function getRank(profileId) {
+  const sorted = [...data.profiles].sort((a,b) => calcXP(b.earnedIds) - calcXP(a.earnedIds));
+  return sorted.findIndex(p => p.id === profileId) + 1;
+}
+
+function catStats(profile) {
+  const result = {};
+  for (const c of CATEGORIES) {
+    const total = ACHIEVEMENTS.filter(a => a.cat === c.id).length;
+    const earned = (profile.earnedIds || []).filter(id => {
+      const a = ACHIEVEMENTS.find(a => a.id === id);
+      return a && a.cat === c.id;
+    }).length;
+    result[c.id] = { earned, total, pct: total ? earned/total : 0 };
+  }
+  return result;
+}
+
+function checkMilestones(profile) {
+  const count = profile.earnedIds.length;
+  const added = [];
+  if (count >= 25 && !profile.earnedIds.includes('trophy_25')) { profile.earnedIds.push('trophy_25'); added.push('trophy_25'); }
+  if (count >= 50 && !profile.earnedIds.includes('ach_master')) { profile.earnedIds.push('ach_master'); added.push('ach_master'); }
+  if (ACHIEVEMENTS.every(a => profile.earnedIds.includes(a.id)) && !profile.earnedIds.includes('the_goat')) {
+    profile.earnedIds.push('the_goat'); added.push('the_goat');
+  }
+  return added;
+}
+
+// ── AWARD / REMOVE ────────────────────────────────────────────────────────────
+function awardAchievement(profileId, achId, event) {
+  const profile = getProfile(profileId);
+  if (!profile || profile.earnedIds.includes(achId)) return;
+  const ach = ACHIEVEMENTS.find(a => a.id === achId);
+  if (!ach) return;
+  profile.earnedIds.push(achId);
+  const milestones = checkMilestones(profile);
+  save();
+  showXpFloat(event, `+${XP_MAP[ach.rarity]} XP`);
+  showToast(`${ach.icon} ${ach.name} Unlocked! +${XP_MAP[ach.rarity]} XP`);
+  if (ach.rarity === 'epic' || ach.rarity === 'legendary') fireConfetti();
+  for (const mid of milestones) {
+    const ma = ACHIEVEMENTS.find(a => a.id === mid);
+    if (ma) { showToast(`${ma.icon} ${ma.name} auto-awarded! +${XP_MAP[ma.rarity]} XP`); }
+  }
+  renderAll();
+}
+
+function removeAchievement(profileId, achId) {
+  const profile = getProfile(profileId);
+  if (!profile) return;
+  profile.earnedIds = profile.earnedIds.filter(id => id !== achId);
+  save();
+  renderAll();
+}
+
+// ── TOAST / FLOAT / CONFETTI ──────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const tb = document.getElementById('toastBar');
+  tb.textContent = msg;
+  tb.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => tb.classList.remove('show'), 3500);
+}
+
+function showXpFloat(event, text) {
+  if (!event) return;
+  const el = document.createElement('div');
+  el.className = 'xp-float';
+  el.textContent = text;
+  el.style.left = (event.clientX - 20) + 'px';
+  el.style.top  = (event.clientY - 10) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+}
+
+function fireConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({length: 90}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -200,
+    w: Math.random() * 10 + 5,
+    h: Math.random() * 6 + 3,
+    color: ['#007aff','#34c759','#ff9f0a','#af52de','#ff2d55','#b8860b','#32ade6'][Math.floor(Math.random()*7)],
+    rot: Math.random() * 360,
+    vx: (Math.random()-0.5)*3,
+    vy: Math.random()*4+2,
+    vr: (Math.random()-0.5)*8,
+    life: 1
+  }));
+  let frame;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive = false;
+    for (const p of pieces) {
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life -= 0.008;
+      if (p.y < canvas.height && p.life > 0) alive = true;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    }
+    if (alive) frame = requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  cancelAnimationFrame(frame);
+  draw();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(content) {
+  document.getElementById('modalContent').innerHTML = content;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+function renderSidebar() {
+  const p = activeProfile();
+  const pc = document.getElementById('sbProfileCard');
+  if (p) {
+    const xp = calcXP(p.earnedIds);
+    const lvl = getLevel(xp);
+    const prog = xpProgress(xp);
+    pc.style.display = 'flex';
+    document.getElementById('sbAvatar').textContent = p.avatar;
+    document.getElementById('sbName').textContent = p.name;
+    document.getElementById('sbLevelLabel').textContent = `Lv.${lvl.lvl} ${lvl.title}`;
+    document.getElementById('sbXpFill').style.width = (prog*100)+'%';
+  } else {
+    pc.style.display = 'none';
+  }
+
+  // roster
+  const roster = document.getElementById('sbRoster');
+  if (!data.profiles.length) {
+    roster.innerHTML = '<div style="padding:12px 18px;font-size:12px;color:rgba(255,255,255,0.28)">No profiles yet</div>';
+    return;
+  }
+  roster.innerHTML = data.profiles.map(m => {
+    const xp = calcXP(m.earnedIds);
+    const maxXp = 30000;
+    const prog = Math.min(xp/maxXp, 1);
+    const isActive = m.id === data.activeProfileId;
+    return `<div class="sb-member ${isActive?'active-member':''}" data-pid="${m.id}">
+      <div class="sb-member-avatar">${m.avatar}</div>
+      <div class="sb-member-info">
+        <div class="sb-member-name">${m.name}</div>
+        <div class="sb-member-xp">${xp.toLocaleString()} XP · ${m.earnedIds.length} ach</div>
+        <div class="sb-member-xpbar"><div class="sb-member-xpfill" style="width:${prog*100}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  roster.querySelectorAll('.sb-member').forEach(el => {
+    el.addEventListener('click', () => {
+      data.activeProfileId = el.dataset.pid;
+      catalogViewProfileId = el.dataset.pid;
+      save();
+      renderAll();
+    });
+  });
+}
+
+function renderNav() {
+  document.querySelectorAll('.sb-nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.page === currentPage);
+  });
+}
+
+// ── PAGES ─────────────────────────────────────────────────────────────────────
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  renderNav();
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'leaderboard') renderLeaderboard();
+  if (page === 'catalog') renderCatalog();
+  if (page === 'manage') renderManage();
+}
+
+document.querySelectorAll('.sb-nav-item').forEach(el => {
+  el.addEventListener('click', () => showPage(el.dataset.page));
+});
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const wrap = document.getElementById('dashboardContent');
+  const p = activeProfile();
+  if (!p) {
+    wrap.innerHTML = `<div class="welcome-wrap"><div class="welcome-card">
+      <div class="welcome-emoji">🏆</div>
+      <div class="welcome-title">Welcome to DC Hub</div>
+      <div class="welcome-sub">Track your Data Consulting achievements, earn XP, and compete with your team. Create a profile to get started.</div>
+      <button class="btn-primary" id="welcomeCreateBtn">Create Your Profile</button>
+    </div></div>`;
+    document.getElementById('welcomeCreateBtn').addEventListener('click', () => {
+      showPage('manage');
+      openProfileModal(null);
+    });
+    return;
+  }
+
+  const xp = calcXP(p.earnedIds);
+  const lvl = getLevel(xp);
+  const nxt = getNextLevel(xp);
+  const prog = xpProgress(xp);
+  const rank = getRank(p.id);
+  const earned = p.earnedIds.length;
+  const total = ACHIEVEMENTS.length;
+  const pct = Math.round(earned/total*100);
+  const stats = catStats(p);
+
+  // Filter achievements
+  let filtered = ACHIEVEMENTS;
+  if (dashFilter === 'earned') filtered = ACHIEVEMENTS.filter(a => p.earnedIds.includes(a.id));
+  else if (dashFilter === 'locked') filtered = ACHIEVEMENTS.filter(a => !p.earnedIds.includes(a.id));
+
+  wrap.innerHTML = `
+    <div class="hero-banner">
+      <div class="hero-inner">
+        <div class="hero-rank-pill">${rank <= data.profiles.length ? `#${rank} of ${data.profiles.length}` : '#1'} on Team</div>
+        <div class="hero-level">Level <span>${lvl.lvl}</span></div>
+        <div class="hero-title">${lvl.emoji} ${lvl.title}</div>
+        <div class="hero-xp-row">
+          <div class="hero-xp-bar"><div class="hero-xp-fill" id="heroXpFill" style="width:0%"></div></div>
+          <div class="hero-xp-text">${xp.toLocaleString()} XP${nxt ? ` / ${nxt.xp.toLocaleString()}` : ' · MAX'}</div>
+        </div>
+        <div class="hero-ach-count"><strong>${earned}</strong> of ${total} achievements earned</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-card-icon">⚡</div><div class="stat-card-val">${xp.toLocaleString()}</div><div class="stat-card-lbl">Total XP</div></div>
+      <div class="stat-card"><div class="stat-card-icon">🏅</div><div class="stat-card-val">${earned}</div><div class="stat-card-lbl">Achievements Earned</div></div>
+      <div class="stat-card"><div class="stat-card-icon">📊</div><div class="stat-card-val">${pct}%</div><div class="stat-card-lbl">Completion</div></div>
+      <div class="stat-card"><div class="stat-card-icon">🥇</div><div class="stat-card-val">#${rank}</div><div class="stat-card-lbl">Team Rank</div></div>
+    </div>
+    <div class="rings-section">
+      <div class="section-title">Category Progress</div>
+      <div class="rings-grid">${CATEGORIES.map(c => {
+        const s = stats[c.id];
+        const r = 26; const circ = 2*Math.PI*r;
+        const offset = circ * (1 - s.pct);
+        return `<div class="ring-card">
+          <div class="ring-icon">${c.icon}</div>
+          <div class="ring-wrap">
+            <svg class="ring-svg" width="64" height="64" viewBox="0 0 64 64">
+              <circle class="ring-bg" cx="32" cy="32" r="${r}"/>
+              <circle class="ring-fill" cx="32" cy="32" r="${r}" stroke="${c.color}"
+                stroke-dasharray="${circ}" stroke-dashoffset="${circ}" data-offset="${offset}" data-circ="${circ}"/>
+            </svg>
+            <div class="ring-pct">${Math.round(s.pct*100)}%</div>
+          </div>
+          <div class="ring-name">${c.title.split(' ')[0]}</div>
+          <div class="ring-count">${s.earned}/${s.total}</div>
+        </div>`;
+      }).join('')}</div>
+    </div>
+    <div class="grid-section">
+      <div class="section-title">Achievements</div>
+      <div class="filter-bar">
+        ${['all','earned','locked'].map(f => `<div class="f-pill ${dashFilter===f?'active':''}" data-f="${f}">${f==='all'?'All':f==='earned'?'✓ Earned':'⬡ Locked'}</div>`).join('')}
+        <div style="margin-left:auto;font-size:12px;color:var(--muted);">${filtered.length} shown</div>
+      </div>
+      ${CATEGORIES.map(cat => {
+        const catAchs = filtered.filter(a => a.cat === cat.id);
+        if (!catAchs.length) return '';
+        const earnedInCat = catAchs.filter(a => p.earnedIds.includes(a.id)).length;
+        const totalInCat  = ACHIEVEMENTS.filter(a => a.cat === cat.id).length;
+        const isComplete  = earnedInCat === totalInCat && totalInCat > 0;
+
+        const tierBlocks = TIERS.map(tier => {
+          const tierAchs = catAchs.filter(a => tier.rarities.includes(a.rarity));
+          if (!tierAchs.length) return '';
+          const tierEarned = tierAchs.filter(a => p.earnedIds.includes(a.id)).length;
+          return `<div class="tier-block">
+            <div class="tier-header" style="background:${tier.bg}">
+              <div class="tier-dot" style="background:${tier.color}"></div>
+              <div class="tier-label" style="color:${tier.color}">${tier.label}</div>
+              <div class="tier-desc">${tier.desc}</div>
+              <div class="tier-count" style="color:${tier.color}">${tierEarned}/${tierAchs.length}</div>
+            </div>
+            <div class="ach-grid">${tierAchs.map(a => renderAchCard(a, p.earnedIds.includes(a.id), true)).join('')}</div>
+          </div>`;
+        }).join('');
+
+        return `<div class="dash-cat-section">
+          <div class="dash-cat-header">
+            <div class="dash-cat-icon">${cat.icon}</div>
+            <div class="dash-cat-title">${cat.title}</div>
+            <div class="dash-cat-progress${isComplete?' complete':''}">${isComplete?'✓ Complete':`${earnedInCat} / ${totalInCat}`}</div>
+          </div>
+          ${tierBlocks}
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // Animate rings
+  setTimeout(() => {
+    document.getElementById('heroXpFill').style.width = (prog*100)+'%';
+    document.querySelectorAll('.ring-fill').forEach(el => {
+      el.style.strokeDashoffset = el.dataset.offset;
+    });
+  }, 50);
+
+  // Filter pills
+  wrap.querySelectorAll('.f-pill[data-f]').forEach(el => {
+    el.addEventListener('click', () => { dashFilter = el.dataset.f; renderDashboard(); });
+  });
+
+  // Ach card clicks
+  wrap.querySelectorAll('.ach-card[data-id]').forEach(el => {
+    el.addEventListener('click', ev => {
+      const id = el.dataset.id;
+      const isEarned = p.earnedIds.includes(id);
+      if (isEarned) {
+        if (confirm('Remove this achievement from your profile?')) removeAchievement(p.id, id);
+      } else {
+        awardAchievement(p.id, id, ev);
+      }
+    });
+  });
+}
+
+function renderAchCard(ach, isEarned, clickable=true) {
+  const rarityColor = { common:'#8e8e93', uncommon:'#34c759', rare:'#007aff', epic:'#af52de', legendary:'#b8860b' };
+  return `<div class="ach-card r-${ach.rarity} ${isEarned?'earned':'locked'}" data-id="${ach.id}" ${clickable?'style="cursor:pointer"':''}>
+    <div class="ach-top-bar"></div>
+    <div class="ach-body">
+      <div class="ach-icon-row">
+        <div class="ach-icon">${ach.icon}</div>
+        ${isEarned ? '<div class="ach-check">✓</div>' : '<div class="ach-lock-badge">+ Award</div>'}
+      </div>
+      <div class="ach-name">${ach.name}</div>
+      <div class="ach-desc">${ach.desc}</div>
+      <div class="ach-hint">${ach.hint}</div>
+      <div class="ach-footer">
+        <div class="ach-rarity">${ach.rarity}</div>
+        <div class="ach-xp">+${XP_MAP[ach.rarity]} XP</div>
+      </div>
+      <div class="ach-tier-tag tier-tag-${getTier(ach.rarity)}">${getTier(ach.rarity) === 'rookie' ? '🟢 Rookie' : getTier(ach.rarity) === 'pro' ? '🔵 Pro' : '🟣 Expert'}</div>
+    </div>
+  </div>`;
+}
+
+// ── LEADERBOARD ───────────────────────────────────────────────────────────────
+function renderLeaderboard() {
+  const wrap = document.getElementById('leaderboardContent');
+  if (!data.profiles.length) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">👥</div><div class="empty-state-text">No profiles yet. Add team members to see the leaderboard.</div></div>';
+    return;
+  }
+
+  const sorted = [...data.profiles].sort((a,b) => {
+    if (lbSort === 'xp') return calcXP(b.earnedIds) - calcXP(a.earnedIds);
+    if (lbSort === 'achievements') return b.earnedIds.length - a.earnedIds.length;
+    return calcXP(b.earnedIds) - calcXP(a.earnedIds);
+  });
+
+  const maxXp = Math.max(...sorted.map(p => calcXP(p.earnedIds)), 1);
+
+  const rankClass = i => i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+  const rankNumClass = i => i===0?'rank-1-num':i===1?'rank-2-num':i===2?'rank-3-num':'';
+  const rankEmoji = i => i===0?'👑':i===1?'🥈':i===2?'🥉':'';
+
+  wrap.innerHTML = `
+    <div class="lb-header">
+      <div class="lb-title">Team Leaderboard</div>
+      <div class="lb-sub">${data.profiles.length} member${data.profiles.length!==1?'s':''} competing</div>
+      <div class="lb-toggles">
+        ${['xp','achievements'].map(s=>`<button class="toggle-btn ${lbSort===s?'active':''}" data-sort="${s}">${s==='xp'?'By XP':'By Achievements'}</button>`).join('')}
+      </div>
+    </div>
+    <div class="lb-list">
+      ${sorted.map((p,i) => {
+        const xp = calcXP(p.earnedIds);
+        const lvl = getLevel(xp);
+        const prog = xp/maxXp;
+        const stats = catStats(p);
+        const isCurrent = p.id === data.activeProfileId;
+        return `<div class="lb-card ${rankClass(i)} ${isCurrent?'current-profile':''}">
+          <div class="lb-rank ${rankNumClass(i)}">${i+1}</div>
+          <div class="lb-avatar">${p.avatar}</div>
+          <div class="lb-info">
+            <div class="lb-name">${p.name} ${rankEmoji(i)}</div>
+            <div class="lb-role">${p.role||'Data Consultant'}</div>
+            <div class="lb-level-badge">Lv.${lvl.lvl} · ${lvl.title}</div>
+            <div class="lb-xp-bar-wrap"><div class="lb-xp-bar-fill" data-w="${prog*100}"></div></div>
+            <div class="lb-cat-dots">${CATEGORIES.map(c=>{
+              const s=stats[c.id];
+              const op=s.pct>0?0.4+s.pct*0.6:0.15;
+              return `<div class="lb-dot" style="background:${c.color};opacity:${op}" title="${c.title}: ${Math.round(s.pct*100)}%"></div>`;
+            }).join('')}</div>
+          </div>
+          <div class="lb-stats">
+            <div class="lb-xp-val">${xp.toLocaleString()}</div>
+            <div class="lb-ach-val">${p.earnedIds.length} achievements</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  wrap.querySelectorAll('.toggle-btn').forEach(el => {
+    el.addEventListener('click', () => { lbSort = el.dataset.sort; renderLeaderboard(); });
+  });
+
+  setTimeout(() => {
+    wrap.querySelectorAll('.lb-xp-bar-fill').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 60);
+}
+
+// ── CATALOG ───────────────────────────────────────────────────────────────────
+function renderCatalog() {
+  const wrap = document.getElementById('catalogContent');
+  if (!catalogViewProfileId && data.activeProfileId) catalogViewProfileId = data.activeProfileId;
+
+  const viewProfile = catalogViewProfileId ? getProfile(catalogViewProfileId) : null;
+  const earnedIds = viewProfile ? viewProfile.earnedIds : [];
+
+  let filtered = ACHIEVEMENTS;
+  if (catalogFilter.cat !== 'all') filtered = filtered.filter(a => a.cat === catalogFilter.cat);
+  if (catalogFilter.rarity !== 'all') filtered = filtered.filter(a => a.rarity === catalogFilter.rarity);
+  if (catalogFilter.search) {
+    const q = catalogFilter.search.toLowerCase();
+    filtered = filtered.filter(a => a.name.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q));
+  }
+
+  wrap.innerHTML = `
+    <div class="all-ach-header">
+      <div class="all-ach-title">All Achievements <span style="font-size:16px;color:var(--muted);font-weight:500">(${ACHIEVEMENTS.length})</span></div>
+      <div class="all-ach-controls">
+        <select class="profile-selector" id="catalogProfileSel">
+          <option value="">-- No Profile --</option>
+          ${data.profiles.map(p=>`<option value="${p.id}" ${p.id===catalogViewProfileId?'selected':''}>${p.avatar} ${p.name}</option>`).join('')}
+        </select>
+        <input type="text" class="search-input" id="catalogSearch" placeholder="Search..." value="${catalogFilter.search}">
+      </div>
+      <div class="filter-bar" style="margin-top:10px">
+        <div class="f-pill ${catalogFilter.cat==='all'?'active':''}" data-cat="all">All</div>
+        ${CATEGORIES.map(c=>`<div class="f-pill ${catalogFilter.cat===c.id?'active':''}" data-cat="${c.id}">${c.icon} ${c.title.split(' ')[0]}</div>`).join('')}
+        <div style="width:1px;height:20px;background:var(--sep);margin:0 4px"></div>
+        ${['common','uncommon','rare','epic','legendary'].map(r=>`<div class="f-pill ${catalogFilter.rarity===r?'active':''}" data-rarity="${r}">${r}</div>`).join('')}
+      </div>
+    </div>
+    <div class="all-ach-grid-wrap">
+      <div class="all-ach-grid">${filtered.map(a => {
+        const isEarned = earnedIds.includes(a.id);
+        return `<div class="ach-card r-${a.rarity} ${isEarned?'earned':''}" data-id="${a.id}" style="cursor:default;opacity:1;filter:none">
+          <div class="ach-top-bar"></div>
+          <div class="ach-body">
+            <div class="ach-icon-row">
+              <div class="ach-icon">${a.icon}</div>
+              ${isEarned?'<div class="ach-check">✓</div>':''}
+            </div>
+            <div class="ach-name">${a.name}</div>
+            <div class="ach-desc">${a.desc}</div>
+            <div class="ach-hint">${a.hint}</div>
+            <div class="ach-footer">
+              <div class="ach-rarity">${a.rarity}</div>
+              <div class="ach-xp">+${XP_MAP[a.rarity]} XP</div>
+            </div>
+            ${viewProfile ? (isEarned
+              ? `<button class="ach-remove-btn" data-aid="${a.id}">✕ Remove</button>`
+              : `<button class="ach-award-btn" data-aid="${a.id}">+ Award</button>`)
+            : ''}
+          </div>
+        </div>`;
+      }).join('')}
+      ${filtered.length===0?'<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-emoji">🔍</div><div class="empty-state-text">No achievements match your filter.</div></div>':''}
+      </div>
+    </div>`;
+
+  document.getElementById('catalogProfileSel').addEventListener('change', e => {
+    catalogViewProfileId = e.target.value || null;
+    renderCatalog();
+  });
+  document.getElementById('catalogSearch').addEventListener('input', e => {
+    catalogFilter.search = e.target.value;
+    renderCatalog();
+  });
+  wrap.querySelectorAll('[data-cat]').forEach(el => {
+    el.addEventListener('click', () => { catalogFilter.cat = el.dataset.cat; renderCatalog(); });
+  });
+  wrap.querySelectorAll('[data-rarity]').forEach(el => {
+    el.addEventListener('click', () => {
+      catalogFilter.rarity = catalogFilter.rarity === el.dataset.rarity ? 'all' : el.dataset.rarity;
+      renderCatalog();
+    });
+  });
+  wrap.querySelectorAll('.ach-award-btn').forEach(el => {
+    el.addEventListener('click', ev => {
+      if (!catalogViewProfileId) return;
+      awardAchievement(catalogViewProfileId, el.dataset.aid, ev);
+    });
+  });
+  wrap.querySelectorAll('.ach-remove-btn').forEach(el => {
+    el.addEventListener('click', () => {
+      if (!catalogViewProfileId) return;
+      if (confirm('Remove this achievement?')) removeAchievement(catalogViewProfileId, el.dataset.aid);
+    });
+  });
+}
+
+// ── MANAGE TEAM ───────────────────────────────────────────────────────────────
+function renderManage() {
+  const wrap = document.getElementById('manageContent');
+  wrap.innerHTML = `
+    <div class="manage-header">
+      <div class="manage-title">Manage Team</div>
+      <div class="manage-actions">
+        <button class="btn-outline" id="exportBtn">Export Data</button>
+        <button class="btn-outline" id="importBtn">Import Data</button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+        <button class="btn-primary" id="addProfileBtn">+ Add Profile</button>
+      </div>
+    </div>
+    <div class="profiles-grid">
+      ${data.profiles.length === 0 ? `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-emoji">👥</div><div class="empty-state-text">No profiles yet. Add your first team member.</div></div>` :
+        data.profiles.map(p => {
+          const xp = calcXP(p.earnedIds);
+          const lvl = getLevel(xp);
+          return `<div class="profile-card">
+            <div class="profile-card-avatar">${p.avatar}</div>
+            <div class="profile-card-name">${p.name}</div>
+            <div class="profile-card-role">${p.role||'Data Consultant'}</div>
+            <div class="profile-card-level">Lv.${lvl.lvl} · ${lvl.title}</div>
+            <div class="profile-card-xp"><strong>${xp.toLocaleString()}</strong> XP</div>
+            <div class="profile-card-ach">${p.earnedIds.length} achievements</div>
+            <div class="profile-card-actions">
+              <button class="btn-sm-edit" data-pid="${p.id}">Edit</button>
+              <button class="btn-sm-del" data-pid="${p.id}">Delete</button>
+            </div>
+          </div>`;
+        }).join('')}
+    </div>`;
+
+  document.getElementById('addProfileBtn').addEventListener('click', () => openProfileModal(null));
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+  document.getElementById('importFile').addEventListener('change', importData);
+
+  wrap.querySelectorAll('.btn-sm-edit').forEach(el => {
+    el.addEventListener('click', e => { e.stopPropagation(); openProfileModal(el.dataset.pid); });
+  });
+  wrap.querySelectorAll('.btn-sm-del').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      const pid = el.dataset.pid;
+      const p = getProfile(pid);
+      if (confirm(`Delete profile "${p.name}"? This cannot be undone.`)) {
+        data.profiles = data.profiles.filter(p => p.id !== pid);
+        if (data.activeProfileId === pid) data.activeProfileId = data.profiles[0]?.id || null;
+        if (catalogViewProfileId === pid) catalogViewProfileId = data.activeProfileId;
+        save();
+        renderAll();
+      }
+    });
+  });
+}
+
+// ── PROFILE MODAL ─────────────────────────────────────────────────────────────
+function openProfileModal(editId) {
+  const existing = editId ? getProfile(editId) : null;
+  const selAvatar = existing?.avatar || AVATAR_OPTIONS[0];
+
+  const html = `
+    <div class="modal-title">${existing ? 'Edit Profile' : 'Create Profile'}</div>
+    <div class="form-group">
+      <label class="form-label">Avatar</label>
+      <div class="emoji-grid" id="emojiGrid">
+        ${AVATAR_OPTIONS.map(e=>`<button class="emoji-opt ${e===selAvatar?'selected':''}" data-emoji="${e}">${e}</button>`).join('')}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input class="form-input" id="profileName" type="text" placeholder="Full name" value="${existing?.name||''}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Role</label>
+      <select class="form-select" id="profileRole">
+        ${ROLES.map(r=>`<option ${existing?.role===r?'selected':''}>${r}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Join Date</label>
+      <input class="form-input" id="profileJoin" type="date" value="${existing?.joinDate||new Date().toISOString().slice(0,10)}">
+    </div>
+    <div class="modal-footer">
+      ${existing ? `<button class="btn-danger" id="deleteProfileBtn">Delete</button>` : ''}
+      <button class="btn-cancel" id="cancelProfileBtn">Cancel</button>
+      <button class="btn-submit" id="submitProfileBtn">${existing ? 'Save Changes' : 'Create Profile'}</button>
+    </div>`;
+
+  openModal(html);
+
+  let chosenAvatar = selAvatar;
+  document.querySelectorAll('.emoji-opt').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      chosenAvatar = el.dataset.emoji;
+    });
+  });
+
+  document.getElementById('cancelProfileBtn').addEventListener('click', closeModal);
+  document.getElementById('submitProfileBtn').addEventListener('click', () => {
+    const name = document.getElementById('profileName').value.trim();
+    if (!name) { alert('Please enter a name.'); return; }
+    const role = document.getElementById('profileRole').value;
+    const joinDate = document.getElementById('profileJoin').value;
+    if (existing) {
+      existing.avatar = chosenAvatar;
+      existing.name = name;
+      existing.role = role;
+      existing.joinDate = joinDate;
+    } else {
+      const newP = { id: genId(), name, role, avatar: chosenAvatar, joinDate, earnedIds: [] };
+      data.profiles.push(newP);
+      if (!data.activeProfileId) data.activeProfileId = newP.id;
+    }
+    save();
+    closeModal();
+    renderAll();
+  });
+
+  if (existing) {
+    document.getElementById('deleteProfileBtn').addEventListener('click', () => {
+      if (confirm(`Delete "${existing.name}"? This cannot be undone.`)) {
+        data.profiles = data.profiles.filter(p => p.id !== existing.id);
+        if (data.activeProfileId === existing.id) data.activeProfileId = data.profiles[0]?.id || null;
+        if (catalogViewProfileId === existing.id) catalogViewProfileId = data.activeProfileId;
+        save();
+        closeModal();
+        renderAll();
+      }
+    });
+  }
+}
+
+// ── IMPORT / EXPORT ───────────────────────────────────────────────────────────
+function exportData() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'dc-hub-backup.json'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Data exported successfully');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!imported.profiles || !Array.isArray(imported.profiles)) throw new Error('Invalid format');
+      if (confirm(`Import data? This will replace all current profiles (${data.profiles.length} profiles will be overwritten).`)) {
+        data = imported;
+        save();
+        renderAll();
+        showToast('Data imported successfully');
+      }
+    } catch(err) {
+      alert('Failed to import: invalid JSON format.');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── SIDEBAR ADD BTN ───────────────────────────────────────────────────────────
+document.getElementById('sbAddBtn').addEventListener('click', () => openProfileModal(null));
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderSidebar();
+  renderNav();
+  if (currentPage === 'dashboard') renderDashboard();
+  else if (currentPage === 'leaderboard') renderLeaderboard();
+  else if (currentPage === 'catalog') renderCatalog();
+  else if (currentPage === 'manage') renderManage();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+if (!catalogViewProfileId) catalogViewProfileId = data.activeProfileId;
+renderAll();
+</script>
+</body>
+</html>
