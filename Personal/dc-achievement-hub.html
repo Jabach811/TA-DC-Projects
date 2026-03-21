@@ -321,6 +321,69 @@ input, select { font-family: var(--font); }
 
 /* ── HINT ── */
 .ach-hint { font-size: 10.5px; color: var(--teal); font-style: italic; margin-bottom: 6px; }
+
+/* ── MODE TOGGLE ── */
+.mode-toggle { display: flex; margin: 12px 0 6px; background: rgba(255,255,255,0.07); border-radius: 9px; padding: 3px; gap: 2px; }
+.mode-btn { flex: 1; padding: 6px 4px; border-radius: 6px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; transition: all 0.15s; border: none; background: none; letter-spacing: 0.2px; }
+.mode-btn:hover { color: rgba(255,255,255,0.75); }
+.mode-btn.active { background: rgba(0,122,255,0.4); color: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.mode-btn.active-ind { background: rgba(52,199,89,0.35); color: #fff; }
+.sb-mode-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.22); padding: 10px 18px 4px; }
+
+/* ── TEAM OVERVIEW PAGE ── */
+.team-wrap { padding: 24px; max-width: 1200px; }
+.team-page-header { margin-bottom: 22px; }
+.team-page-title { font-size: 26px; font-weight: 800; letter-spacing: -0.6px; }
+.team-page-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.team-top-bar { background: var(--card); border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+.team-bar-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+.team-xp-row { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+.team-xp-row:last-child { margin-bottom: 0; }
+.team-xp-avatar { font-size: 18px; width: 28px; text-align: center; flex-shrink: 0; }
+.team-xp-name { width: 120px; font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.team-xp-bar-wrap { flex: 1; height: 8px; background: var(--sep); border-radius: 4px; overflow: hidden; }
+.team-xp-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s cubic-bezier(.22,1,.36,1); }
+.team-xp-label { font-size: 11px; font-weight: 700; color: var(--muted); width: 85px; text-align: right; flex-shrink: 0; white-space: nowrap; }
+.team-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+.tmc { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; cursor: pointer; }
+.tmc:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.tmc.is-current { outline: 2px solid var(--blue); outline-offset: 0; }
+.tmc-top { padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+.tmc-avatar { font-size: 28px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--bg); border-radius: 11px; flex-shrink: 0; }
+.tmc-info { flex: 1; min-width: 0; }
+.tmc-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tmc-role { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.tmc-level { font-size: 11px; color: var(--blue); font-weight: 600; margin-top: 2px; }
+.tmc-rank-badge { font-size: 22px; flex-shrink: 0; }
+.tmc-stats { display: grid; grid-template-columns: repeat(3, 1fr); padding: 12px 16px; border-top: 1px solid var(--sep); border-bottom: 1px solid var(--sep); }
+.tmc-stat { text-align: center; }
+.tmc-stat-val { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.tmc-stat-lbl { font-size: 9.5px; color: var(--muted); margin-top: 1px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.tmc-cats { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+.tmc-cat-row { display: flex; align-items: center; gap: 8px; }
+.tmc-cat-icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.tmc-cat-bar-wrap { flex: 1; height: 5px; background: var(--sep); border-radius: 3px; overflow: hidden; }
+.tmc-cat-bar-fill { height: 100%; border-radius: 3px; background: var(--blue); transition: width 0.6s cubic-bezier(.22,1,.36,1); }
+.tmc-cat-pct { font-size: 10px; font-weight: 700; color: var(--muted); width: 30px; text-align: right; flex-shrink: 0; }
+.tmc-footer { padding: 10px 16px; display: flex; justify-content: flex-end; }
+.tmc-view-btn { font-size: 12px; font-weight: 600; color: var(--blue); background: rgba(0,122,255,0.08); border: none; border-radius: 7px; padding: 5px 12px; cursor: pointer; }
+.tmc-view-btn:hover { background: rgba(0,122,255,0.16); }
+
+/* ── SYNC SECTION ── */
+.sync-card { background: var(--card); border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow-sm); margin-top: 20px; }
+.sync-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; gap: 16px; }
+.sync-card-title { font-size: 15px; font-weight: 700; }
+.sync-card-sub { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.sync-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-sync { padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid; transition: all 0.14s; }
+.btn-sync-export { background: rgba(52,199,89,0.1); border-color: rgba(52,199,89,0.4); color: var(--green); }
+.btn-sync-export:hover { background: rgba(52,199,89,0.2); }
+.btn-sync-import { background: rgba(0,122,255,0.1); border-color: rgba(0,122,255,0.4); color: var(--blue); }
+.btn-sync-import:hover { background: rgba(0,122,255,0.2); }
+
+/* ── INDIVIDUAL MODE sidebar ── */
+.sb-ind-export-btn { width: 100%; padding: 9px; border-radius: 8px; background: rgba(52,199,89,0.15); color: var(--green); font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; border: none; transition: all 0.14s; margin-bottom: 8px; }
+.sb-ind-export-btn:hover { background: rgba(52,199,89,0.28); }
 </style>
 </head>
 <body>
@@ -347,6 +410,10 @@ input, select { font-family: var(--font); }
           <div class="sb-logo-sub">Achievement Tracker</div>
         </div>
       </div>
+      <div class="mode-toggle">
+        <button class="mode-btn" id="modeManagerBtn" onclick="setMode('manager')">👔 Manager</button>
+        <button class="mode-btn" id="modeIndividualBtn" onclick="setMode('individual')">🙋 Individual</button>
+      </div>
       <div id="sbProfileCard" class="sb-profile-card" style="display:none">
         <div class="sb-avatar" id="sbAvatar"></div>
         <div class="sb-profile-info">
@@ -355,16 +422,11 @@ input, select { font-family: var(--font); }
           <div class="sb-xp-bar"><div class="sb-xp-fill" id="sbXpFill"></div></div>
         </div>
       </div>
-      <nav class="sb-nav">
-        <div class="sb-nav-item active" data-page="dashboard"><span class="sb-nav-icon">🏠</span> Dashboard</div>
-        <div class="sb-nav-item" data-page="leaderboard"><span class="sb-nav-icon">🥇</span> Leaderboard</div>
-        <div class="sb-nav-item" data-page="catalog"><span class="sb-nav-icon">📚</span> All Achievements</div>
-        <div class="sb-nav-item" data-page="manage"><span class="sb-nav-icon">⚙️</span> Manage Team</div>
-      </nav>
+      <nav class="sb-nav" id="sbNav"></nav>
     </div>
-    <div class="sb-section-label">Team Roster</div>
+    <div class="sb-section-label" id="sbRosterLabel">Team Roster</div>
     <div class="sb-roster" id="sbRoster"></div>
-    <div class="sb-bottom">
+    <div class="sb-bottom" id="sbBottom">
       <button class="sb-add-btn" id="sbAddBtn">+ Add Profile</button>
     </div>
   </aside>
@@ -374,6 +436,10 @@ input, select { font-family: var(--font); }
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div id="dashboardContent"></div>
+    </div>
+    <!-- TEAM OVERVIEW -->
+    <div class="page" id="page-team">
+      <div id="teamContent"></div>
     </div>
     <!-- LEADERBOARD -->
     <div class="page" id="page-leaderboard">
@@ -531,8 +597,9 @@ const ROLES = ['Data Consultant','Implementation Manager','QA Analyst','Implemen
 const LS_KEY = 'dc_hub_data';
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let data = { profiles: [], activeProfileId: null };
-let currentPage = 'dashboard';
+let data = { profiles: [], activeProfileId: null, appMode: 'manager' };
+let appMode = 'manager'; // 'manager' | 'individual'
+let currentPage = 'team';
 let dashFilter = 'all';
 let dashCatFilter = 'all';
 let dashTierFilter = 'all';
@@ -541,9 +608,19 @@ let catalogViewProfileId = null;
 let lbSort = 'xp';
 
 // ── PERSIST ───────────────────────────────────────────────────────────────────
-function save() { localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+function save() {
+  data.appMode = appMode;
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
 function load() {
-  try { const d = localStorage.getItem(LS_KEY); if (d) data = JSON.parse(d); } catch(e) {}
+  try {
+    const d = localStorage.getItem(LS_KEY);
+    if (d) {
+      data = JSON.parse(d);
+      appMode = data.appMode || 'manager';
+      currentPage = appMode === 'individual' ? 'dashboard' : 'team';
+    }
+  } catch(e) {}
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -706,8 +783,21 @@ document.getElementById('modalOverlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
 });
 
+// ── MODE SWITCH ───────────────────────────────────────────────────────────────
+function setMode(mode) {
+  appMode = mode;
+  currentPage = mode === 'individual' ? 'dashboard' : 'team';
+  save();
+  renderAll();
+  showPage(currentPage);
+}
+
 // ── SIDEBAR ───────────────────────────────────────────────────────────────────
 function renderSidebar() {
+  // Mode toggle buttons
+  document.getElementById('modeManagerBtn').className    = 'mode-btn' + (appMode==='manager'?'    active':'');
+  document.getElementById('modeIndividualBtn').className = 'mode-btn' + (appMode==='individual'?' active-ind active':'');
+
   const p = activeProfile();
   const pc = document.getElementById('sbProfileCard');
   if (p) {
@@ -723,39 +813,76 @@ function renderSidebar() {
     pc.style.display = 'none';
   }
 
-  // roster
-  const roster = document.getElementById('sbRoster');
-  if (!data.profiles.length) {
-    roster.innerHTML = '<div style="padding:12px 18px;font-size:12px;color:rgba(255,255,255,0.28)">No profiles yet</div>';
-    return;
-  }
-  roster.innerHTML = data.profiles.map(m => {
-    const xp = calcXP(m.earnedIds);
-    const maxXp = 30000;
-    const prog = Math.min(xp/maxXp, 1);
-    const isActive = m.id === data.activeProfileId;
-    return `<div class="sb-member ${isActive?'active-member':''}" data-pid="${m.id}">
-      <div class="sb-member-avatar">${m.avatar}</div>
-      <div class="sb-member-info">
-        <div class="sb-member-name">${m.name}</div>
-        <div class="sb-member-xp">${xp.toLocaleString()} XP · ${m.earnedIds.length} ach</div>
-        <div class="sb-member-xpbar"><div class="sb-member-xpfill" style="width:${prog*100}%"></div></div>
-      </div>
-    </div>`;
-  }).join('');
-
-  roster.querySelectorAll('.sb-member').forEach(el => {
-    el.addEventListener('click', () => {
-      data.activeProfileId = el.dataset.pid;
-      catalogViewProfileId = el.dataset.pid;
-      save();
-      renderAll();
-    });
+  // Nav items per mode
+  const managerNav = [
+    { page:'team',       icon:'🏆', label:'Team Overview' },
+    { page:'leaderboard',icon:'🥇', label:'Leaderboard' },
+    { page:'catalog',    icon:'📚', label:'All Achievements' },
+    { page:'manage',     icon:'⚙️', label:'Manage Team' },
+  ];
+  const individualNav = [
+    { page:'dashboard',  icon:'🏠', label:'My Dashboard' },
+    { page:'catalog',    icon:'📚', label:'My Achievements' },
+  ];
+  const navItems = appMode === 'manager' ? managerNav : individualNav;
+  const nav = document.getElementById('sbNav');
+  nav.innerHTML = navItems.map(n =>
+    `<div class="sb-nav-item ${currentPage===n.page?'active':''}" data-page="${n.page}"><span class="sb-nav-icon">${n.icon}</span> ${n.label}</div>`
+  ).join('');
+  nav.querySelectorAll('.sb-nav-item').forEach(el => {
+    el.addEventListener('click', () => showPage(el.dataset.page));
   });
+
+  // Roster + bottom area
+  const rosterLabel = document.getElementById('sbRosterLabel');
+  const roster = document.getElementById('sbRoster');
+  const sbBottom = document.getElementById('sbBottom');
+
+  if (appMode === 'manager') {
+    rosterLabel.style.display = '';
+    roster.style.display = '';
+    sbBottom.innerHTML = '<button class="sb-add-btn" id="sbAddBtn">+ Add Profile</button>';
+    document.getElementById('sbAddBtn').addEventListener('click', () => openProfileModal(null));
+
+    if (!data.profiles.length) {
+      roster.innerHTML = '<div style="padding:12px 18px;font-size:12px;color:rgba(255,255,255,0.28)">No profiles yet</div>';
+      return;
+    }
+    roster.innerHTML = data.profiles.map(m => {
+      const xp = calcXP(m.earnedIds);
+      const prog = Math.min(xp/30000, 1);
+      const isActive = m.id === data.activeProfileId;
+      return `<div class="sb-member ${isActive?'active-member':''}" data-pid="${m.id}">
+        <div class="sb-member-avatar">${m.avatar}</div>
+        <div class="sb-member-info">
+          <div class="sb-member-name">${m.name}</div>
+          <div class="sb-member-xp">${xp.toLocaleString()} XP · ${m.earnedIds.length} ach</div>
+          <div class="sb-member-xpbar"><div class="sb-member-xpfill" style="width:${prog*100}%"></div></div>
+        </div>
+      </div>`;
+    }).join('');
+    roster.querySelectorAll('.sb-member').forEach(el => {
+      el.addEventListener('click', () => {
+        data.activeProfileId = el.dataset.pid;
+        catalogViewProfileId = el.dataset.pid;
+        save();
+        renderAll();
+      });
+    });
+  } else {
+    // Individual mode — no roster, export button instead
+    rosterLabel.style.display = 'none';
+    roster.style.display = 'none';
+    sbBottom.innerHTML = `
+      <button class="sb-ind-export-btn" id="sbExportMyBtn">⬇ Export My Data</button>
+      <button class="sb-add-btn" id="sbAddBtn" style="margin-top:6px">+ Add Profile</button>`;
+    document.getElementById('sbExportMyBtn').addEventListener('click', exportMyProfile);
+    document.getElementById('sbAddBtn').addEventListener('click', () => openProfileModal(null));
+  }
 }
 
 function renderNav() {
-  document.querySelectorAll('.sb-nav-item').forEach(el => {
+  document.querySelectorAll('#sbNav .sb-nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === currentPage);
   });
 }
@@ -764,17 +891,15 @@ function renderNav() {
 function showPage(page) {
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
+  const pageEl = document.getElementById('page-'+page);
+  if (pageEl) pageEl.classList.add('active');
   renderNav();
-  if (page === 'dashboard') renderDashboard();
+  if (page === 'team')        renderTeamOverview();
+  if (page === 'dashboard')   renderDashboard();
   if (page === 'leaderboard') renderLeaderboard();
-  if (page === 'catalog') renderCatalog();
-  if (page === 'manage') renderManage();
+  if (page === 'catalog')     renderCatalog();
+  if (page === 'manage')      renderManage();
 }
-
-document.querySelectorAll('.sb-nav-item').forEach(el => {
-  el.addEventListener('click', () => showPage(el.dataset.page));
-});
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 function renderDashboard() {
@@ -1147,9 +1272,6 @@ function renderManage() {
     <div class="manage-header">
       <div class="manage-title">Manage Team</div>
       <div class="manage-actions">
-        <button class="btn-outline" id="exportBtn">Export Data</button>
-        <button class="btn-outline" id="importBtn">Import Data</button>
-        <input type="file" id="importFile" accept=".json" style="display:none">
         <button class="btn-primary" id="addProfileBtn">+ Add Profile</button>
       </div>
     </div>
@@ -1171,12 +1293,32 @@ function renderManage() {
             </div>
           </div>`;
         }).join('')}
-    </div>`;
+    </div>
+
+    <!-- Sync Section -->
+    <div class="sync-card">
+      <div class="sync-card-header">
+        <div>
+          <div class="sync-card-title">📤 Employee Sync</div>
+          <div class="sync-card-sub">Import a team member's exported profile file to merge their earned achievements. Individual users export from their own device — you import here to update the team record.</div>
+        </div>
+      </div>
+      <div class="sync-actions">
+        <button class="btn-sync btn-sync-import" id="syncImportBtn">⬆ Import Employee Profile</button>
+        <input type="file" id="syncImportFile" accept=".json" style="display:none">
+        <button class="btn-sync btn-sync-export" id="fullExportBtn">⬇ Full Team Backup</button>
+        <button class="btn-sync btn-sync-import" id="fullImportBtn" style="border-color:rgba(255,59,48,0.4);color:var(--red);background:rgba(255,59,48,0.07)">↩ Restore Backup</button>
+        <input type="file" id="fullImportFile" accept=".json" style="display:none">
+      </div>
+    </div>
+    `;
 
   document.getElementById('addProfileBtn').addEventListener('click', () => openProfileModal(null));
-  document.getElementById('exportBtn').addEventListener('click', exportData);
-  document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
-  document.getElementById('importFile').addEventListener('change', importData);
+  document.getElementById('syncImportBtn').addEventListener('click', () => document.getElementById('syncImportFile').click());
+  document.getElementById('syncImportFile').addEventListener('change', importProfileSync);
+  document.getElementById('fullExportBtn').addEventListener('click', exportData);
+  document.getElementById('fullImportBtn').addEventListener('click', () => document.getElementById('fullImportFile').click());
+  document.getElementById('fullImportFile').addEventListener('change', importData);
 
   wrap.querySelectorAll('.btn-sm-edit').forEach(el => {
     el.addEventListener('click', e => { e.stopPropagation(); openProfileModal(el.dataset.pid); });
@@ -1308,23 +1450,190 @@ function importData(e) {
   reader.readAsText(file);
 }
 
+// ── TEAM OVERVIEW ─────────────────────────────────────────────────────────────
+function renderTeamOverview() {
+  const wrap = document.getElementById('teamContent');
+  if (!data.profiles.length) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-emoji">👥</div><div class="empty-state-text">No profiles yet. Add team members in Manage Team.</div></div>';
+    return;
+  }
+
+  const sorted = [...data.profiles].sort((a,b) => calcXP(b.earnedIds) - calcXP(a.earnedIds));
+  const maxXp  = Math.max(...sorted.map(p => calcXP(p.earnedIds)), 1);
+  const barColors = ['#007aff','#34c759','#ff9f0a','#af52de','#ff2d55','#32ade6','#5856d6','#b8860b'];
+  const rankEmoji = i => ['👑','🥈','🥉'][i] || `#${i+1}`;
+
+  const xpRows = sorted.map((p,i) => {
+    const xp = calcXP(p.earnedIds);
+    const pct = xp / maxXp * 100;
+    return `<div class="team-xp-row">
+      <div class="team-xp-avatar">${p.avatar}</div>
+      <div class="team-xp-name">${p.name}</div>
+      <div class="team-xp-bar-wrap">
+        <div class="team-xp-bar-fill xp-anim-bar" style="width:0%;background:${barColors[i%barColors.length]}" data-pct="${pct}"></div>
+      </div>
+      <div class="team-xp-label">${xp.toLocaleString()} XP · ${p.earnedIds.length} ach</div>
+    </div>`;
+  }).join('');
+
+  const cards = sorted.map((p,i) => {
+    const xp  = calcXP(p.earnedIds);
+    const lvl = getLevel(xp);
+    const prog = xpProgress(xp);
+    const stats = catStats(p);
+    const isCurrent = p.id === data.activeProfileId;
+    const totalAch = ACHIEVEMENTS.length;
+    const pctDone = Math.round(p.earnedIds.length / totalAch * 100);
+
+    const catRows = CATEGORIES.map(c => {
+      const s = stats[c.id];
+      return `<div class="tmc-cat-row">
+        <div class="tmc-cat-icon">${c.icon}</div>
+        <div class="tmc-cat-bar-wrap"><div class="tmc-cat-bar-fill tmc-bar-anim" style="width:0%" data-pct="${s.pct*100}"></div></div>
+        <div class="tmc-cat-pct">${Math.round(s.pct*100)}%</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="tmc ${isCurrent?'is-current':''}" data-pid="${p.id}">
+      <div class="tmc-top">
+        <div class="tmc-avatar">${p.avatar}</div>
+        <div class="tmc-info">
+          <div class="tmc-name">${p.name}</div>
+          <div class="tmc-role">${p.role||'Data Consultant'}</div>
+          <div class="tmc-level">Lv.${lvl.lvl} · ${lvl.title}</div>
+        </div>
+        <div class="tmc-rank-badge">${rankEmoji(i)}</div>
+      </div>
+      <div class="tmc-stats">
+        <div class="tmc-stat"><div class="tmc-stat-val">${xp.toLocaleString()}</div><div class="tmc-stat-lbl">XP</div></div>
+        <div class="tmc-stat"><div class="tmc-stat-val">${p.earnedIds.length}</div><div class="tmc-stat-lbl">Earned</div></div>
+        <div class="tmc-stat"><div class="tmc-stat-val">${pctDone}%</div><div class="tmc-stat-lbl">Complete</div></div>
+      </div>
+      <div class="tmc-cats">${catRows}</div>
+      <div class="tmc-footer"><button class="tmc-view-btn" data-pid="${p.id}">View Dashboard →</button></div>
+    </div>`;
+  }).join('');
+
+  wrap.innerHTML = `<div class="team-wrap">
+    <div class="team-page-header">
+      <div class="team-page-title">Team Overview</div>
+      <div class="team-page-sub">${sorted.length} member${sorted.length!==1?'s':''} · ${ACHIEVEMENTS.length} achievements available</div>
+    </div>
+    <div class="team-top-bar">
+      <div class="team-bar-title">XP Leaderboard</div>
+      ${xpRows}
+    </div>
+    <div class="team-cards-grid">${cards}</div>
+  </div>`;
+
+  // Animate bars
+  setTimeout(() => {
+    wrap.querySelectorAll('.xp-anim-bar').forEach(el => { el.style.width = el.dataset.pct + '%'; });
+    wrap.querySelectorAll('.tmc-bar-anim').forEach(el  => { el.style.width = el.dataset.pct + '%'; });
+  }, 60);
+
+  // View dashboard clicks
+  wrap.querySelectorAll('.tmc-view-btn').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      data.activeProfileId = el.dataset.pid;
+      save();
+      showPage('dashboard');
+      renderSidebar();
+    });
+  });
+  wrap.querySelectorAll('.tmc').forEach(el => {
+    el.addEventListener('click', () => {
+      data.activeProfileId = el.dataset.pid;
+      save();
+      showPage('dashboard');
+      renderSidebar();
+    });
+  });
+}
+
+// ── EXPORT / SYNC ─────────────────────────────────────────────────────────────
+function exportMyProfile() {
+  const p = activeProfile();
+  if (!p) { showToast('No active profile to export'); return; }
+  const payload = { type: 'dc-profile-sync', version: 1, profile: JSON.parse(JSON.stringify(p)) };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dc-profile-${p.name.replace(/\s+/g,'-').toLowerCase()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`${p.avatar} ${p.name}'s profile exported`);
+}
+
+function importProfileSync(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const payload = JSON.parse(ev.target.result);
+      // Single profile sync
+      if (payload.type === 'dc-profile-sync' && payload.profile) {
+        const incoming = payload.profile;
+        const existing = data.profiles.find(p => p.id === incoming.id);
+        if (existing) {
+          // Merge: union of earned IDs
+          const merged = [...new Set([...existing.earnedIds, ...incoming.earnedIds])];
+          const added  = merged.length - existing.earnedIds.length;
+          existing.earnedIds = merged;
+          save();
+          renderAll();
+          showToast(`${existing.avatar} ${existing.name} synced — ${added} new achievement${added!==1?'s':''} added`);
+        } else {
+          if (confirm(`"${incoming.name}" not found in your team. Add them as a new member?`)) {
+            data.profiles.push(incoming);
+            data.activeProfileId = data.activeProfileId || incoming.id;
+            save();
+            renderAll();
+            showToast(`${incoming.avatar} ${incoming.name} added to the team`);
+          }
+        }
+      } else if (payload.profiles && Array.isArray(payload.profiles)) {
+        // Full team backup (legacy import)
+        if (confirm(`Import full team backup? This will replace all current profiles.`)) {
+          data = payload;
+          save();
+          renderAll();
+          showToast('Team data imported');
+        }
+      } else {
+        throw new Error('Unknown format');
+      }
+    } catch(err) {
+      alert('Failed to import: invalid file format.');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
 // ── SIDEBAR ADD BTN ───────────────────────────────────────────────────────────
-document.getElementById('sbAddBtn').addEventListener('click', () => openProfileModal(null));
+// (wired dynamically in renderSidebar)
 
 // ── RENDER ALL ────────────────────────────────────────────────────────────────
 function renderAll() {
   renderSidebar();
   renderNav();
-  if (currentPage === 'dashboard') renderDashboard();
+  if (currentPage === 'team')        renderTeamOverview();
+  else if (currentPage === 'dashboard')   renderDashboard();
   else if (currentPage === 'leaderboard') renderLeaderboard();
-  else if (currentPage === 'catalog') renderCatalog();
-  else if (currentPage === 'manage') renderManage();
+  else if (currentPage === 'catalog')     renderCatalog();
+  else if (currentPage === 'manage')      renderManage();
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 load();
 if (!catalogViewProfileId) catalogViewProfileId = data.activeProfileId;
-renderAll();
+// Show the correct starting page for the current mode
+showPage(currentPage);
+renderSidebar();
 </script>
 </body>
 </html>
