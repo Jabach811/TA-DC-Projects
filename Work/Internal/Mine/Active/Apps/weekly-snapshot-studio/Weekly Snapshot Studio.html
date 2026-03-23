@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Snapshot Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f1e8;
+  --panel:#fffdf8;
+  --ink:#1d2330;
+  --muted:#6d7482;
+  --line:rgba(29,35,48,.12);
+  --line-strong:rgba(29,35,48,.22);
+  --accent:#bd5b34;
+  --accent-2:#2f6c67;
+  --accent-3:#7b5f9d;
+  --shadow:0 20px 50px rgba(29,35,48,.10);
+  --radius-xl:32px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  font-family:"Manrope",sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(189,91,52,.12), transparent 20%),
+    radial-gradient(circle at bottom right, rgba(47,108,103,.12), transparent 24%),
+    linear-gradient(180deg, #f8f4ec 0%, #f5f1e8 100%);
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:linear-gradient(rgba(29,35,48,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(29,35,48,.025) 1px, transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.32), transparent 85%);
+}
+.page{
+  width:min(1340px, calc(100vw - 32px));
+  margin:0 auto;
+  padding:24px 0 56px;
+  position:relative;
+  z-index:1;
+}
+.hero,.section{
+  background:linear-gradient(180deg, rgba(255,253,248,.97), rgba(248,243,233,.95));
+  border:1px solid rgba(255,255,255,.85);
+  box-shadow:var(--shadow);
+}
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--radius-xl);
+  padding:36px;
+  display:grid;
+  grid-template-columns:minmax(0, 1.2fr) minmax(320px, .8fr);
+  gap:24px;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:auto -80px -80px auto;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(123,95,157,.16), transparent 68%);
+  pointer-events:none;
+}
+.eyebrow,.mini-label,.stat-label,.pill,label{
+  font-family:"IBM Plex Mono",monospace;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.eyebrow{
+  color:var(--accent);
+  font-size:11px;
+  margin-bottom:14px;
+}
+.hero h1{
+  margin:0;
+  max-width:760px;
+  font-family:"Instrument Serif",serif;
+  font-size:clamp(42px, 5vw, 78px);
+  line-height:.94;
+  font-weight:400;
+}
+.hero h1 em{
+  color:var(--accent);
+  font-style:italic;
+}
+.hero-copy{
+  max-width:720px;
+  margin-top:18px;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.8;
+}
+.hero-actions,.toolbar{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.hero-actions{ margin-top:22px; }
+.btn,.ghost-btn,.chip-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:11px 16px;
+  border-radius:15px;
+  border:1px solid var(--line-strong);
+  text-decoration:none;
+  font-weight:700;
+  transition:transform .18s ease, box-shadow .18s ease;
+  cursor:pointer;
+}
+.btn{
+  border:none;
+  background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 85%, white), var(--accent));
+  color:#fff;
+  box-shadow:0 14px 24px rgba(189,91,52,.26);
+}
+.ghost-btn,.chip-btn{
+  background:rgba(255,255,255,.72);
+  color:var(--ink);
+}
+.btn:hover,.ghost-btn:hover,.chip-btn:hover{ transform:translateY(-1px); }
+.hero-side{ display:grid; gap:14px; }
+.status-card,.automation-card,.field,.textarea-field,.results-stack>article,.summary-card{
+  border-radius:20px;
+  background:rgba(255,255,255,.72);
+  border:1px solid var(--line);
+  padding:16px;
+}
+.status-card{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:14px;
+}
+.stat{
+  padding:16px;
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(244,238,227,.9));
+  border:1px solid var(--line);
+}
+.stat-value{
+  display:block;
+  font-size:28px;
+  font-weight:800;
+  line-height:1;
+}
+.stat-label{
+  display:block;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:10px;
+}
+.automation-card h3,.section h2{
+  margin:0;
+  font-size:30px;
+  line-height:1.05;
+}
+.automation-card p,.section-copy,.helper,.result-body,textarea,input,select{
+  font-size:14px;
+  line-height:1.7;
+}
+.automation-card p,.section-copy,.helper,.summary-card p{ color:var(--muted); }
+.automation-list{ margin:14px 0 0; padding-left:18px; }
+.grid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:24px;
+  margin-top:24px;
+}
+.section{
+  border-radius:var(--radius-xl);
+  padding:28px;
+}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:16px;
+  margin-bottom:20px;
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(47,108,103,.10);
+  color:var(--accent-2);
+  font-size:10px;
+  font-weight:700;
+}
+.field-grid,.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:16px;
+}
+label{
+  display:block;
+  margin-bottom:8px;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:600;
+}
+input,select,textarea{
+  width:100%;
+  border:1px solid var(--line-strong);
+  border-radius:14px;
+  padding:12px 14px;
+  background:rgba(255,255,255,.88);
+  color:var(--ink);
+  font-family:inherit;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:color-mix(in srgb, var(--accent-2) 55%, white);
+  box-shadow:0 0 0 4px rgba(47,108,103,.10);
+}
+textarea{ min-height:140px; resize:vertical; }
+.textarea-lg textarea{ min-height:200px; }
+.summary-card h3,.result-head h3{ margin:0 0 6px; font-size:20px; }
+.results-stack{ display:grid; gap:16px; }
+.result-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:12px;
+}
+.result-body{
+  white-space:pre-wrap;
+  color:var(--ink);
+}
+.result-body.empty{
+  color:var(--muted);
+  font-style:italic;
+}
+.footer-note{
+  margin-top:20px;
+  padding:16px 18px;
+  border-radius:18px;
+  background:rgba(123,95,157,.08);
+  border:1px solid rgba(123,95,157,.16);
+}
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  min-width:220px;
+  max-width:360px;
+  padding:14px 16px;
+  border-radius:16px;
+  background:#1d2330;
+  color:#fff;
+  box-shadow:0 18px 36px rgba(29,35,48,.24);
+  opacity:0;
+  transform:translateY(10px);
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+  z-index:10;
+}
+.toast.show{ opacity:1; transform:translateY(0); }
+@media (max-width:1080px){ .hero,.grid{ grid-template-columns:1fr; } }
+@media (max-width:720px){
+  .page{ width:min(100vw - 18px, 100%); padding-top:16px; }
+  .hero,.section{ padding:22px; border-radius:24px; }
+  .field-grid,.summary-grid,.status-card{ grid-template-columns:1fr; }
+  .hero h1{ font-size:46px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Weekly Snapshot Studio</div>
+      <h1>Turn your tracker into a <em>Monday 7:00 AM story</em>.</h1>
+      <div class="hero-copy">
+        Paste the latest dashboard export, add your quick Friday or Monday brain dump, and this app will turn it into a clean daily snapshot plus a spoken-word weekly recap you can email to yourself.
+      </div>
+      <div class="hero-actions">
+        <button class="btn" id="generate-all-btn" type="button">Generate Snapshot + Weekly Email</button>
+        <button class="ghost-btn" id="save-state-btn" type="button">Save This Setup</button>
+        <button class="ghost-btn" id="load-sample-btn" type="button">Load Sample CSV</button>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="status-card">
+        <div class="stat"><span class="stat-value" id="hero-open-count">0</span><span class="stat-label">Open Items</span></div>
+        <div class="stat"><span class="stat-value" id="hero-done-count">0</span><span class="stat-label">Done This Load</span></div>
+        <div class="stat"><span class="stat-value" id="hero-high-count">0</span><span class="stat-label">High Priority Open</span></div>
+        <div class="stat"><span class="stat-value" id="hero-overdue-count">0</span><span class="stat-label">Aging 14+ Days</span></div>
+      </div>
+      <div class="automation-card">
+        <h3>Automation handoff</h3>
+        <p>This page can prep the exact subject line and body, but the actual 7:00 AM Monday send needs Outlook, Power Automate, or another mail runner. Static HTML alone cannot fire scheduled email on its own.</p>
+        <ul class="automation-list">
+          <li>Best fit for work setup: Power Automate recurring flow every Monday at 7:00 AM.</li>
+          <li>Best fit for local desktop setup: Outlook desktop rule or VBA macro that reads the generated body.</li>
+          <li>Until then, use the copy or <code>mailto</code> actions below for a one-click manual send.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <div class="grid">
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <div class="mini-label eyebrow">Inputs</div>
+          <h2>Daily and weekly source material</h2>
+          <div class="section-copy">Set who the email goes to, drop in the tracker export, then add the human context that a dashboard will never know by itself.</div>
+        </div>
+        <div class="pill">Local save enabled</div>
+      </div>
+      <div class="field-grid">
+        <div class="field"><label for="recipient-email">Recipient Email</label><input id="recipient-email" type="email" placeholder="you@company.com"></div>
+        <div class="field"><label for="sender-name">Report Voice / Name</label><input id="sender-name" type="text" placeholder="Joel"></div>
+        <div class="field"><label for="report-date">Snapshot Date</label><input id="report-date" type="date"></div>
+        <div class="field">
+          <label for="tone-select">Weekly Narrative Tone</label>
+          <select id="tone-select">
+            <option value="spoken">Spoken word</option>
+            <option value="clear">Clear and direct</option>
+            <option value="exec">Executive recap</option>
+          </select>
+        </div>
+      </div>
+      <div class="textarea-field textarea-lg" style="margin-top:16px;">
+        <label for="csv-input">Dashboard CSV Export</label>
+        <textarea id="csv-input" placeholder="Paste the CSV export from your task dashboard here. Expected columns work best in this order: Task ID, Plan/Project, Task, Category, Priority, Owner, Status, Assigned, Started, Completed, Days, Notes."></textarea>
+        <div class="toolbar" style="margin-top:16px;">
+          <button class="chip-btn" id="load-csv-btn" type="button">Load Dashboard Data</button>
+          <button class="chip-btn" id="download-template-btn" type="button">Download CSV Template</button>
+        </div>
+      </div>
+      <div class="summary-grid" style="margin-top:16px;">
+        <article class="summary-card"><h3>Tracker read</h3><p id="tracker-summary">No CSV loaded yet.</p></article>
+        <article class="summary-card"><h3>Pressure points</h3><p id="pressure-summary">Once the export is loaded, this will call out the categories and tasks carrying the week.</p></article>
+      </div>
+      <div class="textarea-field" style="margin-top:16px;"><label for="daily-focus">Daily Snapshot Notes</label><textarea id="daily-focus" placeholder="What matters today? Add focus areas, meetings, follow-ups, or anything you want the daily snapshot to emphasize."></textarea></div>
+      <div class="field-grid" style="margin-top:16px;">
+        <div class="textarea-field"><label for="wins-input">Wins / What moved</label><textarea id="wins-input" placeholder="Closed loops, finished work, progress that actually mattered."></textarea></div>
+        <div class="textarea-field"><label for="blockers-input">Blockers / Friction</label><textarea id="blockers-input" placeholder="Delays, dependencies, or where the week fought back."></textarea></div>
+        <div class="textarea-field"><label for="momentum-input">Momentum / Themes</label><textarea id="momentum-input" placeholder="Patterns you noticed, what kept coming up, what the week was really about."></textarea></div>
+        <div class="textarea-field"><label for="next-up-input">Next week / Monday setup</label><textarea id="next-up-input" placeholder="What Monday starts with, what needs attention first, and what you want future-you to remember."></textarea></div>
+      </div>
+      <div class="textarea-field" style="margin-top:16px;"><label for="brain-dump-input">Friday or Monday Brain Dump</label><textarea id="brain-dump-input" placeholder="Write like you're talking to yourself. Rough notes are fine. The app will smooth them into the weekly narrative."></textarea></div>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <div class="mini-label eyebrow">Outputs</div>
+          <h2>Email-ready snapshot</h2>
+          <div class="section-copy">Generate the recap, then copy it, download it, or kick it into your default mail app.</div>
+        </div>
+        <div class="pill" id="week-range-pill">Week range pending</div>
+      </div>
+      <div class="results-stack">
+        <article>
+          <div class="result-head"><div><h3>Subject Line</h3><div class="helper">Built from the report date and week range.</div></div><button class="chip-btn" id="copy-subject-btn" type="button">Copy</button></div>
+          <div class="result-body empty" id="subject-output">Generate the report to build the email subject.</div>
+        </article>
+        <article>
+          <div class="result-head"><div><h3>Daily Snapshot</h3><div class="helper">Quick pulse for the day based on the latest dashboard load and your notes.</div></div><button class="chip-btn" id="copy-daily-btn" type="button">Copy</button></div>
+          <div class="result-body empty" id="daily-output">No daily snapshot generated yet.</div>
+        </article>
+        <article>
+          <div class="result-head"><div><h3>Weekly Spoken-Word Recap</h3><div class="helper">The longer narrative version for your Monday email.</div></div><button class="chip-btn" id="copy-weekly-btn" type="button">Copy</button></div>
+          <div class="result-body empty" id="weekly-output">No weekly recap generated yet.</div>
+        </article>
+        <article>
+          <div class="result-head">
+            <div><h3>Full Email Body</h3><div class="helper">This combines the daily pulse and the spoken-word recap into one send-ready block.</div></div>
+            <div class="toolbar" style="margin:0;">
+              <button class="chip-btn" id="copy-email-btn" type="button">Copy</button>
+              <button class="chip-btn" id="download-email-btn" type="button">Download TXT</button>
+              <a class="chip-btn" id="mailto-link" href="#">Open Mail</a>
+            </div>
+          </div>
+          <div class="result-body empty" id="email-output">No email body generated yet.</div>
+        </article>
+      </div>
+      <div class="footer-note"><strong>Next step for the real Monday 7:00 AM send:</strong> point an Outlook rule, VBA macro, or Power Automate flow at the saved report body. This app gives you the content engine and repeatable format so the automation piece is easy instead of gross.</div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  const STORAGE_KEY = 'weeklySnapshotStudioState.v1';
+  const SAMPLE_CSV = [
+    'Task ID,Plan/Project,Task,Category,Priority,Owner,Status,Assigned,Started,Completed,Days,Notes',
+    'T-101,Northwind 401k,Review census file,Implementation,High,Joel,In Progress,2026-03-17,2026-03-18,,5,Waiting on updated headcount',
+    'T-102,Northwind 401k,Confirm payroll mapping,Payroll,High,Joel,Done,2026-03-16,2026-03-16,2026-03-19,3,Mapping approved',
+    'T-103,Summit Industries,Vendor follow-up,Communications,Medium,Joel,Not Started,2026-03-20,,,2,Need response from vendor contact',
+    'T-104,Harbor Electric,Finalize kickoff notes,Meetings,Low,Joel,Done,2026-03-17,2026-03-17,2026-03-18,1,Kickoff summary sent',
+    'T-105,Ridgeview Trust,Resolve data exceptions,Implementation,High,Joel,In Progress,2026-03-11,2026-03-12,,11,Three records still failing validation',
+    'T-106,Atlas Dental,Upload conversion checklist,Operations,Medium,Joel,On Hold,2026-03-07,2026-03-08,,15,Waiting on source documents'
+  ].join('\n');
+  let state = { rows: [], outputs: { subject:'', daily:'', weekly:'', email:'' } };
+  const els = {
+    recipientEmail: document.getElementById('recipient-email'),
+    senderName: document.getElementById('sender-name'),
+    reportDate: document.getElementById('report-date'),
+    toneSelect: document.getElementById('tone-select'),
+    csvInput: document.getElementById('csv-input'),
+    dailyFocus: document.getElementById('daily-focus'),
+    winsInput: document.getElementById('wins-input'),
+    blockersInput: document.getElementById('blockers-input'),
+    momentumInput: document.getElementById('momentum-input'),
+    nextUpInput: document.getElementById('next-up-input'),
+    brainDumpInput: document.getElementById('brain-dump-input'),
+    trackerSummary: document.getElementById('tracker-summary'),
+    pressureSummary: document.getElementById('pressure-summary'),
+    heroOpenCount: document.getElementById('hero-open-count'),
+    heroDoneCount: document.getElementById('hero-done-count'),
+    heroHighCount: document.getElementById('hero-high-count'),
+    heroOverdueCount: document.getElementById('hero-overdue-count'),
+    weekRangePill: document.getElementById('week-range-pill'),
+    subjectOutput: document.getElementById('subject-output'),
+    dailyOutput: document.getElementById('daily-output'),
+    weeklyOutput: document.getElementById('weekly-output'),
+    emailOutput: document.getElementById('email-output'),
+    mailtoLink: document.getElementById('mailto-link'),
+    toast: document.getElementById('toast')
+  };
+
+  function todayLocalISO() {
+    const now = new Date();
+    const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+    return local.toISOString().slice(0, 10);
+  }
+
+  function splitCSVLine(line) {
+    const out = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+        else { inQuotes = !inQuotes; }
+        continue;
+      }
+      if (ch === ',' && !inQuotes) { out.push(current); current = ''; continue; }
+      current += ch;
+    }
+    out.push(current);
+    return out;
+  }
+
+  function parseCSV(raw) {
+    const lines = raw.trim().split(/\r?\n/).filter(Boolean);
+    if (!lines.length) return [];
+    let startIndex = /task.?id|plan|project|status/i.test(lines[0]) ? 1 : 0;
+    const rows = [];
+    for (let i = startIndex; i < lines.length; i++) {
+      const cols = splitCSVLine(lines[i]);
+      if (cols.length < 7) continue;
+      rows.push({
+        id:(cols[0] || '').trim(),
+        plan:(cols[1] || '').trim(),
+        task:(cols[2] || '').trim(),
+        category:(cols[3] || '').trim(),
+        priority:(cols[4] || '').trim(),
+        owner:(cols[5] || '').trim(),
+        status:(cols[6] || '').trim(),
+        assigned:(cols[7] || '').trim(),
+        started:(cols[8] || '').trim(),
+        completed:(cols[9] || '').trim(),
+        days:(cols[10] || '').trim(),
+        notes:(cols[11] || '').trim()
+      });
+    }
+    return rows;
+  }
+
+  function toDate(value) {
+    const d = value ? new Date(value) : null;
+    return d && !Number.isNaN(d.getTime()) ? d : null;
+  }
+
+  function toPrettyDate(value) {
+    const d = toDate(value);
+    return d ? d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' }) : (value || 'Unscheduled');
+  }
+
+  function weekRange(value) {
+    const d = toDate(value) || new Date();
+    const diffToMonday = (d.getDay() + 6) % 7;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() - diffToMonday);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    return { monday, sunday };
+  }
+
+  function formatRange(range) {
+    return range.monday.toLocaleDateString(undefined, { month:'short', day:'numeric' }) + ' - ' +
+      range.sunday.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+  }
+
+  function safeDays(row) {
+    const parsed = parseFloat(row.days);
+    if (!Number.isNaN(parsed)) return parsed;
+    const started = toDate(row.started || row.assigned);
+    if (!started) return null;
+    const today = toDate(els.reportDate.value) || new Date();
+    return Math.max(0, Math.round((today - started) / 86400000));
+  }
+
+  function cleanInline(value) {
+    return (value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function cleanBlock(value) {
+    return (value || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean).join(' ');
+  }
+
+  function summarizeRows(rows) {
+    const openRows = rows.filter(r => !/done|cancelled/i.test(r.status));
+    const doneRows = rows.filter(r => /done/i.test(r.status));
+    const inProgress = rows.filter(r => /in progress/i.test(r.status));
+    const highOpen = openRows.filter(r => /high/i.test(r.priority));
+    const overdue = openRows.filter(r => (safeDays(r) || 0) >= 14);
+    const catCounts = {};
+    const ownerCounts = {};
+    openRows.forEach(row => {
+      if (row.category) catCounts[row.category] = (catCounts[row.category] || 0) + 1;
+      if (row.owner) ownerCounts[row.owner] = (ownerCounts[row.owner] || 0) + 1;
+    });
+    const topCategory = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0];
+    const topOwner = Object.entries(ownerCounts).sort((a, b) => b[1] - a[1])[0];
+    const pressureTasks = [...highOpen].sort((a, b) => (safeDays(b) || 0) - (safeDays(a) || 0)).slice(0, 3);
+    return { openRows, doneRows, inProgress, highOpen, overdue, topCategory, topOwner, pressureTasks };
+  }
+
+  function makeDailySnapshot(summary) {
+    const focus = cleanBlock(els.dailyFocus.value);
+    const openLead = summary.openRows.length
+      ? 'Open work is sitting at ' + summary.openRows.length + ' items, with ' + summary.inProgress.length + ' already moving and ' + summary.highOpen.length + ' marked high priority.'
+      : 'The tracker is clean right now with no open items in this load.';
+    const categoryLine = summary.topCategory
+      ? 'The heaviest lane right now is ' + summary.topCategory[0] + ' with ' + summary.topCategory[1] + ' active item' + (summary.topCategory[1] === 1 ? '' : 's') + '.'
+      : 'No dominant category showed up in this load.';
+    const pressureLine = summary.pressureTasks.length
+      ? 'Most immediate pressure: ' + summary.pressureTasks.map(row => row.plan + ' - ' + row.task).join('; ') + '.'
+      : 'Nothing is flashing as a major pressure point from the current export.';
+    const overdueLine = summary.overdue.length
+      ? summary.overdue.length + ' item' + (summary.overdue.length === 1 ? ' is' : 's are') + ' aging past 14 days and worth a deliberate check-in.'
+      : 'Nothing is aging past the 14-day mark.';
+    const focusLine = focus
+      ? "Today's focus: " + focus
+      : "Today's focus can stay simple: close loops, move high-priority work, and keep the tracker honest.";
+    return ['Daily snapshot for ' + toPrettyDate(els.reportDate.value), '', openLead, categoryLine, pressureLine, overdueLine, focusLine].join('\n');
+  }
+
+  function makeWeeklyNarrative(rows, summary) {
+    const tone = els.toneSelect.value;
+    const name = cleanInline(els.senderName.value) || 'I';
+    const wins = cleanBlock(els.winsInput.value);
+    const blockers = cleanBlock(els.blockersInput.value);
+    const momentum = cleanBlock(els.momentumInput.value);
+    const nextUp = cleanBlock(els.nextUpInput.value);
+    const brainDump = cleanBlock(els.brainDumpInput.value);
+    const range = formatRange(weekRange(els.reportDate.value));
+    const loadSentence = rows.length
+      ? 'The tracker for ' + range + ' carried ' + rows.length + ' total items, with ' + summary.doneRows.length + ' closed out, ' + summary.inProgress.length + ' still in motion, and ' + summary.highOpen.length + ' high-priority pieces still asking for attention.'
+      : 'There was no tracker load for ' + range + ', so this recap leans entirely on the written notes.';
+    const categorySentence = summary.topCategory
+      ? 'Most of the weight lived in ' + summary.topCategory[0] + ', which kept showing up as the center of gravity.'
+      : 'No single category took over the week.';
+    const ownerSentence = summary.topOwner
+      ? 'The biggest ownership cluster sat with ' + summary.topOwner[0] + ', which is useful because it tells us where follow-up energy is going.'
+      : '';
+    const overdueSentence = summary.overdue.length
+      ? summary.overdue.length + ' older item' + (summary.overdue.length === 1 ? ' stayed' : 's stayed') + ' on the board past two weeks, so there is some drag we should not pretend is invisible.'
+      : 'Nothing old enough to feel stale is lingering in the queue.';
+    if (tone === 'exec') {
+      return ['Weekly recap for ' + range + '.', loadSentence, categorySentence, ownerSentence, wins ? 'Key progress: ' + wins : '', blockers ? 'Risk and friction: ' + blockers : '', momentum ? 'Observed themes: ' + momentum : '', brainDump ? 'Context from notes: ' + brainDump : '', overdueSentence, nextUp ? 'Next step for Monday: ' + nextUp : ''].filter(Boolean).join('\n\n');
+    }
+    if (tone === 'clear') {
+      return ['Here is the clean read on the week of ' + range + '.', loadSentence + ' ' + categorySentence + (ownerSentence ? ' ' + ownerSentence : ''), wins ? 'What actually moved: ' + wins : 'What moved most was simply keeping the board current and moving open items forward.', blockers ? 'Where the friction showed up: ' + blockers : 'There was not a dramatic blocker pattern in the notes, just the usual pressure of follow-ups and waiting on dependencies.', momentum ? 'The larger theme was this: ' + momentum : 'The larger theme was steady operational cleanup rather than one huge milestone.', brainDump ? 'The human version of the week sounded like this: ' + brainDump : '', overdueSentence, nextUp ? 'Monday starts here: ' + nextUp : 'Monday starts with closing the oldest loops first and protecting time for the highest-priority work.'].filter(Boolean).join('\n\n');
+    }
+    return ['This is ' + name + ', talking back to the week of ' + range + '.', loadSentence + ' ' + categorySentence + (ownerSentence ? ' ' + ownerSentence : ''), wins ? 'The wins had some weight to them: ' + wins : 'The wins were not loud, but they were real. Work moved, a few loops closed, and the board kept inching toward cleaner ground.', blockers ? 'The week also had teeth: ' + blockers : 'The friction was less dramatic than stubborn: waiting, nudging, circling back, and trying not to let slow items become permanent furniture.', momentum ? 'If there was a pulse underneath all of it, it sounded like this: ' + momentum : 'If there was a pulse underneath all of it, it was momentum through repetition, not fireworks.', brainDump ? 'And the rough spoken version says it best: ' + brainDump : '', overdueSentence, nextUp ? 'So Monday at 7:00 AM is not really a fresh start. It is a handoff. Future me picks up here: ' + nextUp : 'So Monday at 7:00 AM is not really a fresh start. It is a handoff. Future me picks up with the oldest open work, the high-priority items, and whatever still needs one more nudge.'].filter(Boolean).join('\n\n');
+  }
+
+  function buildEmail(subject, daily, weekly) {
+    const recipient = cleanInline(els.recipientEmail.value);
+    const opener = recipient ? 'To: ' + recipient : '';
+    return [opener, opener ? '' : null, subject, '', daily, '', weekly].filter(v => v !== null).join('\n');
+  }
+
+  function setOutput(el, text) {
+    el.textContent = text || 'Not generated yet.';
+    el.classList.toggle('empty', !text);
+  }
+
+  function updateMailto() {
+    const email = cleanInline(els.recipientEmail.value);
+    els.mailtoLink.href = 'mailto:' + encodeURIComponent(email) + '?subject=' + encodeURIComponent(state.outputs.subject || '') + '&body=' + encodeURIComponent(state.outputs.email || '');
+  }
+
+  function updateDashboardReadout(rows, summary) {
+    els.heroOpenCount.textContent = String(summary.openRows.length);
+    els.heroDoneCount.textContent = String(summary.doneRows.length);
+    els.heroHighCount.textContent = String(summary.highOpen.length);
+    els.heroOverdueCount.textContent = String(summary.overdue.length);
+    els.trackerSummary.textContent = rows.length ? rows.length + ' rows loaded. ' + summary.inProgress.length + ' in progress, ' + summary.doneRows.length + ' done, and ' + summary.openRows.length + ' still open.' : 'No CSV loaded yet.';
+    els.pressureSummary.textContent = summary.pressureTasks.length ? summary.pressureTasks.map(row => row.plan + ' - ' + row.task).join(' | ') : "Nothing loaded yet that clearly stands out as the week's pressure stack.";
+  }
+
+  function persistState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      recipientEmail: els.recipientEmail.value,
+      senderName: els.senderName.value,
+      reportDate: els.reportDate.value,
+      toneSelect: els.toneSelect.value,
+      csvInput: els.csvInput.value,
+      dailyFocus: els.dailyFocus.value,
+      winsInput: els.winsInput.value,
+      blockersInput: els.blockersInput.value,
+      momentumInput: els.momentumInput.value,
+      nextUpInput: els.nextUpInput.value,
+      brainDumpInput: els.brainDumpInput.value,
+      outputs: state.outputs
+    }));
+  }
+
+  function restoreState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const saved = JSON.parse(raw);
+      Object.keys(saved).forEach(key => { if (els[key]) els[key].value = saved[key]; });
+      if (saved.outputs) state.outputs = saved.outputs;
+      state.rows = els.csvInput.value.trim() ? parseCSV(els.csvInput.value) : [];
+      renderOutputs();
+      if (state.rows.length) updateDashboardReadout(state.rows, summarizeRows(state.rows));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function renderOutputs() {
+    setOutput(els.subjectOutput, state.outputs.subject);
+    setOutput(els.dailyOutput, state.outputs.daily);
+    setOutput(els.weeklyOutput, state.outputs.weekly);
+    setOutput(els.emailOutput, state.outputs.email);
+    els.weekRangePill.textContent = 'Week of ' + formatRange(weekRange(els.reportDate.value));
+    updateMailto();
+  }
+
+  function generateAll() {
+    const rows = state.rows.length ? state.rows : parseCSV(els.csvInput.value);
+    state.rows = rows;
+    const summary = summarizeRows(rows);
+    updateDashboardReadout(rows, summary);
+    state.outputs.subject = 'Weekly Snapshot - ' + formatRange(weekRange(els.reportDate.value));
+    state.outputs.daily = makeDailySnapshot(summary);
+    state.outputs.weekly = makeWeeklyNarrative(rows, summary);
+    state.outputs.email = buildEmail(state.outputs.subject, state.outputs.daily, state.outputs.weekly);
+    renderOutputs();
+    persistState();
+    showToast('Weekly snapshot generated');
+  }
+
+  function loadCSV() {
+    state.rows = els.csvInput.value.trim() ? parseCSV(els.csvInput.value) : [];
+    updateDashboardReadout(state.rows, summarizeRows(state.rows));
+    persistState();
+    showToast(state.rows.length ? 'Dashboard rows loaded: ' + state.rows.length : 'CSV cleared');
+  }
+
+  function showToast(message) {
+    els.toast.textContent = message;
+    els.toast.classList.add('show');
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(() => els.toast.classList.remove('show'), 2200);
+  }
+
+  function copyText(text, label) {
+    if (!text) { showToast('Nothing to copy yet'); return; }
+    navigator.clipboard.writeText(text).then(() => showToast(label + ' copied')).catch(() => showToast('Copy failed'));
+  }
+
+  function downloadBlob(name, text, type) {
+    const blob = new Blob([text], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function bindAutoSave() {
+    [els.recipientEmail, els.senderName, els.reportDate, els.toneSelect, els.csvInput, els.dailyFocus, els.winsInput, els.blockersInput, els.momentumInput, els.nextUpInput, els.brainDumpInput]
+      .forEach(el => el.addEventListener('input', persistState));
+  }
+
+  document.getElementById('generate-all-btn').addEventListener('click', generateAll);
+  document.getElementById('save-state-btn').addEventListener('click', () => { persistState(); showToast('Setup saved locally'); });
+  document.getElementById('load-sample-btn').addEventListener('click', () => { els.csvInput.value = SAMPLE_CSV; loadCSV(); });
+  document.getElementById('load-csv-btn').addEventListener('click', loadCSV);
+  document.getElementById('download-template-btn').addEventListener('click', () => { downloadBlob('weekly-snapshot-template.csv', SAMPLE_CSV, 'text/csv;charset=utf-8'); showToast('Sample template downloaded'); });
+  document.getElementById('copy-subject-btn').addEventListener('click', () => copyText(state.outputs.subject, 'Subject'));
+  document.getElementById('copy-daily-btn').addEventListener('click', () => copyText(state.outputs.daily, 'Daily snapshot'));
+  document.getElementById('copy-weekly-btn').addEventListener('click', () => copyText(state.outputs.weekly, 'Weekly recap'));
+  document.getElementById('copy-email-btn').addEventListener('click', () => copyText(state.outputs.email, 'Email body'));
+  document.getElementById('download-email-btn').addEventListener('click', () => {
+    if (!state.outputs.email) { showToast('Generate the email first'); return; }
+    downloadBlob('weekly-snapshot-' + (els.reportDate.value || todayLocalISO()) + '.txt', state.outputs.email, 'text/plain;charset=utf-8');
+    showToast('Email body downloaded');
+  });
+
+  els.reportDate.value = todayLocalISO();
+  bindAutoSave();
+  restoreState();
+  renderOutputs();
+})();
+</script>
+</body>
+</html>

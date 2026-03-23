@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Consultant Portal - Atlas Copy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#f7f5f2ff;
+  --powder-petal:#ecdbcfff;
+  --sandy-brown:#f39e60ff;
+  --dusty-mauve:#9f4a54ff;
+  --blue-slate:#5b6c7dff;
+  --space-indigo:#1f2a44ff;
+  --shadow-grey:#25211fff;
+  --ink:var(--shadow-grey);
+  --paper:var(--parchment);
+  --surface:rgba(247,245,242,.76);
+  --line:rgba(37,33,31,.12);
+  --line-strong:rgba(37,33,31,.22);
+  --muted:var(--blue-slate);
+  --accent:var(--dusty-mauve);
+  --accent-soft:rgba(159,74,84,.14);
+  --blue:var(--space-indigo);
+  --shadow:0 26px 80px rgba(37,33,31,.10);
+  --radius-xl:34px;
+  --radius-lg:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  font-family:"Manrope",sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(243,158,96,.18), transparent 26%),
+    radial-gradient(circle at 85% 10%, rgba(91,108,125,.14), transparent 24%),
+    linear-gradient(180deg, #fbfaf8 0%, var(--paper) 100%);
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.38), transparent 28%),
+    linear-gradient(90deg, rgba(18,17,16,.02) 1px, transparent 1px);
+  background-size:auto, 24px 24px;
+  opacity:.35;
+}
+.page{
+  width:min(1380px, calc(100vw - 28px));
+  margin:0 auto;
+  padding:22px 0 48px;
+  position:relative;
+  z-index:1;
+}
+.progress-bar{
+  position:fixed;
+  top:0;
+  left:0;
+  height:3px;
+  width:0;
+  z-index:30;
+  background:linear-gradient(90deg, var(--dusty-mauve), var(--sandy-brown), var(--space-indigo));
+  box-shadow:0 0 18px rgba(159,74,84,.38);
+}
+.topbar{
+  position:sticky;
+  top:14px;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 18px;
+  border:1px solid rgba(255,255,255,.75);
+  border-radius:22px;
+  background:rgba(247,245,242,.78);
+  backdrop-filter:blur(16px);
+  box-shadow:0 14px 32px rgba(37,33,31,.07);
+  transition:transform .24s ease, background .24s ease, box-shadow .24s ease;
+}
+.topbar.scrolled{
+  background:rgba(247,245,242,.92);
+  box-shadow:0 18px 36px rgba(37,33,31,.10);
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(180deg, var(--space-indigo), #334562);
+  color:var(--parchment);
+  font:600 15px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.18em;
+}
+.brand-copy small,.mini-label{
+  display:block;
+  font:600 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.brand-copy strong{
+  display:block;
+  margin-top:6px;
+  font:700 17px/1 "Manrope",sans-serif;
+  letter-spacing:-.03em;
+}
+.nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.nav a,.pill{
+  text-decoration:none;
+  color:var(--ink);
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.45);
+  font:600 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.nav a.active{background:var(--space-indigo);color:var(--parchment);border-color:transparent}
+.hero{
+  margin-top:18px;
+  position:relative;
+  padding:34px;
+  border:1px solid rgba(255,255,255,.68);
+  border-radius:var(--radius-xl);
+  background:linear-gradient(135deg, rgba(247,245,242,.95), rgba(236,219,207,.84));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:auto auto -80px 58%;
+  width:340px;
+  height:340px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(91,108,125,.16), transparent 64%);
+  animation:floatGlow 10s ease-in-out infinite;
+  pointer-events:none;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg, rgba(255,255,255,.24), transparent 42%);
+  pointer-events:none;
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0, 1.25fr) minmax(320px, .75fr);
+  gap:24px;
+}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.5);
+  border:1px solid var(--line);
+  font:600 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--dusty-mauve);
+}
+.hero h1{
+  margin:18px 0 16px;
+  max-width:760px;
+  font:700 clamp(48px, 7vw, 90px)/.92 "Fraunces",serif;
+  letter-spacing:-.05em;
+}
+.hero h1 span{color:var(--accent)}
+.hero-copy{
+  max-width:720px;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.85;
+}
+.hero-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:12px 18px;
+  border-radius:16px;
+  text-decoration:none;
+  border:1px solid var(--line-strong);
+  color:var(--ink);
+  background:rgba(255,255,255,.55);
+  font:700 11px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 18px rgba(18,17,16,.09)}
+.btn.primary{background:linear-gradient(180deg, var(--sandy-brown), var(--dusty-mauve));color:var(--parchment);border-color:transparent}
+.hero-meta{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:12px;
+  margin-top:26px;
+}
+.hero-stat{
+  padding:16px 14px;
+  border-radius:18px;
+  background:rgba(255,255,255,.48);
+  border:1px solid var(--line);
+}
+.hero-stat strong{display:block;font:700 28px/1 "Fraunces",serif}
+.hero-stat span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font:600 10px/1.3 "IBM Plex Mono",monospace;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.hero-aside{display:flex;flex-direction:column;gap:14px}
+.panel,.section-card,.flow-card,.timeline-card{
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  background:var(--surface);
+  backdrop-filter:blur(12px);
+}
+.panel{
+  padding:20px;
+  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.panel:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 34px rgba(18,17,16,.07);
+  border-color:rgba(18,17,16,.18);
+}
+.preview-panel{
+  padding:0;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at top right, rgba(38,87,216,.14), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,.88), rgba(250,241,232,.74));
+}
+.preview-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:18px 18px 12px;
+}
+.preview-stage{
+  position:relative;
+  min-height:270px;
+  padding:18px;
+  background:
+    linear-gradient(180deg, rgba(18,17,16,.04), transparent),
+    linear-gradient(90deg, rgba(18,17,16,.04) 1px, transparent 1px),
+    linear-gradient(rgba(18,17,16,.04) 1px, transparent 1px);
+  background-size:auto, 24px 24px, 24px 24px;
+  overflow:hidden;
+}
+.preview-card{
+  position:absolute;
+  border-radius:20px;
+  border:1px solid rgba(18,17,16,.10);
+  background:rgba(255,255,255,.84);
+  box-shadow:0 18px 40px rgba(18,17,16,.09);
+  backdrop-filter:blur(12px);
+}
+.preview-card.primary{
+  inset:22px 20px auto 20px;
+  padding:18px;
+  animation:floatCard 8s ease-in-out infinite;
+}
+.preview-card.secondary{
+  right:18px;
+  bottom:18px;
+  width:46%;
+  padding:16px;
+  animation:floatCard 9s ease-in-out infinite reverse;
+}
+.preview-card.tertiary{
+  left:24px;
+  bottom:20px;
+  width:34%;
+  padding:14px;
+  animation:floatCard 7s ease-in-out infinite;
+}
+.preview-line{
+  height:9px;
+  border-radius:999px;
+  background:linear-gradient(90deg, rgba(208,91,49,.18), rgba(38,87,216,.16));
+  margin-top:10px;
+}
+.preview-line.short{width:42%}
+.preview-line.mid{width:66%}
+.preview-line.long{width:100%}
+.preview-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.preview-mini{
+  padding:10px;
+  border-radius:14px;
+  background:rgba(18,17,16,.04);
+}
+.command-bar{
+  margin-top:16px;
+  padding:14px 16px;
+  border-radius:16px;
+  background:var(--space-indigo);
+  color:var(--parchment);
+  font:500 13px/1.5 "IBM Plex Mono",monospace;
+  position:relative;
+  overflow:hidden;
+}
+.command-bar::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
+  transform:translateX(-100%);
+  animation:scan 3.6s linear infinite;
+}
+.command-results,.stack-list,.timeline-list{display:grid;gap:10px;margin-top:14px}
+.command-item,.stack-row,.rail-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.52);
+  border:1px solid rgba(18,17,16,.08);
+  transition:transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.command-item:hover,.stack-row:hover,.rail-row:hover{
+  transform:translateX(4px);
+  background:rgba(255,255,255,.68);
+  border-color:rgba(18,17,16,.14);
+}
+.badge{
+  white-space:nowrap;
+  padding:6px 8px;
+  border-radius:999px;
+  background:var(--accent-soft);
+  color:var(--accent);
+  font:700 9px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.overview{
+  display:grid;
+  grid-template-columns:minmax(0, 1.1fr) minmax(320px, .9fr);
+  gap:18px;
+  margin-top:18px;
+}
+.library-grid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:16px;
+}
+.section-shell{
+  position:relative;
+  border:1px solid rgba(37,33,31,.08);
+  border-radius:var(--radius-xl);
+  overflow:hidden;
+}
+.section-shell::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:4px;
+  background:var(--section-band, linear-gradient(90deg, var(--dusty-mauve), var(--sandy-brown)));
+}
+.section-shell > *{
+  position:relative;
+  z-index:1;
+}
+.overview-shell{
+  background:linear-gradient(180deg, rgba(236,219,207,.56), rgba(247,245,242,.88));
+  box-shadow:0 20px 42px rgba(37,33,31,.08);
+  padding:20px;
+}
+.workspace-shell-wrap{
+  background:linear-gradient(180deg, rgba(91,108,125,.10), rgba(247,245,242,.92));
+  box-shadow:0 20px 42px rgba(37,33,31,.08);
+  padding:20px;
+}
+.flows-shell{
+  background:linear-gradient(180deg, rgba(159,74,84,.08), rgba(247,245,242,.92));
+  box-shadow:0 20px 42px rgba(37,33,31,.08);
+  padding:20px;
+}
+.launchpad-shell{
+  background:linear-gradient(180deg, rgba(243,158,96,.12), rgba(247,245,242,.92));
+  box-shadow:0 20px 42px rgba(37,33,31,.08);
+  padding:20px;
+}
+.signals-shell{
+  background:linear-gradient(180deg, rgba(31,42,68,.08), rgba(247,245,242,.92));
+  box-shadow:0 20px 42px rgba(37,33,31,.08);
+  padding:20px;
+}
+.timeline-shell-wrap{
+  background:linear-gradient(180deg, rgba(159,74,84,.08), rgba(236,219,207,.48));
+  box-shadow:0 20px 42px rgba(37,33,31,.08);
+  padding:20px;
+}
+.section-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:16px;
+}
+.section-card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:22px;
+  overflow:hidden;
+  gap:10px;
+  transition:transform .18s ease, border-color .18s ease;
+  background:var(--card-bg, rgba(255,255,255,.72));
+  border:1px solid var(--card-line, rgba(37,33,31,.08));
+}
+.section-card:hover{transform:translateY(-3px);border-color:rgba(18,17,16,.22)}
+.section-card::after{
+  content:"";
+  position:absolute;
+  right:-16px;
+  top:-18px;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  background:var(--wash, rgba(38,87,216,.10));
+  filter:blur(10px);
+}
+.section-num,.flow-index{
+  font:700 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.section-card h2,.flow-card h3,.panel h3{
+  margin:14px 0 8px;
+  font:700 28px/1.06 "Fraunces",serif;
+  letter-spacing:-.04em;
+  position:relative;
+  z-index:1;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+.section-card p,.flow-card p,.panel p,.timeline-card p,.quote-sub{
+  color:var(--muted);
+  line-height:1.7;
+  margin:0;
+}
+.section-meta,.flow-meta{
+  position:relative;
+  z-index:1;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+  width:100%;
+}
+.section-meta span,.flow-meta span{
+  padding:6px 9px;
+  border-radius:999px;
+  border:1px solid rgba(18,17,16,.10);
+  background:rgba(255,255,255,.55);
+  font-size:11px;
+}
+.mini-asset{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:62px;
+  min-height:30px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(37,33,31,.10);
+  font:700 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--dusty-mauve);
+}
+.rail{margin-top:18px;display:grid;gap:12px}
+.workspace{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:minmax(0, .9fr) minmax(0, 1.1fr);
+  gap:18px;
+}
+.ticker-shell,
+.launchpad,
+.signal-board{
+  margin-top:18px;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  background:rgba(255,251,246,.72);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.ticker-shell{
+  position:relative;
+  padding:16px 0;
+}
+.ticker-shell::before,
+.ticker-shell::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:96px;
+  z-index:2;
+  pointer-events:none;
+}
+.ticker-shell::before{
+  left:0;
+  background:linear-gradient(90deg, rgba(255,249,243,.96), transparent);
+}
+.ticker-shell::after{
+  right:0;
+  background:linear-gradient(270deg, rgba(255,249,243,.96), transparent);
+}
+.ticker-track{
+  display:flex;
+  gap:14px;
+  width:max-content;
+  padding-left:24px;
+  animation:ticker 28s linear infinite;
+}
+.ticker-item{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 16px;
+  border-radius:999px;
+  border:1px solid rgba(18,17,16,.08);
+  background:rgba(255,255,255,.62);
+  font:700 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.ticker-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:linear-gradient(180deg, var(--sandy-brown), var(--dusty-mauve));
+  box-shadow:0 0 12px rgba(159,74,84,.34);
+}
+.flows,.timeline-shell,.quote-card{
+  margin-top:18px;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  background:rgba(255,251,246,.72);
+  box-shadow:var(--shadow);
+}
+.workspace-shell{
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  background:var(--workspace-bg, rgba(255,251,246,.72));
+  box-shadow:var(--shadow);
+}
+.workspace-shell h2{
+  margin:10px 0 12px;
+  font:700 clamp(34px, 4.3vw, 54px)/.96 "Fraunces",serif;
+  letter-spacing:-.04em;
+}
+.workspace-shell p{color:var(--muted);line-height:1.8}
+.workspace-points{
+  display:grid;
+  gap:12px;
+  margin-top:18px;
+}
+.workspace-point{
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid rgba(18,17,16,.08);
+  background:rgba(255,255,255,.52);
+}
+.workspace-point strong{display:block;font-size:15px}
+.launchpad{
+  display:grid;
+  grid-template-columns:minmax(0, .95fr) minmax(0, 1.05fr);
+  gap:18px;
+}
+.launchpad-copy h2,
+.signal-board h2{
+  margin:10px 0 12px;
+  font:700 clamp(34px, 4.3vw, 54px)/.96 "Fraunces",serif;
+  letter-spacing:-.04em;
+}
+.launchpad-copy p,
+.signal-board p{color:var(--muted);line-height:1.8}
+.launchpad-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:14px;
+}
+.launch-card{
+  position:relative;
+  overflow:hidden;
+  min-height:200px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:18px;
+  gap:10px;
+  border-radius:24px;
+  border:1px solid var(--launch-line, rgba(18,17,16,.08));
+  background:var(--launch-bg, rgba(255,255,255,.68));
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.launch-card:hover{
+  transform:translateY(-4px) scale(1.01);
+  box-shadow:0 20px 36px rgba(18,17,16,.09);
+  border-color:rgba(18,17,16,.16);
+}
+.launch-card::after{
+  content:"";
+  position:absolute;
+  width:160px;
+  height:160px;
+  right:-34px;
+  bottom:-44px;
+  border-radius:50%;
+  background:var(--launch-wash, rgba(38,87,216,.12));
+  filter:blur(8px);
+}
+.launch-card h3{
+  margin:14px 0 8px;
+  font:700 26px/1.08 "Fraunces",serif;
+  letter-spacing:-.04em;
+  position:relative;
+  z-index:1;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+.launch-card p{
+  position:relative;
+  z-index:1;
+  color:var(--muted);
+  line-height:1.7;
+  margin:0;
+}
+.launch-meta{
+  position:relative;
+  z-index:1;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+  width:100%;
+}
+.launch-meta span{
+  padding:6px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.58);
+  border:1px solid rgba(18,17,16,.08);
+  font-size:11px;
+}
+.tool-actions,
+.reference-actions,
+.form-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  width:100%;
+  margin-top:auto;
+  padding-top:10px;
+}
+.tool-actions .btn,
+.reference-actions .btn,
+.form-actions .btn{
+  flex:0 0 auto;
+}
+.signal-board{
+  display:grid;
+  grid-template-columns:minmax(0, .92fr) minmax(0, 1.08fr);
+  gap:18px;
+}
+.signal-stack{
+  display:grid;
+  gap:12px;
+}
+.signal-panel{
+  padding:18px;
+  border-radius:22px;
+  border:1px solid rgba(31,42,68,.12);
+  background:rgba(255,255,255,.72);
+}
+.signal-list{
+  display:grid;
+  gap:10px;
+  margin-top:16px;
+}
+.signal-item{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(18,17,16,.04);
+  border:1px solid rgba(18,17,16,.06);
+  opacity:0;
+  transform:translateY(10px);
+  animation:signalIn .5s ease forwards;
+}
+.signal-item:nth-child(1){animation-delay:.12s}
+.signal-item:nth-child(2){animation-delay:.24s}
+.signal-item:nth-child(3){animation-delay:.36s}
+.signal-item:nth-child(4){animation-delay:.48s}
+.signal-pulse{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--pulse, var(--blue));
+  box-shadow:0 0 0 0 rgba(38,87,216,.18);
+  animation:pulse 2.4s infinite;
+}
+.signal-kpi{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:12px;
+  margin-top:18px;
+}
+.kpi{
+  padding:16px;
+  border-radius:18px;
+  background:rgba(255,255,255,.58);
+  border:1px solid rgba(18,17,16,.08);
+}
+.kpi strong{
+  display:block;
+  font:700 28px/1 "Fraunces",serif;
+}
+.kpi span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font:600 10px/1.3 "IBM Plex Mono",monospace;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.mode-tabs{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:18px 0 16px;
+}
+.mode-tab{
+  border:none;
+  cursor:pointer;
+  padding:11px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.52);
+  border:1px solid rgba(18,17,16,.08);
+  color:var(--shadow-grey);
+  font:700 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  transition:transform .16s ease, background .16s ease, color .16s ease;
+}
+.mode-tab.active{
+  background:var(--space-indigo);
+  color:var(--parchment);
+  border-color:transparent;
+}
+.mode-tab:hover{transform:translateY(-1px)}
+.mode-stage{
+  position:relative;
+  min-height:360px;
+}
+.mode-panel{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transform:translateY(18px);
+  pointer-events:none;
+  transition:opacity .32s ease, transform .32s ease;
+}
+.mode-panel.active{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+.mode-layout{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:14px;
+}
+.mode-card{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:18px;
+  gap:10px;
+  border-radius:22px;
+  border:1px solid rgba(18,17,16,.08);
+  background:rgba(255,255,255,.62);
+}
+.mode-stack{
+  display:grid;
+  gap:12px;
+}
+.metric-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(18,17,16,.08);
+}
+.metric-row:last-child{border-bottom:none}
+.metric-row strong{font-size:14px}
+.mode-list{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+.mode-list-item{
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(18,17,16,.04);
+  border:1px solid rgba(18,17,16,.06);
+}
+.flows-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.flows-head h2,.timeline h2{
+  margin:10px 0 0;
+  font:700 clamp(34px, 4.4vw, 56px)/.96 "Fraunces",serif;
+  letter-spacing:-.04em;
+}
+.flow-grid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:16px;
+}
+.flow-card{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:22px;
+  gap:10px;
+  background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(236,219,207,.62));
+  border:1px solid rgba(159,74,84,.12);
+}
+.flow-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 34px rgba(18,17,16,.08);
+}
+.flow-cta{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:auto;
+  padding-top:10px;
+  text-decoration:none;
+  color:var(--ink);
+  font:700 10px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+.panel h3,
+.quote,
+.section-head h2,
+.review-head h2{
+  overflow-wrap:anywhere;
+}
+.timeline{margin-top:18px;display:grid;grid-template-columns:minmax(0, 1fr) minmax(0, .9fr);gap:18px}
+.quote-card{
+  background:
+    radial-gradient(circle at 85% 10%, rgba(38,87,216,.12), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,.82), rgba(249,243,235,.76));
+}
+.quote{margin-top:20px;font:700 34px/1.1 "Fraunces",serif;letter-spacing:-.04em;max-width:520px}
+.quote-grid{margin-top:24px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px}
+.mini{padding:16px;border-radius:18px;border:1px solid rgba(18,17,16,.08);background:rgba(255,255,255,.48)}
+.mini strong{display:block;margin-top:8px;font-size:15px}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease, transform .55s ease;transition-delay:var(--delay, 0ms)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@keyframes floatGlow{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-18px,-12px,0) scale(1.08)}
+}
+@keyframes floatCard{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+@keyframes scan{
+  to{transform:translateX(100%)}
+}
+@keyframes ticker{
+  to{transform:translateX(-50%)}
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(38,87,216,.20)}
+  70%{box-shadow:0 0 0 14px transparent}
+  100%{box-shadow:0 0 0 0 transparent}
+}
+@keyframes signalIn{
+  to{opacity:1;transform:translateY(0)}
+}
+@media (max-width: 1180px){
+  .hero-grid,.overview,.workspace,.launchpad,.signal-board,.timeline,.flow-grid,.mode-layout,.library-grid{grid-template-columns:1fr}
+  .hero-meta{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .mode-stage{min-height:520px}
+}
+@media (max-width: 760px){
+  .page{width:min(100vw - 18px, 100%)}
+  .topbar,.hero,.workspace-shell,.launchpad,.signal-board,.flows,.timeline-shell,.quote-card{padding-left:18px;padding-right:18px}
+  .section-grid,.hero-meta,.quote-grid,.launchpad-grid,.signal-kpi{grid-template-columns:1fr}
+  .nav{justify-content:flex-start}
+  .preview-card.secondary,.preview-card.tertiary{position:relative;left:auto;right:auto;bottom:auto;width:auto;margin-top:12px}
+  .preview-stage{min-height:unset}
+  .mode-stage{min-height:620px}
+}
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">DC</div>
+        <div class="brand-copy">
+          <small>Atlas Portal Copy</small>
+          <strong>Data Consultant Portal</strong>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="active" href="#home">Home</a>
+        <a href="#sections">Sections</a>
+        <a href="#library">Library</a>
+        <a href="#flows">Flows</a>
+        <a href="#launchpad">Tools</a>
+        <a href="#signals">Reference</a>
+        <a href="#review">Review</a>
+      </nav>
+    </div>
+
+    <section class="hero reveal" id="home">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Data Consulting Division portal</div>
+          <h1>One modern home for <span>docs, flows, tools, and ops reference.</span></h1>
+          <div class="hero-copy">
+            The portal brings together the team’s working documents, interactive process flows, checklist tools, request forms, system references, and dashboard links in one place. Instead of opening the old portal and hunting through sections, this copy is built to surface the files, apps, and reference paths people actually use most.
+          </div>
+          <div class="hero-actions">
+            <a class="btn primary" href="#sections">Explore Sections</a>
+            <a class="btn" href="#launchpad">Open Core Tools</a>
+            <a class="btn" href="Data_Consultant_Website_v2_10.html">Open Legacy Portal</a>
+          </div>
+          <div class="hero-meta">
+            <div class="hero-stat"><strong>11</strong><span>Primary sections</span></div>
+            <div class="hero-stat"><strong>7</strong><span>Interactive flows</span></div>
+            <div class="hero-stat"><strong>6</strong><span>Core launch tools</span></div>
+            <div class="hero-stat"><strong>90+</strong><span>Indexed resources</span></div>
+          </div>
+        </div>
+
+        <aside class="hero-aside">
+          <div class="panel preview-panel reveal" style="--delay:80ms">
+            <div class="preview-head">
+              <div>
+                <div class="mini-label">Live workspace snapshot</div>
+                <strong>Main work surfaces in one shell</strong>
+              </div>
+              <span class="badge">Atlas mode</span>
+            </div>
+            <div class="preview-stage">
+              <div class="preview-card primary">
+                <div class="mini-label">Today</div>
+                <h3 style="margin:10px 0 0;font-size:24px;">Open a flow, launch a tool, or grab a file without leaving the portal.</h3>
+                <div class="preview-grid">
+                  <div class="preview-mini">
+                    <div class="mini-label">Flows</div>
+                    <div class="preview-line short"></div>
+                    <div class="preview-line mid"></div>
+                  </div>
+                  <div class="preview-mini">
+                    <div class="mini-label">Guides</div>
+                    <div class="preview-line short"></div>
+                    <div class="preview-line long"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-card secondary">
+                <div class="mini-label">Command layer</div>
+                <div class="preview-line long"></div>
+                <div class="preview-line mid"></div>
+                <div class="preview-line short"></div>
+              </div>
+              <div class="preview-card tertiary">
+                <div class="mini-label">Signals</div>
+                <div class="preview-line mid"></div>
+                <div class="preview-line short"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel reveal" style="--delay:140ms">
+            <div class="mini-label">Command Search Preview</div>
+            <h3>Search reaches flows, tools, files, and reference sections.</h3>
+            <div class="command-bar">Search flows, guides, field specs, forms, and tools...</div>
+            <div class="command-results">
+              <div class="command-item">
+                <div>
+                  <strong>Payroll Integration</strong>
+                  <p>Vendor IDs, live run scheduling, EDS and OnePayroll validation loops.</p>
+                </div>
+                <span class="badge">Flow</span>
+              </div>
+              <div class="command-item">
+                <div>
+                  <strong>EDS field specs</strong>
+                  <p>Position-sensitive layouts, formatting rules, and rejection troubleshooting.</p>
+                </div>
+                <span class="badge">Reference</span>
+              </div>
+              <div class="command-item">
+                <div>
+                  <strong>Main Checklist Generator</strong>
+                  <p>Launch app, guide, and dashboard-linked execution notes from one result.</p>
+                </div>
+                <span class="badge">Tool</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel reveal" style="--delay:220ms">
+            <div class="mini-label">What stays true</div>
+            <h3>Same portal structure, clearer entry points.</h3>
+            <div class="stack-list">
+              <div class="stack-row">
+                <div>
+                  <strong>Section map stays intact</strong>
+                  <p>Documents, walkthroughs, VBA, projects, forms, org, Informatica, EDS, resources, and labs are still the core structure.</p>
+                </div>
+                <span class="badge">Structure</span>
+              </div>
+              <div class="stack-row">
+                <div>
+                  <strong>Launch-plus-guide pattern stays</strong>
+                  <p>Checklist generators, parser tools, and project apps still keep their paired guide files and quick routes.</p>
+                </div>
+                <span class="badge">Tools</span>
+              </div>
+              <div class="stack-row">
+                <div>
+                  <strong>Legacy detail stays reachable</strong>
+                  <p>The current detailed portal stays one click away while Atlas becomes the new top layer.</p>
+                </div>
+                <span class="badge">Safe</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="overview section-shell overview-shell reveal" id="sections" style="--section-band:linear-gradient(90deg, var(--dusty-mauve), var(--powder-petal), var(--sandy-brown));">
+      <div class="section-grid">
+        <article class="section-card reveal" style="--wash:rgba(159,74,84,.14);--card-bg:rgba(247,245,242,.82);--card-line:rgba(159,74,84,.14);--delay:40ms;">
+          <div class="section-num">01 / Core Library</div>
+          <h2>Documents & Templates</h2>
+          <p>Keep the real downloads front and center: TO Mapping, Rereg, FTP setup, wire instructions, fund management docs, and standard internal forms.</p>
+          <div class="section-meta"><span>Templates</span><span>Reference sheets</span><span>Download + copy path</span></div>
+          <div class="tool-actions"><a class="btn primary" href="Data_Consultant_Library_Launches_Atlas.html#docs">Open Section</a></div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(91,108,125,.14);--card-bg:rgba(236,219,207,.56);--card-line:rgba(91,108,125,.16);--delay:120ms;">
+          <div class="section-num">02 / Guided Work</div>
+          <h2>Walkthroughs & Procedures</h2>
+          <p>The flow-driven part of the portal now opens through an Atlas inside page first, so payroll, TIK, balance import, loans, eligibility, deferrals, and Roth all start in a cleaner guided-work lane.</p>
+          <div class="section-meta"><span>Interactive steps</span><span>Scenario branching</span><span>Quick re-entry</span></div>
+          <div class="tool-actions"><a class="btn primary" href="Data_Consultant_Walkthroughs_Atlas.html">Open Section</a></div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(243,158,96,.16);--card-bg:rgba(247,245,242,.88);--card-line:rgba(243,158,96,.18);--delay:200ms;">
+          <div class="section-num">03 / Automation Shelf</div>
+          <h2>VBA, Projects, and Forms</h2>
+          <p>Macros, launch tools, request forms, and guide-paired projects stay grouped together so the path from intake to execution feels tighter.</p>
+          <div class="section-meta"><span>Launch apps</span><span>Open guide</span><span>Request intake</span></div>
+          <div class="tool-actions"><a class="btn primary" href="Data_Consultant_Library_Launches_Atlas.html#launches">Projects</a><a class="btn" href="Data_Consultant_Library_Launches_Atlas.html#forms">Forms</a></div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(31,42,68,.12);--card-bg:rgba(236,219,207,.48);--card-line:rgba(31,42,68,.14);--delay:280ms;">
+          <div class="section-num">04 / Specialized Reference</div>
+          <h2>Organization, Informatica, EDS, Resources</h2>
+          <p>Directory, systems reference, EDS field specs, resources, dashboard access, and the knowledge base still live here as the deeper operational layer.</p>
+          <div class="section-meta"><span>Field specs</span><span>Error fixes</span><span>Escalation paths</span></div>
+          <div class="tool-actions"><a class="btn primary" href="Data_Consultant_Operations_Atlas.html">Open Reference</a></div>
+        </article>
+      </div>
+
+      <aside class="panel reveal" id="ops" style="background:linear-gradient(180deg, rgba(247,245,242,.88), rgba(236,219,207,.62));border-color:rgba(159,74,84,.14);">
+        <div class="mini-label">Operating model</div>
+        <h3>Use the portal three different ways depending on the job.</h3>
+        <p>Some work starts with finding the right file or section. Some work starts by launching a checklist or tool. Some work starts by opening a system reference and staying there for a while. The portal has to support all three without making people jump through extra layers.</p>
+        <div class="rail">
+          <div class="rail-row">
+            <div>
+              <strong>Browse mode</strong>
+              <p>Start at the homepage, pick the right section, and move into documents, walkthroughs, forms, or reference shelves.</p>
+            </div>
+            <span class="badge">Home</span>
+          </div>
+          <div class="rail-row">
+            <div>
+              <strong>Run mode</strong>
+              <p>Open the checklist generators, extraction console, intake form, or dashboard when the next step is action instead of reading.</p>
+            </div>
+            <span class="badge">Tools</span>
+          </div>
+          <div class="rail-row">
+            <div>
+              <strong>Reference mode</strong>
+              <p>Stay inside Organization, Informatica, EDS, Resources, and Labs when the work is mostly technical detail and troubleshooting.</p>
+            </div>
+            <span class="badge">Depth</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section-shell shell-overview reveal" id="library" style="--section-band:linear-gradient(90deg, var(--powder-petal), var(--sandy-brown), var(--dusty-mauve));">
+      <div class="section-head">
+        <div>
+          <div class="mini-label">Working shelves</div>
+          <h2>Bring some of the real portal payload into Atlas itself.</h2>
+          <p>This is the start of the actual migration work: not just routing to the old portal, but carrying real documents, VBA tools, and quick-access operational assets directly inside the new shell.</p>
+        </div>
+        <span class="pill">Real files and quick access</span>
+      </div>
+      <div class="library-grid">
+        <article class="section-card reveal" style="--wash:rgba(159,74,84,.14);--card-bg:rgba(247,245,242,.86);--card-line:rgba(159,74,84,.16);--delay:40ms;">
+          <div class="mini-asset">XLSM</div>
+          <h2>TO Mapping Template</h2>
+          <p>Standard mapping workbook used for balance import crosswalks and other recurring setup work.</p>
+          <div class="section-meta"><span>Updated Mar 2026</span><span>Balance import</span><span>Crosswalk</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="V:\CIT\Data Consultants\Projects\JA\Data Consultants Website\Assets\TO Mapping Template.xlsm" download>Download</a>
+            <a class="btn" href="Data_Consultant_Library_Launches_Atlas.html#docs">More docs</a>
+          </div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(243,158,96,.16);--card-bg:rgba(236,219,207,.58);--card-line:rgba(243,158,96,.18);--delay:100ms;">
+          <div class="mini-asset">XLSX</div>
+          <h2>Rereg + FTP Setup</h2>
+          <p>Two of the highest-utility setup files from the current docs section, brought forward as quick-grab assets.</p>
+          <div class="section-meta"><span>Rereg</span><span>FTP setup</span><span>Internal setup</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="V:\CIT\Data Consultants\Projects\JA\Data Consultants Website\Assets\Rereg Form.xlsx" download>Rereg Form</a>
+            <a class="btn" href="V:\CIT\Data Consultants\Projects\JA\Data Consultants Website\Assets\FTP Setup.xlsx" download>FTP Setup</a>
+          </div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(31,42,68,.12);--card-bg:rgba(247,245,242,.82);--card-line:rgba(31,42,68,.14);--delay:160ms;">
+          <div class="mini-asset">DOCX</div>
+          <h2>Wire Instructions</h2>
+          <p>One of the operational Word references people need often enough that it should not stay buried in a long document list.</p>
+          <div class="section-meta"><span>Jan 2026</span><span>Operational reference</span><span>Word</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="V:\CIT\Data Consultants\Projects\JA\Data Consultants Website\Assets\Documents\Wire Instructions.docx" download>Download</a>
+            <a class="btn" href="Data_Consultant_Library_Launches_Atlas.html#docs">Open library</a>
+          </div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(91,108,125,.14);--card-bg:rgba(236,219,207,.54);--card-line:rgba(91,108,125,.16);--delay:220ms;">
+          <div class="mini-asset">VBA</div>
+          <h2>Custom Table Generator</h2>
+          <p>One-click table creation macro pulled from the VBA repository to prove the macro shelf can live inside Atlas too.</p>
+          <div class="section-meta"><span>Sheet level</span><span>Formatting</span><span>Macro</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="V:\CIT\Data Consultants\Projects\JA\Data Consultants Website\Assets\Documents\Macros\Create a Custom Table.txt" download>Download VBA</a>
+            <a class="btn" href="Data_Consultant_Library_Launches_Atlas.html#launches">Open repo</a>
+          </div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(159,74,84,.12);--card-bg:rgba(247,245,242,.84);--card-line:rgba(159,74,84,.14);--delay:280ms;">
+          <div class="mini-asset">VBA</div>
+          <h2>TOA to Fund Mapping</h2>
+          <p>Useful automation from the current VBA repository that directly supports mapping-heavy operational work.</p>
+          <div class="section-meta"><span>Multiple sheets</span><span>Fund mapping</span><span>Macro</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="V:\CIT\Data Consultants\Projects\JA\Data Consultants Website\Assets\Documents\Macros\TOA to Fund Mapping.txt" download>Download VBA</a>
+            <a class="btn" href="Data_Consultant_Library_Launches_Atlas.html#launches">Open repo</a>
+          </div>
+        </article>
+
+        <article class="section-card reveal" style="--wash:rgba(31,42,68,.12);--card-bg:rgba(236,219,207,.50);--card-line:rgba(31,42,68,.14);--delay:340ms;">
+          <div class="mini-asset">FAST</div>
+          <h2>Most-Used Request Paths</h2>
+          <p>Quick links for the kinds of requests that tend to get opened first: VBA, system access, and general portal/input intake.</p>
+          <div class="section-meta"><span>Requests</span><span>Forms</span><span>Fast lane</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="https://urldefense.com/v3/__https://forms.office.com/Pages/ShareFormPage.aspx?id=NWjhRgTI3kG-PFWDXRTe5Px1Z3Q2HhRBphHc7x55k5pUMjlaMEdWUVU5QVBBQ1RXT0VGOUZZOThaUS4u&amp;sharetoken=sAiMptbhHSPQIOtzB5KZ__;!!LTKUihUYLQ!PjBcWXdP9m6ubCvf0Ujn4NJ0161-y27d0v_Mg71D0RoH88pC4eAQ39VkDYnu-WAa8_U7tdO3kLOgXYl5IYjm1GyFRaKlOsg$" target="_blank" rel="noopener">VBA Request</a>
+            <a class="btn" href="Data_Consultant_Library_Launches_Atlas.html#forms">All forms</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workspace section-shell workspace-shell-wrap reveal" id="workspace" style="--section-band:linear-gradient(90deg, var(--space-indigo), var(--blue-slate), var(--powder-petal));">
+      <div class="workspace-shell" style="--workspace-bg:linear-gradient(180deg, rgba(247,245,242,.84), rgba(236,219,207,.52));">
+        <div class="mini-label">Built into the portal copy</div>
+        <h2>Atlas now acts as the new front page for the existing site.</h2>
+        <p>The old portal still contains the long detailed pages, but this copy handles the part people hit first: section selection, common launches, fast file access, and the quickest routes into the deeper material.</p>
+        <div class="workspace-points">
+          <div class="workspace-point">
+            <strong>Fast orientation</strong>
+            <p>The homepage quickly shows where documents, tools, forms, flows, and reference material live.</p>
+          </div>
+          <div class="workspace-point">
+            <strong>Real launch paths</strong>
+            <p>Links point into the current apps, guides, and detailed portal sections instead of placeholder states.</p>
+          </div>
+          <div class="workspace-point">
+            <strong>Legacy-safe rollout</strong>
+            <p>The full old portal is still available while this shell becomes the new top-level experience.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="workspace-shell" style="--workspace-bg:linear-gradient(180deg, rgba(247,245,242,.84), rgba(91,108,125,.10));">
+        <div class="mini-label">Portal usage map</div>
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="browse">Browse</button>
+          <button class="mode-tab" data-mode="run">Run</button>
+          <button class="mode-tab" data-mode="reference">Reference</button>
+        </div>
+        <div class="mode-stage">
+          <div class="mode-panel active" data-panel="browse">
+            <div class="mode-layout">
+              <div class="mode-card">
+                <div class="mini-label">Browse</div>
+                <h3>Use the homepage to find the right lane first.</h3>
+                <p>Start here when you know the kind of work you need to do but not the exact file, app, or section yet.</p>
+                <div class="mode-list">
+                  <div class="mode-list-item"><strong>Typical browse task:</strong> Find whether a need belongs in Documents, Walkthroughs, Projects, Forms, or Reference.</div>
+                  <div class="mode-list-item"><strong>Typical next step:</strong> Move from a section card to a specific file, app, or detailed page.</div>
+                  <div class="mode-list-item"><strong>Best use:</strong> Good for newer work, handoffs, and anything that starts with orientation.</div>
+                </div>
+              </div>
+              <div class="mode-stack">
+                <div class="mode-card">
+                  <div class="mini-label">Signals</div>
+                  <div class="metric-row"><span>Best browse targets</span><strong>Docs, flows, forms</strong></div>
+                  <div class="metric-row"><span>Most-opened tool</span><strong>Main Checklist Generator</strong></div>
+                  <div class="metric-row"><span>Fastest path</span><strong>Section -> Tool -> Guide</strong></div>
+                </div>
+                <div class="mode-card">
+                  <div class="mini-label">Browse pattern</div>
+                  <p>Start with broad section shelves, then move into the more specific working shelves and launches below.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mode-panel" data-panel="run">
+            <div class="mode-layout">
+              <div class="mode-card">
+                <div class="mini-label">Run</div>
+                <h3>Launch the tool you need and keep the guide nearby.</h3>
+                <p>The “Run” state keeps apps, checklists, and walkthroughs front and center, but surrounds them with just enough metadata to make handoffs and re-entry painless.</p>
+                <div class="mode-list">
+                  <div class="mode-list-item"><strong>Main Checklist Generator:</strong> Open the implementation app and guide from the same place.</div>
+                  <div class="mode-list-item"><strong>Payroll Checklist Generator:</strong> Launch payroll-specific work without detouring through other sections.</div>
+                  <div class="mode-list-item"><strong>Dashboard:</strong> Treat task visibility as part of day-to-day work, not a side feature.</div>
+                </div>
+              </div>
+              <div class="mode-stack">
+                <div class="mode-card">
+                  <div class="mini-label">Run metrics</div>
+                  <div class="metric-row"><span>Core launches</span><strong>Checklist, payroll, parser</strong></div>
+                  <div class="metric-row"><span>Guide pairing</span><strong>Visible on tool cards</strong></div>
+                  <div class="metric-row"><span>Other launch paths</span><strong>Intake, dashboard, hub</strong></div>
+                </div>
+                <div class="mode-card">
+                  <div class="mini-label">Run pattern</div>
+                  <p>Use this lane when the work starts with doing something, not reading something.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mode-panel" data-panel="reference">
+            <div class="mode-layout">
+              <div class="mode-card">
+                <div class="mini-label">Reference</div>
+                <h3>Open the dense sections without losing your place.</h3>
+                <p>Organization, Informatica, EDS, Resources, and Labs are still the heavy reference areas. Atlas just gives them clearer routes and calmer entry points.</p>
+                <div class="mode-list">
+                  <div class="mode-list-item"><strong>Informatica:</strong> Setup steps, workflow guidance, and troubleshooting paths.</div>
+                  <div class="mode-list-item"><strong>EDS:</strong> Field specs, outputs, prep rules, and common error logic.</div>
+                  <div class="mode-list-item"><strong>Organization + resources:</strong> Directory data, links, escalation paths, and quick references.</div>
+                </div>
+              </div>
+              <div class="mode-stack">
+                <div class="mode-card">
+                  <div class="mini-label">Reference signals</div>
+                  <div class="metric-row"><span>Core systems</span><strong>Informatica + EDS</strong></div>
+                  <div class="metric-row"><span>Other lanes</span><strong>Org, resources, labs</strong></div>
+                  <div class="metric-row"><span>Best use</span><strong>Troubleshooting and process detail</strong></div>
+                </div>
+                <div class="mode-card">
+                  <div class="mini-label">Reference pattern</div>
+                  <p>Use this lane when the work depends on exact steps, field order, system behavior, or contact and escalation detail.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="flows section-shell flows-shell reveal" id="flows" style="--section-band:linear-gradient(90deg, var(--dusty-mauve), var(--space-indigo), var(--blue-slate));">
+      <div class="flows-head">
+        <div>
+          <div class="mini-label">Interactive flows</div>
+          <h2>These are the major process lanes people come back to repeatedly.</h2>
+        </div>
+        <span class="pill">Seven active guided experiences</span>
+      </div>
+      <div class="flow-grid">
+        <article class="flow-card">
+          <div class="flow-index">Flow 01</div>
+          <h3>Payroll Integration</h3>
+          <p>Use this when the job is setting up payroll implementation work, validating the file path, and preparing for the live run.</p>
+          <div class="flow-meta"><span>Vendor tracking</span><span>Validation loops</span><span>Live run handoff</span></div>
+          <a class="flow-cta" href="Data_Consultant_Walkthroughs_Atlas.html#payroll">Open atlas lane -></a>
+        </article>
+        <article class="flow-card">
+          <div class="flow-index">Flow 02</div>
+          <h3>Balance Import + Loans</h3>
+          <p>Use this when the work depends on import method, mapping choices, loan-related setup, or tighter prerequisite checking.</p>
+          <div class="flow-meta"><span>Method branching</span><span>P3 setup</span><span>Date calculators</span></div>
+          <a class="flow-cta" href="Data_Consultant_Walkthroughs_Atlas.html#balance">Open balance path -></a>
+        </article>
+        <article class="flow-card">
+          <div class="flow-index">Flow 03</div>
+          <h3>Eligibility, Deferrals, Roth</h3>
+          <p>Use this lane for eligibility files, deferral elections, Roth handling, and the checks that go with them.</p>
+          <div class="flow-meta"><span>EDS decimals</span><span>Warnings</span><span>Rule checkers</span></div>
+          <a class="flow-cta" href="Data_Consultant_Walkthroughs_Atlas.html#eligibility">Open eligibility path -></a>
+        </article>
+      </div>
+    </section>
+
+    <section class="ticker-shell section-shell reveal" style="--section-band:linear-gradient(90deg, var(--sandy-brown), var(--dusty-mauve), var(--space-indigo));--delay:80ms;">
+      <div class="ticker-track">
+        <div class="ticker-item"><span class="ticker-dot"></span>Payroll integration checkpoints</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>EDS layout validation loops</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Main checklist generator pairing</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Informatica silent-error warnings</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Project launch plus guide pattern</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Dashboard as a live surface</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Payroll integration checkpoints</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>EDS layout validation loops</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Main checklist generator pairing</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Informatica silent-error warnings</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Project launch plus guide pattern</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Dashboard as a live surface</div>
+      </div>
+    </section>
+
+    <section class="launchpad section-shell launchpad-shell reveal" id="launchpad" style="--section-band:linear-gradient(90deg, var(--sandy-brown), var(--powder-petal), var(--dusty-mauve));">
+      <div class="launchpad-copy">
+        <div class="mini-label">Core launch layer</div>
+        <h2>These are the main tools the portal needs to surface every day.</h2>
+        <p>The launch layer is for the apps and work surfaces that people use to actually move implementation work forward: checklist generation, payroll setup, report parsing, intake, and dashboard review.</p>
+        <div class="workspace-points">
+          <div class="workspace-point">
+            <strong>Guide-paired launches</strong>
+            <p>Each major tool can still open its guide directly so setup and execution stay close together.</p>
+          </div>
+          <div class="workspace-point">
+            <strong>Real routes only</strong>
+            <p>Every card here points to something the team can already use right now.</p>
+          </div>
+        </div>
+      </div>
+      <div class="launchpad-grid">
+        <article class="launch-card" style="--launch-wash:rgba(159,74,84,.14);--launch-bg:rgba(247,245,242,.84);--launch-line:rgba(159,74,84,.16);">
+          <div class="mini-label">Flagship tool</div>
+          <h3>Main Checklist Generator</h3>
+          <p>Frame it as the execution engine for implementation plans, dashboard work, pinned notes, and live checklist runs.</p>
+          <div class="launch-meta"><span>Launch app</span><span>Open guide</span><span>Resume saved work</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="../../Apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html">Launch App</a>
+            <a class="btn" href="../../Resources/guides/Implementation_Checklist_Generator_Guide.docx">Open Guide</a>
+          </div>
+        </article>
+        <article class="launch-card" style="--launch-wash:rgba(31,42,68,.14);--launch-bg:rgba(236,219,207,.56);--launch-line:rgba(31,42,68,.16);">
+          <div class="mini-label">Payroll lane</div>
+          <h3>Payroll Checklist Generator</h3>
+          <p>Present payroll onboarding as a guided specialty surface with stronger checkpoints and handoff visibility.</p>
+          <div class="launch-meta"><span>Payroll setup</span><span>Vendor tasks</span><span>Guide pairing</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="../../Apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html">Launch App</a>
+            <a class="btn" href="../../Resources/guides/Payroll_Checklist_Generator_Guide.docx">Open Guide</a>
+          </div>
+        </article>
+        <article class="launch-card" style="--launch-wash:rgba(91,108,125,.14);--launch-bg:rgba(247,245,242,.82);--launch-line:rgba(91,108,125,.16);">
+          <div class="mini-label">Parsing ops</div>
+          <h3>Report Extraction Console</h3>
+          <p>Give the fixed-width console a cleaner operations-terminal feel with validation, preview, and export states.</p>
+          <div class="launch-meta"><span>Validate</span><span>Preview</span><span>Export workbook</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="../../Apps/fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html">Launch Console</a>
+            <a class="btn" href="../../Resources/guides/Fixed_Width_Report_Extraction_Console_Guide.docx">Open Guide</a>
+          </div>
+        </article>
+        <article class="launch-card" style="--launch-wash:rgba(243,158,96,.16);--launch-bg:rgba(236,219,207,.52);--launch-line:rgba(243,158,96,.18);">
+          <div class="mini-label">Intake and visibility</div>
+          <h3>Forms, Dashboard, and Hub</h3>
+          <p>Keep request intake, dashboard visibility, and the team achievement hub one click away from the main tool surface.</p>
+          <div class="launch-meta"><span>Intake</span><span>Dashboard</span><span>Hub</span></div>
+          <div class="tool-actions">
+            <a class="btn primary" href="../../Apps/project-intake/Project Intake Form.html">Open Intake</a>
+            <a class="btn" href="Data_Consultant_Website_v2_10.html#dash">Open Dashboard</a>
+                <a class="btn" href="../../../../../../Personal/Active/dc-achievements/dc-achievement-hub.html">Open Hub</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="signal-board section-shell signals-shell reveal" id="signals" style="--section-band:linear-gradient(90deg, var(--space-indigo), var(--blue-slate), var(--sandy-brown));">
+      <div>
+        <div class="mini-label">Reference and systems layer</div>
+        <h2>This is where the portal hands off into the dense process material.</h2>
+        <p>Use these routes when the work depends on system behavior, exact field order, troubleshooting steps, directory data, external references, or the deeper knowledge-base pages.</p>
+        <div class="signal-kpi">
+          <div class="kpi"><strong>6</strong><span>Reference lanes</span></div>
+          <div class="kpi"><strong>2</strong><span>Core systems</span></div>
+          <div class="kpi"><strong>1</strong><span>Legacy portal fallback</span></div>
+        </div>
+      </div>
+      <div class="signal-stack">
+        <div class="signal-panel">
+          <div class="mini-label">Direct routes</div>
+          <div class="signal-list">
+            <div class="signal-item">
+              <span class="signal-pulse" style="--pulse:var(--dusty-mauve);"></span>
+              <div><strong>Organization</strong><p>Directory, email quick-actions, hierarchy, and escalation paths.</p></div>
+              <span class="badge">Section 06</span>
+            </div>
+            <div class="signal-item">
+              <span class="signal-pulse" style="--pulse:var(--space-indigo);"></span>
+              <div><strong>Informatica</strong><p>Setup guidance, workflow rules, and silent-error troubleshooting.</p></div>
+              <span class="badge">Section 07</span>
+            </div>
+            <div class="signal-item">
+              <span class="signal-pulse" style="--pulse:var(--blue-slate);"></span>
+              <div><strong>EDS Reference</strong><p>Field specs, outputs, prep guidance, and common error handling.</p></div>
+              <span class="badge">Section 08</span>
+            </div>
+            <div class="signal-item">
+              <span class="signal-pulse" style="--pulse:var(--sandy-brown);"></span>
+              <div><strong>Resources + Labs</strong><p>Quick links, external references, and the deeper study/library material.</p></div>
+              <span class="badge">Sections 10-11</span>
+            </div>
+          </div>
+          <div class="tool-actions">
+            <a class="btn primary" href="Data_Consultant_Operations_Atlas.html#org">Organization</a>
+            <a class="btn" href="Data_Consultant_Operations_Atlas.html#infa">Informatica</a>
+            <a class="btn" href="Data_Consultant_Operations_Atlas.html#eds">EDS</a>
+            <a class="btn" href="Data_Consultant_Operations_Atlas.html">Resources</a>
+            <a class="btn" href="Data_Consultant_Operations_Atlas.html">Knowledge Base</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline section-shell timeline-shell-wrap">
+      <div class="timeline-shell reveal" id="review" style="background:linear-gradient(180deg, rgba(247,245,242,.88), rgba(236,219,207,.62));border-color:rgba(159,74,84,.14);">
+        <div class="mini-label">Read on this copy</div>
+        <h2>This page now acts as a practical top layer for the DC portal.</h2>
+        <div class="timeline-list">
+          <article class="timeline-card">
+            <strong>What is already here</strong>
+            <p>Section routing, working shelves, tool launches, flow entry points, reference routes, and direct links back into the detailed portal.</p>
+          </article>
+          <article class="timeline-card">
+            <strong>What still lives in the old page</strong>
+            <p>The largest detailed content sets, long lists, and full legacy section bodies still live in `v2_10` until they are migrated one by one.</p>
+          </article>
+          <article class="timeline-card">
+            <strong>Best next migration target</strong>
+            <p>Documents, Projects, or EDS would be the strongest next full section to port because people use them often and they carry a lot of day-to-day value.</p>
+          </article>
+          <article class="timeline-card">
+            <strong>Why this version matters</strong>
+            <p>It gives the team a cleaner first-stop page without taking away the current portal while the migration is still in progress.</p>
+          </article>
+        </div>
+      </div>
+
+      <aside class="quote-card reveal" style="background:linear-gradient(180deg, rgba(236,219,207,.72), rgba(247,245,242,.90));border-color:rgba(31,42,68,.12);">
+        <div class="mini-label">Positioning thought</div>
+        <div class="quote">This page should answer one question quickly: where does the work live?</div>
+        <div class="quote-sub">Documents, tools, flows, forms, and reference sections all have a clear place now. That makes the page useful even before every detailed section is fully rebuilt inside Atlas.</div>
+        <div class="quote-grid">
+          <div class="mini"><div class="mini-label">Use now</div><strong>As the new top-level launcher page</strong></div>
+          <div class="mini"><div class="mini-label">Fallback</div><strong>Open the legacy portal for deep detail</strong></div>
+          <div class="mini"><div class="mini-label">Current strength</div><strong>Clear routes into common daily work</strong></div>
+          <div class="mini"><div class="mini-label">Next move</div><strong>Port one heavy section fully into Atlas</strong></div>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) entry.target.classList.add("visible");
+  });
+}, { threshold: 0.18 });
+document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
+
+const topbar = document.querySelector(".topbar");
+const progressBar = document.getElementById("progressBar");
+const modeTabs = document.querySelectorAll(".mode-tab");
+const modePanels = document.querySelectorAll(".mode-panel");
+const navLinks = document.querySelectorAll(".nav a");
+const tickerTrack = document.querySelector(".ticker-track");
+const runPanelCopy = document.querySelector('[data-panel="run"] .mode-card p');
+
+const updateScrollUI = () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = `${progress}%`;
+  topbar.classList.toggle("scrolled", scrollTop > 24);
+};
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    navLinks.forEach((link) => {
+      link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+    });
+  });
+}, { threshold: 0.45 });
+
+document.querySelectorAll("section[id]").forEach((section) => sectionObserver.observe(section));
+
+modeTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const mode = tab.dataset.mode;
+    modeTabs.forEach((item) => item.classList.toggle("active", item === tab));
+    modePanels.forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === mode));
+  });
+});
+
+if (runPanelCopy) {
+  runPanelCopy.textContent = "Use the Run lane when the next step is opening a checklist app, parser tool, intake form, or dashboard surface instead of reading a long reference page.";
+}
+
+if (tickerTrack) {
+  tickerTrack.addEventListener("mouseenter", () => {
+    tickerTrack.style.animationPlayState = "paused";
+  });
+  tickerTrack.addEventListener("mouseleave", () => {
+    tickerTrack.style.animationPlayState = "running";
+  });
+}
+
+window.addEventListener("scroll", updateScrollUI, { passive:true });
+updateScrollUI();
+</script>
+</body>
+</html>
