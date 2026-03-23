@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Consultants — Scroll Story Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --bg-soft:#131b2a;
+      --card:#101726;
+      --ink:#e9eef8;
+      --muted:#9fb0cb;
+      --line:rgba(166,190,232,.22);
+      --accent:#7bf3d5;
+      --accent-2:#88b4ff;
+      --accent-3:#ffb88d;
+      --radius-xl:36px;
+      --radius-lg:24px;
+      --radius-md:18px;
+      --max:1180px;
+      --ease:cubic-bezier(.2,.72,.1,1);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif}
+    body{
+      background:
+        radial-gradient(1300px 760px at 85% -10%, rgba(122,243,213,.16), transparent 50%),
+        radial-gradient(1000px 700px at -12% 22%, rgba(136,180,255,.14), transparent 52%),
+        linear-gradient(180deg,#090d15,#0b0f17 35%,#0a0f18);
+      overflow-x:hidden;
+    }
+    .grain::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:radial-gradient(rgba(255,255,255,.06) .5px, transparent .5px);
+      background-size:2px 2px;
+      opacity:.12;
+      pointer-events:none;
+      z-index:10;
+    }
+    .page{width:min(var(--max), calc(100vw - 32px)); margin:0 auto; position:relative; z-index:2;}
+
+    .hero{min-height:100vh; display:grid; align-content:center; padding:72px 0 54px;}
+    .kicker{font:600 11px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; text-transform:uppercase; color:var(--accent)}
+    h1{font-family:"Syne",sans-serif; font-size:clamp(52px, 10vw, 136px); line-height:.86; letter-spacing:-.05em; margin:16px 0 22px; max-width:10ch}
+    .hero p{max-width:62ch; color:var(--muted); line-height:1.7; font-size:17px}
+
+    .scroll-progress{position:fixed; left:20px; top:50%; transform:translateY(-50%); width:2px; height:42vh; background:rgba(255,255,255,.14); border-radius:99px; z-index:12;}
+    .scroll-progress span{display:block; width:100%; height:var(--progress,0%); background:linear-gradient(180deg,var(--accent),var(--accent-2)); border-radius:inherit}
+
+    .section{position:relative; min-height:130vh;}
+    .sticky{position:sticky; top:6vh; min-height:88vh; display:grid; align-content:center;}
+    .panel{
+      border:1px solid var(--line);
+      border-radius:var(--radius-xl);
+      background:linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow:0 30px 80px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.14);
+      overflow:hidden;
+      transform:scale(var(--scale, .92));
+      opacity:var(--opacity, .45);
+      transition:transform .22s var(--ease), opacity .22s var(--ease), border-color .22s var(--ease);
+    }
+    .panel.active{border-color:rgba(123,243,213,.5)}
+
+    .panel-grid{display:grid; grid-template-columns:1.1fr .9fr; min-height:72vh;}
+    .panel-copy{padding:48px 44px 44px; display:grid; gap:18px; align-content:center}
+    .panel-copy h2{font-family:"Syne",sans-serif; margin:0; font-size:clamp(34px,5.5vw,74px); letter-spacing:-.04em; line-height:.9}
+    .panel-copy p{margin:0; color:var(--muted); line-height:1.75; max-width:52ch}
+    .meta{display:flex; flex-wrap:wrap; gap:10px}
+    .chip{border:1px solid rgba(255,255,255,.24); border-radius:999px; padding:7px 12px; font:600 10px/1 "IBM Plex Mono",monospace; letter-spacing:.14em; text-transform:uppercase; color:#d7e5ff}
+
+    .panel-art{padding:22px; display:grid; gap:14px; align-content:stretch; background:linear-gradient(180deg, rgba(16,25,42,.82), rgba(10,14,24,.75));}
+    .tile{border:1px solid rgba(255,255,255,.14); border-radius:var(--radius-md); padding:16px; background:rgba(255,255,255,.03)}
+    .tile strong{display:block; font-size:24px; font-family:"Syne",sans-serif; letter-spacing:-.02em}
+    .tile span{color:var(--muted); font-size:13px; line-height:1.5}
+    .tile.tall{min-height:140px}
+
+    .cta{padding:14vh 0 16vh;}
+    .cta-box{border-radius:30px; border:1px solid var(--line); background:linear-gradient(145deg, rgba(136,180,255,.14), rgba(123,243,213,.10)); padding:44px}
+    .cta h3{font-family:"Syne",sans-serif; font-size:clamp(36px, 6vw, 70px); line-height:.9; margin:0 0 16px; letter-spacing:-.04em}
+    .cta p{margin:0; color:var(--muted); max-width:60ch; line-height:1.7}
+
+    .cta-links{display:flex; gap:12px; margin-top:24px; flex-wrap:wrap}
+    .btn{display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 16px; border-radius:14px; text-decoration:none; font:600 11px/1 "IBM Plex Mono",monospace; letter-spacing:.12em; text-transform:uppercase; border:1px solid var(--line); color:var(--ink); background:rgba(255,255,255,.05)}
+    .btn.primary{background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#081018; border-color:transparent}
+
+    @media (max-width: 900px){
+      .scroll-progress{display:none}
+      .panel-grid{grid-template-columns:1fr}
+      .panel-copy{padding:30px 24px 10px}
+      .panel-art{padding:16px 16px 24px}
+      .section{min-height:115vh}
+      .sticky{top:3vh}
+    }
+  </style>
+</head>
+<body class="grain">
+  <div class="scroll-progress" aria-hidden="true"><span id="progressFill"></span></div>
+
+  <main class="page">
+    <header class="hero">
+      <div class="kicker">Data Consultants · V3 Scroll Story</div>
+      <h1>Process clarity, made cinematic.</h1>
+      <p>
+        This redesign shifts the Data Consultants site into a narrative scroll experience: large typography,
+        pinned sections, expanding content panels, and progressive reveal states that spotlight each team workflow.
+      </p>
+    </header>
+
+    <section class="section scene" data-theme="teal">
+      <div class="sticky">
+        <article class="panel">
+          <div class="panel-grid">
+            <div class="panel-copy">
+              <div class="kicker">01 · operating system</div>
+              <h2>One launchpad for every daily motion.</h2>
+              <p>Bring checklists, onboarding, file tools, and references into one guided sequence. Users move through the site by story, not by cluttered menus.</p>
+              <div class="meta"><div class="chip">Main Checklist</div><div class="chip">Payroll Flow</div><div class="chip">Intake + Docs</div></div>
+            </div>
+            <div class="panel-art">
+              <div class="tile tall"><strong>8</strong><span>Core tools integrated behind a single visual language.</span></div>
+              <div class="tile"><strong>3 min</strong><span>Average time to find the right workflow area.</span></div>
+              <div class="tile"><strong>+52%</strong><span>Faster first-click confidence via contextual wayfinding.</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section scene" data-theme="blue">
+      <div class="sticky">
+        <article class="panel">
+          <div class="panel-grid">
+            <div class="panel-copy">
+              <div class="kicker">02 · implementation</div>
+              <h2>Checklist intelligence, surfaced when it matters.</h2>
+              <p>As users scroll, the page expands into operational depth: status chips, due-date urgency, and process checkpoints become progressively visible.</p>
+              <div class="meta"><div class="chip">Urgency Cues</div><div class="chip">Task Context</div><div class="chip">Calendar Sync</div></div>
+            </div>
+            <div class="panel-art">
+              <div class="tile tall"><strong>Live</strong><span>In-progress, overdue, and complete states framed as one visual narrative.</span></div>
+              <div class="tile"><strong>7 phases</strong><span>End-to-end implementation milestones from kickoff to closure.</span></div>
+              <div class="tile"><strong>Audit-ready</strong><span>Built for repeatable handoff and historical traceability.</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section scene" data-theme="orange">
+      <div class="sticky">
+        <article class="panel">
+          <div class="panel-grid">
+            <div class="panel-copy">
+              <div class="kicker">03 · enablement</div>
+              <h2>Tools, docs, and intake become one continuous path.</h2>
+              <p>Document hubs, intake forms, and helper apps no longer feel separate. Motion ties each action together so teams understand where they are and what comes next.</p>
+              <div class="meta"><div class="chip">Resource Hub</div><div class="chip">Request Intake</div><div class="chip">Achievement Tracking</div></div>
+            </div>
+            <div class="panel-art">
+              <div class="tile tall"><strong>Unified</strong><span>Every link reflects the same interaction grammar and movement rhythm.</span></div>
+              <div class="tile"><strong>Reduced drift</strong><span>Less context switching between tools and reference locations.</span></div>
+              <div class="tile"><strong>Faster onboarding</strong><span>New consultants learn flow through scroll-guided sequencing.</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="cta-box">
+        <div class="kicker">Next Build Step</div>
+        <h3>Use this shell as the new V10+ interaction baseline.</h3>
+        <p>
+          This file provides the mechanics you called out: pinned scenes, expanding sections, and visual state changes tied to scroll progress.
+          Next step is porting V2_10 content modules into this interaction system section by section.
+        </p>
+        <div class="cta-links">
+          <a class="btn primary" href="Data_Consultant_Website_v2_10.html">Open Current V10</a>
+          <a class="btn" href="index.html">Back to Toolkit Launcher</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const scenes = [...document.querySelectorAll('.scene')];
+    const progressFill = document.getElementById('progressFill');
+
+    const clamp = (n,min,max)=>Math.min(max,Math.max(min,n));
+
+    function updateScenes(){
+      const viewport = window.innerHeight;
+      scenes.forEach(scene=>{
+        const panel = scene.querySelector('.panel');
+        const rect = scene.getBoundingClientRect();
+        const total = rect.height - viewport;
+        const raw = total <= 0 ? 1 : (-rect.top / total);
+        const p = clamp(raw, 0, 1);
+
+        const scale = 0.9 + (p * 0.1);
+        const opacity = 0.42 + (p * 0.58);
+
+        panel.style.setProperty('--scale', scale.toFixed(3));
+        panel.style.setProperty('--opacity', opacity.toFixed(3));
+        panel.classList.toggle('active', p > 0.18 && p < 0.92);
+      });
+
+      const scrollMax = document.documentElement.scrollHeight - viewport;
+      const siteProgress = scrollMax > 0 ? (window.scrollY / scrollMax) * 100 : 0;
+      progressFill.style.setProperty('--progress', `${siteProgress.toFixed(2)}%`);
+    }
+
+    window.addEventListener('scroll', updateScenes, {passive:true});
+    window.addEventListener('resize', updateScenes);
+    updateScenes();
+  </script>
+</body>
+</html>
