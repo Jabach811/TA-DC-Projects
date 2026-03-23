@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DC Achievement Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eee6da; --paper:#fffdf8; --panel:#fff7ed; --ink:#171311; --muted:#6d6055;
+  --line:rgba(23,19,17,.12); --navy:#17304f; --teal:#0f8a78; --amber:#d68b24; --violet:#6a56e4;
+  --shadow:0 24px 60px rgba(23,19,17,.10); --sans:"Space Grotesk",sans-serif; --serif:"Fraunces",serif; --mono:"IBM Plex Mono",monospace;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--ink); font-family:var(--sans);
+  background:
+    radial-gradient(circle at top left, rgba(214,139,36,.16), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(15,138,120,.12), transparent 24%),
+    linear-gradient(180deg, #f7f2eb 0%, var(--bg) 100%);
+}
+.page{width:min(1440px, calc(100vw - 28px)); margin:0 auto; padding:20px 0 40px;}
+.hero{
+  padding:28px; border-radius:30px; color:#fff; overflow:hidden; position:relative;
+  background:linear-gradient(135deg, #10253c 0%, #17304f 52%, #234d76 100%); box-shadow:var(--shadow);
+}
+.hero:after{content:""; position:absolute; inset:0; background:radial-gradient(circle at 80% 18%, rgba(214,139,36,.24), transparent 20%), radial-gradient(circle at 15% 92%, rgba(15,138,120,.18), transparent 22%);}
+.hero > *{position:relative; z-index:1}
+.eyebrow,.tiny{font:600 10px/1.4 var(--mono); letter-spacing:.14em; text-transform:uppercase}
+.eyebrow{color:rgba(255,255,255,.64)}
+.hero h1{margin:12px 0 10px; max-width:840px; font:700 clamp(38px, 6vw, 70px)/.94 var(--serif); letter-spacing:-.05em}
+.hero h1 span{color:#ffd08f}
+.hero-copy{max-width:760px; color:rgba(255,255,255,.74); font-size:15px; line-height:1.75}
+.hero-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:22px}
+.hero-stat{padding:14px 16px; border-radius:18px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.10)}
+.hero-stat strong{display:block; font-size:28px}.hero-stat span{display:block; margin-top:6px; color:rgba(255,255,255,.62); font:600 11px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase}
+.layout{display:grid; grid-template-columns:320px minmax(0,1fr) 320px; gap:18px; margin-top:18px; align-items:start}
+.panel{border:1px solid var(--line); border-radius:28px; background:rgba(255,253,248,.84); backdrop-filter:blur(14px); box-shadow:var(--shadow)}
+.panel-inner{padding:18px}
+.panel-head{display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-bottom:14px}
+.panel-head h2,.panel-head h3{margin:0; font:700 24px/1 var(--serif); letter-spacing:-.03em}
+.muted{color:var(--muted)}
+.card{border:1px solid var(--line); border-radius:22px; background:var(--paper); padding:15px}
+.stack{display:grid; gap:14px}
+input{
+  width:100%; padding:12px 14px; border-radius:14px; border:1px solid rgba(23,19,17,.18); background:#fff; color:var(--ink); font:500 14px/1.4 var(--sans); outline:none;
+}
+input:focus{border-color:var(--navy); box-shadow:0 0 0 4px rgba(23,48,79,.08)}
+.roster-form,.roster-list,.leaderboard-list,.mini-list{display:grid; gap:10px}
+.button-row,.filters{display:flex; gap:10px; flex-wrap:wrap}
+.btn,.pill{
+  border:none; border-radius:14px; cursor:pointer; padding:11px 13px; font:700 10px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase;
+}
+.btn-primary{background:var(--navy); color:#fff}.btn-secondary{background:#ece3d6; color:var(--ink)}.btn-danger{background:#f6dee0; color:#8b333d}
+.pill{background:#fff; color:var(--muted); border:1px solid rgba(23,19,17,.18)}
+.pill.active{background:var(--navy); color:#fff; border-color:var(--navy)}
+.dc-card,.leader,.mini-item,.achievement,.stat{
+  border:1px solid var(--line); border-radius:18px; background:#fff;
+}
+.dc-card{padding:14px; cursor:pointer}
+.dc-card.active{border-color:rgba(23,48,79,.42); box-shadow:0 14px 24px rgba(23,48,79,.12)}
+.dc-top,.profile-top,.achievement-top,.achievement-footer,.leader,.mini-item{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
+.dc-name{font-weight:700; font-size:18px}.dc-team,.leader-sub{margin-top:5px; color:var(--muted); font-size:12px}
+.chip,.tag{display:inline-flex; padding:6px 9px; border-radius:999px; background:#f4ebdd; color:#7b5c1f; font:700 9px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase}
+.progress{margin-top:12px}.progress-meta{display:flex; justify-content:space-between; gap:10px; color:var(--muted); font-size:12px}.bar{margin-top:8px; height:10px; background:#eee5d8; border-radius:999px; overflow:hidden}.fill{height:100%; background:linear-gradient(90deg, var(--amber), var(--teal))}
+.selected-empty{padding:26px 16px; text-align:center; color:var(--muted); border:1px dashed rgba(23,19,17,.22); border-radius:18px}
+.profile-card{background:linear-gradient(135deg, #fff8ef, #f4ece0)}
+.profile-name{font:700 28px/.96 var(--serif); letter-spacing:-.03em}.profile-team{margin-top:7px; color:var(--muted)}
+.profile-level{margin-top:10px; display:inline-flex; padding:8px 12px; border-radius:999px; background:rgba(214,139,36,.14); color:#8d5d16; font:700 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase}
+.summary-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px}
+.stat{padding:12px}.stat strong{display:block; font-size:24px}.stat span{display:block; margin-top:6px; color:var(--muted); font:600 10px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase}
+.toolbar{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; margin:14px 0}
+.toolbar-copy{max-width:640px; font-size:14px; line-height:1.7; color:var(--muted)}
+.achievement-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px}
+.achievement{padding:16px; display:grid; gap:10px; cursor:pointer; position:relative; overflow:hidden}
+.achievement:before{content:""; position:absolute; top:0; left:0; right:0; height:4px}
+.achievement.r-common:before{background:#8f8a84}.achievement.r-uncommon:before{background:var(--teal)}.achievement.r-rare:before{background:var(--navy)}.achievement.r-epic:before{background:var(--violet)}.achievement.r-legendary:before{background:linear-gradient(90deg, #a46d11, #ffd08f, #a46d11)}
+.achievement.earned{border-color:rgba(15,138,120,.38); box-shadow:0 18px 30px rgba(15,138,120,.12); background:linear-gradient(180deg, #ffffff, #f2fffb)}
+.achievement-icon{width:52px; height:52px; border-radius:18px; display:grid; place-items:center; font-size:24px; background:#f3ecdf}
+.achievement-meta{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end}
+.tag{background:#f5efe5; color:var(--muted)}
+.achievement-title{font:700 21px/1.06 var(--serif); letter-spacing:-.03em}.achievement-copy{color:var(--muted); font-size:14px; line-height:1.7}
+.achievement-xp,.achievement-action{font:700 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase}
+.achievement-action{color:var(--navy)}
+.leader{padding:12px 14px; align-items:center}.rank{width:42px; height:42px; border-radius:14px; display:grid; place-items:center; background:#f4ebdb; font-weight:700}
+.leader-score{text-align:right}.leader-score strong{display:block; font-size:20px}.leader-score span{display:block; margin-top:4px; color:var(--muted); font:600 10px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase}
+.mini-item{padding:10px 12px; align-items:center}.mini-item strong{font-size:14px}.mini-item span{color:var(--muted); font:600 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase}
+@media (max-width:1240px){.layout{grid-template-columns:1fr}.hero-stats{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:860px){.achievement-grid{grid-template-columns:1fr}}
+@media (max-width:640px){.page{width:min(100vw - 16px, 100%); padding-top:14px}.hero{padding:22px 18px}.hero-stats,.summary-grid{grid-template-columns:1fr}.panel-inner{padding:16px}}
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="hero">
+    <div class="eyebrow">Team App · Data Consultant Gamification</div>
+    <h1>DC Achievement Hub <span>for levels, bragging rights, and progress tracking.</span></h1>
+    <div class="hero-copy">Add Data Consultants, click achievements as they earn them, and let the app handle XP, levels, completion stats, and leaderboard ranking. Everything saves locally, so it works straight from the folder.</div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong id="heroDcCount">0</strong><span>Tracked DCs</span></div>
+      <div class="hero-stat"><strong id="heroEarnedCount">0</strong><span>Total Unlocks</span></div>
+      <div class="hero-stat"><strong id="heroMaxLevel">1</strong><span>Highest Level</span></div>
+      <div class="hero-stat"><strong id="heroTopXp">0 XP</strong><span>Top Score</span></div>
+    </div>
+  </section>
+
+  <section class="layout">
+    <aside class="panel"><div class="panel-inner">
+      <div class="panel-head"><div><span class="tiny muted">Roster Management</span><h2>Data Consultants</h2></div></div>
+      <div class="card">
+        <div class="tiny muted" style="margin-bottom:12px;">Add a new DC</div>
+        <div class="roster-form">
+          <input id="dcNameInput" type="text" placeholder="Consultant name">
+          <input id="dcTeamInput" type="text" placeholder="Team, pod, or specialty">
+          <div class="button-row">
+            <button class="btn btn-primary" id="addDcBtn">Add DC</button>
+            <button class="btn btn-secondary" id="seedBtn">Load Sample Team</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="panel-head" style="margin-bottom:12px;"><div><span class="tiny muted">Selectable Profiles</span><h3 style="font-size:20px;">Roster</h3></div></div>
+        <div class="roster-list" id="rosterList"></div>
+      </div>
+    </div></aside>
+
+    <main class="panel"><div class="panel-inner">
+      <div id="selectedProfile"></div>
+      <div class="toolbar">
+        <div class="toolbar-copy">Click any achievement below to toggle it for the selected consultant. Earned items update XP, level, completion, and leaderboard position instantly.</div>
+        <div class="filters" id="filters"></div>
+      </div>
+      <div class="achievement-grid" id="achievementGrid"></div>
+    </div></main>
+
+    <aside class="panel"><div class="panel-inner">
+      <div class="stack">
+        <div class="card">
+          <div class="panel-head" style="margin-bottom:12px;"><div><span class="tiny muted">Ranked by XP</span><h3 style="font-size:20px;">Leaderboard</h3></div></div>
+          <div class="leaderboard-list" id="leaderboardList"></div>
+        </div>
+        <div class="card">
+          <div class="panel-head" style="margin-bottom:12px;"><div><span class="tiny muted">Category Totals</span><h3 style="font-size:20px;">Most Earned</h3></div></div>
+          <div class="mini-list" id="categoryStats"></div>
+        </div>
+        <div class="card">
+          <div class="panel-head" style="margin-bottom:12px;"><div><span class="tiny muted">Quick Controls</span><h3 style="font-size:20px;">Admin</h3></div></div>
+          <div class="button-row">
+            <button class="btn btn-secondary" id="exportBtn">Export JSON</button>
+            <button class="btn btn-danger" id="resetProgressBtn">Reset Selected</button>
+          </div>
+          <div class="muted" style="margin-top:12px;font-size:13px;line-height:1.7;">Local storage keeps the current state. Export gives you a quick backup of the roster and all achievement unlocks.</div>
+        </div>
+      </div>
+    </div></aside>
+  </section>
+</div>
+
+<script>
+const STORAGE_KEY = "dc-achievement-hub-v1";
+const FILTERS = [{id:"all",label:"All"},{id:"onboarding",label:"Onboarding"},{id:"workflow",label:"Workflow"},{id:"data",label:"Data"},{id:"tools",label:"Tools"},{id:"expert",label:"Expert"},{id:"team",label:"Team"},{id:"legend",label:"Legend"}];
+const XP_BY_RARITY = { common:50, uncommon:150, rare:350, epic:750, legendary:2000 };
+const ACHIEVEMENTS = [
+  { id:"welcome-portal", cat:"onboarding", rarity:"common", icon:"🚪", title:"Welcome to the Portal", desc:"Opened the DC workspace and got oriented for the first time." },
+  { id:"first-search", cat:"onboarding", rarity:"common", icon:"🔎", title:"Search Pro", desc:"Used global search to find a process, tool, or flow." },
+  { id:"template-grab", cat:"onboarding", rarity:"uncommon", icon:"📄", title:"Template Grabber", desc:"Pulled a real template and used it for live work." },
+  { id:"first-walkthrough", cat:"onboarding", rarity:"uncommon", icon:"🧭", title:"First Walkthrough", desc:"Completed a full walkthrough from start to finish." },
+  { id:"payroll-flow", cat:"workflow", rarity:"rare", icon:"💼", title:"Payroll Runner", desc:"Completed the payroll integration flow with a clean handoff." },
+  { id:"tik-flow", cat:"workflow", rarity:"rare", icon:"📦", title:"TIK Tracker", desc:"Worked a re-registration or TIK case all the way through." },
+  { id:"balance-methods", cat:"workflow", rarity:"epic", icon:"⚖️", title:"Triple Method", desc:"Handled cash, mapping, and TIK balance import methods." },
+  { id:"live-run", cat:"workflow", rarity:"epic", icon:"🚀", title:"Live Run", desc:"Reached a live payroll or production milestone on a real case." },
+  { id:"error-catcher", cat:"data", rarity:"common", icon:"🧪", title:"Error Catcher", desc:"Spotted a validation or formatting issue before it escaped." },
+  { id:"eds-format", cat:"data", rarity:"rare", icon:"📐", title:"EDS Formatter", desc:"Applied the right decimal/date/file formatting without rework." },
+  { id:"loan-date-ace", cat:"data", rarity:"rare", icon:"📅", title:"Date Logic Ace", desc:"Nailed a deadline or conversion-date setup correctly." },
+  { id:"error-zero", cat:"data", rarity:"legendary", icon:"💎", title:"Error-Zero Season", desc:"Completed a long stretch of work with no validation misses." },
+  { id:"checklist-startup", cat:"tools", rarity:"uncommon", icon:"🛠️", title:"Startup Checklist", desc:"Generated a startup checklist and used it as the working source." },
+  { id:"checklist-conversion", cat:"tools", rarity:"uncommon", icon:"🔁", title:"Conversion Checklist", desc:"Generated a conversion checklist for a real implementation." },
+  { id:"email-gen", cat:"tools", rarity:"rare", icon:"📤", title:"Email Generator", desc:"Used the email generator to create a real communication." },
+  { id:"sql-excel", cat:"tools", rarity:"rare", icon:"📊", title:"SQL to Excel", desc:"Ran a query pull and used it in a real workflow." },
+  { id:"macro-master", cat:"tools", rarity:"epic", icon:"🤖", title:"Macro Master", desc:"Used multiple VBA helpers to speed up live implementation work." },
+  { id:"startup-live", cat:"expert", rarity:"epic", icon:"🌟", title:"Startup to Live", desc:"Took a startup implementation from intake to a live state." },
+  { id:"conversion-live", cat:"expert", rarity:"epic", icon:"🔗", title:"Full Conversion", desc:"Completed a full conversion implementation to live payroll." },
+  { id:"merger-live", cat:"expert", rarity:"epic", icon:"🏗️", title:"Merger Conductor", desc:"Successfully landed a merger implementation end to end." },
+  { id:"deep-tissue", cat:"expert", rarity:"legendary", icon:"🧠", title:"Deep Tissue", desc:"Managed multiple active implementations at once and closed them strong." },
+  { id:"first-feedback", cat:"team", rarity:"common", icon:"📣", title:"First Feedback", desc:"Submitted useful feedback, a bug report, or a process improvement." },
+  { id:"mentor-mode", cat:"team", rarity:"rare", icon:"🎓", title:"Mentor Mode", desc:"Helped another DC complete a process independently." },
+  { id:"knowledge-builder", cat:"team", rarity:"epic", icon:"📚", title:"Knowledge Builder", desc:"Repeatedly contributed improvements that made the system better." },
+  { id:"portal-ambassador", cat:"team", rarity:"epic", icon:"🏅", title:"Portal Ambassador", desc:"Brought multiple teammates into the system and got them moving." },
+  { id:"data-consultant", cat:"legend", rarity:"epic", icon:"🦅", title:"Data Consultant", desc:"Completed a full implementation from intake through live work." },
+  { id:"full-journey", cat:"legend", rarity:"legendary", icon:"🗺️", title:"Full Journey", desc:"Completed all major flow types and proved it across the board." },
+  { id:"holy-trinity", cat:"legend", rarity:"legendary", icon:"👑", title:"The Holy Trinity", desc:"Completed startup, conversion, and merger work all the way to go-live." },
+  { id:"goat", cat:"legend", rarity:"legendary", icon:"🐐", title:"The GOAT", desc:"Earned nearly everything worth bragging about." }
+];
+const SAMPLE_CONSULTANTS = [
+  { id:crypto.randomUUID(), name:"Joel", team:"Core Ops", earned:["welcome-portal","first-search","template-grab","payroll-flow","checklist-startup","email-gen","first-feedback"] },
+  { id:crypto.randomUUID(), name:"Annie", team:"Implementations", earned:["welcome-portal","first-search","first-walkthrough","payroll-flow","tik-flow","sql-excel","mentor-mode","data-consultant"] },
+  { id:crypto.randomUUID(), name:"Marco", team:"Data Precision", earned:["welcome-portal","error-catcher","eds-format","loan-date-ace","macro-master"] }
+];
+let state = loadState();
+let activeFilter = "all";
+
+function loadState() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    return { consultants: Array.isArray(parsed.consultants) ? parsed.consultants : [], selectedId: parsed.selectedId || null };
+  } catch { return { consultants: [], selectedId: null }; }
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function getAchievement(id){ return ACHIEVEMENTS.find(item => item.id === id); }
+function xpForAchievement(id){ const item = getAchievement(id); return item ? XP_BY_RARITY[item.rarity] : 0; }
+function getLevel(xp){
+  const levels = [
+    { level:1, title:"New Hire", minXp:0, nextXp:500 },
+    { level:2, title:"Portal Scout", minXp:500, nextXp:1500 },
+    { level:3, title:"Workflow Runner", minXp:1500, nextXp:3500 },
+    { level:4, title:"Implementation Operator", minXp:3500, nextXp:6500 },
+    { level:5, title:"Process Specialist", minXp:6500, nextXp:10000 },
+    { level:6, title:"Team Anchor", minXp:10000, nextXp:15000 },
+    { level:7, title:"DC Legend", minXp:15000, nextXp:999999 }
+  ];
+  const current = levels.slice().reverse().find(item => xp >= item.minXp) || levels[0];
+  const progress = current.nextXp === 999999 ? 100 : Math.max(0, Math.min(100, ((xp - current.minXp) / (current.nextXp - current.minXp)) * 100));
+  return { ...current, progress };
+}
+function consultantStats(consultant){
+  const earned = consultant.earned || [];
+  const xp = earned.reduce((sum, id) => sum + xpForAchievement(id), 0);
+  const level = getLevel(xp);
+  return { xp, level, earnedCount: earned.length, completion: Math.round((earned.length / ACHIEVEMENTS.length) * 100) };
+}
+function selectedConsultant(){ return state.consultants.find(item => item.id === state.selectedId) || null; }
+function sortedLeaderboard(){
+  return state.consultants.map(consultant => ({ consultant, stats: consultantStats(consultant) }))
+    .sort((a,b) => b.stats.xp - a.stats.xp || b.stats.earnedCount - a.stats.earnedCount || a.consultant.name.localeCompare(b.consultant.name));
+}
+function overallStats(){
+  const leaders = sortedLeaderboard(); const top = leaders[0];
+  return { dcCount:state.consultants.length, earnedCount:state.consultants.reduce((sum,c) => sum + (c.earned || []).length, 0), maxLevel:top ? top.stats.level.level : 1, topXp:top ? top.stats.xp : 0 };
+}
+function categoryCounts(){
+  const counts = Object.fromEntries(FILTERS.filter(item => item.id !== "all").map(item => [item.id, 0]));
+  state.consultants.forEach(consultant => (consultant.earned || []).forEach(id => { const achievement = getAchievement(id); if (achievement) counts[achievement.cat] += 1; }));
+  return counts;
+}
+function addConsultant(name, team){
+  if (!name.trim()) return;
+  const consultant = { id:crypto.randomUUID(), name:name.trim(), team:team.trim() || "Unassigned", earned:[] };
+  state.consultants.unshift(consultant); state.selectedId = consultant.id; saveState(); render();
+}
+function ensureSampleTeam(){
+  if (state.consultants.length) return;
+  state.consultants = SAMPLE_CONSULTANTS.map(item => ({ ...item, earned:[...item.earned] })); state.selectedId = state.consultants[0].id; saveState(); render();
+}
+function toggleAchievement(id){
+  const consultant = selectedConsultant(); if (!consultant) return;
+  const earned = new Set(consultant.earned || []); earned.has(id) ? earned.delete(id) : earned.add(id); consultant.earned = [...earned]; saveState(); render();
+}
+function exportState(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });
+  const url = URL.createObjectURL(blob); const a = document.createElement("a");
+  a.href = url; a.download = "dc-achievement-hub-export.json"; a.click(); URL.revokeObjectURL(url);
+}
+function renderHeroStats(){
+  const stats = overallStats();
+  document.getElementById("heroDcCount").textContent = stats.dcCount;
+  document.getElementById("heroEarnedCount").textContent = stats.earnedCount;
+  document.getElementById("heroMaxLevel").textContent = stats.maxLevel;
+  document.getElementById("heroTopXp").textContent = `${stats.topXp.toLocaleString()} XP`;
+}
+function renderFilters(){
+  const container = document.getElementById("filters");
+  container.innerHTML = FILTERS.map(filter => `<button class="pill ${activeFilter === filter.id ? "active" : ""}" data-filter="${filter.id}">${filter.label}</button>`).join("");
+  container.querySelectorAll(".pill").forEach(pill => pill.addEventListener("click", () => { activeFilter = pill.dataset.filter; render(); }));
+}
+function renderRoster(){
+  const roster = document.getElementById("rosterList");
+  if (!state.consultants.length) { roster.innerHTML = `<div class="selected-empty">No consultants yet. Add one above or load the sample team.</div>`; return; }
+  roster.innerHTML = state.consultants.map(consultant => {
+    const stats = consultantStats(consultant);
+    return `<article class="dc-card ${consultant.id === state.selectedId ? "active" : ""}" data-id="${consultant.id}">
+      <div class="dc-top"><div><div class="dc-name">${consultant.name}</div><div class="dc-team">${consultant.team}</div></div><div class="chip">Lv ${stats.level.level}</div></div>
+      <div class="progress"><div class="progress-meta"><span>${stats.xp.toLocaleString()} XP</span><span>${stats.earnedCount}/${ACHIEVEMENTS.length}</span></div><div class="bar"><div class="fill" style="width:${stats.level.progress}%"></div></div></div>
+    </article>`;
+  }).join("");
+  roster.querySelectorAll(".dc-card").forEach(card => card.addEventListener("click", () => { state.selectedId = card.dataset.id; saveState(); render(); }));
+}
+function renderSelectedProfile(){
+  const target = document.getElementById("selectedProfile"); const consultant = selectedConsultant();
+  if (!consultant) { target.innerHTML = `<div class="selected-empty">Pick a DC from the roster or create one to start tracking achievements.</div>`; return; }
+  const stats = consultantStats(consultant);
+  target.innerHTML = `<section class="card profile-card">
+    <div class="profile-top"><div><div class="tiny muted">Selected Consultant</div><div class="profile-name">${consultant.name}</div><div class="profile-team">${consultant.team}</div><div class="profile-level">Level ${stats.level.level} · ${stats.level.title}</div></div><button class="btn btn-danger" id="removeDcBtn">Remove DC</button></div>
+    <div class="summary-grid">
+      <div class="stat"><strong>${stats.xp.toLocaleString()}</strong><span>Total XP</span></div>
+      <div class="stat"><strong>${stats.earnedCount}</strong><span>Achievements</span></div>
+      <div class="stat"><strong>${stats.completion}%</strong><span>Catalog Complete</span></div>
+    </div>
+    <div class="progress" style="margin-top:16px;"><div class="progress-meta"><span>${stats.level.title}</span><span>${stats.level.nextXp === 999999 ? "Max tier reached" : `${stats.level.nextXp.toLocaleString()} XP next level`}</span></div><div class="bar"><div class="fill" style="width:${stats.level.progress}%"></div></div></div>
+  </section>`;
+  document.getElementById("removeDcBtn").addEventListener("click", () => { state.consultants = state.consultants.filter(item => item.id !== consultant.id); state.selectedId = state.consultants[0]?.id || null; saveState(); render(); });
+}
+function renderAchievements(){
+  const grid = document.getElementById("achievementGrid"); const consultant = selectedConsultant(); const earned = new Set(consultant?.earned || []);
+  const visible = ACHIEVEMENTS.filter(item => activeFilter === "all" || item.cat === activeFilter);
+  grid.innerHTML = visible.map(item => `<article class="achievement r-${item.rarity} ${earned.has(item.id) ? "earned" : ""}" data-id="${item.id}">
+    <div class="achievement-top"><div class="achievement-icon">${item.icon}</div><div class="achievement-meta"><span class="tag">${item.cat}</span><span class="tag">${item.rarity}</span></div></div>
+    <div class="achievement-title">${item.title}</div>
+    <div class="achievement-copy">${item.desc}</div>
+    <div class="achievement-footer"><div class="achievement-xp">+${XP_BY_RARITY[item.rarity].toLocaleString()} XP</div><div class="achievement-action">${consultant ? (earned.has(item.id) ? "Click to remove" : "Click to earn") : "Select a DC first"}</div></div>
+  </article>`).join("");
+  grid.querySelectorAll(".achievement").forEach(card => card.addEventListener("click", () => { if (consultant) toggleAchievement(card.dataset.id); }));
+}
+function renderLeaderboard(){
+  const container = document.getElementById("leaderboardList"); const leaders = sortedLeaderboard();
+  if (!leaders.length) { container.innerHTML = `<div class="selected-empty">Leaderboard wakes up once the roster has people in it.</div>`; return; }
+  container.innerHTML = leaders.map(({ consultant, stats }, index) => `<div class="leader"><div class="rank">#${index + 1}</div><div><div class="dc-name" style="font-size:16px">${consultant.name}</div><div class="leader-sub">${stats.level.title} · ${stats.earnedCount} earned</div></div><div class="leader-score"><strong>${stats.xp.toLocaleString()}</strong><span>XP</span></div></div>`).join("");
+}
+function renderCategoryStats(){
+  const counts = categoryCounts(); const container = document.getElementById("categoryStats");
+  container.innerHTML = FILTERS.filter(item => item.id !== "all").map(item => `<div class="mini-item"><strong>${item.label}</strong><span>${counts[item.id]} unlocks</span></div>`).join("");
+}
+function render(){
+  renderHeroStats(); renderFilters(); renderRoster(); renderSelectedProfile(); renderAchievements(); renderLeaderboard(); renderCategoryStats();
+}
+document.getElementById("addDcBtn").addEventListener("click", () => {
+  addConsultant(document.getElementById("dcNameInput").value, document.getElementById("dcTeamInput").value);
+  document.getElementById("dcNameInput").value = ""; document.getElementById("dcTeamInput").value = "";
+});
+document.getElementById("seedBtn").addEventListener("click", ensureSampleTeam);
+document.getElementById("exportBtn").addEventListener("click", exportState);
+document.getElementById("resetProgressBtn").addEventListener("click", () => { const consultant = selectedConsultant(); if (!consultant) return; consultant.earned = []; saveState(); render(); });
+render();
+</script>
+</body>
+</html>

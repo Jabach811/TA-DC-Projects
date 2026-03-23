@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Growth & Development Tracker — Data Consultant</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sidebar-bg:#1c1c1e;
+  --sidebar-text:#fff;
+  --sidebar-muted:rgba(255,255,255,0.5);
+  --sidebar-hover:rgba(255,255,255,0.08);
+  --sidebar-active:rgba(255,255,255,0.13);
+  --main-bg:#f2f2f7;
+  --card-bg:#ffffff;
+  --border:rgba(0,0,0,0.08);
+  --text-primary:#1c1c1e;
+  --text-secondary:#6c6c70;
+  --text-tertiary:#aeaeb2;
+  --accent:#007aff;
+  --c0:#8e8e93;--c0bg:rgba(142,142,147,0.1);--c0bd:rgba(142,142,147,0.25);
+  --c1:#ff9f0a;--c1bg:rgba(255,159,10,0.1);--c1bd:rgba(255,159,10,0.3);
+  --c2:#007aff;--c2bg:rgba(0,122,255,0.1);--c2bd:rgba(0,122,255,0.3);
+  --c3:#34c759;--c3bg:rgba(52,199,89,0.1);--c3bd:rgba(52,199,89,0.3);
+  --c4:#af52de;--c4bg:rgba(175,82,222,0.1);--c4bd:rgba(175,82,222,0.3);
+  --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg:0 4px 16px rgba(0,0,0,0.12),0 12px 40px rgba(0,0,0,0.1);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text',system-ui,sans-serif;background:var(--main-bg);color:var(--text-primary);display:flex;height:100vh;overflow:hidden;font-size:14px}
+
+/* SIDEBAR */
+#sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);display:flex;flex-direction:column;height:100vh;overflow:hidden;z-index:10}
+#sidebar-header{padding:20px 16px 12px;border-bottom:1px solid rgba(255,255,255,0.08)}
+#sidebar-dept{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#sidebar-dept-icon{font-size:22px}
+#sidebar-dept-info{flex:1;min-width:0}
+#sidebar-dept-name{font-size:13px;font-weight:600;color:var(--sidebar-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sidebar-dept-div{font-size:11px;color:var(--sidebar-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+#mode-toggle{display:flex;background:rgba(255,255,255,0.08);border-radius:8px;padding:2px;gap:2px}
+.mode-btn{flex:1;padding:5px 6px;border:none;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;color:var(--sidebar-muted);background:transparent}
+.mode-btn.active{background:rgba(255,255,255,0.15);color:#fff}
+#sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
+.nav-section{padding:4px 16px 2px;font-size:10px;font-weight:600;color:var(--sidebar-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .12s;border-radius:0;color:rgba(255,255,255,0.75);font-size:13px;font-weight:400;user-select:none}
+.nav-item:hover{background:var(--sidebar-hover);color:#fff}
+.nav-item.active{background:var(--sidebar-active);color:#fff;font-weight:500}
+.nav-item-icon{font-size:16px;width:20px;text-align:center}
+.sidebar-roster{display:flex;flex-direction:column;gap:2px;padding:4px 8px 8px}
+.sidebar-roster-item{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .12s;color:rgba(255,255,255,0.8);font-size:12px;font-weight:500}
+.sidebar-roster-item:hover{background:var(--sidebar-hover);color:#fff}
+.sidebar-roster-avatar{font-size:20px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border-radius:8px;flex-shrink:0}
+.sidebar-roster-info{flex:1;min-width:0}
+.sidebar-roster-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-roster-role{font-size:10px;color:var(--sidebar-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+#sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08)}
+#active-profile-pill{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.07);border-radius:8px;cursor:pointer}
+#active-profile-pill:hover{background:rgba(255,255,255,0.12)}
+#pill-avatar{font-size:18px}
+#pill-info{flex:1;min-width:0}
+#pill-name{font-size:12px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pill-role{font-size:10px;color:var(--sidebar-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{background:var(--card-bg);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;gap:16px;flex-shrink:0}
+#page-title{font-size:17px;font-weight:600;flex:1}
+#topbar-actions{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-decoration:none}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#0066dc}
+.btn-secondary{background:rgba(0,0,0,0.06);color:var(--text-primary)}
+.btn-secondary:hover{background:rgba(0,0,0,0.1)}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(0,0,0,0.04)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-danger{background:rgba(255,59,48,0.1);color:#ff3b30}
+.btn-danger:hover{background:rgba(255,59,48,0.18)}
+#content{flex:1;overflow:hidden;position:relative}
+.page{display:none;height:100%;overflow-y:auto;padding:24px}
+.page.active{display:block}
+
+/* CARDS */
+.card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.card-title{font-size:15px;font-weight:600}
+.card-body{padding:20px}
+.section-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-level{padding:3px 8px;border-radius:6px}
+.badge-core{background:rgba(0,122,255,0.1);color:#007aff}
+.badge-high{background:rgba(255,59,48,0.1);color:#ff3b30}
+.badge-medium{background:rgba(255,159,10,0.1);color:#ff9f0a}
+.badge-low{background:rgba(142,142,147,0.1);color:#8e8e93}
+.priority-badge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px}
+
+/* LEVEL COLORS */
+.lv0{color:var(--c0);background:var(--c0bg);border:1px solid var(--c0bd)}
+.lv1{color:var(--c1);background:var(--c1bg);border:1px solid var(--c1bd)}
+.lv2{color:var(--c2);background:var(--c2bg);border:1px solid var(--c2bd)}
+.lv3{color:var(--c3);background:var(--c3bg);border:1px solid var(--c3bd)}
+.lv4{color:var(--c4);background:var(--c4bg);border:1px solid var(--c4bd)}
+
+/* PROGRESS */
+.progress-bar{height:6px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .4s ease}
+
+/* ===== MATRIX PAGE ===== */
+#page-matrix{padding:0;display:none;flex-direction:column}
+#page-matrix.active{display:flex}
+#matrix-wrap{flex:1;overflow:hidden;position:relative}
+#matrix-scroll-outer{height:100%;overflow:auto}
+
+/* Matrix table — border-separate avoids Chrome sticky-header rendering bug */
+#matrix-table{border-collapse:separate;border-spacing:0;table-layout:fixed}
+#matrix-table .col-label{width:270px;min-width:270px;max-width:270px;position:sticky;left:0;z-index:10}
+#matrix-table .col-member{width:88px;min-width:88px}
+#matrix-table .col-avg{width:76px;min-width:76px}
+
+/* Matrix header — sticky via thead row, not individual th (avoids float bug) */
+#matrix-table thead tr th{position:sticky;top:0;z-index:20;background:var(--card-bg);border-bottom:2px solid var(--border)}
+#matrix-table thead tr th.col-label{z-index:30}
+.mhdr-label{text-align:left;padding:10px 16px 10px 28px;font-size:12px;font-weight:600;color:var(--text-secondary);vertical-align:bottom}
+.mhdr-member{text-align:center;padding:8px 4px 6px;cursor:default;vertical-align:bottom}
+.mhdr-member-inner{display:flex;flex-direction:column;align-items:center;gap:2px}
+.mhdr-avatar{font-size:18px;line-height:1.2}
+.mhdr-name{font-size:11px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:84px}
+.mhdr-role{font-size:10px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:84px}
+.mhdr-avg-head{text-align:center;padding:10px 4px 6px;font-size:11px;font-weight:600;color:var(--text-secondary);vertical-align:bottom}
+
+/* Category separator rows */
+.mcat-row td{background:#eeeef3;border-top:2px solid var(--border);border-bottom:1px solid var(--border);padding:10px 20px 10px 28px;font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.mcat-row td.col-label{position:sticky;left:0;z-index:6;white-space:nowrap}
+.mcat-label-cell{display:flex;align-items:center;gap:8px}
+.mcat-spacer{background:#eeeef3}
+
+/* Competency rows */
+.mcomp-row:hover td{background:rgba(0,122,255,0.03)}
+.mcomp-row:hover .mcomp-label-cell{background:rgba(245,245,250,1)}
+.mcomp-label-cell{padding:0 12px 0 28px;vertical-align:middle;border-bottom:1px solid var(--border);background:var(--card-bg);position:sticky;left:0;z-index:5}
+.mcomp-label-inner{display:flex;align-items:center;gap:6px;padding:11px 0;min-height:44px}
+.mcomp-name{font-size:12px;font-weight:500;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcomp-core-dot{display:none}
+.mrating-cell{text-align:center;vertical-align:middle;border-bottom:1px solid var(--border);padding:4px 3px}
+.mrating-chip{display:inline-flex;align-items:center;justify-content:center;width:52px;height:26px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;transition:all .12s;user-select:none;border:1px solid transparent}
+.mrating-chip:hover{filter:brightness(1.08);transform:scale(1.05)}
+.mavg-cell{text-align:center;vertical-align:middle;border-bottom:1px solid var(--border);padding:4px 3px}
+.mavg-chip{display:inline-flex;align-items:center;justify-content:center;width:44px;height:26px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid transparent}
+
+/* Floating picker */
+#rating-picker{position:fixed;z-index:1000;background:var(--card-bg);border-radius:12px;box-shadow:var(--shadow-lg);padding:8px;display:none;min-width:160px;border:1px solid var(--border)}
+#rating-picker.visible{display:block}
+#rating-picker-title{font-size:11px;font-weight:600;color:var(--text-secondary);padding:2px 6px 6px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.picker-option{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .1s}
+.picker-option:hover{background:rgba(0,0,0,0.04)}
+.picker-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.picker-label{font-size:12px;font-weight:500}
+.picker-option.selected .picker-label{font-weight:700}
+#picker-close{display:flex;justify-content:center;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+
+/* ===== DASHBOARD PAGE — HERO ===== */
+.ind-hero{border-radius:var(--radius);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow);background:linear-gradient(135deg,rgba(0,122,255,0.07) 0%,rgba(255,255,255,1) 55%);border:1px solid rgba(0,122,255,0.1)}
+.ind-hero-main{display:flex;align-items:center;gap:24px;padding:28px 32px 22px}
+.ind-hero-avatar-wrap{width:76px;height:76px;border-radius:20px;background:rgba(0,122,255,0.08);display:flex;align-items:center;justify-content:center;font-size:42px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,122,255,0.12)}
+.ind-hero-identity{flex:1;min-width:0}
+.ind-hero-greeting{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.ind-hero-name{font-size:26px;font-weight:800;color:var(--text-primary);letter-spacing:-0.5px;line-height:1.1}
+.ind-hero-role{font-size:13px;color:var(--text-secondary);margin-top:4px;font-weight:500}
+.ind-hero-level-row{display:flex;align-items:center;gap:8px;margin-top:12px}
+.ind-hero-level-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.3px}
+.ind-hero-level-arrow{font-size:11px;color:var(--text-tertiary)}
+.ind-hero-level-next{font-size:11px;color:var(--text-secondary);font-weight:500}
+.ind-hero-ring-wrap{flex-shrink:0;position:relative;width:96px;height:96px;display:flex;align-items:center;justify-content:center}
+.ind-hero-ring{width:96px;height:96px;transform:rotate(-90deg)}
+.ind-ring-bg{fill:none;stroke:rgba(0,0,0,0.06);stroke-width:7}
+.ind-ring-fill{fill:none;stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset 0.8s cubic-bezier(.22,1,.36,1)}
+.ind-hero-ring-text{position:absolute;text-align:center}
+.ind-ring-pct{font-size:20px;font-weight:800;color:var(--text-primary);line-height:1}
+.ind-ring-lbl{font-size:9px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.8px;margin-top:1px}
+.ind-hero-stats{display:flex;border-top:1px solid var(--border);padding:0;background:rgba(0,0,0,0.015)}
+.ind-hero-stat{flex:1;padding:14px 0;text-align:center;position:relative}
+.ind-hero-stat+.ind-hero-stat::before{content:'';position:absolute;left:0;top:20%;height:60%;width:1px;background:var(--border)}
+.ind-hero-stat-val{font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-0.3px}
+.ind-hero-stat-lbl{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.6px;margin-top:3px;font-weight:500}
+.cat-section{margin-bottom:20px}
+.cat-section-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--card-bg);border-radius:var(--radius) var(--radius) 0 0;border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+.cat-section-icon{font-size:18px}
+.cat-section-title{font-size:14px;font-weight:600;flex:1}
+.cat-avg-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.comp-rows{background:var(--card-bg);border-radius:0 0 var(--radius) var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.comp-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.comp-row:last-child{border-bottom:none}
+.comp-row:hover{background:rgba(0,122,255,0.03)}
+.comp-row-name{flex:1;font-size:13px;font-weight:500}
+.comp-row-meta{display:flex;align-items:center;gap:6px}
+.mgr-req-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(0,122,255,0.1);color:#007aff;border:1px solid rgba(0,122,255,0.2);white-space:nowrap;letter-spacing:.01em}
+.comp-behind{font-size:10px;color:#ff3b30;font-weight:600}
+.comp-row-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap}
+
+/* ===== GAP ANALYSIS ===== */
+#gap-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-chip{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--card-bg);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;color:var(--text-secondary)}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.gap-list{display:flex;flex-direction:column;gap:8px}
+.gap-row{background:var(--card-bg);border-radius:10px;box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;gap:14px}
+.gap-row-left{width:220px;flex-shrink:0}
+.gap-row-cname{font-size:13px;font-weight:600;margin-bottom:4px}
+.gap-row-meta{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.gap-row-mid{flex:1;min-width:0}
+.gap-bar-wrap{display:flex;align-items:center;gap:10px}
+.gap-bar-bg{flex:1;height:8px;background:rgba(0,0,0,0.06);border-radius:4px;overflow:hidden}
+.gap-bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.gap-bar-val{font-size:12px;font-weight:700;width:28px;text-align:right;flex-shrink:0}
+.gap-avg-label{font-size:10px;color:var(--text-secondary);margin-top:3px}
+.gap-row-right{display:flex;gap:4px;flex-wrap:wrap;align-items:center;min-width:120px;justify-content:flex-end}
+.gap-member-dot{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:700;border:2px solid;cursor:default}
+.gap-member-tip{position:relative}
+.gap-member-tip:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#1c1c1e;color:#fff;font-size:10px;padding:3px 7px;border-radius:5px;white-space:nowrap;pointer-events:none;z-index:100}
+
+/* ===== TEAM PROFILES ===== */
+#profiles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.profile-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;cursor:pointer;transition:all .18s}
+.profile-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.pc-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pc-avatar{font-size:32px}
+.pc-info{flex:1;min-width:0}
+.pc-name{font-size:15px;font-weight:600}
+.pc-role{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.pc-join{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.pc-overall{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.pc-score{font-size:22px;font-weight:700}
+.pc-score-label{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em}
+.pc-cats{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.pc-cat-row{display:flex;align-items:center;gap:8px}
+.pc-cat-icon{font-size:12px;width:16px;text-align:center}
+.pc-cat-label{font-size:11px;color:var(--text-secondary);width:80px;flex-shrink:0}
+.pc-cat-bar{flex:1;height:4px;background:rgba(0,0,0,0.06);border-radius:2px;overflow:hidden}
+.pc-cat-fill{height:100%;border-radius:2px}
+.pc-cat-val{font-size:10px;font-weight:600;width:24px;text-align:right}
+
+/* ===== MANAGE TEAM ===== */
+.manage-section{margin-bottom:28px}
+.manage-section-title{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.manage-profiles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.manage-profile-card{background:var(--card-bg);border-radius:10px;box-shadow:var(--shadow);padding:16px;display:flex;align-items:center;gap:12px}
+.manage-pc-avatar{font-size:28px}
+.manage-pc-info{flex:1;min-width:0}
+.manage-pc-name{font-size:13px;font-weight:600}
+.manage-pc-role{font-size:11px;color:var(--text-secondary);margin-top:2px}
+.manage-pc-actions{display:flex;gap:6px}
+.targets-table{width:100%;border-collapse:collapse;background:var(--card-bg);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.targets-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--text-secondary);background:#f8f8fa;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.05em}
+.targets-table td{padding:8px 14px;border-bottom:1px solid var(--border);font-size:12px}
+.targets-table tr:last-child td{border-bottom:none}
+.target-select{padding:4px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;background:var(--card-bg);cursor:pointer}
+.target-date-input{padding:4px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;background:var(--card-bg);color:var(--text-primary);cursor:pointer;font-family:inherit}
+.target-date-input::-webkit-calendar-picker-indicator{opacity:0.5;cursor:pointer}
+.sync-box{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.sync-row{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+.import-drop{border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;color:var(--text-secondary);font-size:13px;cursor:pointer;transition:all .15s;margin-top:12px}
+.import-drop:hover{border-color:var(--accent);background:rgba(0,122,255,0.04)}
+
+/* ===== RESOURCES ===== */
+.res-cat-section{margin-bottom:28px}
+.res-cat-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.res-cat-icon{font-size:16px}
+.res-cat-title{font-size:13px;font-weight:700;color:var(--text-primary);flex:1}
+.res-cat-count{font-size:11px;font-weight:600;color:var(--text-secondary)}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+
+/* Resource card */
+.res-card{background:var(--card-bg);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:10px;text-decoration:none;transition:transform .12s,box-shadow .12s;border:1px solid var(--border)}
+.res-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.1)}
+.res-card-top{display:flex;align-items:flex-start;gap:10px}
+.res-card-badge{font-size:9px;font-weight:700;min-width:32px;height:32px;border-radius:8px;background:var(--main-bg);color:var(--text-secondary);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.04em}
+.res-card-info{flex:1;min-width:0}
+.res-card-title{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:3px;line-height:1.3}
+.res-card-desc{font-size:11px;color:var(--text-secondary);line-height:1.4}
+
+/* Resource card action buttons */
+.res-card-actions{display:flex;gap:6px;margin-top:2px}
+.res-btn{font-size:11px;font-weight:600;padding:6px 11px;border-radius:7px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;transition:transform .08s,box-shadow .08s;border:none;flex:1;justify-content:center}
+.res-btn:active{transform:translateY(1px)}
+.res-btn-primary{
+  background:linear-gradient(180deg,#2a5298 0%,#1a3a6e 100%);
+  color:#fff;
+  box-shadow:0 1px 0 rgba(255,255,255,0.15) inset,0 2px 0 #0d2247,0 3px 8px rgba(26,58,110,0.35);
+}
+.res-btn-primary:hover{filter:brightness(1.1);box-shadow:0 1px 0 rgba(255,255,255,0.15) inset,0 2px 0 #0d2247,0 5px 14px rgba(26,58,110,0.45)}
+.res-btn-primary:active{box-shadow:0 1px 0 rgba(0,0,0,0.2) inset,0 1px 0 #0d2247,0 2px 4px rgba(26,58,110,0.2)}
+.res-btn-secondary{
+  background:linear-gradient(180deg,#fff 0%,#f0f0f2 100%);
+  color:var(--text-primary);
+  border:1px solid rgba(0,0,0,0.14);
+  box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 2px 0 rgba(0,0,0,0.1),0 3px 6px rgba(0,0,0,0.06);
+}
+.res-btn-secondary:hover{background:linear-gradient(180deg,#fafafa 0%,#e8e8ea 100%);box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 2px 0 rgba(0,0,0,0.12),0 5px 10px rgba(0,0,0,0.08)}
+.res-btn-secondary:active{background:linear-gradient(180deg,#ebebed 0%,#f5f5f7 100%);box-shadow:0 1px 0 rgba(0,0,0,0.06) inset,0 1px 0 rgba(0,0,0,0.08)}
+
+/* Quick tools row */
+.res-tools-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.res-tool-btn{font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:transform .08s,box-shadow .08s;
+  background:linear-gradient(180deg,#fff 0%,#f0f0f2 100%);
+  color:var(--text-primary);border:1px solid rgba(0,0,0,0.14);
+  box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 2px 0 rgba(0,0,0,0.1),0 3px 6px rgba(0,0,0,0.06)}
+.res-tool-btn:hover{background:linear-gradient(180deg,#fafafa 0%,#e8e8ea 100%);transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 2px 0 rgba(0,0,0,0.12),0 6px 12px rgba(0,0,0,0.08)}
+.res-tool-btn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,0.06) inset,0 1px 0 rgba(0,0,0,0.08)}
+.res-tool-badge{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--text-secondary)}
+
+/* ===== LIBRARY ===== */
+#lib-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.lib-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;cursor:pointer;transition:all .15s}
+.lib-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.lib-card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.lib-card-title{font-size:13px;font-weight:600;flex:1}
+.lib-card-desc{font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:10px}
+.lib-card-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+/* ===== DETAIL MODAL ===== */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+#modal-overlay.visible{display:flex}
+#modal-box{background:var(--card-bg);border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:600px;overflow:hidden;position:relative;margin:auto}
+#modal-header{padding:20px 48px 16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+#modal-close{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.06);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)}
+#modal-close:hover{background:rgba(0,0,0,0.1)}
+#modal-body{padding:20px;max-height:calc(100vh - 200px);overflow-y:auto}
+.modal-section{margin-bottom:18px}
+.modal-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-secondary);margin-bottom:6px}
+.modal-section-text{font-size:13px;line-height:1.6;color:var(--text-primary)}
+.level-defs{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.level-def-row{display:flex;gap:10px;padding:8px 10px;border-radius:8px;align-items:flex-start;border:1px solid transparent}
+.level-def-row.current{border-color:var(--border);background:rgba(0,0,0,0.03)}
+.level-def-badge{font-size:10px;font-weight:700;padding:3px 7px;border-radius:5px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.level-def-text{font-size:12px;line-height:1.5;color:var(--text-primary)}
+.modal-rating-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.modal-rate-btn{padding:6px 14px;border:1.5px solid;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:transparent}
+.modal-rate-btn.active{opacity:1}
+.modal-rate-btn:not(.active){opacity:.55}
+.modal-rate-btn:hover{opacity:1}
+
+/* ===== FORM / MODAL ===== */
+#form-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:600;display:none;align-items:center;justify-content:center}
+#form-overlay.visible{display:flex}
+#form-box{background:var(--card-bg);border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:440px;overflow:hidden}
+#form-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+#form-title{font-size:16px;font-weight:600}
+#form-body{padding:20px;display:flex;flex-direction:column;gap:14px}
+.form-field{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+.form-input,.form-select,.form-textarea{padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;background:#fff;color:var(--text-primary);transition:border .15s;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-avatar-row{display:flex;gap:8px;flex-wrap:wrap}
+.avatar-opt{font-size:22px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.avatar-opt.selected,.avatar-opt:hover{border-color:var(--accent);background:rgba(0,122,255,0.08)}
+#form-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* EMPTY STATES */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-secondary)}
+.empty-state-icon{font-size:48px;margin-bottom:12px}
+.empty-state-title{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.empty-state-text{font-size:13px;line-height:1.6;max-width:340px;margin:0 auto 16px}
+
+/* TOOLTIP */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100%+4px);left:50%;transform:translateX(-50%);background:#1c1c1e;color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:999}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <div id="sidebar-dept">
+      <span id="sidebar-dept-icon"></span>
+      <div id="sidebar-dept-info">
+        <div id="sidebar-dept-name"></div>
+        <div id="sidebar-dept-div"></div>
+      </div>
+    </div>
+    <div id="mode-toggle">
+      <button class="mode-btn" id="btn-mode-manager" onclick="setMode('manager')">Manager</button>
+      <button class="mode-btn" id="btn-mode-individual" onclick="setMode('individual')">Individual</button>
+    </div>
+  </div>
+  <div id="sidebar-nav"></div>
+  <div id="sidebar-footer">
+    <div id="active-profile-pill" onclick="openProfileSwitcher()">
+      <span id="pill-avatar"></span>
+      <div id="pill-info">
+        <div id="pill-name">No profile</div>
+        <div id="pill-role">Select a profile</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <div id="page-title">Team Matrix</div>
+    <div id="topbar-actions"></div>
+  </div>
+  <div id="content">
+
+    <!-- MATRIX PAGE -->
+    <div class="page" id="page-matrix">
+      <div id="matrix-wrap">
+        <div id="matrix-scroll-outer">
+          <div id="matrix-inner"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page" id="page-dashboard"></div>
+
+    <!-- GAP ANALYSIS PAGE -->
+    <div class="page" id="page-gap"></div>
+
+    <!-- TEAM PROFILES PAGE -->
+    <div class="page" id="page-profiles"></div>
+
+    <!-- MANAGE TEAM PAGE -->
+    <div class="page" id="page-manage"></div>
+
+    <!-- LIBRARY PAGE -->
+    <div class="page" id="page-library"></div>
+
+    <!-- RESOURCES PAGE -->
+    <div class="page" id="page-resources"></div>
+
+  </div>
+</div>
+
+<!-- RATING PICKER (floating) -->
+<div id="rating-picker">
+  <div id="rating-picker-title">Set Proficiency Level</div>
+  <div id="picker-options"></div>
+  <div id="picker-close"><button class="btn btn-secondary btn-sm" onclick="closePicker()">Close</button></div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal-box">
+    <button id="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-header"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- PROFILE FORM -->
+<div id="form-overlay" onclick="closeForm(event)">
+  <div id="form-box">
+    <div id="form-header">
+      <div id="form-title">Add Profile</div>
+      <button class="btn btn-secondary btn-sm" onclick="closeForm()">Cancel</button>
+    </div>
+    <div id="form-body"></div>
+    <div id="form-footer">
+      <button class="btn btn-primary" onclick="submitForm()">Save Profile</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const DEPT_CONFIG = {
+  name: 'Data Consultant',
+  division: '401(k) Implementation Services',
+  icon: '📊',
+};
+
+const LEVELS = [
+  { id:0, label:'Not Started', short:'N/A',  color:'#8e8e93', bg:'rgba(142,142,147,0.1)',  border:'rgba(142,142,147,0.25)' },
+  { id:1, label:'Awareness',   short:'AWR',  color:'#ff9f0a', bg:'rgba(255,159,10,0.1)',   border:'rgba(255,159,10,0.3)'   },
+  { id:2, label:'Developing',  short:'DEV',  color:'#007aff', bg:'rgba(0,122,255,0.1)',     border:'rgba(0,122,255,0.3)'    },
+  { id:3, label:'Proficient',  short:'PRO',  color:'#34c759', bg:'rgba(52,199,89,0.1)',     border:'rgba(52,199,89,0.3)'    },
+  { id:4, label:'Expert',      short:'EXP',  color:'#af52de', bg:'rgba(175,82,222,0.1)',   border:'rgba(175,82,222,0.3)'   },
+];
+
+const ROLES = [
+  'Data Consultant I','Data Consultant II','Sr. Data Consultant',
+  'Implementation Manager','QA Analyst','Operations Manager',
+];
+
+const AVATARS = ['👩‍💻','👨‍💻','👩‍💼','👨‍💼','🧑‍💻','👩‍🎓','👨‍🎓','🧑‍🏫','👩‍🔬','👨‍🔬'];
+
+const CATEGORIES = [
+  { id:'plan_admin',  title:'Plan Administration',       icon:'📋', desc:'Core knowledge of 401(k) plan design, rules, and regulatory requirements' },
+  { id:'technical',   title:'Technical Skills',           icon:'💻', desc:'Data handling, Excel proficiency, and file processing capabilities' },
+  { id:'process',     title:'Process & Workflow',         icon:'⚙️', desc:'Implementation methodology, timeline management, and operational efficiency' },
+  { id:'client',      title:'Client Relations',           icon:'🤝', desc:'Communication, expectation management, and professional service delivery' },
+  { id:'compliance',  title:'Compliance & Documentation', icon:'📜', desc:'Regulatory awareness, required filings, and audit-ready record keeping' },
+  { id:'systems',     title:'Systems & Tools',            icon:'🖥️', desc:'Proficiency with internal platforms, CRM, and productivity tools' },
+  { id:'leadership',  title:'Leadership & Growth',        icon:'🎓', desc:'Mentoring, process improvement, and contribution beyond individual work' },
+];
+
+const COMPETENCIES = [
+  {id:'pa_doc_review',cat:'plan_admin',title:'Plan Document Review',desc:'Reads and interprets plan documents (SPD, adoption agreement) to extract key parameters: eligibility, vesting, contributions, and plan features.',why:'Accurate plan setup depends entirely on correctly reading the source document. Errors here cascade through the entire implementation.',how:'Shadow 5 plan reviews → complete 10 reviews with oversight → handle 25 independently → handle complex/non-standard plan designs.',levelDesc:['Has not reviewed plan documents independently.','Can locate key sections with guidance; understands basic plan document structure.','Extracts most parameters independently; occasionally needs clarification on unusual provisions.','Accurately reads all standard plan types; flags ambiguities proactively before setup.','Interprets complex and non-standard plan designs; identifies compliance gaps; trains others.'],core:true,term:'medium',priority:'high'},
+  {id:'pa_eligibility',cat:'plan_admin',title:'Eligibility & Entry Date Rules',desc:'Applies plan eligibility requirements (age, service, hours) and determines correct entry dates for employees, including dual-entry rules and auto-enrollment.',why:'Incorrect eligibility setup leads to missed enrollments, participant complaints, and potential DOL violations.',how:"Configure eligibility for 20 plans → handle edge cases (rehires, part-time) → audit a peer's eligibility setups.",levelDesc:['Unfamiliar with eligibility rules and entry date concepts.','Understands standard eligibility concepts (age 21, 1 year of service); needs guidance on edge cases.','Correctly configures common eligibility scenarios; asks for help on rehires and complex scenarios.','Handles all standard and most complex scenarios independently, including auto-enrollment.','Resolves all edge cases (rehires, multi-class plans, controlled groups); mentors team on eligibility.'],core:true,term:'short',priority:'high'},
+  {id:'pa_vesting',cat:'plan_admin',title:'Vesting Schedule Interpretation',desc:'Correctly identifies and configures vesting schedules (cliff, graded, immediate) and applies them to employer contributions including special provisions.',why:'Vesting directly affects how much money employees keep if they leave. Errors cause financial harm to participants and liability for the plan.',how:'Configure vesting for 15 plans → handle graded vs cliff variations → identify and resolve vesting discrepancies in converted plans.',levelDesc:['Unfamiliar with vesting concepts.','Understands immediate, cliff, and graded vesting at a conceptual level.','Configures standard schedules correctly; may need help with multi-source or class-based vesting.','Correctly sets up all vesting scenarios including multiple sources with different schedules.','Catches vesting discrepancies in converted plans; handles class-based and special vesting; trains others.'],core:true,term:'short',priority:'high'},
+  {id:'pa_contributions',cat:'plan_admin',title:'Contribution & Match Formula Setup',desc:'Configures employee deferral limits, employer match formulas (flat, tiered, discretionary), safe harbor provisions, and profit sharing allocations.',why:'The match formula is the most visible plan feature to employees. Misconfiguration directly impacts participant balances and employer costs.',how:'Configure match formulas for 20 plans → handle tiered formulas → set up safe harbor → validate with payroll testing.',levelDesc:['No experience with match formula configuration.','Understands basic match concepts (e.g., 50% up to 6%); can set up simple flat-rate matches.','Configures tiered match formulas; understands safe harbor requirements at a conceptual level.','Sets up all standard and tiered formulas; configures safe harbor; flags edge cases correctly.','Handles complex discretionary, true-up, and class-based formulas; performs payroll validation.'],core:true,term:'medium',priority:'high'},
+  {id:'pa_distributions',cat:'plan_admin',title:'Loans & Distribution Rules',desc:'Understands in-service withdrawal types, hardship criteria, loan policies, required minimum distributions, and plan-specific restrictions.',why:'Distribution errors cause tax consequences and participant disputes. Correct setup protects both participants and the plan sponsor.',how:'Review loan/distribution policies for 10 plans → process 5 distribution requests → advise clients on RMD requirements.',levelDesc:['No knowledge of distribution or loan rules.','Aware that distributions and loans exist; understands basic in-service withdrawal types.','Configures standard loan parameters and distribution options; needs guidance on hardship criteria.','Handles all distribution types and loan policies; correctly applies RMD rules.','Advises on complex distribution situations; identifies problematic plan provisions; trains others.'],core:false,term:'long',priority:'medium'},
+  {id:'tc_excel',cat:'technical',title:'Excel & Data Manipulation',desc:'Uses Excel to clean, format, transform, and analyze data files including VLOOKUPs, INDEX/MATCH, pivot tables, conditional formatting, and data validation.',why:'Most data files require manipulation before upload to our systems. Excel proficiency directly affects throughput and accuracy.',how:'Complete daily data tasks in Excel → master 5 advanced functions → build a reusable template → train a peer.',levelDesc:['Uses Excel for basic entry; not comfortable with formulas.','Uses SUM, IF, VLOOKUP; can sort and filter data.','Uses INDEX/MATCH, nested IFs, pivot tables; formats data for upload requirements.','Builds efficient multi-formula models; creates reusable templates; validates data with complex rules.','Automates repetitive tasks with macros or advanced formulas; builds tools used by the team.'],core:true,term:'short',priority:'high'},
+  {id:'tc_powerquery',cat:'technical',title:'Power Query & Data Transformation',desc:'Uses Power Query to connect, transform, reshape, and automate data processing workflows for census files, payroll data, and balance imports.',why:'Power Query eliminates hours of manual work per week. Consultants who master it handle higher volume with fewer errors.',how:'Build first PQ query → automate a recurring data task → build a shared query for team use → train 2 peers.',levelDesc:['No experience with Power Query.','Understands what Power Query does; has opened the editor.','Builds basic queries: import data, remove columns, filter rows, change data types.','Transforms complex multi-source data; uses merge, append, unpivot; builds reusable queries.','Builds automated pipelines; creates parameterized queries used across the team; trains others.'],core:false,term:'medium',priority:'medium'},
+  {id:'tc_data_validation',cat:'technical',title:'Data Validation & QA',desc:'Systematically reviews data files for errors, inconsistencies, duplicates, and format issues before submission. Documents findings and resolves discrepancies.',why:'A single bad data record can cause a failed upload, a delayed implementation, or incorrect participant records.',how:'Develop a personal QA checklist → catch 10 pre-submission errors → build a validation standard → design a team QA process.',levelDesc:['Does not have a structured approach to data review.','Manually checks data for obvious issues; may miss systematic errors.','Uses structured checklists; catches most format and logic errors before submission.','Runs pre-upload validation consistently; documents and resolves discrepancies; rarely has rework.','Designed team QA standards; builds automated checks; near-zero rework record.'],core:true,term:'short',priority:'high'},
+  {id:'tc_census',cat:'technical',title:'Census File Processing',desc:'Prepares, cleans, and validates employee census files for new plan setups, including SSN validation, demographic mapping, and eligibility pre-screening.',why:'Census data is the foundation of every new plan. Errors in census processing delay the entire implementation timeline.',how:'Process 10 census files → handle 3 problem files (duplicates, missing data) → build a census checklist → train a peer.',levelDesc:['Has not processed census files independently.','Familiar with what census files contain; has reviewed one with guidance.','Processes standard census files; identifies common errors (missing SSNs, duplicate records).','Handles all standard and moderately complex census scenarios; resolves data issues proactively.','Handles highly complex or messy census data; builds reusable processing tools; trains others.'],core:true,term:'short',priority:'high'},
+  {id:'tc_balance_import',cat:'technical',title:'Balance Import Preparation',desc:'Formats and validates prior-provider balance data for trust-to-trust and conversion imports, including source mapping and reconciliation.',why:'Balance imports move real money. Errors mean incorrect account balances for participants — a critical incident.',how:'Observe 3 balance imports → prepare 5 with oversight → prepare 10 independently → review a peer\'s import.',levelDesc:['No experience with balance imports.','Understands the concept; has observed a balance import being prepared.','Prepares standard balance import files with oversight; knows key fields and source mapping.','Prepares and reconciles balance imports independently; catches discrepancies before submission.','Handles complex multi-source imports and conversion reconciliations; reviews peers\' imports.'],core:false,term:'medium',priority:'high'},
+  {id:'pw_timeline',cat:'process',title:'Implementation Timeline Management',desc:"Owns and manages a plan's implementation timeline from contract to go-live, tracking milestones, identifying bottlenecks, and updating stakeholders.",why:'Missing a milestone delays go-live. A consultant who actively manages timelines keeps implementations on track without manager intervention.',how:'Track timeline for 5 plans → identify and resolve one bottleneck → manage 10 timelines concurrently → mentor a peer.',levelDesc:['Not yet managing implementation timelines independently.','Understands implementation phases; tracks own tasks but not the full plan timeline.','Manages a small plan\'s timeline; flags delays reactively; updates systems regularly.','Manages multiple concurrent timelines; identifies risks early; resolves most delays independently.','Manages complex plans proactively; develops timeline improvements adopted by the team.'],core:true,term:'medium',priority:'high'},
+  {id:'pw_checklist',cat:'process',title:'Checklist Execution',desc:'Uses departmental checklists to ensure all required tasks are completed in the correct sequence, with appropriate documentation, for every implementation.',why:"Checklists exist because we've learned from past errors. Skipping steps creates downstream problems that are costly to fix.",how:'Complete 10 checklists with no skipped items → identify a missing checklist item → train a new hire on checklists.',levelDesc:['Has not used the department checklists independently.','Familiar with checklist structure; completes tasks but may skip or re-order steps.','Completes checklists fully; occasionally misses documentation requirements.','Completes all items in sequence with full documentation; rarely has exceptions.','Zero checklist exceptions over extended period; has contributed improvements to the checklist.'],core:true,term:'short',priority:'high'},
+  {id:'pw_intake',cat:'process',title:'Internal Request Intake',desc:'Correctly submits and routes internal requests (data corrections, system updates, compliance reviews) using the proper channels and required information.',why:'Poorly submitted requests slow down the team that processes them. Complete, correctly routed requests get done faster with fewer errors.',how:'Submit 20 internal requests with all required fields → receive zero rejections → help a peer improve their intake quality.',levelDesc:['Unfamiliar with internal request intake procedures.','Knows requests exist; submits them but sometimes with missing information or wrong channel.','Submits most requests correctly; occasionally needs reminders on required fields or routing.','Submits all requests correctly with full information; zero rejections; routes without guidance.','Consistently correct intake; has helped improve intake forms or documentation for the team.'],core:true,term:'short',priority:'medium'},
+  {id:'pw_handoff',cat:'process',title:'Plan Handoff Protocols',desc:'Executes clean plan handoffs between implementation phases or teams, including complete documentation, open-items log, and written/verbal briefings.',why:'A poor handoff means the next person starts from scratch. Good handoffs protect quality and save hours of re-work.',how:'Complete 5 handoff packages → receive positive feedback → make handoff a consistent habit → train a peer.',levelDesc:['Has not performed a structured plan handoff.','Knows that handoffs are required; has informally passed a plan to another consultant.','Completes handoff documentation; may miss some open items or context.','Delivers complete handoffs consistently: full documentation, open-items, briefing.','Handoffs require zero follow-up questions; has contributed to improving handoff standards.'],core:true,term:'medium',priority:'medium'},
+  {id:'pw_escalation',cat:'process',title:'Issue Escalation & Resolution',desc:'Identifies when issues exceed their authority or expertise, escalates through the correct channel with sufficient context, and follows through to resolution.',why:'Sitting on a problem that needs escalation delays resolution and increases impact. Escalating with full context enables faster decisions.',how:'Escalate 5 issues with full context → resolve 3 issues independently before escalation → develop personal decision criteria.',levelDesc:['Unsure when or how to escalate issues.','Knows escalation paths exist; tends to over-escalate or under-escalate.','Escalates appropriately for most situations; sometimes lacks sufficient context.','Escalates at the right time with the right information; resolves many issues before escalation.','Clear personal decision criteria; mentors others on escalation judgment.'],core:true,term:'medium',priority:'medium'},
+  {id:'cr_communication',cat:'client',title:'Professional Client Communication',desc:'Communicates with plan sponsors and advisors via email and phone with clarity, professionalism, appropriate tone, and timely follow-up.',why:'Every communication reflects on the department and company. Clear, prompt communication builds trust that retains clients.',how:'Manage email for 10 clients independently → receive positive client feedback → draft communication templates for the team.',levelDesc:['Has not independently managed client communications.','Has observed client communications; can respond to simple emails with oversight.','Handles standard email communication independently; occasionally needs coaching on tone.','Communicates clearly and professionally across all channels; manages client expectations well.','Exemplary communication record; drafts templates used by the team; coaches peers.'],core:true,term:'short',priority:'high'},
+  {id:'cr_expectations',cat:'client',title:'Expectation Setting & Management',desc:'Proactively sets realistic timelines and deliverables with clients, communicates changes early, and manages scope to prevent surprises.',why:'Most client dissatisfaction stems from unmet expectations, not from actual failures. Setting expectations well prevents disappointment.',how:'Set expectations for 10 plans → handle one scope change conversation → develop a template for expectation-setting.',levelDesc:['Has not practiced expectation setting with clients.','Understands the concept; tends to over-promise or under-communicate on timelines.','Sets basic expectations on timelines; communicates some changes proactively.','Consistently sets realistic expectations; communicates changes before clients notice delays.','Manages complex expectation conversations; turns difficult situations into positive outcomes.'],core:true,term:'medium',priority:'high'},
+  {id:'cr_meetings',cat:'client',title:'Meeting Facilitation',desc:'Prepares for, facilitates, and follows up on client meetings including kickoff calls, status updates, and issue resolution sessions.',why:'Well-run meetings accelerate decisions and demonstrate professionalism. Poorly run meetings waste client time and erode confidence.',how:'Facilitate 5 client calls → get meeting feedback → develop a kickoff call guide → train a new hire on meeting prep.',levelDesc:['Has not facilitated client meetings independently.','Has participated in client meetings; knows the agenda structure.','Facilitates simple status calls; may lose control of time or miss follow-up items.','Runs effective meetings: clear agenda, action items, on-time follow-up.','Facilitates complex and high-stakes meetings; develops meeting guides used by the team.'],core:false,term:'medium',priority:'medium'},
+  {id:'cr_problem_solving',cat:'client',title:'Client Problem Resolution',desc:'Diagnoses client-reported issues, gathers facts, determines root cause, and resolves or correctly escalates while keeping the client informed.',why:'How we handle problems determines whether clients stay. A well-resolved problem often increases trust more than a smooth implementation.',how:'Resolve 5 client issues independently → handle one complex escalation → develop a resolution playbook for common issue types.',levelDesc:['Has not resolved a client issue independently.','Can handle simple client questions; escalates all problems.','Resolves common issues independently; communicates status to client during resolution.','Diagnoses and resolves most issues independently; knows when and how to escalate complex ones.','Turns difficult client situations into positive outcomes; develops resolution playbooks.'],core:true,term:'medium',priority:'high'},
+  {id:'cr_records',cat:'client',title:'Client Documentation',desc:'Maintains accurate, organized, and accessible records of all client interactions, decisions, and plan notes in the appropriate systems.',why:'Good records protect the department in disputes, enable continuity when staff changes, and support audit requirements.',how:'Document all client interactions for 30 days → pass a documentation audit → contribute to documentation standards.',levelDesc:['Has not established a documentation habit.','Documents some interactions; inconsistent on format and location.','Documents most interactions; occasionally misses details or stores in wrong location.','Complete, consistent documentation in the correct systems; zero audit findings.','Zero audit findings over extended period; has contributed to documentation standards.'],core:true,term:'short',priority:'medium'},
+  {id:'co_regulatory',cat:'compliance',title:'IRS/DOL Regulatory Basics',desc:'Understands key IRS and DOL regulations affecting 401(k) plans: contribution limits, timing rules, fiduciary standards, and prohibited transactions.',why:'Ignorance of regulations is not a defense. Consultants who understand the rules make fewer compliance errors and act as an internal check.',how:'Complete compliance training → explain 5 regulatory concepts to a peer → identify a regulatory issue → attend an IRS update webinar.',levelDesc:['No foundational knowledge of IRS or DOL regulations.','Aware that regulations exist; knows basic concepts (415 limits, 402g limits).','Understands key rules affecting daily work; can answer basic compliance questions.','Applies regulatory knowledge to identify issues; stays current with limit changes.','Deep regulatory knowledge; identifies emerging issues; trains others; participates in compliance reviews.'],core:true,term:'long',priority:'medium'},
+  {id:'co_testing',cat:'compliance',title:'Non-Discrimination Testing Awareness',desc:'Understands ADP/ACP testing, top-heavy determination, coverage testing, and the purpose of safe harbor provisions.',why:'Testing failures have significant tax consequences for plan sponsors. Understanding testing enables better plan setup decisions.',how:'Read testing summaries for 5 plans → sit in on a testing conversation → explain top-heavy to a plan sponsor.',levelDesc:['Unfamiliar with non-discrimination testing.','Aware that testing is required; knows ADP/ACP tests exist.','Understands the purpose of each test; knows what triggers safe harbor elections.','Can explain testing implications to clients; identifies plan designs at risk for failure.','Deep testing knowledge; advises on plan design to minimize testing risk; trains others.'],core:false,term:'long',priority:'low'},
+  {id:'co_notices',cat:'compliance',title:'Required Notices & Disclosures',desc:'Ensures all required participant notices (Safe Harbor, QDIA, Fee Disclosure, Annual) are generated, distributed, and documented on schedule.',why:'Missing required notices is a DOL violation with financial penalties and potential plan disqualification risk.',how:'Track notices for 10 plans → catch a missed notice before deadline → build a notice calendar → train a peer.',levelDesc:['Unaware of required notice obligations.','Knows that notices are required; can identify the most common types.','Tracks notice requirements for assigned plans; meets deadlines with some oversight.','Independently manages notice calendar; zero missed notices; accurate distribution records.','Zero missed notices over extended period; has built notice tracking tools used by the team.'],core:true,term:'medium',priority:'high'},
+  {id:'co_error_correction',cat:'compliance',title:'Error Correction Procedures',desc:'Identifies plan errors (late contributions, missed enrollments, incorrect matches), understands correction options (VFCP, SCP), and initiates the correction process.',why:'All plans have errors. What matters is that errors are found quickly, documented correctly, and corrected using the appropriate IRS/DOL program.',how:'Identify and document 3 plan errors → submit one for correction → understand the SCP vs VFCP decision → train a peer.',levelDesc:['No knowledge of error correction procedures.','Aware that errors can occur and need correction; knows correction programs exist.','Identifies common error types; knows when to escalate for correction analysis.','Identifies errors, documents findings, and initiates the correct correction pathway.','Handles all error types; advises on correction strategy; trains others.'],core:false,term:'long',priority:'medium'},
+  {id:'co_audit',cat:'compliance',title:'Audit Trail & Record Keeping',desc:"Maintains records in formats and locations that would satisfy a DOL audit: timestamped, complete, organized, and accessible.",why:"DOL audits are real and unannounced. Records that cannot be produced are treated as if they don't exist, creating liability.",how:"Self-audit one plan's records → achieve clean record review for 10 plans → develop a record-keeping checklist.",levelDesc:["No awareness of audit trail requirements.","Knows that records must be kept; inconsistent on what to keep and where.","Maintains most required records; may have gaps in completeness.","Maintains complete, accessible, audit-ready records for all assigned plans.","Passes record review with zero findings; has built record-keeping tools used by the team."],core:true,term:'medium',priority:'medium'},
+  {id:'sy_portal',cat:'systems',title:'Implementation Portal Proficiency',desc:'Navigates and operates the implementation portal to set up plan features, manage participant data, run reports, and process transactions accurately.',why:'The portal is the primary work environment. Proficiency determines speed and accuracy across all implementation tasks.',how:'Complete portal training → handle 10 plan setups independently → use all primary portal functions → train a new hire.',levelDesc:['Has not used the implementation portal independently.','Can log in and navigate basic sections with guidance.','Handles standard plan setup and participant management independently.','Uses all primary portal functions; rarely needs help; understands error messages.','Full portal proficiency; knows workarounds for edge cases; trains new hires.'],core:true,term:'short',priority:'high'},
+  {id:'sy_crm',cat:'systems',title:'CRM & Task Management',desc:'Uses the CRM and task management tools to track plan status, document interactions, manage follow-ups, and maintain an organized workload.',why:'A CRM is only as good as its data. Consultants who use it correctly give the whole team visibility into plan status.',how:'Log all client interactions in CRM for 30 days → run a CRM status report → train a peer → zero overdue tasks for 60 days.',levelDesc:['Does not use CRM or task management tools consistently.','Uses CRM for basic logging; often behind on updates.','Keeps CRM mostly current; uses task management for own workload.','CRM always up to date; uses all relevant features; zero overdue tasks.','CRM champion; trains others; suggests improvements; pulls insights from CRM data.'],core:true,term:'short',priority:'medium'},
+  {id:'sy_ticketing',cat:'systems',title:'Ticketing & Issue Tracking',desc:'Creates, assigns, monitors, and closes support tickets with full context, correct priority, and appropriate follow-up.',why:'Tickets route work to the right people. Incomplete or misrouted tickets create delays and lose accountability.',how:'Submit 20 properly formatted tickets → close 5 tickets within SLA → train a peer → zero rejected tickets.',levelDesc:['Does not use the ticketing system correctly.','Creates tickets but often missing key information or using wrong category.','Creates well-formed tickets; monitors own tickets; sometimes misses SLA tracking.','Creates, routes, and monitors all tickets correctly; meets SLAs consistently.','Zero ticket quality issues over extended period; trains others; suggests workflow improvements.'],core:true,term:'short',priority:'medium'},
+  {id:'sy_reporting',cat:'systems',title:'Reporting & Analytics',desc:'Runs standard reports, interprets output, identifies trends or anomalies, and communicates insights to stakeholders.',why:'Data-driven decisions require people who can pull and interpret reports. This skill contributes strategic value beyond day-to-day tasks.',how:'Run 10 standard reports → identify an anomaly → build a custom report → present insights to a manager.',levelDesc:['Has not independently run or analyzed reports.','Can run pre-built reports with guidance; limited ability to interpret output.','Runs standard reports independently; interprets basic trends.','Runs and interprets all standard reports; identifies actionable insights.','Builds custom reports; presents analytics to leadership; teaches reporting to peers.'],core:false,term:'medium',priority:'low'},
+  {id:'sy_documents',cat:'systems',title:'Document Management',desc:'Stores, retrieves, versions, and shares documents according to department standards: naming conventions, folder structure, and access controls.',why:'Poor document management means lost files, version conflicts, and time wasted searching. Good management benefits the whole team.',how:'Organize documents for 10 plans per standards → zero version errors → create a folder template → train a peer.',levelDesc:['Does not follow document management standards consistently.','Stores documents but inconsistently; sometimes wrong location or naming.','Follows naming conventions and folder structure for most documents.','Consistent, accurate document management; zero version errors; easy to audit.','Zero document errors over extended period; has improved or documented standards.'],core:true,term:'short',priority:'medium'},
+  {id:'ld_training',cat:'leadership',title:'Peer Training & Knowledge Transfer',desc:'Shares knowledge with teammates through documentation, informal training, walkthroughs, and mentoring that increases team capability.',why:'Individual knowledge that stays individual is a risk. Teams that share knowledge are more resilient and grow faster.',how:'Document one process for team use → walk through a task with a peer → train a new hire → develop training material.',levelDesc:['Has not shared knowledge or trained peers.','Answers questions when asked; has explained a task to a peer informally.','Regularly shares tips and resources; has walked someone through a process.','Proactively trains peers; has developed documentation used by the team.','Recognized knowledge-sharer; materials are used team-wide; actively develops others.'],core:false,term:'long',priority:'medium'},
+  {id:'ld_process',cat:'leadership',title:'Process Improvement',desc:'Identifies inefficiencies in existing workflows, proposes improvements with clear rationale, and implements or contributes to implementing changes.',why:'The team grows by getting better at what it does. Everyone should contribute to improving the way we work, not just managers.',how:"Submit one process improvement idea → implement a small improvement → drive adoption → present results.",levelDesc:["Has not proposed or contributed to process improvements.","Notices inefficiencies but doesn't raise them.","Raises improvement ideas; may lack the follow-through to implement.","Proposes, implements, and advocates for improvements; tracks results.","Drives multiple improvements; quantifies impact; catalyzes team-wide adoption."],core:false,term:'long',priority:'low'},
+  {id:'ld_mentoring',cat:'leadership',title:'New Staff Mentoring',desc:'Guides new hires through onboarding tasks, answers questions with patience, shares tribal knowledge, and accelerates their ramp-up.',why:'The cost of poor onboarding is borne by the whole team. Experienced staff who mentor effectively multiply team capacity.',how:'Formally mentor one new hire → receive positive feedback → develop onboarding tips → mentor two new hires.',levelDesc:['Has not mentored a new team member.','Answers new hire questions when asked; has been a resource informally.','Actively supports a new hire through their early weeks; shares tips proactively.','Formally mentors new hires; accelerates their ramp-up; tracks their progress.','Recognized mentor; new hires under their guidance ramp up significantly faster.'],core:false,term:'long',priority:'low'},
+  {id:'ld_collaboration',cat:'leadership',title:'Cross-functional Collaboration',desc:'Works effectively with other departments (Ops, Compliance, Engineering, Client Success) to resolve shared issues and drive shared outcomes.',why:'Many implementation challenges require cross-functional solutions. Consultants who can work across teams unblock problems faster.',how:'Collaborate on 3 cross-team projects → build a working relationship with another department → represent the team in a cross-functional meeting.',levelDesc:['Has not worked on cross-functional initiatives.','Interacts with other departments reactively when needed.','Collaborates effectively on shared projects; communicates clearly across teams.','Builds strong cross-functional relationships; drives shared outcomes; represents the team well.','Trusted cross-functional partner; facilitates complex multi-team initiatives.'],core:false,term:'long',priority:'low'},
+  {id:'ld_initiative',cat:'leadership',title:'Self-Direction & Initiative',desc:'Proactively identifies what needs to be done, acts without waiting to be asked, and manages own workload with minimal oversight.',why:'Consultants who wait to be told what to do add less value than those who see what\'s needed and act. Self-direction is the multiplier skill.',how:'Complete 2 weeks with zero missed tasks unprompted → take ownership of a problem before being asked → propose a project.',levelDesc:['Requires regular direction to identify next steps.','Completes assigned tasks; sometimes needs reminders; rarely takes initiative.','Manages own workload reliably; occasionally identifies and acts on unassigned needs.','Consistently self-directed; regularly acts on unassigned needs; proactively solves problems.','High ownership; identifies strategic needs; drives projects to completion without oversight.'],core:true,term:'medium',priority:'high'},
+];
+
+const STORAGE_KEY = 'dc_growth_data';
+
+// ============================================================
+// STATE
+// ============================================================
+let state = { profiles:[], activeProfileId:null, appMode:'manager' };
+let currentPage = 'matrix';
+let pickerTarget = null; // {profileId, compId, cell}
+let formMode = 'add';
+let formEditId = null;
+let targetsProfileId = null;
+
+// ============================================================
+// STORAGE
+// ============================================================
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+  if (!state.profiles) state.profiles = [];
+  if (!state.appMode) state.appMode = 'manager';
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function uid() { return Math.random().toString(36).slice(2,9); }
+function getCat(id) { return CATEGORIES.find(c=>c.id===id); }
+function getComp(id) { return COMPETENCIES.find(c=>c.id===id); }
+function getProfile(id) { return state.profiles.find(p=>p.id===id); }
+function getActiveProfile() { return getProfile(state.activeProfileId); }
+
+function levelStyle(lv) {
+  const l = LEVELS[lv] || LEVELS[0];
+  return `color:${l.color};background:${l.bg};border-color:${l.border}`;
+}
+function levelClass(lv) { return `lv${lv}`; }
+
+function getRating(profile, compId) {
+  return profile && profile.ratings && profile.ratings[compId] !== undefined ? profile.ratings[compId] : 0;
+}
+function getTarget(profile, compId) {
+  if (profile && profile.targets && profile.targets[compId] !== undefined) return profile.targets[compId];
+  const c = getComp(compId);
+  return c && c.core ? 3 : 2;
+}
+
+function teamAvg(compId) {
+  if (!state.profiles.length) return 0;
+  const sum = state.profiles.reduce((a,p)=>a+getRating(p,compId),0);
+  return sum/state.profiles.length;
+}
+
+function profileOverallScore(profile) {
+  if (!COMPETENCIES.length) return 0;
+  const sum = COMPETENCIES.reduce((a,c)=>a+getRating(profile,c.id),0);
+  return (sum/(COMPETENCIES.length*4)*100).toFixed(0);
+}
+
+function profileCatAvg(profile, catId) {
+  const comps = COMPETENCIES.filter(c=>c.cat===catId);
+  if (!comps.length) return 0;
+  const sum = comps.reduce((a,c)=>a+getRating(profile,c.id),0);
+  return sum/comps.length;
+}
+
+function catTeamAvg(catId) {
+  if (!state.profiles.length) return 0;
+  const comps = COMPETENCIES.filter(c=>c.cat===catId);
+  if (!comps.length) return 0;
+  let total=0, count=0;
+  state.profiles.forEach(p=>{ comps.forEach(c=>{ total+=getRating(p,c.id); count++; }); });
+  return count ? total/count : 0;
+}
+
+function avgColor(avg) {
+  if (avg >= 3.5) return LEVELS[4].color;
+  if (avg >= 2.5) return LEVELS[3].color;
+  if (avg >= 1.5) return LEVELS[2].color;
+  if (avg >= 0.5) return LEVELS[1].color;
+  return LEVELS[0].color;
+}
+
+function avgLevelIndex(avg) {
+  return Math.min(4, Math.round(avg));
+}
+
+function priorityBadge(p) {
+  const cls = p==='high'?'badge-high':p==='medium'?'badge-medium':'badge-low';
+  return `<span class="priority-badge ${cls}">${p.charAt(0).toUpperCase()+p.slice(1)}</span>`;
+}
+
+// ============================================================
+// INIT / SIDEBAR
+// ============================================================
+function init() {
+  loadState();
+  // Pre-load demo data if empty
+  if (!state.profiles.length) {
+    seedDemoData();
+  }
+  renderSidebar();
+  renderDeptHeader();
+  showPage(state.appMode==='manager' ? 'matrix' : 'dashboard');
+}
+
+function renderDeptHeader() {
+  document.getElementById('sidebar-dept-icon').textContent = DEPT_CONFIG.icon;
+  document.getElementById('sidebar-dept-name').textContent = DEPT_CONFIG.name;
+  document.getElementById('sidebar-dept-div').textContent = DEPT_CONFIG.division;
+}
+
+function renderSidebar() {
+  const nav = document.getElementById('sidebar-nav');
+  document.getElementById('btn-mode-manager').classList.toggle('active', state.appMode==='manager');
+  document.getElementById('btn-mode-individual').classList.toggle('active', state.appMode==='individual');
+
+  if (state.appMode==='manager') {
+    const rosterHtml = state.profiles.length ? `
+      <div class="nav-section">Team</div>
+      <div class="sidebar-roster">
+        ${state.profiles.map(p=>`<div class="sidebar-roster-item" onclick="viewProfile('${p.id}')">
+          <span class="sidebar-roster-avatar">${p.avatar}</span>
+          <div class="sidebar-roster-info">
+            <div class="sidebar-roster-name">${p.name.split(' ')[0]}</div>
+            <div class="sidebar-roster-role">${p.role.replace('Data Consultant','DC')}</div>
+          </div>
+        </div>`).join('')}
+      </div>` : '';
+    nav.innerHTML = `
+      <div class="nav-section">Views</div>
+      <div class="nav-item ${currentPage==='matrix'?'active':''}" onclick="showPage('matrix')"><span class="nav-item-icon">📊</span>Team Matrix</div>
+      <div class="nav-item ${currentPage==='gap'?'active':''}" onclick="showPage('gap')"><span class="nav-item-icon">📉</span>Gap Analysis</div>
+      <div class="nav-item ${currentPage==='profiles'?'active':''}" onclick="showPage('profiles')"><span class="nav-item-icon">👥</span>Team Profiles</div>
+      <div class="nav-item ${currentPage==='manage'?'active':''}" onclick="showPage('manage')"><span class="nav-item-icon">⚙️</span>Manage Team</div>
+      <div class="nav-item ${currentPage==='resources'?'active':''}" onclick="showPage('resources')"><span class="nav-item-icon">🔗</span>Resources</div>
+      ${rosterHtml}
+    `;
+  } else {
+    nav.innerHTML = `
+      <div class="nav-section">My Growth</div>
+      <div class="nav-item ${currentPage==='dashboard'?'active':''}" onclick="showPage('dashboard')"><span class="nav-item-icon">🏠</span>My Dashboard</div>
+      <div class="nav-item ${currentPage==='library'?'active':''}" onclick="showPage('library')"><span class="nav-item-icon">📚</span>Competency Library</div>
+      <div class="nav-item ${currentPage==='resources'?'active':''}" onclick="showPage('resources')"><span class="nav-item-icon">🔗</span>Resources</div>
+    `;
+  }
+
+  const ap = getActiveProfile();
+  document.getElementById('pill-avatar').textContent = ap ? ap.avatar : '👤';
+  document.getElementById('pill-name').textContent = ap ? ap.name : 'No profile';
+  document.getElementById('pill-role').textContent = ap ? ap.role : 'Select a profile';
+}
+
+function setMode(mode) {
+  state.appMode = mode;
+  saveState();
+  renderSidebar();
+  if (mode==='manager') showPage('matrix');
+  else showPage('dashboard');
+}
+
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  if (el) el.classList.add('active');
+
+  // Page titles
+  const titles = {matrix:'Team Matrix',gap:'Gap Analysis',profiles:'Team Profiles',manage:'Manage Team',dashboard:'My Dashboard',library:'Competency Library',resources:'Resources'};
+  document.getElementById('page-title').textContent = titles[page]||page;
+
+  // Topbar actions
+  const actions = document.getElementById('topbar-actions');
+  if (page === 'matrix') {
+    actions.innerHTML = `<button class="btn btn-secondary btn-sm" onclick="showPage('manage')">⚙ Manage Team</button>`;
+  } else if (page === 'manage') {
+    actions.innerHTML = `<button class="btn btn-primary btn-sm" id="tb-add-profile-btn">+ Add Member</button>`;
+    actions.querySelector('#tb-add-profile-btn').addEventListener('click', openAddForm);
+  } else {
+    actions.innerHTML = '';
+  }
+
+  renderSidebar();
+  renderPage(page);
+}
+
+function renderPage(page) {
+  switch(page) {
+    case 'matrix': renderMatrix(); break;
+    case 'gap': renderGap(); break;
+    case 'profiles': renderProfiles(); break;
+    case 'manage': renderManage(); break;
+    case 'dashboard': renderDashboard(); break;
+    case 'library': renderLibrary(); break;
+    case 'resources': renderResources(); break;
+  }
+}
+
+// ============================================================
+// MATRIX
+// ============================================================
+function renderMatrix() {
+  const wrap = document.getElementById('matrix-inner');
+  if (!state.profiles.length) {
+    wrap.innerHTML = `<div class="empty-state" style="padding:80px 20px"><div class="empty-state-icon">👥</div><div class="empty-state-title">No team members yet</div><div class="empty-state-text">Add team members in Manage Team to start building the matrix.</div><button class="btn btn-primary" onclick="showPage('manage')">Manage Team</button></div>`;
+    return;
+  }
+
+  const profiles = state.profiles;
+  let html = `<table id="matrix-table"><thead><tr class="mhdr-row">`;
+  html += `<th class="col-label mhdr-label">Competency</th>`;
+  profiles.forEach(p=>{
+    html += `<th class="col-member mhdr-member"><div class="mhdr-member-inner"><span class="mhdr-avatar">${p.avatar}</span><div class="mhdr-name">${p.name.split(' ')[0]}</div><div class="mhdr-role">${p.role.replace('Data Consultant','DC')}</div></div></th>`;
+  });
+  html += `<th class="col-avg mhdr-avg-head">Team Avg</th></tr></thead><tbody>`;
+
+  CATEGORIES.forEach(cat => {
+    const catComps = COMPETENCIES.filter(c=>c.cat===cat.id);
+    const catAvg = catTeamAvg(cat.id);
+    const catColor = avgColor(catAvg);
+    const catLvl = avgLevelIndex(catAvg);
+
+    // Category separator row
+    html += `<tr class="mcat-row">`;
+    html += `<td class="col-label"><div class="mcat-label-cell"><span>${cat.icon}</span><span>${cat.title}</span></div></td>`;
+    profiles.forEach(()=>{ html += `<td class="mcat-spacer"></td>`; });
+    html += `<td class="mcat-spacer"></td></tr>`;
+
+    // Competency rows
+    catComps.forEach(comp => {
+      const tAvg = teamAvg(comp.id);
+      const tLvl = avgLevelIndex(tAvg);
+      html += `<tr class="mcomp-row" id="mrow-${comp.id}">`;
+      html += `<td class="col-label mcomp-label-cell"><div class="mcomp-label-inner"><span class="mcomp-core-dot ${comp.core?'is-core':''}" title="${comp.core?'Core competency':''}"></span><span class="mcomp-name" title="${comp.title}">${comp.title}</span></div></td>`;
+      profiles.forEach(p => {
+        const rating = getRating(p, comp.id);
+        const lv = LEVELS[rating];
+        html += `<td class="col-member mrating-cell"><span class="mrating-chip ${levelClass(rating)}" onclick="openPicker('${p.id}','${comp.id}',event)" data-tip="${lv.label}">${rating}</span></td>`;
+      });
+      // Team avg chip
+      html += `<td class="col-avg mavg-cell"><span class="mavg-chip ${levelClass(tLvl)}" data-tip="Team avg: ${tAvg.toFixed(2)}">${tAvg.toFixed(1)}</span></td>`;
+      html += `</tr>`;
+    });
+  });
+
+  html += `</tbody></table>`;
+  wrap.innerHTML = html;
+}
+
+// ============================================================
+// PICKER
+// ============================================================
+function openPicker(profileId, compId, evt) {
+  evt.stopPropagation();
+  pickerTarget = {profileId, compId};
+  const comp = getComp(compId);
+  const profile = getProfile(profileId);
+  const currentRating = getRating(profile, compId);
+
+  document.getElementById('rating-picker-title').textContent = comp ? comp.title : 'Rating';
+  const opts = document.getElementById('picker-options');
+  opts.innerHTML = LEVELS.map(lv=>`
+    <div class="picker-option ${lv.id===currentRating?'selected':''}" onclick="setPicking(${lv.id})">
+      <span class="picker-dot" style="background:${lv.color}"></span>
+      <span class="picker-label" style="color:${lv.id===currentRating?lv.color:'inherit'}">${lv.id} — ${lv.label}</span>
+    </div>
+  `).join('');
+
+  const picker = document.getElementById('rating-picker');
+  picker.classList.add('visible');
+
+  // Position near click
+  const rect = evt.target.getBoundingClientRect();
+  let top = rect.bottom + 6;
+  let left = rect.left;
+  const pw = 180, ph = 220;
+  if (left + pw > window.innerWidth - 10) left = window.innerWidth - pw - 10;
+  if (top + ph > window.innerHeight - 10) top = rect.top - ph - 6;
+  picker.style.top = top + 'px';
+  picker.style.left = left + 'px';
+}
+
+function setPicking(level) {
+  if (!pickerTarget) return;
+  const {profileId, compId} = pickerTarget;
+  const profile = getProfile(profileId);
+  if (!profile) return;
+  if (!profile.ratings) profile.ratings = {};
+  profile.ratings[compId] = level;
+  saveState();
+  closePicker();
+  renderMatrix();
+  // Also refresh active page if needed
+  if (currentPage==='dashboard'||currentPage==='gap'||currentPage==='profiles') renderPage(currentPage);
+}
+
+function closePicker() {
+  document.getElementById('rating-picker').classList.remove('visible');
+  pickerTarget = null;
+}
+
+document.addEventListener('click', (e) => {
+  const picker = document.getElementById('rating-picker');
+  if (picker.classList.contains('visible') && !picker.contains(e.target)) {
+    closePicker();
+  }
+});
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const page = document.getElementById('page-dashboard');
+  const profile = getActiveProfile();
+  if (!profile) {
+    page.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏠</div><div class="empty-state-title">No profile selected</div><div class="empty-state-text">Select or create a profile to view your dashboard.</div><button class="btn btn-primary" onclick="showPage('manage')">Manage Team</button></div>`;
+    return;
+  }
+
+  const overall = profileOverallScore(profile);
+  const ratedComps = COMPETENCIES.filter(c=>getRating(profile,c.id)>0).length;
+  const behindComps = COMPETENCIES.filter(c=>getRating(profile,c.id)<getTarget(profile,c.id)).length;
+  const onTargetComps = COMPETENCIES.filter(c=>getRating(profile,c.id)>=getTarget(profile,c.id)&&getRating(profile,c.id)>0).length;
+
+  // Overall avg rating (0–4 scale) for level label
+  const rawAvg = COMPETENCIES.reduce((a,c)=>a+getRating(profile,c.id),0) / COMPETENCIES.length;
+  const lvlIdx = avgLevelIndex(rawAvg);
+  const currentLv = LEVELS[lvlIdx];
+  const nextLv = LEVELS[Math.min(4, lvlIdx+1)];
+
+  // SVG ring
+  const r = 38, circ = +(2*Math.PI*r).toFixed(1);
+  const offset = +(circ - (overall/100)*circ).toFixed(1);
+
+  // Greeting
+  const hr = new Date().getHours();
+  const greeting = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = profile.name.split(' ')[0];
+
+  let html = `<div class="ind-hero">
+    <div class="ind-hero-main">
+      <div class="ind-hero-avatar-wrap">${profile.avatar}</div>
+      <div class="ind-hero-identity">
+        <div class="ind-hero-greeting">${greeting}</div>
+        <div class="ind-hero-name">${firstName}</div>
+        <div class="ind-hero-role">${profile.role}${profile.joinDate?` · Since ${profile.joinDate}`:''}</div>
+        <div class="ind-hero-level-row">
+          <span class="ind-hero-level-badge" style="background:${currentLv.bg};color:${currentLv.color};border:1px solid ${currentLv.border}">${currentLv.label}</span>
+          ${lvlIdx < 4 ? `<span class="ind-hero-level-arrow">→</span><span class="ind-hero-level-next">Next: ${nextLv.label}</span>` : '<span class="ind-hero-level-next" style="color:#af52de">Maximum level reached</span>'}
+        </div>
+      </div>
+      <div class="ind-hero-ring-wrap">
+        <svg class="ind-hero-ring" viewBox="0 0 96 96">
+          <circle class="ind-ring-bg" cx="48" cy="48" r="${r}"/>
+          <circle class="ind-ring-fill" cx="48" cy="48" r="${r}"
+            stroke="${currentLv.color}"
+            stroke-dasharray="${circ}"
+            stroke-dashoffset="${circ}"
+            data-offset="${offset}"/>
+        </svg>
+        <div class="ind-hero-ring-text">
+          <div class="ind-ring-pct">${overall}%</div>
+          <div class="ind-ring-lbl">Overall</div>
+        </div>
+      </div>
+    </div>
+    <div class="ind-hero-stats">
+      <div class="ind-hero-stat">
+        <div class="ind-hero-stat-val">${ratedComps}<span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.35)">/${COMPETENCIES.length}</span></div>
+        <div class="ind-hero-stat-lbl">Rated</div>
+      </div>
+      <div class="ind-hero-stat">
+        <div class="ind-hero-stat-val" style="color:var(--c3)">${onTargetComps}</div>
+        <div class="ind-hero-stat-lbl">On Target</div>
+      </div>
+      <div class="ind-hero-stat">
+        <div class="ind-hero-stat-val" style="color:${behindComps>0?'#ff3b30':'var(--text-primary)'}">${behindComps}</div>
+        <div class="ind-hero-stat-lbl">Behind Target</div>
+      </div>
+      <div class="ind-hero-stat">
+        <div class="ind-hero-stat-val">${COMPETENCIES.length - ratedComps}</div>
+        <div class="ind-hero-stat-lbl">Not Yet Rated</div>
+      </div>
+    </div>
+  </div>`;
+
+  CATEGORIES.forEach(cat => {
+    const comps = COMPETENCIES.filter(c=>c.cat===cat.id);
+    const catAvg = profileCatAvg(profile, cat.id);
+    const catLvl = avgLevelIndex(catAvg);
+    const catLv = LEVELS[catLvl];
+
+    html += `<div class="cat-section">
+      <div class="cat-section-header">
+        <span class="cat-section-icon">${cat.icon}</span>
+        <span class="cat-section-title">${cat.title}</span>
+        <span class="cat-avg-badge ${levelClass(catLvl)}">${catAvg.toFixed(1)} avg</span>
+      </div>
+      <div class="comp-rows">`;
+
+    comps.forEach(comp => {
+      const rating = getRating(profile, comp.id);
+      const target = getTarget(profile, comp.id);
+      const lv = LEVELS[rating];
+      const behind = rating < target;
+
+      const hasManagerTarget = profile.targets && profile.targets[comp.id] !== undefined;
+
+      html += `<div class="comp-row" onclick="openCompDetail('${comp.id}','${profile.id}')">
+        <span class="comp-row-name">${comp.title}</span>
+        <div class="comp-row-meta">
+          ${hasManagerTarget?`<span class="mgr-req-badge" title="Manager has set a target for this skill">Manager Request</span>`:''}
+          ${behind?`<span class="comp-behind">↓${target-rating}</span>`:''}
+        </div>
+        <span class="comp-row-badge ${levelClass(rating)}">${lv.short}</span>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  page.innerHTML = html;
+
+  // Animate ring fill
+  setTimeout(() => {
+    const ring = page.querySelector('.ind-ring-fill');
+    if (ring) ring.style.strokeDashoffset = ring.dataset.offset;
+  }, 60);
+}
+
+// ============================================================
+// GAP ANALYSIS
+// ============================================================
+function renderGap() {
+  const page = document.getElementById('page-gap');
+  if (!state.profiles.length) {
+    page.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📉</div><div class="empty-state-title">No team members</div><div class="empty-state-text">Add team members first.</div></div>`;
+    return;
+  }
+
+  let activeCat = page._activeCat || 'all';
+  let activeSort = page._activeSort || 'avg';
+
+  const filterBar = `<div id="gap-filter-bar">
+    <span style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-right:4px">Category:</span>
+    <span class="filter-chip ${activeCat==='all'?'active':''}" onclick="gapFilter('all')">All</span>
+    ${CATEGORIES.map(c=>`<span class="filter-chip ${activeCat===c.id?'active':''}" onclick="gapFilter('${c.id}')">${c.icon} ${c.title}</span>`).join('')}
+    <span style="margin-left:8px;font-size:12px;font-weight:600;color:var(--text-secondary)">Sort:</span>
+    <span class="filter-chip ${activeSort==='avg'?'active':''}" onclick="gapSort('avg')">By Avg</span>
+    <span class="filter-chip ${activeSort==='priority'?'active':''}" onclick="gapSort('priority')">By Priority</span>
+  </div>`;
+
+  let comps = [...COMPETENCIES];
+  if (activeCat !== 'all') comps = comps.filter(c=>c.cat===activeCat);
+
+  // Sort
+  const priorityOrder = {high:0,medium:1,low:2};
+  if (activeSort==='avg') {
+    comps.sort((a,b)=>teamAvg(a.id)-teamAvg(b.id));
+  } else if (activeSort==='priority') {
+    comps.sort((a,b)=>(priorityOrder[a.priority]||2)-(priorityOrder[b.priority]||2));
+  }
+
+  let rows = comps.map(comp => {
+    const avg = teamAvg(comp.id);
+    const lvl = avgLevelIndex(avg);
+    const color = avgColor(avg);
+    const cat = getCat(comp.cat);
+    const pct = (avg/4*100).toFixed(1);
+
+    const memberDots = state.profiles.map(p => {
+      const r = getRating(p,comp.id);
+      const lv = LEVELS[r];
+      return `<span class="gap-member-dot gap-member-tip" style="color:${lv.color};background:${lv.bg};border-color:${lv.border}" data-tip="${p.name}: ${lv.label}">${r}</span>`;
+    }).join('');
+
+    return `<div class="gap-row">
+      <div class="gap-row-left">
+        <div class="gap-row-cname">${comp.title}</div>
+        <div class="gap-row-meta">
+          <span style="font-size:12px">${cat?cat.icon:''}</span>
+          ${comp.core?`<span class="badge badge-core" style="font-size:10px">Core</span>`:''}
+          ${priorityBadge(comp.priority)}
+        </div>
+      </div>
+      <div class="gap-row-mid">
+        <div class="gap-bar-wrap">
+          <div class="gap-bar-bg"><div class="gap-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+          <span class="gap-bar-val" style="color:${color}">${avg.toFixed(1)}</span>
+        </div>
+        <div class="gap-avg-label">Team avg · ${LEVELS[lvl].label}</div>
+      </div>
+      <div class="gap-row-right">${memberDots}</div>
+    </div>`;
+  }).join('');
+
+  page.innerHTML = filterBar + `<div class="gap-list">${rows}</div>`;
+  page._activeCat = activeCat;
+  page._activeSort = activeSort;
+}
+
+window.gapFilter = function(cat) {
+  const page = document.getElementById('page-gap');
+  page._activeCat = cat;
+  renderGap();
+};
+window.gapSort = function(sort) {
+  const page = document.getElementById('page-gap');
+  page._activeSort = sort;
+  renderGap();
+};
+
+// ============================================================
+// TEAM PROFILES
+// ============================================================
+function renderProfiles() {
+  const page = document.getElementById('page-profiles');
+  if (!state.profiles.length) {
+    page.innerHTML = `<div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-title">No team members yet</div><button class="btn btn-primary" onclick="showPage('manage')">Add Members</button></div>`;
+    return;
+  }
+
+  const cards = state.profiles.map(p => {
+    const score = profileOverallScore(p);
+    const catBars = CATEGORIES.map(cat=>{
+      const avg = profileCatAvg(p,cat.id);
+      const pct = avg/4*100;
+      const color = avgColor(avg);
+      return `<div class="pc-cat-row">
+        <span class="pc-cat-icon">${cat.icon}</span>
+        <span class="pc-cat-label">${cat.title.split(' ')[0]}</span>
+        <div class="pc-cat-bar"><div class="pc-cat-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span class="pc-cat-val" style="color:${color}">${avg.toFixed(1)}</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="profile-card" onclick="viewProfile('${p.id}')">
+      <div class="pc-top">
+        <span class="pc-avatar">${p.avatar}</span>
+        <div class="pc-info">
+          <div class="pc-name">${p.name}</div>
+          <div class="pc-role">${p.role}</div>
+          ${p.joinDate?`<div class="pc-join">Since ${p.joinDate}</div>`:''}
+        </div>
+        <div>
+          <div class="pc-score" style="color:${score>=75?'#34c759':score>=50?'#007aff':'#ff9f0a'}">${score}%</div>
+          <div class="pc-score-label">Overall</div>
+        </div>
+      </div>
+      <div class="pc-cats">${catBars}</div>
+    </div>`;
+  }).join('');
+
+  page.innerHTML = `<div id="profiles-grid">${cards}</div>`;
+}
+
+window.viewProfile = function(id) {
+  state.activeProfileId = id;
+  saveState();
+  setMode('individual');
+};
+
+// ============================================================
+// MANAGE TEAM
+// ============================================================
+function renderManage() {
+  const page = document.getElementById('page-manage');
+  const profilesHtml = state.profiles.length ? `<div class="manage-profiles-grid">
+    ${state.profiles.map(p=>`<div class="manage-profile-card">
+      <span class="manage-pc-avatar">${p.avatar}</span>
+      <div class="manage-pc-info"><div class="manage-pc-name">${p.name}</div><div class="manage-pc-role">${p.role}</div></div>
+      <div class="manage-pc-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editProfile('${p.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProfile('${p.id}')">Delete</button>
+      </div>
+    </div>`).join('')}
+  </div>` : `<div style="color:var(--text-secondary);font-size:13px;padding:12px 0">No team members yet. Add one to get started.</div>`;
+
+  // Targets section
+  const activeForTargets = targetsProfileId && getProfile(targetsProfileId) ? getProfile(targetsProfileId) : (state.profiles[0]||null);
+  const targetProfileSelect = state.profiles.length ? `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span style="font-size:13px;font-weight:500">Viewing targets for:</span>
+      <select class="form-select" style="width:auto" onchange="targetsProfileId=this.value;renderManage()">
+        ${state.profiles.map(p=>`<option value="${p.id}" ${activeForTargets&&activeForTargets.id===p.id?'selected':''}>${p.name}</option>`).join('')}
+      </select>
+    </div>` : '';
+
+  let targetsTable = '';
+  if (activeForTargets) {
+    targetsProfileId = activeForTargets.id;
+    const rows = COMPETENCIES.map(comp=>{
+      const current = getTarget(activeForTargets, comp.id);
+      const opts = LEVELS.map(l=>`<option value="${l.id}" ${l.id===current?'selected':''}>${l.id} — ${l.label}</option>`).join('');
+      const dueDate = activeForTargets.targetDates?.[comp.id] || '';
+      return `<tr>
+        <td>${getCat(comp.cat)?.icon||''} ${comp.title}</td>
+        <td>${comp.core?'<span class="badge badge-core">Core</span>':''}</td>
+        <td><select class="target-select" onchange="setTarget('${activeForTargets.id}','${comp.id}',+this.value)">${opts}</select></td>
+        <td><input type="date" class="target-date-input" value="${dueDate}" onchange="setTargetDate('${activeForTargets.id}','${comp.id}',this.value)" placeholder="No due date"></td>
+      </tr>`;
+    }).join('');
+    targetsTable = `<table class="targets-table"><thead><tr><th>Competency</th><th>Type</th><th>Target Level</th><th>Due Date</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  page.innerHTML = `
+    <div class="manage-section">
+      <div class="manage-section-title">👥 Team Members</div>
+      ${profilesHtml}
+      <div style="margin-top:12px"><button class="btn btn-primary" onclick="openAddForm()">+ Add Profile</button></div>
+    </div>
+    <div class="manage-section">
+      <div class="manage-section-title">🎯 Target Levels</div>
+      ${targetProfileSelect}
+      ${state.profiles.length ? targetsTable : '<div style="color:var(--text-secondary);font-size:13px">Add team members first.</div>'}
+    </div>
+    <div class="manage-section">
+      <div class="manage-section-title">🔄 Export & Import</div>
+      <div class="sync-box">
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Export individual profiles for employees to self-rate, then import their updates back.</p>
+        <div class="sync-row">
+          ${state.profiles.map(p=>`<button class="btn btn-secondary btn-sm" onclick="exportProfile('${p.id}')">Export ${p.name.split(' ')[0]}</button>`).join('')}
+          <button class="btn btn-secondary btn-sm" onclick="exportAll()">Export All (JSON)</button>
+          <button class="btn btn-primary btn-sm" onclick="importBackup()">Import Backup</button>
+        </div>
+        <div class="import-drop" onclick="triggerImport()">Click to import employee profile or backup file</div>
+        <input type="file" id="file-import" accept=".json" style="display:none" onchange="handleImport(event)">
+      </div>
+    </div>`;
+}
+
+window.setTarget = function(profileId, compId, val) {
+  const p = getProfile(profileId);
+  if (!p) return;
+  if (!p.targets) p.targets = {};
+  p.targets[compId] = val;
+  saveState();
+};
+
+window.setTargetDate = function(profileId, compId, val) {
+  const p = getProfile(profileId);
+  if (!p) return;
+  if (!p.targetDates) p.targetDates = {};
+  if (val) p.targetDates[compId] = val;
+  else delete p.targetDates[compId];
+  saveState();
+};
+
+window.editProfile = function(id) {
+  formMode = 'edit';
+  formEditId = id;
+  const p = getProfile(id);
+  openForm(p);
+};
+
+window.deleteProfile = function(id) {
+  if (!confirm('Delete this profile? This cannot be undone.')) return;
+  state.profiles = state.profiles.filter(p=>p.id!==id);
+  if (state.activeProfileId===id) state.activeProfileId = state.profiles[0]?.id||null;
+  saveState();
+  renderManage();
+  renderSidebar();
+};
+
+function openAddForm() {
+  formMode = 'add';
+  formEditId = null;
+  openForm(null);
+}
+
+function openForm(profile) {
+  document.getElementById('form-title').textContent = formMode==='add'?'Add Profile':'Edit Profile';
+  const avatarOpts = AVATARS.map(a=>`<div class="avatar-opt ${profile&&profile.avatar===a?'selected':a==='👩‍💻'&&!profile?'selected':''}" onclick="selectAvatar(this,'${a}')" data-avatar="${a}">${a}</div>`).join('');
+  const roleOpts = ROLES.map(r=>`<option ${profile&&profile.role===r?'selected':''}>${r}</option>`).join('');
+  document.getElementById('form-body').innerHTML = `
+    <div class="form-field"><label class="form-label">Avatar</label><div class="form-avatar-row">${avatarOpts}</div></div>
+    <div class="form-field"><label class="form-label">Full Name</label><input class="form-input" id="fi-name" placeholder="Jane Smith" value="${profile?profile.name:''}"></div>
+    <div class="form-field"><label class="form-label">Role</label><select class="form-select" id="fi-role">${roleOpts}</select></div>
+    <div class="form-field"><label class="form-label">Join Date (e.g. 2024-01)</label><input class="form-input" id="fi-join" placeholder="2024-01" value="${profile?profile.joinDate||'':''}"></div>
+    <div class="form-field"><label class="form-label">Notes</label><textarea class="form-textarea" id="fi-notes" placeholder="Background, strengths, areas of focus...">${profile?profile.notes||'':''}</textarea></div>
+  `;
+  document.getElementById('form-overlay').classList.add('visible');
+}
+
+window.selectAvatar = function(el, avatar) {
+  document.querySelectorAll('.avatar-opt').forEach(a=>a.classList.remove('selected'));
+  el.classList.add('selected');
+};
+
+window.submitForm = function() {
+  const name = document.getElementById('fi-name').value.trim();
+  if (!name) { alert('Name is required.'); return; }
+  const avatarEl = document.querySelector('.avatar-opt.selected');
+  const avatar = avatarEl ? avatarEl.dataset.avatar : '👩‍💻';
+  const role = document.getElementById('fi-role').value;
+  const joinDate = document.getElementById('fi-join').value.trim();
+  const notes = document.getElementById('fi-notes').value.trim();
+
+  if (formMode==='add') {
+    const p = {id:uid(),name,avatar,role,joinDate,notes,ratings:{},targets:{}};
+    state.profiles.push(p);
+    if (!state.activeProfileId) state.activeProfileId = p.id;
+  } else {
+    const p = getProfile(formEditId);
+    if (p) { p.name=name;p.avatar=avatar;p.role=role;p.joinDate=joinDate;p.notes=notes; }
+  }
+  saveState();
+  closeForm();
+  renderManage();
+  renderSidebar();
+};
+
+function closeForm(e) {
+  if (e && e.target !== document.getElementById('form-overlay')) return;
+  document.getElementById('form-overlay').classList.remove('visible');
+}
+
+// ============================================================
+// LIBRARY
+// ============================================================
+function renderLibrary() {
+  const page = document.getElementById('page-library');
+  let activeCat = page._activeCat || 'all';
+
+  const filterBar = `<div id="lib-filter-bar">
+    <span class="filter-chip ${activeCat==='all'?'active':''}" onclick="libFilter('all')">All</span>
+    ${CATEGORIES.map(c=>`<span class="filter-chip ${activeCat===c.id?'active':''}" onclick="libFilter('${c.id}')">${c.icon} ${c.title}</span>`).join('')}
+  </div>`;
+
+  const profile = getActiveProfile();
+  let comps = activeCat==='all' ? COMPETENCIES : COMPETENCIES.filter(c=>c.cat===activeCat);
+
+  const cards = comps.map(comp=>{
+    const cat = getCat(comp.cat);
+    const rating = profile ? getRating(profile,comp.id) : 0;
+    const lv = LEVELS[rating];
+    return `<div class="lib-card" onclick="openCompDetail('${comp.id}')">
+      <div class="lib-card-top">
+        <span style="font-size:16px">${cat?cat.icon:''}</span>
+        <span class="lib-card-title">${comp.title}</span>
+        ${profile?`<span class="badge-level ${levelClass(rating)}" style="font-size:10px;padding:2px 7px;border-radius:5px;font-weight:700;border:1px solid">${lv.short}</span>`:''}
+      </div>
+      <div class="lib-card-desc">${comp.desc}</div>
+      <div class="lib-card-meta">
+        ${comp.core?`<span class="badge badge-core" style="font-size:10px">Core</span>`:''}
+        ${priorityBadge(comp.priority)}
+        <span class="badge" style="background:rgba(0,0,0,0.05);color:var(--text-secondary);font-size:10px">${comp.term}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  page.innerHTML = filterBar + `<div class="lib-grid">${cards}</div>`;
+  page._activeCat = activeCat;
+}
+
+window.libFilter = function(cat) {
+  const page = document.getElementById('page-library');
+  page._activeCat = cat;
+  renderLibrary();
+};
+
+// ============================================================
+// RESOURCES
+// ============================================================
+const DC_APPS = '../../Work/Internal/Mine/Active/Apps/';
+const DC_PORTAL = '../../Work/Internal/Mine/Active/Websites/data-consultant-website/';
+const WALKS = '../../Work/Internal/Mine/Active/Websites/dc-walkthroughs/index.html';
+
+// Each resource: { badge, title, desc, primary:{label,url}, secondary?:{label,url} }
+const RESOURCE_SECTIONS = [
+  {
+    cat: 'plan_admin',
+    resources: [
+      { badge:'EL', title:'Eligibility Processing', desc:'Standard & auto-enroll paths, opt-out flows.',
+        primary:{label:'Interactive',url:WALKS+'#flow-elig-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-elig'} },
+      { badge:'LN', title:'Loan Setup & Processing', desc:'P3 setup, Informatica, takeover loans, live date calculator.',
+        primary:{label:'Interactive',url:WALKS+'#flow-loans-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-loans'} },
+      { badge:'BA', title:'Balance Import — All Methods', desc:'Cash, Mapping, and TIK methods with guided selection.',
+        primary:{label:'Interactive',url:WALKS+'#flow-balance-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-balance'} },
+      { badge:'PY', title:'Payroll Integration Setup', desc:'Vendor IDs, meeting/email fork, EDS & OnePayroll validation.',
+        primary:{label:'Interactive',url:WALKS+'#flow-payroll-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-payroll'} },
+    ]
+  },
+  {
+    cat: 'technical',
+    resources: [
+      { badge:'FX', title:'Fixed-Width Extraction Console', desc:'Load flat files, validate record sets, export formatted workbooks.',
+        primary:{label:'Open App',url:DC_APPS+'fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html'} },
+      { badge:'EDS', title:'EDS Reference', desc:'Field specs, file prep guides, error codes, and output format docs.',
+        primary:{label:'Open Portal',url:DC_PORTAL+'Data_Consultant_Website_v2_10.html'} },
+      { badge:'VBA', title:'VBA Macros Library', desc:'Table generators, paste-values, TOA macros, and template builders.',
+        primary:{label:'Open Portal',url:DC_PORTAL+'Data_Consultant_Website_v2_10.html'} },
+    ]
+  },
+  {
+    cat: 'process',
+    resources: [
+      { badge:'MC', title:'Main Checklist Generator', desc:'Implementation plans, live checklist execution, dashboard and vault views.',
+        primary:{label:'Open App',url:DC_APPS+'checklist-generators/main-checklist-generator/App - Main Checklist Generator.html'} },
+      { badge:'PY', title:'Payroll Checklist Generator', desc:'Payroll onboarding checklists and vendor setup tracking.',
+        primary:{label:'Open App',url:DC_APPS+'checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html'} },
+      { badge:'DF', title:'Deferral Elections', desc:'Pre-tax, Roth & flat dollar elections with live IRS limit checker.',
+        primary:{label:'Interactive',url:WALKS+'#flow-defer-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-defer'} },
+      { badge:'TIK', title:'Re-Registration & TIK', desc:'Live deadline planner, fund tracker, share reconciliation.',
+        primary:{label:'Interactive',url:WALKS+'#flow-tik-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-tik'} },
+    ]
+  },
+  {
+    cat: 'client',
+    resources: [
+      { badge:'RQ', title:'Internal Request Form', desc:'Capture web app requests, preview receipt email, and draft it.',
+        primary:{label:'Open Form',url:DC_APPS+'project-intake/Project Intake Form.html'} },
+      { badge:'DC', title:'DC Resource Portal', desc:'Process references, SOPs, and documentation to share with clients.',
+        primary:{label:'Open Portal',url:DC_PORTAL+'Data_Consultant_Website_v2_10.html'} },
+    ]
+  },
+  {
+    cat: 'compliance',
+    resources: [
+      { badge:'DF', title:'Deferral Elections Walkthrough', desc:'% elections, flat dollar, and change processing with validation grid.',
+        primary:{label:'Interactive',url:WALKS+'#flow-defer-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-defer'} },
+      { badge:'RO', title:'Roth & After-Tax Basis Tracking', desc:'Source-type branching, basis calculator, 5-year rule checker.',
+        primary:{label:'Interactive',url:WALKS+'#flow-roth-ix'}, secondary:{label:'Static Flow',url:WALKS+'#flow-roth'} },
+      { badge:'DC', title:'DC Resource Portal', desc:'Compliance documentation, required filings, and audit-ready references.',
+        primary:{label:'Open Portal',url:DC_PORTAL+'Data_Consultant_Website_v2_10.html'} },
+    ]
+  },
+  {
+    cat: 'systems',
+    resources: [
+      { badge:'DC', title:'DC Toolkit Launcher', desc:'All DC tools in one place — the main workspace entry point.',
+        primary:{label:'Open',url:DC_PORTAL+'index.html'} },
+      { badge:'FM', title:'Forma App', desc:'PDF-to-Excel report processor.',
+        primary:{label:'Open App',url:'../forma-claude/New App/index.html'} },
+      { badge:'FX', title:'Fixed-Width Console', desc:'Parse inbound flat files and export structured workbooks.',
+        primary:{label:'Open App',url:DC_APPS+'fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html'} },
+    ]
+  },
+  {
+    cat: 'leadership',
+    resources: [
+      { badge:'AH', title:'DC Achievement Hub', desc:'Track team achievements, XP, levels, and leaderboard rankings.',
+        primary:{label:'Open Hub',url:'../dc-achievements/dc-achievement-hub.html'} },
+      { badge:'WT', title:'All 7 Walkthroughs', desc:'Browse every static and interactive procedure in the DC suite.',
+        primary:{label:'Open Suite',url:WALKS} },
+    ]
+  },
+];
+
+const QUICK_TOOLS = [
+  { badge:'MC', label:'Main Checklist', url:DC_APPS+'checklist-generators/main-checklist-generator/App - Main Checklist Generator.html' },
+  { badge:'FX', label:'FW Console', url:DC_APPS+'fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html' },
+  { badge:'RQ', label:'Request Form', url:DC_APPS+'project-intake/Project Intake Form.html' },
+  { badge:'DC', label:'DC Portal', url:DC_PORTAL+'Data_Consultant_Website_v2_10.html' },
+  { badge:'WT', label:'Walkthroughs', url:WALKS },
+];
+
+function renderResources() {
+  const page = document.getElementById('page-resources');
+
+  const toolsHtml = QUICK_TOOLS.map(t=>`
+    <a class="res-tool-btn" href="${t.url}" target="_blank">
+      <span class="res-tool-badge">${t.badge}</span>${t.label}
+    </a>`).join('');
+
+  const sectionsHtml = RESOURCE_SECTIONS.map(sec => {
+    const cat = getCat(sec.cat);
+    if (!cat) return '';
+    const cards = sec.resources.map(r=>{
+      const btns = r.secondary
+        ? `<a class="res-btn res-btn-primary" href="${r.primary.url}" target="_blank">${r.primary.label} →</a>
+           <a class="res-btn res-btn-secondary" href="${r.secondary.url}" target="_blank">${r.secondary.label}</a>`
+        : `<a class="res-btn res-btn-primary" href="${r.primary.url}" target="_blank">${r.primary.label} →</a>`;
+      return `<div class="res-card">
+        <div class="res-card-top">
+          <div class="res-card-badge">${r.badge}</div>
+          <div class="res-card-info">
+            <div class="res-card-title">${r.title}</div>
+            <div class="res-card-desc">${r.desc}</div>
+          </div>
+        </div>
+        <div class="res-card-actions">${btns}</div>
+      </div>`;
+    }).join('');
+    return `
+      <div class="res-cat-section">
+        <div class="res-cat-header">
+          <span class="res-cat-icon">${cat.icon}</span>
+          <span class="res-cat-title">${cat.title}</span>
+          <span class="res-cat-count">${sec.resources.length} resources</span>
+        </div>
+        <div class="res-grid">${cards}</div>
+      </div>`;
+  }).join('');
+
+  page.innerHTML = `
+    <div class="res-tools-row">${toolsHtml}</div>
+    ${sectionsHtml}
+  `;
+}
+
+// ============================================================
+// COMP DETAIL MODAL
+// ============================================================
+function openCompDetail(compId, profileId) {
+  const comp = getComp(compId);
+  if (!comp) return;
+  const cat = getCat(comp.cat);
+  const pid = profileId || state.activeProfileId;
+  const profile = pid ? getProfile(pid) : null;
+  const rating = profile ? getRating(profile,compId) : -1;
+  const target = profile ? getTarget(profile,compId) : (comp.core?3:2);
+  const dueDate = profile?.targetDates?.[compId] || null;
+  const dueDateDisplay = dueDate
+    ? `<span style="font-size:12px;color:var(--text-secondary)">📅 Due <strong>${new Date(dueDate+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong></span>`
+    : `<span style="font-size:12px;color:var(--text-tertiary)">No due date set</span>`;
+
+  document.getElementById('modal-header').innerHTML = `
+    <span style="font-size:24px">${cat?cat.icon:''}</span>
+    <div style="flex:1">
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px">${comp.title}</div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        ${comp.core?`<span class="badge badge-core">Core</span>`:''}
+        ${priorityBadge(comp.priority)}
+        <span class="badge" style="background:rgba(0,0,0,0.05);color:var(--text-secondary)">${comp.term} term</span>
+        <span style="font-size:12px;color:var(--text-secondary)">Target: <strong>${LEVELS[target].label}</strong></span>
+        ${profile?dueDateDisplay:''}
+      </div>
+    </div>
+    ${profile?`<span class="badge-level ${levelClass(rating>=0?rating:0)}" style="font-size:12px;padding:4px 10px;border-radius:7px;font-weight:700;border:1px solid">${rating>=0?LEVELS[rating].short:'N/A'}</span>`:''}
+  `;
+
+  const levelDefs = comp.levelDesc.map((d,i)=>`
+    <div class="level-def-row ${i===rating?'current':''}">
+      <span class="level-def-badge ${levelClass(i)}">${i} — ${LEVELS[i].short}</span>
+      <span class="level-def-text">${d}</span>
+    </div>
+  `).join('');
+
+  const ratingBtns = profile ? `
+    <div class="modal-section">
+      <div class="modal-section-label">Your Rating</div>
+      <div class="modal-rating-row">
+        ${LEVELS.map(lv=>`<button class="modal-rate-btn ${lv.id===rating?'active':''}" style="color:${lv.color};border-color:${lv.border};background:${lv.id===rating?lv.bg:'transparent'}" onclick="setRatingModal('${pid}','${compId}',${lv.id})">${lv.id} — ${lv.label}</button>`).join('')}
+      </div>
+    </div>` : '';
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-section">
+      <div class="modal-section-label">Description</div>
+      <div class="modal-section-text">${comp.desc}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Why It Matters</div>
+      <div class="modal-section-text">${comp.why}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">How to Develop</div>
+      <div class="modal-section-text">${comp.how}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Proficiency Levels</div>
+      <div class="level-defs">${levelDefs}</div>
+    </div>
+    ${ratingBtns}
+  `;
+
+  document.getElementById('modal-overlay').classList.add('visible');
+}
+
+window.setRatingModal = function(profileId, compId, level) {
+  const profile = getProfile(profileId);
+  if (!profile) return;
+  if (!profile.ratings) profile.ratings = {};
+  profile.ratings[compId] = level;
+  saveState();
+  openCompDetail(compId, profileId);
+  if (currentPage==='dashboard') renderDashboard();
+  if (currentPage==='matrix') renderMatrix();
+};
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('visible');
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+window.exportProfile = function(id) {
+  const p = getProfile(id);
+  if (!p) return;
+  const data = {type:'dc-growth-sync',version:1,profile:JSON.parse(JSON.stringify(p))};
+  downloadJSON(data, `dc-growth-${p.name.replace(/\s+/g,'-').toLowerCase()}.json`);
+};
+
+window.exportAll = function() {
+  const data = {type:'dc-growth-backup',version:1,...JSON.parse(JSON.stringify(state))};
+  downloadJSON(data,'dc-growth-team-backup.json');
+};
+
+window.importBackup = function() { triggerImport(); };
+window.triggerImport = function() { document.getElementById('file-import').click(); };
+
+window.handleImport = function(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.type==='dc-growth-sync') {
+        // Merge single profile
+        const incoming = data.profile;
+        const existing = getProfile(incoming.id);
+        if (existing) {
+          // Merge ratings (take higher)
+          Object.entries(incoming.ratings||{}).forEach(([k,v])=>{
+            existing.ratings[k] = Math.max(existing.ratings[k]||0, v);
+          });
+          alert(`Updated ratings for ${incoming.name}.`);
+        } else {
+          state.profiles.push(incoming);
+          alert(`Added profile: ${incoming.name}.`);
+        }
+      } else if (data.type==='dc-growth-backup') {
+        if (confirm('This will replace all team data. Continue?')) {
+          state.profiles = data.profiles||[];
+          state.activeProfileId = data.activeProfileId||null;
+          state.appMode = data.appMode||'manager';
+        }
+      }
+      saveState();
+      renderPage(currentPage);
+      renderSidebar();
+    } catch(err) { alert('Invalid file.'); }
+    evt.target.value='';
+  };
+  reader.readAsText(file);
+};
+
+function downloadJSON(data, filename) {
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ============================================================
+// PROFILE SWITCHER (sidebar pill click)
+// ============================================================
+window.openProfileSwitcher = function() {
+  if (!state.profiles.length) { showPage('manage'); return; }
+  // Build a quick picker
+  const existing = document.getElementById('profile-switcher-popup');
+  if (existing) { existing.remove(); return; }
+  const popup = document.createElement('div');
+  popup.id = 'profile-switcher-popup';
+  popup.style.cssText='position:fixed;bottom:70px;left:10px;width:220px;background:#2c2c2e;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:999;padding:8px;border:1px solid rgba(255,255,255,0.1)';
+  popup.innerHTML = state.profiles.map(p=>`
+    <div onclick="switchProfile('${p.id}')" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;color:#fff;transition:background .12s;background:${p.id===state.activeProfileId?'rgba(255,255,255,0.12)':'transparent'}">
+      <span style="font-size:18px">${p.avatar}</span>
+      <div><div style="font-size:12px;font-weight:500">${p.name}</div><div style="font-size:10px;color:rgba(255,255,255,0.5)">${p.role}</div></div>
+    </div>
+  `).join('');
+  document.body.appendChild(popup);
+  setTimeout(()=>{ document.addEventListener('click',()=>popup.remove(),{once:true}); },50);
+};
+
+window.switchProfile = function(id) {
+  state.activeProfileId = id;
+  saveState();
+  renderSidebar();
+  if (currentPage==='dashboard'||currentPage==='library') renderPage(currentPage);
+  document.getElementById('profile-switcher-popup')?.remove();
+};
+
+// ============================================================
+// SEED DEMO DATA
+// ============================================================
+function seedDemoData() {
+  const members = [
+    {id:'p1',name:'Sarah Chen',avatar:'👩‍💻',role:'Sr. Data Consultant',joinDate:'2022-03',notes:'Team lead; strong plan admin background',
+      ratings:{pa_doc_review:4,pa_eligibility:4,pa_vesting:3,pa_contributions:4,pa_distributions:3,tc_excel:4,tc_powerquery:3,tc_data_validation:4,tc_census:4,tc_balance_import:3,pw_timeline:4,pw_checklist:4,pw_intake:4,pw_handoff:4,pw_escalation:4,cr_communication:4,cr_expectations:3,cr_meetings:3,cr_problem_solving:4,cr_records:3,co_regulatory:3,co_testing:2,co_notices:3,co_error_correction:3,co_audit:3,sy_portal:4,sy_crm:4,sy_ticketing:4,sy_reporting:3,sy_documents:4,ld_training:4,ld_process:3,ld_mentoring:4,ld_collaboration:3,ld_initiative:4}},
+    {id:'p2',name:'Marcus Williams',avatar:'👨‍💼',role:'Data Consultant II',joinDate:'2023-01',notes:'Excel power user; growing in client relations',
+      ratings:{pa_doc_review:3,pa_eligibility:3,pa_vesting:3,pa_contributions:2,pa_distributions:2,tc_excel:4,tc_powerquery:3,tc_data_validation:3,tc_census:3,tc_balance_import:2,pw_timeline:3,pw_checklist:3,pw_intake:3,pw_handoff:2,pw_escalation:3,cr_communication:2,cr_expectations:2,cr_meetings:2,cr_problem_solving:2,cr_records:3,co_regulatory:2,co_testing:1,co_notices:2,co_error_correction:1,co_audit:2,sy_portal:3,sy_crm:3,sy_ticketing:3,sy_reporting:2,sy_documents:3,ld_training:2,ld_process:2,ld_mentoring:1,ld_collaboration:2,ld_initiative:3}},
+    {id:'p3',name:'Aisha Patel',avatar:'👩‍🎓',role:'Data Consultant I',joinDate:'2024-06',notes:'New hire; strong attention to detail',
+      ratings:{pa_doc_review:2,pa_eligibility:2,pa_vesting:1,pa_contributions:1,pa_distributions:1,tc_excel:3,tc_powerquery:1,tc_data_validation:2,tc_census:2,tc_balance_import:0,pw_timeline:1,pw_checklist:2,pw_intake:2,pw_handoff:1,pw_escalation:1,cr_communication:2,cr_expectations:1,cr_meetings:1,cr_problem_solving:1,cr_records:2,co_regulatory:1,co_testing:0,co_notices:1,co_error_correction:0,co_audit:1,sy_portal:2,sy_crm:2,sy_ticketing:2,sy_reporting:1,sy_documents:2,ld_training:0,ld_process:0,ld_mentoring:0,ld_collaboration:1,ld_initiative:2}},
+    {id:'p4',name:'Derek Johnson',avatar:'🧑‍💻',role:'Data Consultant II',joinDate:'2023-07',notes:'Solid all-rounder; growing into senior role',
+      ratings:{pa_doc_review:3,pa_eligibility:3,pa_vesting:3,pa_contributions:3,pa_distributions:2,tc_excel:3,tc_powerquery:2,tc_data_validation:3,tc_census:3,tc_balance_import:2,pw_timeline:3,pw_checklist:3,pw_intake:3,pw_handoff:3,pw_escalation:3,cr_communication:3,cr_expectations:3,cr_meetings:2,cr_problem_solving:3,cr_records:3,co_regulatory:2,co_testing:2,co_notices:3,co_error_correction:2,co_audit:3,sy_portal:3,sy_crm:3,sy_ticketing:3,sy_reporting:2,sy_documents:3,ld_training:2,ld_process:2,ld_mentoring:2,ld_collaboration:2,ld_initiative:3}},
+  ];
+  members.forEach(m=>{ if(!m.targets)m.targets={}; });
+  state.profiles = members;
+  state.activeProfileId = 'p2';
+  state.appMode = 'manager';
+  saveState();
+}
+
+// ============================================================
+// TOPBAR ACTIONS
+// ============================================================
+function renderTopbarActions() {
+  // nothing for now — actions are inline
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DC Onboarding Tracker — Transamerica</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0f2f7;
+    --surface: #ffffff;
+    --surface2: #f8f9fc;
+    --border: #e2e6f0;
+    --text: #1a1d2e;
+    --text2: #6b7280;
+    --text3: #9ca3af;
+    --accent: #1e40af;
+    --accent-light: #dbeafe;
+    --accent-mid: #3b82f6;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --yellow: #d97706;
+    --yellow-light: #fef3c7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --gray-light: #f3f4f6;
+    --radius: 12px;
+    --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 16px;
+    letter-spacing: -0.5px;
+  }
+  .header-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .header-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; border: none; transition: all .15s;
+    text-decoration: none; white-space: nowrap;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #1d3aa8; }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--gray-light); color: var(--text); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-icon { padding: 7px; border-radius: 8px; background: var(--gray-light); border: none; cursor: pointer; color: var(--text2); transition: all .15s; }
+  .btn-icon:hover { background: var(--border); color: var(--text); }
+
+  /* ─── LAYOUT ─── */
+  .app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 60px);
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 320px;
+    min-width: 320px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-search {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .sidebar-search input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--surface2);
+    color: var(--text);
+    outline: none;
+    transition: border .15s;
+  }
+  .sidebar-search input:focus { border-color: var(--accent-mid); }
+  .sidebar-search .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 14px; pointer-events: none;
+  }
+  .sidebar-filters {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .filter-chip {
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid var(--border); background: transparent;
+    color: var(--text2); transition: all .15s;
+  }
+  .filter-chip.active { border-color: var(--accent-mid); background: var(--accent-light); color: var(--accent); }
+
+  .sidebar-list { overflow-y: auto; flex: 1; }
+  .sidebar-empty {
+    padding: 40px 20px; text-align: center; color: var(--text3);
+    font-size: 13px;
+  }
+
+  /* ─── HIRE CARD ─── */
+  .hire-card {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background .1s;
+    position: relative;
+  }
+  .hire-card:hover { background: var(--surface2); }
+  .hire-card.active { background: var(--accent-light); }
+  .hire-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .hire-avatar {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0;
+  }
+  .hire-info { flex: 1; min-width: 0; }
+  .hire-name { font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hire-meta { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .hire-status-badge {
+    padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.4px; flex-shrink: 0;
+  }
+  .status-not-started { background: var(--gray-light); color: var(--text3); }
+  .status-in-progress { background: var(--yellow-light); color: var(--yellow); }
+  .status-complete { background: var(--green-light); color: var(--green); }
+  .status-blocked { background: var(--red-light); color: var(--red); }
+
+  .hire-progress-wrap { display: flex; align-items: center; gap: 8px; }
+  .hire-progress-bar {
+    flex: 1; height: 5px; background: var(--border); border-radius: 99px; overflow: hidden;
+  }
+  .hire-progress-fill { height: 100%; border-radius: 99px; transition: width .4s; }
+  .hire-progress-label { font-size: 10px; font-weight: 700; color: var(--text2); min-width: 28px; text-align: right; }
+
+  /* ─── MAIN DETAIL PANEL ─── */
+  .main-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1; gap: 12px; color: var(--text3); text-align: center; padding: 40px;
+  }
+  .empty-state-icon { font-size: 48px; }
+  .empty-state h3 { font-size: 18px; font-weight: 700; color: var(--text2); }
+  .empty-state p { font-size: 13px; max-width: 280px; line-height: 1.6; }
+
+  /* ─── HIRE DETAIL HEADER ─── */
+  .detail-header {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .detail-avatar {
+    width: 56px; height: 56px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px; color: #fff; flex-shrink: 0;
+  }
+  .detail-info { flex: 1; }
+  .detail-name { font-size: 20px; font-weight: 800; color: var(--text); }
+  .detail-sub { font-size: 13px; color: var(--text2); margin-top: 3px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .detail-sub span { display: flex; align-items: center; gap: 4px; }
+  .detail-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ─── STATS ROW ─── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 14px 16px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; }
+  .stat-value { font-size: 24px; font-weight: 800; color: var(--text); }
+  .stat-sub { font-size: 11px; color: var(--text2); }
+  .stat-green .stat-value { color: var(--green); }
+  .stat-yellow .stat-value { color: var(--yellow); }
+  .stat-red .stat-value { color: var(--red); }
+
+  /* ─── CHECKLIST SECTION ─── */
+  .checklist-section {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; user-select: none;
+  }
+  .section-header:hover { background: var(--surface2); }
+  .section-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .section-title { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
+  .section-prog {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-prog-bar {
+    width: 80px; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden;
+  }
+  .section-prog-fill { height: 100%; border-radius: 99px; transition: width .4s; }
+  .section-prog-label { font-size: 11px; font-weight: 700; color: var(--text2); min-width: 32px; text-align: right; }
+  .section-chevron { color: var(--text3); font-size: 12px; transition: transform .2s; }
+  .section-chevron.open { transform: rotate(90deg); }
+
+  .section-body { }
+  .checklist-item {
+    padding: 12px 20px;
+    display: flex; align-items: flex-start; gap: 12px;
+    border-bottom: 1px solid var(--border);
+    transition: background .1s;
+  }
+  .checklist-item:last-child { border-bottom: none; }
+  .checklist-item:hover { background: var(--surface2); }
+
+  .item-status-btn {
+    width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border);
+    cursor: pointer; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s; background: transparent;
+    font-size: 12px; color: transparent;
+  }
+  .item-status-btn:hover { border-color: var(--accent-mid); background: var(--accent-light); color: var(--accent); }
+  .item-status-btn.done { background: var(--green); border-color: var(--green); color: #fff; }
+  .item-status-btn.blocked { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .item-status-btn.in-progress { background: var(--yellow-light); border-color: var(--yellow); color: var(--yellow); }
+
+  .item-body { flex: 1; min-width: 0; }
+  .item-title {
+    font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px;
+  }
+  .item-title.done { text-decoration: line-through; color: var(--text3); }
+  .item-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .item-note { font-size: 11px; color: var(--accent); margin-top: 4px; font-style: italic; }
+
+  .item-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .item-owner {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
+    background: var(--gray-light); color: var(--text2);
+  }
+  .item-owner.it { background: #ede9fe; color: #7c3aed; }
+  .item-owner.hr { background: #fce7f3; color: #be185d; }
+  .item-owner.mgr { background: #dbeafe; color: #1e40af; }
+  .item-owner.hiring-mgr { background: #d1fae5; color: #065f46; }
+  .item-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 600;
+    background: var(--gray-light); color: var(--text3);
+  }
+
+  .item-status-select {
+    font-size: 11px; border: 1px solid var(--border); border-radius: 6px;
+    padding: 2px 6px; background: var(--surface); color: var(--text2);
+    cursor: pointer; outline: none;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.4);
+    z-index: 200; display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-lg);
+    width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+    transform: scale(.95) translateY(8px); transition: transform .2s;
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+  .modal-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-size: 17px; font-weight: 800; color: var(--text); }
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--text2); }
+  .form-input, .form-select {
+    padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--text); background: var(--surface); outline: none;
+    transition: border .15s;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--accent-mid); }
+
+  /* ─── NOTES PANEL ─── */
+  .notes-section {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px 20px;
+  }
+  .notes-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .notes-input {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--text); font-family: inherit; resize: vertical;
+    min-height: 80px; background: var(--surface2); outline: none;
+    transition: border .15s;
+  }
+  .notes-input:focus { border-color: var(--accent-mid); }
+
+  /* ─── OVERVIEW DASHBOARD ─── */
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .overview-card {
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 16px 18px; cursor: pointer; transition: all .15s;
+    border: 2px solid transparent;
+  }
+  .overview-card:hover { box-shadow: var(--shadow-lg); border-color: var(--border); }
+  .overview-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .overview-card-name { font-size: 15px; font-weight: 800; }
+  .overview-card-dept { font-size: 11px; color: var(--text2); }
+  .overview-ring { position: relative; flex-shrink: 0; }
+  .overview-ring svg { transform: rotate(-90deg); }
+  .overview-ring-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: var(--text);
+  }
+
+  /* ─── VIEW TABS ─── */
+  .view-tabs { display: flex; gap: 4px; background: var(--surface); border-radius: 10px; padding: 4px; box-shadow: var(--shadow); }
+  .view-tab {
+    padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all .15s; color: var(--text2); border: none; background: transparent;
+  }
+  .view-tab.active { background: var(--accent); color: #fff; }
+
+  /* ─── DEPARTMENT TAG ─── */
+  .dept-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .sidebar { width: 260px; min-width: 260px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .app-body { flex-direction: column; height: auto; overflow: visible; }
+    .sidebar { width: 100%; min-width: 100%; height: auto; }
+    .detail-header { flex-wrap: wrap; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .badge-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; flex-shrink: 0;
+  }
+
+  .timestamp { font-size: 10px; color: var(--text3); }
+
+  .section-collapsed .section-body { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo">DC</div>
+    <div>
+      <div class="header-title">Onboarding Tracker</div>
+      <div class="header-sub">Transamerica · Data Consultant Division</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="view-tabs">
+      <button class="view-tab active" onclick="switchView('detail')" id="tab-detail">Detail View</button>
+      <button class="view-tab" onclick="switchView('overview')" id="tab-overview">Overview</button>
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Add New Hire</button>
+  </div>
+</header>
+
+<!-- ─── APP BODY ─── -->
+<div class="app-body" id="app-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-search">
+        <span class="search-icon">⌕</span>
+        <input type="text" placeholder="Search employees..." id="search-input" oninput="renderSidebar()">
+      </div>
+      <div class="sidebar-filters">
+        <button class="filter-chip active" data-filter="all" onclick="setFilter('all', this)">All</button>
+        <button class="filter-chip" data-filter="in-progress" onclick="setFilter('in-progress', this)">In Progress</button>
+        <button class="filter-chip" data-filter="blocked" onclick="setFilter('blocked', this)">Blocked</button>
+        <button class="filter-chip" data-filter="complete" onclick="setFilter('complete', this)">Complete</button>
+      </div>
+    </div>
+    <div class="sidebar-list" id="sidebar-list"></div>
+  </aside>
+
+  <!-- MAIN DETAIL PANEL -->
+  <main class="main-panel" id="main-panel">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-state-icon">📋</div>
+      <h3>Select an Employee</h3>
+      <p>Choose a new hire from the list to view their onboarding checklist and progress.</p>
+    </div>
+    <div id="hire-detail" style="display:none; display:flex; flex-direction:column; gap:20px;"></div>
+  </main>
+
+</div>
+
+<!-- ─── OVERVIEW PANEL (hidden by default) ─── -->
+<div id="overview-panel" style="display:none; padding:24px; flex:1; overflow-y:auto;">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+    <div>
+      <h2 style="font-size:20px; font-weight:800;">Team Onboarding Overview</h2>
+      <p style="font-size:13px; color:var(--text2); margin-top:3px;">All active new hires at a glance</p>
+    </div>
+    <div id="overview-stats" style="display:flex; gap:16px;"></div>
+  </div>
+  <div class="overview-grid" id="overview-grid"></div>
+</div>
+
+<!-- ─── ADD HIRE MODAL ─── -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add New Hire</span>
+      <button class="btn-icon" onclick="closeModal('add-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input class="form-input" id="f-first" type="text" placeholder="First name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input class="form-input" id="f-last" type="text" placeholder="Last name">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Department</label>
+          <select class="form-select" id="f-dept">
+            <option>Data Consultant</option>
+            <option>Operations</option>
+            <option>Compliance</option>
+            <option>Analytics</option>
+            <option>IT Support</option>
+            <option>Management</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hiring Manager</label>
+          <input class="form-input" id="f-manager" type="text" placeholder="Manager name">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input class="form-input" id="f-start" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Employee ID</label>
+          <input class="form-input" id="f-eid" type="text" placeholder="e.g. TC-00142">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" id="f-email" type="email" placeholder="firstname.lastname@transamerica.com">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addHire()">Create Onboarding Profile</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA MODEL ───────────────────────────────────────────────────────────────
+
+const COLORS = ['#1e40af','#7c3aed','#be185d','#065f46','#92400e','#1e3a5f','#4a1d96'];
+
+const CHECKLIST_TEMPLATE = [
+  {
+    id: 'it-auth',
+    title: 'IT & Authentication',
+    icon: '🔐',
+    color: '#7c3aed',
+    bg: '#ede9fe',
+    items: [
+      { id: 'domain-acct', title: 'Domain Account Created', desc: 'Active Directory account provisioned with correct OU placement', owner: 'it', ownerLabel: 'IT' },
+      { id: 'email-assign', title: 'Email Address Assigned', desc: 'Transamerica email account created and verified (firstname.lastname@transamerica.com)', owner: 'it', ownerLabel: 'IT' },
+      { id: 'mfa-enroll', title: 'MFA Enrollment Completed', desc: 'Authenticator app installed, tested, and backup codes provided', owner: 'it', ownerLabel: 'IT' },
+      { id: 'vpn-creds', title: 'VPN Credentials Issued', desc: 'Remote access configured and test login from off-network confirmed', owner: 'it', ownerLabel: 'IT' },
+      { id: 'pwd-manager', title: 'Password Manager Setup', desc: 'Account created in corporate password vault, initial passwords stored', owner: 'it', ownerLabel: 'IT' },
+      { id: 'badge-access', title: 'Building Badge & Physical Access', desc: 'Access badge issued, door permissions programmed for assigned floors', owner: 'it', ownerLabel: 'IT' },
+    ]
+  },
+  {
+    id: 'data-systems',
+    title: 'Data Systems Access',
+    icon: '🗄️',
+    color: '#1e40af',
+    bg: '#dbeafe',
+    items: [
+      { id: 'aqt-acct', title: 'AQT Account Provisioned', desc: 'SQL server account created with correct role assignment (read/write)', owner: 'it', ownerLabel: 'IT', tag: 'AQT' },
+      { id: 'aqt-perms', title: 'AQT Permissions Granted', desc: 'Database access scoped to required schemas — confirm with supervisor', owner: 'mgr', ownerLabel: 'Manager', tag: 'AQT' },
+      { id: 'aqt-test', title: 'AQT Connection Tested', desc: 'Employee runs a validation query end-to-end and confirms results are accurate', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr', tag: 'AQT' },
+      { id: 'p2-acct', title: 'P2 Processing Site — Account Created', desc: 'Login credentials created and delivered securely to new hire', owner: 'mgr', ownerLabel: 'Manager', tag: 'P2' },
+      { id: 'p2-walkthru', title: 'P2 Site Walkthrough Completed', desc: 'New hire demonstrated understanding of import/export workflow', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr', tag: 'P2' },
+      { id: 'p3-acct', title: 'P3 Processing Site — Account Created', desc: 'Login credentials created and delivered securely to new hire', owner: 'mgr', ownerLabel: 'Manager', tag: 'P3' },
+      { id: 'p3-walkthru', title: 'P3 Site Walkthrough Completed', desc: 'New hire demonstrated understanding of P3 submission workflow', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr', tag: 'P3' },
+    ]
+  },
+  {
+    id: 'server-access',
+    title: 'Server & Folder Access',
+    icon: '📂',
+    color: '#d97706',
+    bg: '#fef3c7',
+    items: [
+      { id: 'net-drive', title: 'Network Drive Mapping', desc: 'Department shared drives mapped (J:, K: drives as applicable)', owner: 'it', ownerLabel: 'IT' },
+      { id: 'proj-folder', title: 'Project Folder Permissions', desc: 'Read/write access to active project directories confirmed', owner: 'mgr', ownerLabel: 'Manager' },
+      { id: 'sharepoint', title: 'SharePoint Site Access', desc: 'Added to department SharePoint site and document libraries', owner: 'it', ownerLabel: 'IT' },
+      { id: 'archive-access', title: 'Archive / Read-Only Folder Access', desc: 'Historical data folders accessible in read-only mode as needed', owner: 'it', ownerLabel: 'IT' },
+      { id: 'shared-mailbox', title: 'Shared Mailbox Access (if applicable)', desc: 'Department mailbox access granted and tested in Outlook', owner: 'it', ownerLabel: 'IT' },
+      { id: 'teams-channels', title: 'Teams Channels & Groups', desc: 'Added to relevant Teams channels, distribution lists, and group chats', owner: 'mgr', ownerLabel: 'Manager' },
+    ]
+  },
+  {
+    id: 'compliance',
+    title: 'Compliance & Training',
+    icon: '📜',
+    color: '#be185d',
+    bg: '#fce7f3',
+    items: [
+      { id: 'data-gov', title: 'Data Governance Training', desc: 'Completed required data handling and classification training module', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'security-training', title: 'Security Awareness Training', desc: 'Annual cybersecurity training completed and score recorded', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'data-agreement', title: 'Data Access Agreement Signed', desc: 'Signed and filed — acknowledges responsibilities around client data', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'nda', title: 'Non-Disclosure Agreement Signed', desc: 'Executed and countersigned by HR before system access is granted', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'hipaa', title: 'HIPAA Awareness (if applicable)', desc: 'Completed if role involves access to health-related client data', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'conflict', title: 'Conflict of Interest Disclosure', desc: 'Form reviewed and submitted to compliance department', owner: 'hr', ownerLabel: 'HR' },
+    ]
+  },
+  {
+    id: 'hr-admin',
+    title: 'HR & Administration',
+    icon: '🏢',
+    color: '#065f46',
+    bg: '#d1fae5',
+    items: [
+      { id: 'i9', title: 'I-9 Documentation Verified', desc: 'Identity documents reviewed and verified on or before day 1', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'direct-deposit', title: 'Direct Deposit Configured', desc: 'Banking information submitted through payroll portal', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'benefits', title: 'Benefits Enrollment Completed', desc: 'Medical, dental, vision, and 401k elections submitted within enrollment window', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'payroll-system', title: 'Payroll System Access', desc: 'Employee self-service portal login confirmed, timesheet tested', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'emergency-contact', title: 'Emergency Contact Submitted', desc: 'At least one emergency contact on file in HRIS system', owner: 'hr', ownerLabel: 'HR' },
+      { id: 'org-chart', title: 'Added to Org Chart & Directory', desc: 'Employee listed in internal directory with photo, title, and contact info', owner: 'hr', ownerLabel: 'HR' },
+    ]
+  },
+  {
+    id: 'equipment',
+    title: 'Equipment & Workstation',
+    icon: '💻',
+    color: '#0f766e',
+    bg: '#ccfbf1',
+    items: [
+      { id: 'workstation', title: 'Workstation Assigned & Configured', desc: 'Computer imaged, domain-joined, and software suite installed', owner: 'it', ownerLabel: 'IT' },
+      { id: 'monitors', title: 'Monitors & Peripherals Setup', desc: 'Dual monitor setup, keyboard, mouse, and docking station deployed', owner: 'it', ownerLabel: 'IT' },
+      { id: 'office-suite', title: 'Office Suite Licensed & Installed', desc: 'Microsoft 365 activated and signed in with Transamerica credentials', owner: 'it', ownerLabel: 'IT' },
+      { id: 'phone-voicemail', title: 'Phone & Voicemail Configured', desc: 'Desk phone extension assigned and voicemail greeting recorded', owner: 'it', ownerLabel: 'IT' },
+      { id: 'headset', title: 'Headset / Audio Equipment Issued', desc: 'Teams-compatible headset or equivalent provided and tested', owner: 'it', ownerLabel: 'IT' },
+    ]
+  },
+  {
+    id: 'orientation',
+    title: 'Department Orientation',
+    icon: '🤝',
+    color: '#1e40af',
+    bg: '#eff6ff',
+    items: [
+      { id: 'team-intro', title: 'Team Introduction Meeting', desc: 'New hire introduced to immediate team and key cross-functional contacts', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr' },
+      { id: 'workflow-walkthru', title: 'Department Workflow Walkthrough', desc: 'Processes, tools, and day-to-day expectations reviewed with manager', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr' },
+      { id: 'shadow-session', title: 'Shadow Session with Senior DC', desc: 'At least one day shadowing an experienced Data Consultant completed', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr' },
+      { id: 'week1-checkin', title: 'Week 1 Check-In Completed', desc: 'Manager review of first week — any blockers resolved', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr' },
+      { id: '30day-review', title: '30-Day Review Scheduled', desc: 'Formal 30-day milestone review on calendar with clear success criteria', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr' },
+      { id: '90day-plan', title: '90-Day Success Plan Created', desc: 'Goals and ramp milestones documented and shared with employee', owner: 'hiring-mgr', ownerLabel: 'Hiring Mgr' },
+    ]
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+
+let state = {
+  hires: [],
+  selectedHireId: null,
+  filter: 'all',
+  view: 'detail'
+};
+
+// ─── PERSISTENCE ──────────────────────────────────────────────────────────────
+
+function saveState() {
+  localStorage.setItem('dc_onboarding_state', JSON.stringify(state));
+}
+
+function loadState() {
+  const saved = localStorage.getItem('dc_onboarding_state');
+  if (saved) {
+    try { state = JSON.parse(saved); } catch(e) {}
+  }
+  if (!state.hires || state.hires.length === 0) {
+    seedDemoData();
+  }
+}
+
+function seedDemoData() {
+  const demoHires = [
+    { first: 'Marcus', last: 'Reyes', dept: 'Data Consultant', manager: 'Joel Abarca', email: 'marcus.reyes@transamerica.com', eid: 'TC-00138', startDate: '2026-03-10' },
+    { first: 'Priya', last: 'Sharma', dept: 'Data Consultant', manager: 'Joel Abarca', email: 'priya.sharma@transamerica.com', eid: 'TC-00141', startDate: '2026-03-17' },
+    { first: 'Devon', last: 'Mitchell', dept: 'Analytics', manager: 'Sarah Kwan', email: 'devon.mitchell@transamerica.com', eid: 'TC-00143', startDate: '2026-03-21' },
+    { first: 'Aaliyah', last: 'Brooks', dept: 'Compliance', manager: 'Robert Chen', email: 'aaliyah.brooks@transamerica.com', eid: 'TC-00145', startDate: '2026-04-01' },
+  ];
+
+  demoHires.forEach((h, idx) => {
+    const hire = createHire(h);
+    // Seed some realistic progress for demo
+    if (idx === 0) {
+      // Marcus - mostly done (2 weeks in)
+      ['domain-acct','email-assign','mfa-enroll','vpn-creds','pwd-manager','badge-access',
+       'aqt-acct','aqt-perms','aqt-test','p2-acct','p2-walkthru',
+       'net-drive','proj-folder','sharepoint',
+       'data-gov','security-training','data-agreement','nda',
+       'i9','direct-deposit','benefits','payroll-system','emergency-contact',
+       'workstation','monitors','office-suite','phone-voicemail','headset',
+       'team-intro','workflow-walkthru','shadow-session','week1-checkin'
+      ].forEach(id => setItemStatusById(hire, id, 'done'));
+      setItemStatusById(hire, 'p3-acct', 'in-progress');
+      setItemStatusById(hire, 'p3-walkthru', 'blocked');
+      hire.notes = 'P3 access request submitted 3/14 — pending approval from Compliance. All else on track.';
+    } else if (idx === 1) {
+      // Priya - early stage (1 week in)
+      ['domain-acct','email-assign','mfa-enroll','badge-access',
+       'i9','direct-deposit',
+       'workstation','monitors','office-suite',
+       'team-intro'
+      ].forEach(id => setItemStatusById(hire, id, 'done'));
+      setItemStatusById(hire, 'vpn-creds', 'in-progress');
+      setItemStatusById(hire, 'aqt-acct', 'in-progress');
+      hire.notes = 'Started Monday 3/17. VPN ticket submitted to IT (ticket #IT-4421). AQT provisioning in queue.';
+    } else if (idx === 2) {
+      // Devon - day 1
+      ['i9','domain-acct'].forEach(id => setItemStatusById(hire, id, 'done'));
+      setItemStatusById(hire, 'workstation', 'in-progress');
+    }
+    state.hires.push(hire);
+  });
+}
+
+function setItemStatusById(hire, itemId, status) {
+  if (hire.checklist[itemId] !== undefined) {
+    hire.checklist[itemId] = status;
+  }
+}
+
+function createHire(data) {
+  const checklist = {};
+  CHECKLIST_TEMPLATE.forEach(section => {
+    section.items.forEach(item => {
+      checklist[item.id] = 'pending';
+    });
+  });
+  return {
+    id: 'hire-' + Date.now() + '-' + Math.random().toString(36).slice(2),
+    first: data.first,
+    last: data.last,
+    dept: data.dept,
+    manager: data.manager || '',
+    email: data.email || '',
+    eid: data.eid || '',
+    startDate: data.startDate || '',
+    checklist,
+    notes: '',
+    createdAt: Date.now(),
+    colorIdx: Math.floor(Math.random() * COLORS.length)
+  };
+}
+
+// ─── CALCULATIONS ─────────────────────────────────────────────────────────────
+
+function getProgress(hire) {
+  const ids = Object.keys(hire.checklist);
+  const done = ids.filter(id => hire.checklist[id] === 'done').length;
+  return { done, total: ids.length, pct: Math.round((done / ids.length) * 100) };
+}
+
+function getOverallStatus(hire) {
+  const vals = Object.values(hire.checklist);
+  if (vals.every(v => v === 'done')) return 'complete';
+  if (vals.some(v => v === 'blocked')) return 'blocked';
+  if (vals.some(v => v === 'done' || v === 'in-progress')) return 'in-progress';
+  return 'not-started';
+}
+
+function getSectionProgress(hire, section) {
+  const done = section.items.filter(i => hire.checklist[i.id] === 'done').length;
+  return { done, total: section.items.length, pct: Math.round((done / section.items.length) * 100) };
+}
+
+function getInitials(hire) {
+  return (hire.first[0] + hire.last[0]).toUpperCase();
+}
+
+function getColor(hire) {
+  return COLORS[hire.colorIdx % COLORS.length];
+}
+
+// ─── STATUS HELPERS ───────────────────────────────────────────────────────────
+
+function statusLabel(s) {
+  return { 'not-started': 'Not Started', 'in-progress': 'In Progress', 'complete': 'Complete', 'blocked': 'Blocked' }[s] || 'Not Started';
+}
+
+function statusClass(s) {
+  return { 'not-started': 'status-not-started', 'in-progress': 'status-in-progress', 'complete': 'status-complete', 'blocked': 'status-blocked' }[s] || 'status-not-started';
+}
+
+function progressColor(pct) {
+  if (pct >= 100) return '#16a34a';
+  if (pct >= 60) return '#3b82f6';
+  if (pct >= 30) return '#d97706';
+  return '#e5e7eb';
+}
+
+// ─── RENDER: SIDEBAR ─────────────────────────────────────────────────────────
+
+function renderSidebar() {
+  const list = document.getElementById('sidebar-list');
+  const query = document.getElementById('search-input').value.toLowerCase();
+
+  let hires = state.hires.filter(h => {
+    const name = (h.first + ' ' + h.last).toLowerCase();
+    const dept = h.dept.toLowerCase();
+    if (query && !name.includes(query) && !dept.includes(query)) return false;
+    if (state.filter === 'all') return true;
+    return getOverallStatus(h) === state.filter;
+  });
+
+  if (hires.length === 0) {
+    list.innerHTML = '<div class="sidebar-empty">No employees match your filters.</div>';
+    return;
+  }
+
+  list.innerHTML = hires.map(h => {
+    const prog = getProgress(h);
+    const status = getOverallStatus(h);
+    const color = getColor(h);
+    const isActive = h.id === state.selectedHireId;
+    const fillColor = progressColor(prog.pct);
+
+    return `<div class="hire-card ${isActive ? 'active' : ''}" onclick="selectHire('${h.id}')">
+      <div class="hire-card-top">
+        <div class="hire-avatar" style="background:${color}">${getInitials(h)}</div>
+        <div class="hire-info">
+          <div class="hire-name">${h.first} ${h.last}</div>
+          <div class="hire-meta">${h.dept}${h.eid ? ' · ' + h.eid : ''}</div>
+        </div>
+        <span class="hire-status-badge ${statusClass(status)}">${statusLabel(status)}</span>
+      </div>
+      <div class="hire-progress-wrap">
+        <div class="hire-progress-bar">
+          <div class="hire-progress-fill" style="width:${prog.pct}%;background:${fillColor}"></div>
+        </div>
+        <span class="hire-progress-label">${prog.pct}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── RENDER: HIRE DETAIL ──────────────────────────────────────────────────────
+
+function selectHire(id) {
+  state.selectedHireId = id;
+  saveState();
+  renderSidebar();
+  renderDetail();
+}
+
+function renderDetail() {
+  const hire = state.hires.find(h => h.id === state.selectedHireId);
+  const empty = document.getElementById('empty-state');
+  const detail = document.getElementById('hire-detail');
+
+  if (!hire) {
+    empty.style.display = 'flex';
+    detail.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  detail.style.display = 'flex';
+
+  const prog = getProgress(hire);
+  const status = getOverallStatus(hire);
+  const color = getColor(hire);
+
+  const blockedCount = Object.values(hire.checklist).filter(v => v === 'blocked').length;
+  const inProgressCount = Object.values(hire.checklist).filter(v => v === 'in-progress').length;
+
+  const startFormatted = hire.startDate
+    ? new Date(hire.startDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : 'Not set';
+
+  detail.innerHTML = `
+    <!-- Header -->
+    <div class="detail-header">
+      <div class="detail-avatar" style="background:${color}">${getInitials(hire)}</div>
+      <div class="detail-info">
+        <div class="detail-name">${hire.first} ${hire.last}</div>
+        <div class="detail-sub">
+          <span>🏢 ${hire.dept}</span>
+          ${hire.manager ? `<span>👤 ${hire.manager}</span>` : ''}
+          ${hire.email ? `<span>✉️ ${hire.email}</span>` : ''}
+          ${hire.eid ? `<span>🪪 ${hire.eid}</span>` : ''}
+          <span>📅 Start: ${startFormatted}</span>
+        </div>
+      </div>
+      <div class="detail-actions">
+        <span class="hire-status-badge ${statusClass(status)}" style="font-size:12px;padding:5px 12px;">${statusLabel(status)}</span>
+        <button class="btn btn-ghost btn-sm" onclick="removeHire('${hire.id}')">Remove</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Overall Progress</div>
+        <div class="stat-value">${prog.pct}%</div>
+        <div class="stat-sub">${prog.done} of ${prog.total} tasks complete</div>
+      </div>
+      <div class="stat-card stat-green">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value">${prog.done}</div>
+        <div class="stat-sub">tasks done</div>
+      </div>
+      <div class="stat-card stat-yellow">
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value">${inProgressCount}</div>
+        <div class="stat-sub">tasks active</div>
+      </div>
+      <div class="stat-card stat-red">
+        <div class="stat-label">Blocked</div>
+        <div class="stat-value">${blockedCount}</div>
+        <div class="stat-sub">need attention</div>
+      </div>
+    </div>
+
+    <!-- Checklist Sections -->
+    ${CHECKLIST_TEMPLATE.map(section => renderSection(hire, section)).join('')}
+
+    <!-- Notes -->
+    <div class="notes-section">
+      <div class="notes-title">📝 Manager Notes</div>
+      <textarea class="notes-input" placeholder="Add notes about this employee's onboarding..."
+        onchange="saveNotes('${hire.id}', this.value)">${hire.notes || ''}</textarea>
+    </div>
+  `;
+}
+
+function renderSection(hire, section) {
+  const prog = getSectionProgress(hire, section);
+  const allDone = prog.done === prog.total;
+  const fillColor = allDone ? '#16a34a' : section.color;
+
+  return `
+    <div class="checklist-section" id="section-${section.id}">
+      <div class="section-header" onclick="toggleSection('${section.id}')">
+        <div class="section-icon" style="background:${section.bg}">${section.icon}</div>
+        <span class="section-title">${section.title}</span>
+        <div class="section-prog">
+          <div class="section-prog-bar">
+            <div class="section-prog-fill" style="width:${prog.pct}%;background:${fillColor}"></div>
+          </div>
+          <span class="section-prog-label" style="color:${prog.done === prog.total ? 'var(--green)' : 'var(--text2)'}">${prog.done}/${prog.total}</span>
+        </div>
+        <span class="section-chevron open" id="chevron-${section.id}">▶</span>
+      </div>
+      <div class="section-body">
+        ${section.items.map(item => renderItem(hire, section, item)).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderItem(hire, section, item) {
+  const itemStatus = hire.checklist[item.id] || 'pending';
+  const isDone = itemStatus === 'done';
+  const isBlocked = itemStatus === 'blocked';
+  const isInProgress = itemStatus === 'in-progress';
+
+  const btnClass = isDone ? 'done' : isBlocked ? 'blocked' : isInProgress ? 'in-progress' : '';
+  const btnIcon = isDone ? '✓' : isBlocked ? '✕' : isInProgress ? '◐' : '';
+
+  return `
+    <div class="checklist-item" id="item-${item.id}">
+      <button class="item-status-btn ${btnClass}" onclick="cycleStatus('${state.selectedHireId}', '${item.id}')" title="Click to change status">${btnIcon}</button>
+      <div class="item-body">
+        <div class="item-title ${isDone ? 'done' : ''}">${item.title}${item.tag ? ` <span class="item-tag">${item.tag}</span>` : ''}</div>
+        <div class="item-desc">${item.desc}</div>
+      </div>
+      <div class="item-meta">
+        <span class="item-owner ${item.owner}">${item.ownerLabel}</span>
+        <select class="item-status-select" onchange="setItemStatus('${state.selectedHireId}', '${item.id}', this.value)">
+          <option value="pending" ${itemStatus === 'pending' ? 'selected' : ''}>Not Started</option>
+          <option value="in-progress" ${itemStatus === 'in-progress' ? 'selected' : ''}>In Progress</option>
+          <option value="done" ${itemStatus === 'done' ? 'selected' : ''}>Complete</option>
+          <option value="blocked" ${itemStatus === 'blocked' ? 'selected' : ''}>Blocked</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+// ─── RENDER: OVERVIEW ─────────────────────────────────────────────────────────
+
+function renderOverview() {
+  const grid = document.getElementById('overview-grid');
+  const statsEl = document.getElementById('overview-stats');
+
+  const totalHires = state.hires.length;
+  const completeCount = state.hires.filter(h => getOverallStatus(h) === 'complete').length;
+  const blockedCount = state.hires.filter(h => getOverallStatus(h) === 'blocked').length;
+  const inProgressCount = state.hires.filter(h => getOverallStatus(h) === 'in-progress').length;
+
+  statsEl.innerHTML = `
+    <div style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:var(--text)">${totalHires}</div>
+      <div style="font-size:11px;color:var(--text2)">Total Hires</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:var(--green)">${completeCount}</div>
+      <div style="font-size:11px;color:var(--text2)">Complete</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:var(--yellow)">${inProgressCount}</div>
+      <div style="font-size:11px;color:var(--text2)">In Progress</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:var(--red)">${blockedCount}</div>
+      <div style="font-size:11px;color:var(--text2)">Blocked</div>
+    </div>
+  `;
+
+  if (state.hires.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text3);">No employees yet. Add a new hire to get started.</div>';
+    return;
+  }
+
+  grid.innerHTML = state.hires.map(hire => {
+    const prog = getProgress(hire);
+    const status = getOverallStatus(hire);
+    const color = getColor(hire);
+    const r = 28, circumference = 2 * Math.PI * r;
+    const dash = (prog.pct / 100) * circumference;
+
+    const sectionProgs = CHECKLIST_TEMPLATE.map(s => {
+      const sp = getSectionProgress(hire, s);
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+        <span style="font-size:12px">${s.icon}</span>
+        <div style="flex:1;height:3px;background:var(--border);border-radius:99px;overflow:hidden;">
+          <div style="width:${sp.pct}%;height:100%;background:${sp.pct===100?'#16a34a':s.color};border-radius:99px;transition:width .3s;"></div>
+        </div>
+        <span style="font-size:10px;color:var(--text2);min-width:28px;text-align:right;">${sp.done}/${sp.total}</span>
+      </div>`;
+    }).join('');
+
+    const startFormatted = hire.startDate
+      ? new Date(hire.startDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      : '';
+
+    return `<div class="overview-card" onclick="switchView('detail');selectHire('${hire.id}')">
+      <div class="overview-card-top">
+        <div class="overview-ring">
+          <svg width="68" height="68" viewBox="0 0 68 68">
+            <circle cx="34" cy="34" r="${r}" fill="none" stroke="var(--border)" stroke-width="5"/>
+            <circle cx="34" cy="34" r="${r}" fill="none" stroke="${progressColor(prog.pct)}" stroke-width="5"
+              stroke-dasharray="${dash} ${circumference - dash}" stroke-linecap="round"/>
+          </svg>
+          <div class="overview-ring-label">${prog.pct}%</div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:${color};color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;">${getInitials(hire)}</div>
+            <div>
+              <div class="overview-card-name">${hire.first} ${hire.last}</div>
+              <div class="overview-card-dept">${hire.dept}${startFormatted ? ' · ' + startFormatted : ''}</div>
+            </div>
+          </div>
+          <span class="hire-status-badge ${statusClass(status)}">${statusLabel(status)}</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;">${sectionProgs}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── ACTIONS ──────────────────────────────────────────────────────────────────
+
+function cycleStatus(hireId, itemId) {
+  const hire = state.hires.find(h => h.id === hireId);
+  if (!hire) return;
+  const cycle = { pending: 'in-progress', 'in-progress': 'done', done: 'blocked', blocked: 'pending' };
+  hire.checklist[itemId] = cycle[hire.checklist[itemId]] || 'in-progress';
+  saveState();
+  renderDetail();
+  renderSidebar();
+}
+
+function setItemStatus(hireId, itemId, status) {
+  const hire = state.hires.find(h => h.id === hireId);
+  if (!hire) return;
+  hire.checklist[itemId] = status;
+  saveState();
+  renderDetail();
+  renderSidebar();
+}
+
+function saveNotes(hireId, notes) {
+  const hire = state.hires.find(h => h.id === hireId);
+  if (!hire) return;
+  hire.notes = notes;
+  saveState();
+}
+
+function toggleSection(sectionId) {
+  const el = document.getElementById('section-' + sectionId);
+  const chevron = document.getElementById('chevron-' + sectionId);
+  if (el) {
+    el.classList.toggle('section-collapsed');
+    if (chevron) chevron.classList.toggle('open');
+  }
+}
+
+function setFilter(f, el) {
+  state.filter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderSidebar();
+}
+
+function switchView(v) {
+  state.view = v;
+  document.getElementById('tab-detail').classList.toggle('active', v === 'detail');
+  document.getElementById('tab-overview').classList.toggle('active', v === 'overview');
+
+  const appBody = document.getElementById('app-body');
+  const overviewPanel = document.getElementById('overview-panel');
+
+  if (v === 'detail') {
+    appBody.style.display = 'flex';
+    overviewPanel.style.display = 'none';
+  } else {
+    appBody.style.display = 'none';
+    overviewPanel.style.display = 'block';
+    renderOverview();
+  }
+}
+
+function openAddModal() {
+  // Set default start date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-start').value = today;
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function addHire() {
+  const first = document.getElementById('f-first').value.trim();
+  const last = document.getElementById('f-last').value.trim();
+  if (!first || !last) { alert('Please enter the employee\'s first and last name.'); return; }
+
+  const hire = createHire({
+    first,
+    last,
+    dept: document.getElementById('f-dept').value,
+    manager: document.getElementById('f-manager').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    eid: document.getElementById('f-eid').value.trim(),
+    startDate: document.getElementById('f-start').value,
+  });
+
+  hire.colorIdx = state.hires.length % COLORS.length;
+  state.hires.push(hire);
+  saveState();
+
+  // Clear form
+  ['f-first','f-last','f-manager','f-email','f-eid'].forEach(id => document.getElementById(id).value = '');
+
+  closeModal('add-modal');
+  renderSidebar();
+  selectHire(hire.id);
+}
+
+function removeHire(hireId) {
+  if (!confirm('Remove this employee from the onboarding tracker? This cannot be undone.')) return;
+  state.hires = state.hires.filter(h => h.id !== hireId);
+  if (state.selectedHireId === hireId) state.selectedHireId = null;
+  saveState();
+  renderSidebar();
+  renderDetail();
+}
+
+// ─── KEYBOARD SHORTCUTS ───────────────────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+// Click outside modal to close
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+loadState();
+renderSidebar();
+renderDetail();
+
+// Auto-select first hire if none selected
+if (!state.selectedHireId && state.hires.length > 0) {
+  selectHire(state.hires[0].id);
+}
+</script>
+</body>
+</html>
