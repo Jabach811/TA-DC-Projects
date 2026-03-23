@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma Pro Studio Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08111d;--panel:rgba(10,20,36,.84);--line:rgba(156,181,209,.18);--text:#ecf3fb;
+  --soft:#b4c2d5;--dim:#8092aa;--gold:#efb35f;--gold2:#ffd18d;--mint:#61d5c0;--blue:#7db7ff;
+  --sans:'IBM Plex Sans',sans-serif;--display:'Bebas Neue',sans-serif;--serif:'Playfair Display',serif;
+}
+html,body{height:100%;font-family:var(--sans);color:var(--text);overflow:hidden;background:
+radial-gradient(circle at top left, rgba(97,213,192,.18), transparent 28%),
+radial-gradient(circle at top right, rgba(239,179,95,.17), transparent 24%),
+linear-gradient(145deg,#07101b 0%,#0d1727 50%,#101e33 100%)}
+body::before{content:"";position:fixed;inset:0;background:
+linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);background-size:42px 42px;opacity:.12;pointer-events:none}
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:22px;height:100vh;padding:22px}
+.sidebar,.main,.panel,.stat,.card,.table-card,.drawer{border:1px solid var(--line);background:var(--panel);box-shadow:0 24px 60px rgba(0,0,0,.34)}
+.sidebar{border-radius:28px;display:flex;flex-direction:column;overflow:hidden}
+.brand{padding:26px 24px 20px;border-bottom:1px solid var(--line)}
+.brand-row{display:flex;align-items:center;gap:14px}
+.mark{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,var(--gold),#cf8d42);color:#08111d;font-family:var(--display);font-size:26px}
+.brand-title{font-family:var(--display);font-size:30px;letter-spacing:2px}
+.brand-sub,.nav-group,.label,.tiny{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+.note{margin-top:18px;padding:13px 14px;border:1px solid rgba(97,213,192,.2);border-radius:16px;background:linear-gradient(180deg,rgba(97,213,192,.12),rgba(97,213,192,.04))}
+.note strong{display:block;color:var(--mint);margin-bottom:6px}
+.sidebar-nav{flex:1;overflow:auto;padding:14px 16px 18px}
+.nav-group{padding:16px 10px 8px}
+.nav-item{display:flex;align-items:center;gap:12px;width:100%;border:1px solid transparent;background:transparent;color:var(--soft);padding:13px 14px;border-radius:16px;cursor:pointer;font:600 14px var(--sans);text-align:left}
+.nav-item.active{color:#08111d;background:linear-gradient(135deg,rgba(239,179,95,.95),rgba(255,209,141,.86))}
+.nav-item:hover{background:rgba(255,255,255,.04)}
+.footer{border-top:1px solid var(--line);padding:20px 24px 24px}
+.footer-val{margin-top:6px;font-size:11px;color:var(--soft)}
+.main{border-radius:32px;display:flex;flex-direction:column;overflow:hidden}
+.topbar{border-bottom:1px solid var(--line);padding:22px 28px;display:flex;align-items:center;gap:20px}
+.topcopy{flex:1}
+.kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mint);margin-bottom:6px}
+.title{font-family:var(--display);font-size:36px;letter-spacing:2px;line-height:1}
+.subtitle{font-size:12px;color:var(--soft);line-height:1.5}
+.pill{padding:12px 16px;border-radius:16px;border:1px solid var(--line);font-size:12px;color:var(--soft)}
+.pages{flex:1;overflow:auto}
+.page{display:none;padding:28px}.page.active{display:block}.shell{max-width:1320px;margin:0 auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.9fr);gap:18px;padding:24px 26px;border-radius:28px;border:1px solid var(--line);background:
+radial-gradient(circle at right top, rgba(239,179,95,.18), transparent 32%),
+linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));margin-bottom:22px}
+.hero h2{font-family:var(--serif);font-size:30px;font-weight:500;line-height:1.2;margin-bottom:10px}
+.hero p{color:var(--soft);font-size:14px;line-height:1.7}
+.hero-grid,.stats,.options,.customers{display:grid;gap:18px}
+.hero-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{border-radius:18px;padding:14px 16px;background:rgba(0,0,0,.11)}
+.value{margin-top:8px;font-family:var(--display);font-size:26px;color:var(--gold2)}
+.sub{margin-top:4px;font-size:11px;color:var(--soft)}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:24px}
+.stat{border-radius:22px;padding:22px 20px 18px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025))}
+.stat .value{font-size:44px;line-height:1}
+.accent{color:var(--gold2)}
+.breakdown div{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:11px;color:var(--soft)}
+.track{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.fill{height:100%}.q{width:52%;background:linear-gradient(90deg,var(--blue),var(--mint))}.p{width:76%;background:linear-gradient(90deg,var(--gold),#ff8a76)}.i{width:34%;background:linear-gradient(90deg,#d4deea,#8ca1bb)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px}
+.panel{border-radius:24px;padding:20px}
+.head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.head h3{font-family:var(--display);font-size:20px;letter-spacing:2px}
+.link{font-size:11px;color:var(--gold2);text-transform:uppercase;letter-spacing:1px}
+.item,.mini{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.item:last-child,.mini:last-child{border-bottom:none}
+.bar{width:4px;height:34px;border-radius:999px;flex-shrink:0}.bar.q{background:var(--blue)}.bar.p{background:var(--gold)}.bar.i{background:var(--mint)}
+.maincopy{flex:1;min-width:0}.maincopy strong,.mini strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{margin-top:3px;font-size:11px;color:var(--dim)}
+.amt{font-family:var(--display);font-size:20px;color:var(--gold2)}.date{width:58px;text-align:right;font-size:10px;color:var(--dim)}
+.rank{width:24px;font-family:var(--display);font-size:24px;color:rgba(255,255,255,.18)}
+.toolbar{display:flex;gap:12px;margin-bottom:18px}.input,.select,.btn{border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);font:500 13px var(--sans)}
+.input,.select{padding:12px 14px}.input{flex:1}.btn,.run{padding:12px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#08111d;font-weight:700}
+.table-card{border-radius:24px;overflow:hidden}
+table{width:100%;border-collapse:collapse}th{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);background:rgba(6,13,22,.78)}td{padding:14px 16px;font-size:12.5px;border-bottom:1px solid var(--line)}tr:last-child td{border-bottom:none}
+.chip{display:inline-block;padding:4px 10px;border-radius:999px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}.chip.quote{background:rgba(125,183,255,.14);color:#a7ceff}.chip.po{background:rgba(239,179,95,.15);color:var(--gold2)}.chip.invoice{background:rgba(97,213,192,.14);color:#9de7db}
+.actions{display:flex;gap:6px}.mini-btn{padding:7px 10px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--soft);font:600 10px var(--sans)}
+.drop{border:1px dashed rgba(239,179,95,.35);border-radius:28px;padding:58px 30px;text-align:center;background:
+radial-gradient(circle at top, rgba(239,179,95,.12), transparent 38%),
+linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));margin-bottom:20px}
+.drop .value{font-size:32px;margin:0 0 8px}.options{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:20px}
+.seg{display:flex;gap:8px;flex-wrap:wrap}.seg span{border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--soft);padding:10px 12px;font-size:12px;font-weight:600}.seg .active{background:linear-gradient(135deg,rgba(97,213,192,.92),rgba(133,232,220,.78));color:#07111d}
+.file{border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px}.status{margin-left:auto;font-size:11px;font-weight:600}.ready{color:#8de0bf}.review{color:var(--gold2)}.pending{color:var(--dim)}
+.run{width:100%;padding:16px;border:none;border-radius:18px;font:400 22px var(--display);letter-spacing:3px}
+.customers{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.customer-card{border-radius:22px;padding:22px 20px}.customer-card .value{font-size:34px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.tag{padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--soft);font-size:10px}
+.drawer{position:fixed;top:22px;right:22px;bottom:22px;width:420px;border-radius:28px;padding:22px;overflow:auto;background:linear-gradient(180deg,rgba(12,23,39,.95),rgba(13,25,42,.95))}
+.drawer h3{margin-top:8px;font-family:var(--display);font-size:28px;letter-spacing:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.box{border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04);padding:14px 16px}.box strong{display:block;margin-top:6px;font-size:13px}
+.total{border-radius:20px;border:1px solid var(--line);padding:18px;margin-bottom:18px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03))}.total .value{font-size:34px}
+.rows{display:flex;flex-direction:column;gap:10px}.row{display:flex;justify-content:space-between;gap:16px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:12px}
+@media (max-width:1240px){.layout{grid-template-columns:240px minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cols,.hero{grid-template-columns:1fr}}
+@media (max-width:860px){html,body{overflow:auto}.layout{grid-template-columns:1fr;height:auto;min-height:100vh;padding:16px}.page{padding:18px}.topbar{flex-direction:column;align-items:flex-start}.hero-grid,.stats,.options,.grid2{grid-template-columns:1fr}.toolbar{display:grid;grid-template-columns:1fr}.drawer{position:static;width:auto;margin:18px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-row"><div class="mark">F</div><div><div class="brand-title">FORMA</div><div class="brand-sub">Studio concept redesign</div></div></div>
+      <div class="note"><strong>Skill-guided concept</strong>Separate redesign variant that keeps the app's core page map while exploring a more premium operations UI.</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-group">Main</div>
+      <button class="nav-item active" data-page="dashboard">■ Dashboard</button>
+      <button class="nav-item" data-page="batch">↑ Batch Upload</button>
+      <div class="nav-group">Repository</div>
+      <button class="nav-item" data-page="repo">≡ All Documents</button>
+      <button class="nav-item" data-page="customers">○ Customers</button>
+      <div class="nav-group">Tools</div>
+      <button class="nav-item" data-page="detail">↗ Detail View</button>
+    </div>
+    <div class="footer"><div class="label">Output Root</div><div class="footer-val">C:\Forma\Output\Repository\2026\</div></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topcopy"><div class="kicker">Forma Pro / redesign concept</div><div class="title" id="topbar-title">Dashboard</div></div>
+      <div class="subtitle" id="topbar-tag">Editorial command center styling for extraction, repository review, and customer intelligence.</div>
+      <div class="pill">Concept mode: shell redesign only</div>
+    </div>
+
+    <div class="pages">
+      <section class="page active" id="page-dashboard">
+        <div class="shell">
+          <div class="hero">
+            <div>
+              <h2>Give the app a sharper operations-studio identity without losing its workflow.</h2>
+              <p>This concept leans into a high-contrast command center shell with stronger hierarchy, more intentional card framing, and a premium dashboard atmosphere that makes the app feel like a product instead of a utility page.</p>
+            </div>
+            <div class="hero-grid">
+              <div class="card"><div class="tiny">Mode</div><div class="value">4 Views</div><div class="sub">Dashboard, batch, repo, customers</div></div>
+              <div class="card"><div class="tiny">Focus</div><div class="value">Clarity</div><div class="sub">Fewer bland surfaces, better flow cues</div></div>
+              <div class="card"><div class="tiny">Direction</div><div class="value">Studio</div><div class="sub">Warm gold + mint over midnight blue</div></div>
+              <div class="card"><div class="tiny">Intent</div><div class="value">Safe</div><div class="sub">Built as a separate concept file</div></div>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><div class="label">Total Documents</div><div class="value">1,284</div><div class="sub">126 processed this month</div></div>
+            <div class="stat"><div class="label">Total Value Extracted</div><div class="value accent">$4.8M</div><div class="sub">Across quotes, POs, and pick-up tickets</div></div>
+            <div class="stat"><div class="label">Customers On File</div><div class="value">213</div><div class="sub">42 marked as repeat accounts this quarter</div></div>
+            <div class="stat breakdown">
+              <div class="label">Document Breakdown</div>
+              <div><span>Quotes</span><div class="track"><div class="fill q"></div></div><span>412</span></div>
+              <div><span>POs</span><div class="track"><div class="fill p"></div></div><span>601</span></div>
+              <div><span>Pick-up</span><div class="track"><div class="fill i"></div></div><span>271</span></div>
+            </div>
+          </div>
+
+          <div class="cols">
+            <div class="panel">
+              <div class="head"><h3>Recent Activity</h3><div class="link">View all</div></div>
+              <div class="item"><div class="bar p"></div><div class="maincopy"><strong>Purchase Order 58492 / Summit Fabrication</strong><div class="meta">12 items extracted and saved to repository</div></div><div class="amt">$18,420</div><div class="date">Today</div></div>
+              <div class="item"><div class="bar q"></div><div class="maincopy"><strong>Quotation 22081 / Apex Industrial Supply</strong><div class="meta">Flagged for pricing review</div></div><div class="amt">$7,812</div><div class="date">11:12</div></div>
+              <div class="item"><div class="bar i"></div><div class="maincopy"><strong>Pick-up Ticket 10377 / ClearSpan Metals</strong><div class="meta">Customer match confidence 98%</div></div><div class="amt">$2,140</div><div class="date">09:46</div></div>
+            </div>
+            <div class="panel">
+              <div class="head"><h3>Top Customers</h3><div class="link">Open roster</div></div>
+              <div class="mini"><div class="rank">1</div><div class="maincopy"><strong>Summit Fabrication</strong><div class="meta">42 documents this quarter</div></div><div class="amt">$612k</div></div>
+              <div class="mini"><div class="rank">2</div><div class="maincopy"><strong>Apex Industrial Supply</strong><div class="meta">31 documents this quarter</div></div><div class="amt">$488k</div></div>
+              <div class="mini"><div class="rank">3</div><div class="maincopy"><strong>ClearSpan Metals</strong><div class="meta">26 documents this quarter</div></div><div class="amt">$381k</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-batch">
+        <div class="shell">
+          <div class="hero">
+            <div><h2>Batch upload becomes a guided staging area instead of a plain drop target.</h2><p>The concept here is to make processing mode, document type, and file readiness feel obvious at a glance, with a cleaner sequence from intake to run.</p></div>
+            <div class="hero-grid">
+              <div class="card"><div class="tiny">Queue Size</div><div class="value">18</div><div class="sub">Files staged for next run</div></div>
+              <div class="card"><div class="tiny">Mode</div><div class="value">Mixed</div><div class="sub">Extract + repo-only supported</div></div>
+            </div>
+          </div>
+          <div class="drop"><div class="value">↑</div><div><strong>Drop PDF files to build a processing queue</strong></div><div class="sub">The redesign treats intake like a staging board: select files, confirm mode, then run with a clearer sense of what’s about to happen.</div></div>
+          <div class="options">
+            <div class="panel"><div class="label">Processing Mode</div><div class="seg"><span class="active">Extract + Save</span><span>Repo Only</span></div><div class="sub">Primary mode stays prominent while the alternate path still feels available.</div></div>
+            <div class="panel"><div class="label">Document Type</div><div class="seg"><span class="active">Auto-detect</span><span>Quotation</span><span>Purchase Order</span><span>Pick-up</span></div><div class="sub">Type choices become more tactile and less cramped.</div></div>
+          </div>
+          <div class="file card"><div class="bar p"></div><div class="maincopy"><strong>PO_58492_SummitFabrication.pdf</strong><div class="meta">Ready for extraction</div></div><div class="status ready">Ready</div></div>
+          <div class="file card"><div class="bar q"></div><div class="maincopy"><strong>Quote_22081_ApexIndustrial.pdf</strong><div class="meta">Awaiting final review</div></div><div class="status review">Needs review</div></div>
+          <div class="file card"><div class="bar i"></div><div class="maincopy"><strong>Pickup_10377_ClearSpan.pdf</strong><div class="meta">Queued from previous session</div></div><div class="status pending">Pending</div></div>
+          <div style="margin-top:20px"><button class="run">Run Batch Extraction</button></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-repo">
+        <div class="shell">
+          <div class="hero">
+            <div><h2>The repository page shifts from plain table view to a cleaner review surface.</h2><p>Filters stay familiar, but the table gets more breathing room, better chips, and stronger visual contrast around key actions.</p></div>
+            <div class="hero-grid">
+              <div class="card"><div class="tiny">Repository Size</div><div class="value">1.2k</div><div class="sub">Documents indexed</div></div>
+              <div class="card"><div class="tiny">Live Filters</div><div class="value">2</div><div class="sub">Customer + type</div></div>
+            </div>
+          </div>
+          <div class="toolbar"><input class="input" value="Summit"><select class="select"><option>Purchase Order</option></select><button class="btn">Filter</button></div>
+          <div class="table-card">
+            <table>
+              <thead><tr><th>Date</th><th>Type</th><th>Customer</th><th>Doc #</th><th>Items</th><th>Total</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td class="meta">03/22/2026</td><td><span class="chip po">Purchase Order</span></td><td>Summit Fabrication</td><td class="meta">58492</td><td class="meta">12</td><td>$18,420.00</td><td><div class="actions"><button class="mini-btn">File</button><button class="mini-btn">Folder</button><button class="mini-btn">Delete</button></div></td></tr>
+                <tr><td class="meta">03/21/2026</td><td><span class="chip quote">Quotation</span></td><td>Apex Industrial Supply</td><td class="meta">22081</td><td class="meta">8</td><td>$7,812.00</td><td><div class="actions"><button class="mini-btn">File</button><button class="mini-btn">Folder</button><button class="mini-btn">Delete</button></div></td></tr>
+                <tr><td class="meta">03/20/2026</td><td><span class="chip invoice">Pick-up</span></td><td>ClearSpan Metals</td><td class="meta">10377</td><td class="meta">5</td><td>$2,140.00</td><td><div class="actions"><button class="mini-btn">File</button><button class="mini-btn">Folder</button><button class="mini-btn">Delete</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-customers">
+        <div class="shell">
+          <div class="hero">
+            <div><h2>Customer cards get promoted into a proper relationship overview.</h2><p>This page keeps the same intent but gives each account a stronger sense of value, recency, and document mix, which makes browsing less monotonous.</p></div>
+            <div class="hero-grid">
+              <div class="card"><div class="tiny">Tracked Accounts</div><div class="value">213</div><div class="sub">Unique customers in repository</div></div>
+              <div class="card"><div class="tiny">Top Tier</div><div class="value">24</div><div class="sub">Over $100k lifetime value</div></div>
+            </div>
+          </div>
+          <div class="customers">
+            <div class="customer-card"><strong>Summit Fabrication</strong><div class="value">$612k</div><div class="tiny">Total value</div><div class="tags"><span class="tag">18 Quotes</span><span class="tag">42 POs</span><span class="tag">7 Pick-up</span></div><div class="meta" style="margin-top:12px">Last activity: Today at 11:12 AM</div></div>
+            <div class="customer-card"><strong>Apex Industrial Supply</strong><div class="value">$488k</div><div class="tiny">Total value</div><div class="tags"><span class="tag">25 Quotes</span><span class="tag">19 POs</span><span class="tag">3 Pick-up</span></div><div class="meta" style="margin-top:12px">Last activity: Yesterday</div></div>
+            <div class="customer-card"><strong>ClearSpan Metals</strong><div class="value">$381k</div><div class="tiny">Total value</div><div class="tags"><span class="tag">9 Quotes</span><span class="tag">26 POs</span><span class="tag">11 Pick-up</span></div><div class="meta" style="margin-top:12px">Last activity: Mar 20</div></div>
+            <div class="customer-card"><strong>North Ridge Components</strong><div class="value">$204k</div><div class="tiny">Total value</div><div class="tags"><span class="tag">6 Quotes</span><span class="tag">12 POs</span><span class="tag">4 Pick-up</span></div><div class="meta" style="margin-top:12px">Last activity: Mar 18</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-detail">
+        <div class="shell">
+          <div class="hero">
+            <div><h2>The detail panel concept becomes a sidecar review experience.</h2><p>Instead of feeling like a plain drawer, the redesign turns document review into a richer inspection space with clearer metadata grouping and a more readable line-item block.</p></div>
+            <div class="hero-grid">
+              <div class="card"><div class="tiny">Use Case</div><div class="value">Review</div><div class="sub">Fast verification before export</div></div>
+              <div class="card"><div class="tiny">Layout</div><div class="value">Sidecar</div><div class="sub">Metadata, total, and line items</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<aside class="drawer">
+  <div class="label">Sample Detail Drawer</div>
+  <h3>Purchase Order 58492</h3>
+  <div class="grid2">
+    <div class="box"><div class="tiny">Customer</div><strong>Summit Fabrication</strong></div>
+    <div class="box"><div class="tiny">Logged</div><strong>03/22/2026</strong></div>
+    <div class="box"><div class="tiny">Type</div><strong>Purchase Order</strong></div>
+    <div class="box"><div class="tiny">Line Items</div><strong>12 items</strong></div>
+  </div>
+  <div class="total"><div class="label">Total Amount</div><div class="value">$18,420.00</div></div>
+  <div class="label" style="margin-bottom:10px">Line items</div>
+  <div class="rows">
+    <div class="row"><span>PL-220 / Stainless plate</span><strong>$6,480</strong></div>
+    <div class="row"><span>BR-118 / Bracket kit</span><strong>$4,120</strong></div>
+    <div class="row"><span>FS-042 / Fastener set</span><strong>$1,980</strong></div>
+    <div class="row"><span>Remaining grouped items</span><strong>$5,840</strong></div>
+  </div>
+</aside>
+
+<script>
+const pageTitles={
+  dashboard:["Dashboard","Editorial command center styling for extraction, repository review, and customer intelligence."],
+  batch:["Batch Upload","Guided staging experience for multi-file intake, review, and run readiness."],
+  repo:["All Documents","Cleaner repository surface with stronger hierarchy around filters, chips, and actions."],
+  customers:["Customers","Relationship overview cards with clearer value, recency, and document mix."],
+  detail:["Detail View","Sidecar review concept for metadata verification and line-item inspection."]
+};
+const navItems=[...document.querySelectorAll(".nav-item")];
+const pages=[...document.querySelectorAll(".page")];
+const titleEl=document.getElementById("topbar-title");
+const tagEl=document.getElementById("topbar-tag");
+function showPage(page){
+  navItems.forEach(item=>item.classList.toggle("active",item.dataset.page===page));
+  pages.forEach(section=>section.classList.toggle("active",section.id===`page-${page}`));
+  titleEl.textContent=pageTitles[page][0];
+  tagEl.textContent=pageTitles[page][1];
+}
+navItems.forEach(item=>item.addEventListener("click",()=>showPage(item.dataset.page)));
+</script>
+</body>
+</html>

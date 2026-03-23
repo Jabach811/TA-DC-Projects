@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internal Request Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gunmetal: #393d3f;
+  --white: #fdfdff;
+  --silver: #c6c5b9;
+  --pacific-cyan: #62929e;
+  --blue-slate: #546a7b;
+  --bg: #eef1f2;
+  --ink: var(--gunmetal);
+  --muted: var(--blue-slate);
+  --line: rgba(84, 106, 123, 0.22);
+  --panel: rgba(253, 253, 255, 0.88);
+  --panel-strong: var(--white);
+  --accent: var(--blue-slate);
+  --accent-soft: rgba(98, 146, 158, 0.14);
+  --accent-2: var(--pacific-cyan);
+  --shadow: 0 24px 60px rgba(57, 61, 63, 0.14);
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(98, 146, 158, 0.14), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(84, 106, 123, 0.12), transparent 24%),
+    linear-gradient(180deg, #f6f7f7 0%, var(--bg) 100%);
+}
+
+.shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 64px;
+}
+
+.hero {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.hero-card,
+.form-shell,
+.success-shell {
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(253, 253, 255, 0.92);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius-xl);
+}
+
+.hero-card {
+  padding: 34px;
+}
+
+.eyebrow,
+.section-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.hero h1 span {
+  color: var(--accent);
+}
+
+.hero p {
+  margin: 18px 0 0;
+  max-width: 640px;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.form-shell,
+.success-shell {
+  padding: 24px;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.form-header h2,
+.success-shell h2 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+  letter-spacing: -0.03em;
+}
+
+.form-header p,
+.success-shell p {
+  margin: 0;
+  max-width: 620px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.section-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.section {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(253, 253, 255, 0.96), rgba(245, 246, 245, 0.9));
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg, rgba(84, 106, 123, 0.08), rgba(98, 146, 158, 0.07));
+}
+
+.section-head strong {
+  color: var(--accent);
+}
+
+.section-head span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.section-body {
+  padding: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.grid-2,
+.grid-3 {
+  display: grid;
+  gap: 14px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-slate);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 13px 14px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--panel-strong);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(98, 146, 158, 0.16);
+}
+
+.field-hint {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.choice-card {
+  min-height: 47px;
+  border: 1.5px solid rgba(84, 106, 123, 0.34);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(253, 253, 255, 1), rgba(240, 243, 245, 0.96));
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(57, 61, 63, 0.08);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+}
+
+.choice-card:hover {
+  border-color: var(--pacific-cyan);
+  background: linear-gradient(180deg, rgba(98, 146, 158, 0.12), rgba(253, 253, 255, 0.98));
+  box-shadow: 0 10px 22px rgba(84, 106, 123, 0.14);
+  transform: translateY(-2px);
+}
+
+.choice-card.active {
+  border-color: var(--blue-slate);
+  background: linear-gradient(180deg, rgba(84, 106, 123, 0.18), rgba(98, 146, 158, 0.14));
+  box-shadow: inset 0 0 0 1px rgba(84, 106, 123, 0.12), 0 10px 24px rgba(57, 61, 63, 0.14);
+}
+
+.choice-card strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.choice-card span {
+  display: none;
+}
+
+.choice-card.active strong {
+  color: var(--gunmetal);
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.pill:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pill.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.footer-actions,
+.success-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 700px;
+}
+
+.cta-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 16px;
+  padding: 13px 18px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.18s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn.secondary {
+  background: rgba(198, 197, 185, 0.24);
+  border-color: rgba(198, 197, 185, 0.7);
+  color: var(--accent-2);
+}
+
+.btn.ghost {
+  background: transparent;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(57, 61, 63, 0.42);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-box {
+  width: min(760px, 100%);
+  max-height: min(88vh, 920px);
+  overflow: auto;
+  background: var(--white);
+  border: 1px solid rgba(253, 253, 255, 0.96);
+  border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(57, 61, 63, 0.28);
+}
+
+.modal-hdr,
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+}
+
+.modal-hdr {
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-title {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.modal-close,
+.modal-cancel,
+.modal-send {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 11px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modal-send {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.modal-body {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.modal-field {
+  display: grid;
+  gap: 7px;
+}
+
+.modal-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-slate);
+}
+
+.modal-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 13px 14px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--panel-strong);
+  outline: none;
+}
+
+.modal-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(98, 146, 158, 0.16);
+}
+
+.modal-textarea {
+  min-height: 280px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.success-shell {
+  display: none;
+}
+
+.success-shell.show {
+  display: block;
+}
+
+.success-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.summary {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(253, 253, 255, 0.84);
+  overflow: hidden;
+}
+
+.summary-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(98, 146, 158, 0.1);
+}
+
+.summary-head strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.summary-head span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.summary pre {
+  margin: 0;
+  padding: 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+@media (max-width: 920px) {
+  .choice-grid,
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: min(100% - 24px, 1120px);
+    padding-top: 20px;
+  }
+
+  .hero-card,
+  .form-shell,
+  .success-shell {
+    border-radius: 24px;
+  }
+
+  .form-header,
+  .footer-actions,
+  .success-actions,
+  .modal-hdr,
+  .modal-footer {
+    align-items: start;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="shell">
+    <div class="hero">
+      <section class="hero-card">
+        <div class="eyebrow">Internal request intake</div>
+        <h1>Web request intake for <span>updates and new work</span>.</h1>
+        <p>Use this form to capture the basics before work starts. It is intended for straightforward website and web app requests where a short brief is enough to define the work clearly.</p>
+        <p>Include what needs to change, what the finished result should do, and any references or notes that would be helpful during implementation.</p>
+      </section>
+    </div>
+
+    <section class="form-shell" id="form-shell">
+      <div class="form-header">
+        <div>
+          <div class="section-label" style="color: var(--accent);">One-page request form</div>
+          <h2>Internal Request Form</h2>
+        </div>
+        <p>Use this form to document the request clearly before work begins.</p>
+      </div>
+
+      <form id="request-form">
+        <div class="section-grid">
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">01 | Basics</strong>
+              <span>Who asked for it, and what should we call it?</span>
+            </div>
+            <div class="section-body">
+              <div class="grid-2">
+                <div class="field">
+                  <label for="requester-name">Your Name</label>
+                  <input id="requester-name" name="requester-name" type="text" placeholder="Example: Joel">
+                </div>
+                <div class="field">
+                  <label for="requester-email">Your Email</label>
+                  <input id="requester-email" name="requester-email" type="email" placeholder="Example: your.name@company.com">
+                </div>
+              </div>
+              <div class="field">
+                <label for="request-title">Request Title</label>
+                <input id="request-title" name="request-title" type="text" placeholder="Example: Update intake page copy">
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="request-type">Request Type</label>
+                  <input id="request-type" name="request-type" type="hidden" value="">
+                  <div class="choice-grid" id="request-type-grid">
+                    <button class="choice-card" type="button" data-value="Web Site">
+                      <strong>Web Site</strong>
+                      <span>Pages, content, layout updates, landing sections, and site-level changes.</span>
+                    </button>
+                    <button class="choice-card" type="button" data-value="Web App">
+                      <strong>Web App</strong>
+                      <span>Tool updates, workflow fixes, interface changes, and functional app work.</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="contact-method">Preferred Follow-Up</label>
+                  <select id="contact-method" name="contact-method">
+                    <option value="">No preference</option>
+                    <option>Email</option>
+                    <option>Teams or chat</option>
+                    <option>Quick call</option>
+                    <option>No follow-up needed unless blocked</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">02 | Request</strong>
+              <span>What needs to happen, and what should the finished result look like?</span>
+            </div>
+            <div class="section-body">
+              <div class="field">
+                <label for="request-details">What Do You Need?</label>
+                <textarea id="request-details" name="request-details" placeholder="Example: Replace the current intake intro, remove business-heavy language, and make the form feel like an internal request page instead of a client onboarding form."></textarea>
+              </div>
+              <div class="field">
+                <label for="request-outcome">Desired Outcome</label>
+                <textarea id="request-outcome" name="request-outcome" placeholder="Example: Someone should be able to open the page, understand the request in under a minute, and give enough info for work to start without extra clarification."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">03 | Timing</strong>
+              <span>When does it matter, and is the date real or just nice to have?</span>
+            </div>
+            <div class="section-body">
+              <div class="field">
+                <label>Priority</label>
+                <div class="pill-row" id="priority-pills">
+                  <button class="pill" type="button" data-value="No rush">No rush</button>
+                  <button class="pill active" type="button" data-value="Normal">Normal</button>
+                  <button class="pill" type="button" data-value="This week">This week</button>
+                  <button class="pill" type="button" data-value="ASAP">ASAP</button>
+                </div>
+                <div class="field-hint">Choose a real priority, not the fantasy version where everything is urgent.</div>
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="due-date">Specific Date</label>
+                  <input id="due-date" name="due-date" type="date">
+                </div>
+                <div class="field">
+                  <label for="timing-notes">Timing Notes</label>
+                  <input id="timing-notes" name="timing-notes" type="text" placeholder="Example: Needed before Monday review or before payroll closes">
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <strong class="section-label">04 | Context</strong>
+              <span>Add anything that makes the request clearer the first time.</span>
+            </div>
+            <div class="section-body">
+              <div class="field">
+                <label for="links-files">Links, Files, or Examples</label>
+                <textarea id="links-files" name="links-files" placeholder="Example: Link to the live page, file name, screenshot location, or a similar tool/page that shows the direction."></textarea>
+              </div>
+              <div class="field">
+                <label for="notes-constraints">Notes or Constraints</label>
+                <textarea id="notes-constraints" name="notes-constraints" placeholder="Example: Keep the current layout, do not change export logic, use the existing blue palette, or this has to stay printable."></textarea>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="footer-actions">
+          <div class="footer-note">If this form is filled out well, you should know what to do, why it matters, and where to start looking.</div>
+          <div class="cta-row">
+            <button class="btn primary" type="submit">Submit Request</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="success-shell" id="success-shell">
+      <div class="success-badge">OK</div>
+      <div class="section-label" style="color: var(--accent); margin-bottom: 10px;">Request captured</div>
+      <h2>Request summary ready.</h2>
+      <p>Use the summary below in email, chat, notes, or your task tracker. It is meant to read like an actual working brief, not a generic intake dump.</p>
+
+      <div class="summary">
+        <div class="summary-head">
+          <strong>Request Summary</strong>
+          <span>Generated from the fields above so you can reuse it immediately.</span>
+        </div>
+        <pre id="summary-output"></pre>
+      </div>
+
+      <div class="success-actions">
+        <button class="btn secondary" type="button" id="copy-summary-success">Copy Summary</button>
+        <button class="btn ghost" type="button" id="start-over">Start New Request</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-overlay" id="emailModal" onclick="closeEmailModalOnOverlay(event)">
+    <div class="modal-box">
+      <div class="modal-hdr">
+        <div class="modal-title">Receipt Email Preview</div>
+        <button class="modal-close" type="button" id="modal-close">Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label class="modal-label" for="modalTo">To</label>
+          <input class="modal-input" id="modalTo" type="email">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="modalCc">CC</label>
+          <input class="modal-input" id="modalCc" type="text">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="modalSubject">Subject</label>
+          <input class="modal-input" id="modalSubject" type="text">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="modalBody">Body</label>
+          <textarea class="modal-input modal-textarea" id="modalBody"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" type="button" id="modal-cancel">Cancel</button>
+        <button class="modal-send" type="button" id="modal-send">Open Receipt Email</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const form = document.getElementById("request-form");
+const formShell = document.getElementById("form-shell");
+const successShell = document.getElementById("success-shell");
+const summaryOutput = document.getElementById("summary-output");
+const priorityButtons = Array.from(document.querySelectorAll("#priority-pills .pill"));
+const requestTypeInput = document.getElementById("request-type");
+const requestTypeButtons = Array.from(document.querySelectorAll("#request-type-grid .choice-card"));
+const emailModal = document.getElementById("emailModal");
+let selectedPriority = "Normal";
+let pendingSummary = "";
+
+function getValue(id) {
+  return document.getElementById(id).value.trim();
+}
+
+function buildSummary() {
+  const lines = [
+    "INTERNAL REQUEST SUMMARY",
+    "========================================",
+    "",
+    "Requester: " + (getValue("requester-name") || "-"),
+    "Requester Email: " + (getValue("requester-email") || "-"),
+    "Title: " + (getValue("request-title") || "-"),
+    "Type: " + (getValue("request-type") || "-"),
+    "Follow-Up: " + (getValue("contact-method") || "-"),
+    "Priority: " + (selectedPriority || "-"),
+    "Specific Date: " + (getValue("due-date") || "-"),
+    "Timing Notes: " + (getValue("timing-notes") || "-"),
+    "",
+    "WHAT THEY NEED",
+    "----------------------------------------",
+    getValue("request-details") || "-",
+    "",
+    "DESIRED OUTCOME",
+    "----------------------------------------",
+    getValue("request-outcome") || "-",
+    "",
+    "LINKS, FILES, OR EXAMPLES",
+    "----------------------------------------",
+    getValue("links-files") || "-",
+    "",
+    "NOTES OR CONSTRAINTS",
+    "----------------------------------------",
+    getValue("notes-constraints") || "-",
+    "",
+    "Generated: " + new Date().toLocaleString()
+  ];
+
+  return lines.join("\n");
+}
+
+function copySummary() {
+  const summary = pendingSummary || buildSummary();
+  navigator.clipboard.writeText(summary).then(() => {
+    const activeButton = document.activeElement;
+    if (activeButton && activeButton.classList.contains("btn")) {
+      const original = activeButton.textContent;
+      activeButton.textContent = "Copied";
+      setTimeout(() => {
+        activeButton.textContent = original;
+      }, 1400);
+    }
+  }).catch(() => {
+    window.alert("Copy failed. You can still use the generated summary on screen.");
+  });
+}
+
+function buildReceiptSubject() {
+  const title = getValue("request-title") || "New Web Request";
+  return "Request Receipt - " + title;
+}
+
+function buildReceiptBody() {
+  const requester = getValue("requester-name") || "Requester";
+  const summary = pendingSummary || buildSummary();
+  return [
+    "Hi " + requester + ",",
+    "",
+    "This is your receipt for the request submitted through the internal intake form.",
+    "",
+    summary,
+    "",
+    "End of receipt."
+  ].join("\n");
+}
+
+function openEmailModal() {
+  document.getElementById("modalTo").value = "your.name@example.com";
+  document.getElementById("modalCc").value = getValue("requester-email");
+  document.getElementById("modalSubject").value = buildReceiptSubject();
+  document.getElementById("modalBody").value = buildReceiptBody();
+  emailModal.classList.add("open");
+}
+
+function closeEmailModal() {
+  emailModal.classList.remove("open");
+}
+
+function closeEmailModalOnOverlay(event) {
+  if (event.target === emailModal) closeEmailModal();
+}
+
+function sendReceiptEmail() {
+  const to = document.getElementById("modalTo").value.trim();
+  const cc = document.getElementById("modalCc").value.trim();
+  const subject = document.getElementById("modalSubject").value.trim();
+  const body = document.getElementById("modalBody").value;
+  let mailto = "mailto:" + encodeURIComponent(to);
+  const params = [];
+  if (cc) params.push("cc=" + encodeURIComponent(cc));
+  if (subject) params.push("subject=" + encodeURIComponent(subject));
+  if (body) params.push("body=" + encodeURIComponent(body));
+  if (params.length) mailto += "?" + params.join("&");
+
+  const link = document.createElement("a");
+  link.href = mailto;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(() => document.body.removeChild(link), 200);
+
+  closeEmailModal();
+  summaryOutput.textContent = pendingSummary;
+  formShell.style.display = "none";
+  successShell.classList.add("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+priorityButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    priorityButtons.forEach((item) => item.classList.remove("active"));
+    button.classList.add("active");
+    selectedPriority = button.dataset.value;
+  });
+});
+
+requestTypeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    requestTypeButtons.forEach((item) => item.classList.remove("active"));
+    button.classList.add("active");
+    requestTypeInput.value = button.dataset.value;
+  });
+});
+
+document.getElementById("copy-summary-success").addEventListener("click", copySummary);
+document.getElementById("modal-close").addEventListener("click", closeEmailModal);
+document.getElementById("modal-cancel").addEventListener("click", closeEmailModal);
+document.getElementById("modal-send").addEventListener("click", sendReceiptEmail);
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  pendingSummary = buildSummary();
+  openEmailModal();
+});
+
+document.getElementById("start-over").addEventListener("click", () => {
+  form.reset();
+  selectedPriority = "Normal";
+  priorityButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.value === "Normal");
+  });
+  requestTypeInput.value = "";
+  requestTypeButtons.forEach((button) => button.classList.remove("active"));
+  pendingSummary = "";
+  summaryOutput.textContent = "";
+  closeEmailModal();
+  successShell.classList.remove("show");
+  formShell.style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+</script>
+</body>
+</html>
