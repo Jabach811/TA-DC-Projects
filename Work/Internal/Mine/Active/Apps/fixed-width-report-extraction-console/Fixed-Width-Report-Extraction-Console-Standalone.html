@@ -24,7 +24,7 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
 .field-note{margin-top:-4px;font-size:12px;color:var(--muted)}
 .field-note.error{color:#a13131}
 .summary-box,.stack-box,.report-card{border:1px solid var(--line-soft);border-radius:16px;background:var(--panel-alt)} .summary-box{padding:14px}.stats-grid{display:grid;grid-template-columns:1fr;gap:12px}.stat-card{min-height:92px;display:flex;flex-direction:column;align-items:stretch;gap:14px}.stat-card strong{display:block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:0;color:var(--muted);line-height:1.45}.stat-card div{display:block;font:700 clamp(26px,2vw,34px)/1 var(--font-display);text-align:left;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
-.breakdown-panel{align-self:start}.breakdown-grid{display:grid;grid-template-columns:1fr;gap:12px}.mini-stat{padding:14px;border:1px solid var(--line-soft);border-radius:16px;background:var(--panel-alt);min-width:0}.mini-stat strong{display:block;margin-bottom:8px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}.mini-stat div{font:700 clamp(22px,1.8vw,30px)/1.05 var(--font-display);color:var(--accent);white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}.breakdown-box{padding:12px;border:1px solid var(--line-soft);border-radius:16px;background:var(--panel-alt)}.breakdown-box strong{display:block;margin-bottom:8px}.breakdown-list{display:grid;gap:8px;max-height:220px;overflow:auto}.breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--line-soft);border-radius:12px;background:var(--field-bg)}.breakdown-key{min-width:0;font:700 12px/1.35 var(--font-mono);color:var(--text);word-break:break-word}.breakdown-value{flex:0 0 auto;font-weight:700;color:var(--accent)}.breakdown-empty{font-size:13px;color:var(--muted)}
+.breakdown-panel{align-self:start}.breakdown-grid{display:grid;grid-template-columns:1fr;gap:12px}.mini-stat{padding:14px;border:1px solid var(--line-soft);border-radius:16px;background:var(--panel-alt);min-width:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}.mini-stat strong{display:block;margin-bottom:8px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#476173}.mini-stat div{font:800 clamp(24px,1.9vw,32px)/1.05 var(--font-display);color:#184e73;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;text-shadow:0 1px 0 rgba(255,255,255,.55)}.breakdown-box{padding:12px;border:1px solid var(--line-soft);border-radius:16px;background:var(--panel-alt);box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}.breakdown-box strong{display:block;margin-bottom:8px;color:#28485d}.breakdown-list{display:grid;gap:8px;max-height:220px;overflow:auto}.breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid #bdd6e5;border-radius:12px;background:linear-gradient(180deg,#ffffff,#f1f9fe)}.breakdown-key{min-width:0;font:800 12px/1.35 var(--font-mono);color:#163040;word-break:break-word}.breakdown-value{flex:0 0 auto;font:800 15px/1 var(--font-display);letter-spacing:.01em;color:#0e5e88;text-shadow:0 1px 0 rgba(255,255,255,.65)}.breakdown-empty{font-size:13px;color:var(--muted)}
 .export-rail{padding:18px 18px 20px;background:linear-gradient(180deg,rgba(23,88,126,.96),rgba(39,135,187,.96));color:#f4fbff;overflow:hidden;position:relative}
 .export-rail::after{content:"";position:absolute;inset:auto -40px -55px auto;width:180px;height:180px;border-radius:50%;background:rgba(150,222,255,.18);filter:blur(10px)}
 .export-rail .section-head{position:relative;z-index:1;margin-bottom:14px}
@@ -54,14 +54,14 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
 .mini-tag{display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:999px;border:1px solid #d7c59b;background:#fff8e7;color:#7c6430;font:700 10px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase}
 .source-action{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;border:1px solid var(--chip-line);border-radius:10px;background:linear-gradient(180deg,#f4fbff,#dfeff9);color:var(--accent);font:700 12px/1 var(--font-body);cursor:pointer}.source-action:hover:not(:disabled){background:linear-gradient(180deg,#eef9ff,#d4ebf8)}.source-action:disabled{background:#e5edf3;color:#87a0b0;border-color:#cadbe7;cursor:not-allowed}
 .report-list-item strong{font:700 18px/1 var(--font-display);color:var(--accent)}
-#errorText .error-box{padding:12px;border:1px solid #cf8d8d;border-radius:14px;background:#fff1f1;color:#7a2323}.report-card{padding:16px;margin-top:14px}.report-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}.report-card h3{margin:0 0 6px;font:700 22px/1 var(--font-display)}.report-card p{margin:0;color:var(--muted)}
+#errorText .error-box{padding:12px;border:1px solid #cf8d8d;border-radius:14px;background:#fff1f1;color:#7a2323}.report-card{padding:16px;margin-top:14px}.report-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}.report-card h3{margin:0 0 6px;font:700 22px/1 var(--font-display)}.report-card p{margin:0;color:var(--muted)}.report-card-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}.report-download{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;border:1px solid #19628a;border-radius:10px;background:linear-gradient(135deg,#0f699b,#2f9fd6 58%,#7fd4ff);color:#f8fdff;font:800 12px/1 var(--font-body);cursor:pointer;white-space:nowrap;box-shadow:0 10px 18px rgba(18,90,131,.18)}.report-download:hover{transform:translateY(-1px);box-shadow:0 14px 22px rgba(18,90,131,.24)}
 .report-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;border:1px solid var(--chip-line);border-radius:10px;background:linear-gradient(180deg,#f4fbff,#dfeff9);color:var(--accent);font:700 12px/1 var(--font-body);cursor:pointer;white-space:nowrap}.report-toggle:hover{background:linear-gradient(180deg,#eef9ff,#d4ebf8)}
 .discard-list{display:grid;gap:10px}.discard-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--line-soft);border-radius:12px;background:var(--field-bg)}.discard-copy{min-width:0}.discard-main{font-weight:600}.discard-sub{margin-top:4px;font-size:12px;color:var(--muted)}.discard-action{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 12px;border:1px solid var(--chip-line);border-radius:10px;background:linear-gradient(180deg,#f4fbff,#dfeff9);color:var(--accent);font:700 12px/1 var(--font-body);cursor:pointer;white-space:nowrap}.discard-action:hover{background:linear-gradient(180deg,#eef9ff,#d4ebf8)}.discard-action:disabled{background:#e5edf3;color:#87a0b0;border-color:#cadbe7;cursor:not-allowed}
 .report-table-wrap{overflow:auto;max-height:380px;border:1px solid var(--line-soft);border-radius:12px;background:var(--field-bg)} .report-table-wrap table{width:max-content;min-width:100%;border-collapse:collapse}.report-table-wrap th,.report-table-wrap td{min-width:128px;padding:9px 11px;white-space:nowrap;border:1px solid var(--line-soft);text-align:center;font-size:13px}.report-table-wrap th{position:sticky;top:0;background:var(--table-head);z-index:1}
 .layout-canvas .workspace{display:grid;grid-template-columns:minmax(320px,1fr) minmax(320px,1fr) minmax(320px,1fr) 330px 270px;gap:16px;margin-top:16px}.layout-canvas .reports-panel{grid-column:1 / -1}
 @media (max-width:1700px){.layout-canvas .workspace{grid-template-columns:repeat(12,minmax(0,1fr))}.layout-canvas .source-panel,.layout-canvas .input-panel,.layout-canvas .summary-panel{grid-column:span 4}.layout-canvas .breakdown-panel,.layout-canvas .export-rail{grid-column:span 6}.layout-canvas .reports-panel{grid-column:1 / -1}}
 @media (max-width:980px){.layout-canvas .workspace{grid-template-columns:1fr}.layout-canvas .source-panel,.layout-canvas .input-panel,.layout-canvas .summary-panel,.layout-canvas .breakdown-panel,.layout-canvas .export-rail,.layout-canvas .reports-panel{grid-column:auto}}
-@media (max-width:640px){.report-list-grid{grid-template-columns:1fr}}
+@media (max-width:640px){.report-list-grid{grid-template-columns:1fr}.report-card-head{flex-direction:column;align-items:stretch}.report-card-actions{justify-content:flex-start}}
 @keyframes loading-stripe{from{background-position:0 0}to{background-position:160px 0}}
 </style>
 </head>
@@ -6791,7 +6791,10 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
       "<h3>" + escapeHtml(reportLabel) + "</h3>" +
       "<p class=\"muted\">Showing " + visibleRows.length + " of " + rows.length + " row(s)</p>" +
       "</div>" +
+      "<div class=\"report-card-actions\">" +
+      "<button class=\"report-download\" type=\"button\" data-download-report=\"" + escapeHtml(reportCode) + "\">Download Report</button>" +
       (rows.length > PREVIEW_ROW_LIMIT ? "<button class=\"report-toggle\" type=\"button\" data-toggle-report=\"" + escapeHtml(reportCode) + "\">" + (showAll ? "Show Less" : "Show All") + "</button>" : "") +
+      "</div>" +
       "</div>" +
       "<div class=\"report-table-wrap\">" + tableHtml(headers, visibleRows) + "</div>" +
       "</div>";
@@ -7377,8 +7380,9 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
       "</worksheet>";
   }
 
-  function buildWorkbookFiles(result) {
+  function buildWorkbookFiles(result, reportCodes) {
     var source = getSelectedSource();
+    var includedReports = [];
     var titleRows = [];
     var sheetFiles = [];
     var sheetDefs = [];
@@ -7387,14 +7391,24 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
     var i;
     var sheetIndex = 1;
 
+    if (reportCodes && reportCodes.length) {
+      for (i = 0; i < reportCodes.length; i += 1) {
+        if (source.reports.indexOf(reportCodes[i]) !== -1) {
+          includedReports.push(reportCodes[i]);
+        }
+      }
+    } else {
+      includedReports = source.reports.slice(0);
+    }
+
     titleRows.push("<row r=\"1\">" + textCell("A1", "Fixed-Width Report Extraction Console", 5) + textCell("B1", "", 1) + textCell("C1", "", 1) + "</row>");
     titleRows.push("<row r=\"2\">" + textCell("A2", "Data Source", 6) + textCell("B2", result.sourceLabel, 1) + "</row>");
     titleRows.push("<row r=\"3\">" + textCell("A3", "Input File", 6) + textCell("B3", result.currentFileName || "Not Provided", 1) + "</row>");
     titleRows.push("<row r=\"4\">" + textCell("A4", "Total Lines", 6) + numberCell("B4", String(result.totalLines), 2) + "</row>");
     titleRows.push("<row r=\"6\">" + textCell("A6", "Report Code", 6) + textCell("B6", "Report Name", 6) + textCell("C6", "Row Count", 6) + textCell("D6", "Open Sheet", 6) + "</row>");
 
-    for (i = 0; i < source.reports.length; i += 1) {
-      var code = source.reports[i];
+    for (i = 0; i < includedReports.length; i += 1) {
+      var code = includedReports[i];
       var count = result.grouped[code] ? result.grouped[code].length : 0;
       var titleRowNumber = 7 + i;
       titleRows.push("<row r=\"" + titleRowNumber + "\">" +
@@ -7418,8 +7432,8 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
       ])
     });
 
-    for (i = 0; i < source.reports.length; i += 1) {
-      var reportCode = source.reports[i];
+    for (i = 0; i < includedReports.length; i += 1) {
+      var reportCode = includedReports[i];
       var rows = result.grouped[reportCode];
       var fields = result.layoutsByReport[reportCode];
       if (!fields) {
@@ -7586,7 +7600,17 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
     return new Blob(blobs, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
   }
 
-  function downloadWorkbook() {
+  function triggerWorkbookDownload(files, fileName) {
+    var blob = createZip(files);
+    var anchor = document.createElement("a");
+    var url = URL.createObjectURL(blob);
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadWorkbookForReports(reportCodes, suffix) {
     if (!lastParseResult || !lastParseResult.foundReports.length) {
       return;
     }
@@ -7601,14 +7625,22 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
       }
       return;
     }
-    var files = buildWorkbookFiles(lastParseResult);
-    var blob = createZip(files);
-    var anchor = document.createElement("a");
-    var url = URL.createObjectURL(blob);
-    anchor.href = url;
-    anchor.download = safeFilePart(caseState.formatted, "Case Number") + " - " + safeFilePart(lastParseResult.planName, "Plan Name") + " - Full Parse.xlsx";
-    anchor.click();
-    URL.revokeObjectURL(url);
+    var files = buildWorkbookFiles(lastParseResult, reportCodes);
+    triggerWorkbookDownload(
+      files,
+      safeFilePart(caseState.formatted, "Case Number") + " - " + safeFilePart(lastParseResult.planName, "Plan Name") + " - " + suffix + ".xlsx"
+    );
+  }
+
+  function downloadWorkbook() {
+    downloadWorkbookForReports(null, "Full Parse");
+  }
+
+  function downloadSingleReport(reportCode) {
+    if (!lastParseResult || !lastParseResult.grouped[reportCode] || !lastParseResult.grouped[reportCode].length) {
+      return;
+    }
+    downloadWorkbookForReports([reportCode], safeFilePart(reportCode, "Report") + " Report");
   }
 
   fileInput.onchange = function () {
@@ -7712,6 +7744,11 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
 
   reportOutputs.onclick = function (event) {
     var target = event.target || event.srcElement;
+    var downloadCode = target && target.getAttribute ? target.getAttribute("data-download-report") : "";
+    if (downloadCode) {
+      downloadSingleReport(downloadCode);
+      return;
+    }
     var code = target && target.getAttribute ? target.getAttribute("data-toggle-report") : "";
     if (!code || !lastParseResult || !lastParseResult.grouped[code]) {
       return;
