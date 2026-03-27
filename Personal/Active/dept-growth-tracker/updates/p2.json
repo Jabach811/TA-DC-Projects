@@ -1,0 +1,43 @@
+﻿{
+    "type":  "dc-growth-employee-sync",
+    "version":  1,
+    "exportedAt":  "2026-03-27T04:51:03.2889311Z",
+    "profileId":  "p2",
+    "profile":  {
+                    "ratings":  {
+                                    "pw_timeline":  3,
+                                    "cr_communication":  2,
+                                    "tc_excel":  4,
+                                    "pa_eligibility":  3,
+                                    "pa_doc_review":  3
+                                },
+                    "id":  "p2",
+                    "avatarIcon":  "fa-chart-line",
+                    "color":  "#0e7490",
+                    "featuredIds":  [
+
+                                    ],
+                    "earnedIds":  [
+                                      "welcome_portal",
+                                      "template_grabber",
+                                      "org_navigator",
+                                      "clean_first_pass",
+                                      "decimal_discipline",
+                                      "first_checklist",
+                                      "email_builder",
+                                      "first_feedback"
+                                  ],
+                    "notes":  "Excel power user; growing in client relations",
+                    "role":  "Data Consultant II",
+                    "name":  "Marcus Williams",
+                    "joinDate":  "2023-01",
+                    "targets":  {
+                                    "tc_excel":  4,
+                                    "pa_doc_review":  3
+                                },
+                    "targetDates":  {
+                                        "tc_excel":  "2026-05-10",
+                                        "pa_doc_review":  "2026-04-30"
+                                    }
+                }
+}
