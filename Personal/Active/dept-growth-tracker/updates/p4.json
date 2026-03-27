@@ -1,0 +1,44 @@
+﻿{
+    "type":  "dc-growth-employee-sync",
+    "version":  1,
+    "exportedAt":  "2026-03-27T04:51:03.2848248Z",
+    "profileId":  "p4",
+    "profile":  {
+                    "ratings":  {
+                                    "pw_timeline":  3,
+                                    "cr_communication":  3,
+                                    "tc_excel":  3,
+                                    "pa_eligibility":  3,
+                                    "pa_doc_review":  3
+                                },
+                    "id":  "p4",
+                    "avatarIcon":  "fa-compass",
+                    "color":  "#b45309",
+                    "featuredIds":  [
+
+                                    ],
+                    "earnedIds":  [
+                                      "welcome_portal",
+                                      "template_grabber",
+                                      "payroll_pioneer",
+                                      "tik_tracker",
+                                      "clean_first_pass",
+                                      "balance_verified",
+                                      "first_checklist",
+                                      "macro_launcher",
+                                      "bug_hunter"
+                                  ],
+                    "notes":  "Solid all-rounder; growing into senior role",
+                    "role":  "Data Consultant II",
+                    "name":  "Derek Johnson",
+                    "joinDate":  "2023-07",
+                    "targets":  {
+                                    "tc_excel":  3,
+                                    "pa_doc_review":  3
+                                },
+                    "targetDates":  {
+                                        "tc_excel":  "2026-05-12",
+                                        "pa_doc_review":  "2026-05-05"
+                                    }
+                }
+}

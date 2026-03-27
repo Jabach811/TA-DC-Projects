@@ -1,0 +1,46 @@
+﻿{
+    "type":  "dc-growth-employee-sync",
+    "version":  1,
+    "exportedAt":  "2026-03-27T04:51:03.2713252Z",
+    "profileId":  "p1",
+    "profile":  {
+                    "ratings":  {
+                                    "pw_timeline":  4,
+                                    "cr_communication":  4,
+                                    "tc_excel":  4,
+                                    "pa_eligibility":  4,
+                                    "pa_doc_review":  4
+                                },
+                    "id":  "p1",
+                    "avatarIcon":  "fa-chess-queen",
+                    "color":  "#7c3aed",
+                    "featuredIds":  [
+                                        "data_consultant"
+                                    ],
+                    "earnedIds":  [
+                                      "welcome_portal",
+                                      "first_walkthrough",
+                                      "template_grabber",
+                                      "payroll_pioneer",
+                                      "eligibility_expert",
+                                      "clean_first_pass",
+                                      "balance_verified",
+                                      "first_checklist",
+                                      "bright_idea",
+                                      "mentor_mode",
+                                      "data_consultant"
+                                  ],
+                    "notes":  "Team lead; strong plan admin background",
+                    "role":  "Sr. Data Consultant",
+                    "name":  "Sarah Chen",
+                    "joinDate":  "2022-03",
+                    "targets":  {
+                                    "tc_excel":  4,
+                                    "pa_doc_review":  4
+                                },
+                    "targetDates":  {
+                                        "tc_excel":  "2026-05-01",
+                                        "pa_doc_review":  "2026-04-15"
+                                    }
+                }
+}

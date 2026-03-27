@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Achievements — Design Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f2f2f7;
+  --card:#ffffff;
+  --border:rgba(0,0,0,.08);
+  --text-primary:#1a1a2e;
+  --text-secondary:#6e6e80;
+  --text-muted:#aeaeb8;
+  --accent:#0a7aff;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 2px 8px rgba(0,0,0,.06),0 6px 20px rgba(0,0,0,.07);
+  --shadow-lg:0 4px 16px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.1);
+  --shadow-card:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06),0 12px 28px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.9);
+  --shadow-card-hover:0 2px 4px rgba(0,0,0,.05),0 8px 22px rgba(0,0,0,.1),0 22px 44px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.9);
+  --r:12px;
+  --r-lg:18px;
+  --r-xl:22px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;padding:32px 24px 64px;line-height:1.5}
+
+/* ── LAYOUT ── */
+.page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(140deg,#f8f9ff 0%,#eef2fc 40%,#f0f7ff 100%);border-radius:var(--r-xl);padding:28px 28px 24px;border:1px solid rgba(100,130,255,.12);box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(64,156,255,.12),transparent 70%);pointer-events:none}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;position:relative;z-index:1}
+.hero-left{}
+.hero-kicker{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);opacity:.8}
+.hero-title{font-size:28px;font-weight:900;letter-spacing:-.6px;color:var(--text-primary);margin-top:6px;line-height:1.1}
+.hero-sub{font-size:13px;color:var(--text-secondary);margin-top:8px;line-height:1.6;max-width:42ch}
+.hero-profile{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 18px;min-width:240px;box-shadow:var(--shadow-sm)}
+.hp-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.hp-name{font-size:17px;font-weight:800;color:var(--text-primary);margin-top:5px}
+.hp-role{font-size:11px;color:var(--text-secondary);margin-top:2px}
+.hp-stats{display:flex;gap:16px;margin-top:10px}
+.hp-stat{display:flex;flex-direction:column;gap:1px}
+.hp-stat-val{font-size:16px;font-weight:800;color:var(--text-primary)}
+.hp-stat-lab{font-size:10px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.hero-progress{margin-top:18px;position:relative;z-index:1}
+.hp-bar-row{display:flex;align-items:center;gap:12px}
+.hp-bar{flex:1;height:7px;border-radius:999px;background:rgba(0,0,0,.07);overflow:hidden}
+.hp-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#5ac8fa,#0a7aff,#34c759);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.hp-bar-text{font-size:11px;font-weight:700;color:var(--text-secondary);white-space:nowrap}
+
+/* ── FILTER BAR ── */
+.filter-bar{background:#fff;border-radius:var(--r-lg);padding:14px 18px;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:12px}
+.filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.filter-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);min-width:72px}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:#f2f2f7;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .13s;user-select:none}
+.chip:hover{border-color:rgba(10,122,255,.3);color:var(--accent);background:#eef4ff}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.cat-onboarding.active{background:#5ac8fa;border-color:#5ac8fa;color:#fff}
+.chip.cat-workflow.active{background:#30d158;border-color:#30d158;color:#fff}
+.chip.cat-data.active{background:#409cff;border-color:#409cff;color:#fff}
+.chip.cat-tools.active{background:#ff9f0a;border-color:#ff9f0a;color:#fff}
+.chip.cat-team.active{background:#bf5af2;border-color:#bf5af2;color:#fff}
+.chip.cat-legend.active{background:#c49000;border-color:#c49000;color:#fff}
+.chip.rar-common.active{background:#6e6e73;border-color:#6e6e73;color:#fff}
+.chip.rar-uncommon.active{background:#30d158;border-color:#30d158;color:#fff}
+.chip.rar-rare.active{background:#409cff;border-color:#409cff;color:#fff}
+.chip.rar-epic.active{background:#bf5af2;border-color:#bf5af2;color:#fff}
+.chip.rar-legendary.active{background:#c49000;border-color:#c49000;color:#fff}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.stat-card{background:#fff;border-radius:var(--r);padding:14px 14px 12px;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:4px}
+.stat-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:4px}
+.stat-val{font-size:20px;font-weight:900;letter-spacing:-.5px;color:var(--text-primary)}
+.stat-lab{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)}
+.si-total{background:rgba(10,122,255,.1);color:#0a7aff}
+.si-earned{background:rgba(48,209,88,.1);color:#1a9e3e}
+.si-xp{background:rgba(255,159,10,.12);color:#b86800}
+.si-rare{background:rgba(10,132,255,.1);color:#0560bf}
+.si-epic{background:rgba(191,90,242,.1);color:#8a30c8}
+.si-legend{background:rgba(255,214,10,.14);color:#c49000}
+
+/* ── RESULTS HEADER ── */
+.results-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.results-title{font-size:15px;font-weight:800;color:var(--text-primary)}
+.results-count{font-size:12px;font-weight:700;color:var(--text-secondary);padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.05)}
+
+/* ── GRID ── */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:14px}
+
+/* ── ACHIEVEMENT CARDS ── */
+.ach-card{border-radius:16px;overflow:hidden;display:flex;flex-direction:column;position:relative;cursor:pointer;transition:transform .15s,box-shadow .22s,border-color .2s;border:1px solid rgba(0,0,0,.07);box-shadow:var(--shadow-card)}
+.ach-card:hover{transform:translateY(-5px) scale(1.012);box-shadow:var(--shadow-card-hover)}
+.ach-card.locked{opacity:.42;filter:grayscale(.9) saturate(.15)}
+.ach-card.locked:hover{opacity:.58;filter:grayscale(.65) saturate(.3);transform:translateY(-2px)}
+
+/* Rarity tinted backgrounds */
+.ach-r-common{background:linear-gradient(165deg,#f7f7fa 0%,#ffffff 100%)}
+.ach-r-uncommon{background:linear-gradient(165deg,#f0fbf3 0%,#ffffff 100%)}
+.ach-r-rare{background:linear-gradient(165deg,#f0f5ff 0%,#ffffff 100%)}
+.ach-r-epic{background:linear-gradient(165deg,#f7f0ff 0%,#ffffff 100%)}
+.ach-r-legendary{background:linear-gradient(165deg,#fffcf0 0%,#ffffff 100%)}
+
+/* Earned borders + glow */
+.ach-r-common.earned{border-color:rgba(142,142,147,.45);box-shadow:0 0 0 1px rgba(142,142,147,.15),0 6px 24px rgba(142,142,147,.12),inset 0 1px 0 rgba(255,255,255,.95)}
+.ach-r-uncommon.earned{border-color:rgba(48,209,88,.5);box-shadow:0 0 0 1px rgba(48,209,88,.15),0 6px 28px rgba(48,209,88,.15),inset 0 1px 0 rgba(255,255,255,.95)}
+.ach-r-rare.earned{border-color:rgba(10,132,255,.5);box-shadow:0 0 0 1px rgba(10,132,255,.15),0 8px 32px rgba(10,132,255,.17),inset 0 1px 0 rgba(255,255,255,.95)}
+.ach-r-epic.earned{border-color:rgba(191,90,242,.55);box-shadow:0 0 0 1px rgba(191,90,242,.15),0 8px 36px rgba(191,90,242,.18),inset 0 1px 0 rgba(255,255,255,.95)}
+.ach-r-legendary.earned{border-color:rgba(255,214,10,.65);box-shadow:0 0 0 1px rgba(255,214,10,.28),0 10px 44px rgba(255,214,10,.24),inset 0 1px 0 rgba(255,255,255,.95)}
+
+/* Legendary shimmer on earned */
+@keyframes lgStripe{0%{background-position:0% center}100%{background-position:200% center}}
+@keyframes lgSweep{0%{background-position:-200% center}100%{background-position:200% center}}
+.ach-r-legendary.earned::after{content:'';position:absolute;inset:0;background:linear-gradient(108deg,transparent 30%,rgba(255,214,10,.05) 50%,transparent 70%);background-size:200% 100%;animation:lgSweep 3.4s linear infinite;pointer-events:none;border-radius:15px;z-index:0}
+
+/* Top stripe */
+.ach-topbar{height:4px;width:100%;flex-shrink:0}
+.ach-r-common .ach-topbar{background:linear-gradient(90deg,#8e8e93,#6a6a6e)}
+.ach-r-uncommon .ach-topbar{background:linear-gradient(90deg,#30d158,#239940)}
+.ach-r-rare .ach-topbar{background:linear-gradient(90deg,#0a84ff,#0560bf)}
+.ach-r-epic .ach-topbar{background:linear-gradient(90deg,#bf5af2,#8a30c8)}
+.ach-r-legendary .ach-topbar{background:linear-gradient(90deg,#ffd60a,#ff9f0a,#ffd60a);background-size:200% 100%;animation:lgStripe 2.8s ease infinite}
+
+/* Icon area */
+.ach-icon-wrap{display:flex;justify-content:center;padding:22px 0 14px;position:relative;z-index:1}
+.ach-icon-bg{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;transition:transform .16s}
+.ach-card:hover .ach-icon-bg{transform:scale(1.08)}
+.ach-icon-fa{font-size:30px;position:relative;z-index:1}
+.ach-earned-check{position:absolute;top:-3px;right:-3px;width:20px;height:20px;border-radius:50%;background:#30d158;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.18);border:2px solid #fff}
+
+/* Icon bg + icon colors per rarity (light-mode) */
+.ach-r-common .ach-icon-bg{background:rgba(142,142,147,.1);box-shadow:0 0 0 2px rgba(142,142,147,.18),0 5px 20px rgba(142,142,147,.1)}
+.ach-r-common .ach-icon-fa{color:#6e6e73}
+.ach-r-uncommon .ach-icon-bg{background:rgba(48,209,88,.1);box-shadow:0 0 0 2px rgba(48,209,88,.2),0 5px 22px rgba(48,209,88,.14)}
+.ach-r-uncommon .ach-icon-fa{color:#1a9e3e}
+.ach-r-rare .ach-icon-bg{background:rgba(10,132,255,.1);box-shadow:0 0 0 2px rgba(10,132,255,.22),0 5px 24px rgba(10,132,255,.14)}
+.ach-r-rare .ach-icon-fa{color:#0560bf}
+.ach-r-epic .ach-icon-bg{background:rgba(191,90,242,.1);box-shadow:0 0 0 2px rgba(191,90,242,.22),0 5px 26px rgba(191,90,242,.16)}
+.ach-r-epic .ach-icon-fa{color:#8a30c8}
+.ach-r-legendary .ach-icon-bg{background:rgba(255,214,10,.12);box-shadow:0 0 0 2px rgba(255,214,10,.32),0 5px 28px rgba(255,214,10,.2)}
+.ach-r-legendary .ach-icon-fa{color:#c49000}
+
+/* Card body */
+.ach-body{padding:0 13px 13px;display:flex;flex-direction:column;gap:7px;flex:1;position:relative;z-index:1}
+.ach-head{display:flex;align-items:center;justify-content:space-between;gap:4px;min-height:20px}
+.ach-stars{display:flex;gap:2px;align-items:center}
+.ach-state{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 7px;border-radius:999px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;flex-shrink:0}
+.ach-state.earned{background:rgba(48,209,88,.1);color:#1a9e3e;border:1px solid rgba(48,209,88,.28)}
+.ach-state.locked-s{background:rgba(0,0,0,.05);color:rgba(0,0,0,.32);border:1px solid rgba(0,0,0,.08)}
+.ach-name{font-size:13px;font-weight:800;line-height:1.3;color:var(--text-primary)}
+.ach-card.locked .ach-name{color:rgba(0,0,0,.3)}
+.ach-desc{font-size:11px;color:rgba(0,0,0,.5);line-height:1.55}
+.ach-card.locked .ach-desc{color:rgba(0,0,0,.2)}
+.ach-hint{font-size:10px;color:rgba(0,0,0,.38);line-height:1.5;font-style:italic}
+.ach-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;padding-top:8px;border-top:1px solid rgba(0,0,0,.06)}
+
+/* XP badge per rarity */
+.ach-xp{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800}
+.ach-r-common .ach-xp{background:rgba(142,142,147,.1);color:#6e6e73}
+.ach-r-uncommon .ach-xp{background:rgba(48,209,88,.1);color:#1a9e3e}
+.ach-r-rare .ach-xp{background:rgba(10,132,255,.1);color:#0560bf}
+.ach-r-epic .ach-xp{background:rgba(191,90,242,.1);color:#8a30c8}
+.ach-r-legendary .ach-xp{background:rgba(255,214,10,.12);color:#b87800}
+
+/* Tier pill */
+.ach-tier{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:3px 7px;border-radius:999px}
+
+/* ── NEW BADGE ── */
+.ach-new-badge{position:absolute;top:10px;right:10px;z-index:10;background:#ff453a;color:#fff;font-size:8px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;box-shadow:0 2px 8px rgba(255,69,58,.35)}
+
+/* ── EMPTY STATE ── */
+.empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted)}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
+.empty-msg{font-size:14px;font-weight:600}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .hero-top{flex-direction:column}
+  .hero-profile{min-width:0;width:100%}
+}
+@media(max-width:600px){
+  body{padding:16px 14px 48px}
+  .hero{padding:20px 18px}
+  .hero-title{font-size:22px}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .ach-grid{grid-template-columns:1fr}
+  .filter-row{flex-direction:column;align-items:flex-start}
+  .filter-label{min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-left">
+        <div class="hero-kicker">Dept Growth Tracker</div>
+        <div class="hero-title">Achievement Gallery</div>
+        <div class="hero-sub">Earn achievements by demonstrating competency, completing milestones, and building habits that matter for the role.</div>
+      </div>
+      <div class="hero-profile">
+        <div class="hp-label">Demo Profile</div>
+        <div class="hp-name">Sarah Chen</div>
+        <div class="hp-role">Sr. Data Consultant &nbsp;·&nbsp; Joined Mar 2022</div>
+        <div class="hp-stats">
+          <div class="hp-stat">
+            <div class="hp-stat-val" id="stat-earned">16</div>
+            <div class="hp-stat-lab">Earned</div>
+          </div>
+          <div class="hp-stat">
+            <div class="hp-stat-val" id="stat-xp">1,540</div>
+            <div class="hp-stat-lab">Total XP</div>
+          </div>
+          <div class="hp-stat">
+            <div class="hp-stat-val" id="stat-total">54</div>
+            <div class="hp-stat-lab">Available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-progress">
+      <div class="hp-bar-row">
+        <div class="hp-bar"><div class="hp-bar-fill" id="hero-bar" style="width:29.6%"></div></div>
+        <div class="hp-bar-text">16 / 54 earned &nbsp;·&nbsp; 1,540 XP</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-row">
+      <div class="filter-label">Status</div>
+      <div class="chip-row" id="filter-status">
+        <div class="chip active" data-val="all">All</div>
+        <div class="chip" data-val="earned">Earned</div>
+        <div class="chip" data-val="locked">Locked</div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-label">Category</div>
+      <div class="chip-row" id="filter-cat">
+        <div class="chip active" data-val="all">All</div>
+        <div class="chip cat-onboarding" data-val="onboarding">Onboarding</div>
+        <div class="chip cat-workflow" data-val="workflow">Workflow</div>
+        <div class="chip cat-data" data-val="data">Data</div>
+        <div class="chip cat-tools" data-val="tools">Tools</div>
+        <div class="chip cat-team" data-val="team">Team</div>
+        <div class="chip cat-legend" data-val="legend">Legend</div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-label">Rarity</div>
+      <div class="chip-row" id="filter-rar">
+        <div class="chip active" data-val="all">All</div>
+        <div class="chip rar-common" data-val="common">Common</div>
+        <div class="chip rar-uncommon" data-val="uncommon">Uncommon</div>
+        <div class="chip rar-rare" data-val="rare">Rare</div>
+        <div class="chip rar-epic" data-val="epic">Epic</div>
+        <div class="chip rar-legendary" data-val="legendary">Legendary</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon si-total"><i class="fa-solid fa-trophy"></i></div>
+      <div class="stat-val" id="s-total">54</div>
+      <div class="stat-lab">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-earned"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-val" id="s-earned">16</div>
+      <div class="stat-lab">Earned</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-xp"><i class="fa-solid fa-bolt"></i></div>
+      <div class="stat-val" id="s-xp">1,540</div>
+      <div class="stat-lab">XP Earned</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-rare"><i class="fa-solid fa-star"></i></div>
+      <div class="stat-val" id="s-rare">4</div>
+      <div class="stat-lab">Rare Earned</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-epic"><i class="fa-solid fa-gem"></i></div>
+      <div class="stat-val" id="s-epic">1</div>
+      <div class="stat-lab">Epic Earned</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-legend"><i class="fa-solid fa-crown"></i></div>
+      <div class="stat-val" id="s-legend">0</div>
+      <div class="stat-lab">Legendary</div>
+    </div>
+  </div>
+
+  <!-- RESULTS HEADER -->
+  <div class="results-header">
+    <div class="results-title" id="results-title">All Achievements</div>
+    <div class="results-count" id="results-count">54 achievements</div>
+  </div>
+
+  <!-- GRID -->
+  <div class="ach-grid" id="ach-grid"></div>
+
+</div>
+
+<script>
+const ACH_XP_MAP = {common:40,uncommon:80,rare:150,epic:260,legendary:420};
+const RARITY_STAR_COLORS = {common:'#8e8e93',uncommon:'#30d158',rare:'#409cff',epic:'#d48fff',legendary:'#ffd60a'};
+const RARITY_STAR_COUNTS = {common:1,uncommon:2,rare:3,epic:4,legendary:5};
+const TIER_MAP = {common:'rookie',uncommon:'rookie',rare:'pro',epic:'expert',legendary:'expert'};
+const TIER_LABELS = {rookie:'Rookie',pro:'Pro',expert:'Expert'};
+const TIER_COLORS = {
+  rookie:{bg:'rgba(52,199,89,.12)',c:'#1a9e3e'},
+  pro:{bg:'rgba(10,132,255,.12)',c:'#0560bf'},
+  expert:{bg:'rgba(175,82,222,.12)',c:'#8a30c8'}
+};
+
+const EARNED_IDS = new Set([
+  'welcome_portal','first_walkthrough','template_grabber','payroll_pioneer',
+  'eligibility_expert','clean_first_pass','balance_verified','first_checklist',
+  'bright_idea','mentor_mode','data_consultant','date_whisperer',
+  'decimal_discipline','census_whisperer','zero_defect','fund_mapper'
+]);
+
+const NEW_IDS = new Set(['census_surgeon','process_architect','the_anchor']);
+
+const ACHIEVEMENTS = [
+  // ── ONBOARDING ──
+  {id:'welcome_portal',         cat:'onboarding',rarity:'common',    icon:'fa-door-open',            name:'Welcome to the Portal',    desc:'Accessed the team portal and started working from the shared home base.',                                                         hint:'First login, first real orientation point.',                               related:['sy_portal','sy_documents']},
+  {id:'first_walkthrough',      cat:'onboarding',rarity:'uncommon',  icon:'fa-route',                name:'First Walkthrough',        desc:'Completed one full walkthrough from start to finish without dropping out halfway.',                                                 hint:'Any full procedure walkthrough counts.',                                   related:['sy_portal','pw_checklist']},
+  {id:'template_grabber',       cat:'onboarding',rarity:'common',    icon:'fa-file-lines',           name:'Template Grabber',         desc:'Pulled the correct template or working file for a live task without needing someone else to find it.',                             hint:'Shows basic self-sufficiency with shared resources.',                      related:['sy_documents','pw_checklist']},
+  {id:'org_navigator',          cat:'onboarding',rarity:'uncommon',  icon:'fa-sitemap',              name:'Org Navigator',            desc:'Found the right escalation contact or owner using the org structure instead of guessing.',                                          hint:'Good onboarding means knowing who to pull in.',                            related:['pw_escalation','ld_collaboration']},
+  {id:'full_house',             cat:'onboarding',rarity:'rare',      icon:'fa-house-chimney-check',  name:'Full House',               desc:'Visited the major operating sections, used search, and completed at least one key onboarding action in the same week.',            hint:"A real 'I know where things live now' moment.",                            related:['sy_portal','sy_documents','pw_intake']},
+  {id:'search_sleuth',          cat:'onboarding',rarity:'common',    icon:'fa-magnifying-glass',     name:'Search Sleuth',            desc:'Used search, references, or linked docs to find the right answer without asking for a rescue right away.',                         hint:'Quiet self-sufficiency matters.',                                          related:['sy_portal','sy_documents']},
+  {id:'starter_stride',         cat:'onboarding',rarity:'uncommon',  icon:'fa-person-walking',       name:'Starter Stride',           desc:'Put together a strong first week with organized notes, the right resources open, and no repeated orientation misses.',              hint:'A good ramp-up rhythm is a real win.',                                     related:['pw_checklist','ld_initiative','sy_documents']},
+  // ── WORKFLOW ──
+  {id:'payroll_pioneer',        cat:'workflow',  rarity:'uncommon',  icon:'fa-money-bill-wave',      name:'Payroll Pioneer',          desc:'Completed a payroll integration flow from setup through the key decision points with the right supporting notes.',                  hint:'A solid first full workflow win.',                                         related:['pw_timeline','sy_portal','pw_checklist']},
+  {id:'tik_tracker',            cat:'workflow',  rarity:'uncommon',  icon:'fa-arrow-right-arrow-left',name:'TIK Tracker',             desc:'Worked through a re-registration or transfer workflow with deadlines, dependencies, and checks all accounted for.',                hint:'Good process handling under moving parts.',                                related:['pw_timeline','pw_handoff','sy_portal']},
+  {id:'loan_officer',           cat:'workflow',  rarity:'uncommon',  icon:'fa-building-columns',     name:'Loan Officer',             desc:'Completed the loan setup and processing workflow with the right system touches and documentation trail.',                           hint:'Shows comfort with a more specialized workflow.',                          related:['pa_distributions','sy_portal','cr_records']},
+  {id:'eligibility_expert',     cat:'workflow',  rarity:'uncommon',  icon:'fa-id-card-clip',         name:'Eligibility Expert',       desc:'Completed an eligibility setup or audit accurately enough that no cleanup loop was needed after review.',                           hint:'A strong operational proof point.',                                        related:['pa_eligibility','co_notices','pw_checklist']},
+  {id:'live_run_ready',         cat:'workflow',  rarity:'rare',      icon:'fa-flag-checkered',       name:'Live Run Ready',           desc:'Reached the live-run scheduling stage with the prep work, dependencies, and timing clean enough to move confidently.',             hint:'This is where process discipline starts to show.',                         related:['pw_timeline','pw_handoff','cr_expectations']},
+  {id:'full_seven',             cat:'workflow',  rarity:'epic',      icon:'fa-layer-group',          name:'The Full Seven',           desc:'Completed the full set of major walkthroughs and can navigate the operating suite without hand-holding.',                          hint:'A broad workflow coverage milestone.',                                     related:['sy_portal','pw_checklist','ld_training']},
+  {id:'handoff_clean',          cat:'workflow',  rarity:'uncommon',  icon:'fa-paper-plane',          name:'Clean Handoff',            desc:'Passed work to the next owner with enough clarity that no avoidable follow-up questions came back.',                               hint:'A clean handoff saves invisible hours.',                                   related:['pw_handoff','cr_records','sy_documents']},
+  {id:'timeline_guard',         cat:'workflow',  rarity:'rare',      icon:'fa-clock',                name:'Timeline Guard',           desc:'Caught a timing risk early enough to prevent a real delay and adjusted the plan before it turned messy.',                           hint:'Proactive beats heroic every time.',                                       related:['pw_timeline','cr_expectations','ld_initiative']},
+  {id:'expectation_setter',     cat:'workflow',  rarity:'rare',      icon:'fa-handshake',            name:'Expectation Setter',       desc:'Set a realistic expectation with a client or partner early enough that the work stayed calm and aligned.',                          hint:'Half of project success is expectation control.',                          related:['cr_expectations','cr_communication','pw_timeline']},
+  // ── DATA ──
+  {id:'clean_first_pass',       cat:'data',      rarity:'common',    icon:'fa-circle-check',         name:'Clean First Pass',         desc:'Submitted a file or data package that passed the first real review without avoidable formatting misses.',                          hint:'Clean input saves everybody time.',                                        related:['tc_data_validation','tc_excel']},
+  {id:'date_whisperer',         cat:'data',      rarity:'common',    icon:'fa-calendar-check',       name:'Date Whisperer',           desc:'Handled date formatting and field prep correctly across a live file without revision for formatting errors.',                      hint:'Tiny detail, big downstream effect.',                                      related:['tc_data_validation','tc_excel']},
+  {id:'decimal_discipline',     cat:'data',      rarity:'uncommon',  icon:'fa-percent',              name:'Decimal Discipline',       desc:'Formatted percentages, contribution values, or other tricky numeric fields correctly the first time.',                              hint:'Attention to detail where tiny mistakes become big ones.',                 related:['tc_data_validation','tc_excel','pa_contributions']},
+  {id:'balance_verified',       cat:'data',      rarity:'uncommon',  icon:'fa-scale-balanced',       name:'Balance Verified',         desc:'Prepared or checked a balance-related work item with totals, mapping, and follow-through all reconciled.',                          hint:'Real money, real accuracy.',                                               related:['tc_balance_import','tc_data_validation']},
+  {id:'fund_mapper',            cat:'data',      rarity:'rare',      icon:'fa-link',                 name:'Fund Mapper',              desc:'Completed a full fund mapping or comparable source-to-target mapping task with no missing rows or unresolved mismatches.',         hint:'A strong proof point for conversion work.',                                related:['tc_balance_import','tc_powerquery','tc_census']},
+  {id:'zero_defect',            cat:'data',      rarity:'rare',      icon:'fa-bullseye',             name:'Zero Defect',              desc:'Finished a meaningful implementation segment with no validation errors or preventable data cleanup coming back.',                   hint:'Clean work under real conditions.',                                        related:['tc_data_validation','tc_census','pw_checklist']},
+  {id:'reconciliation_radar',   cat:'data',      rarity:'uncommon',  icon:'fa-signal',               name:'Reconciliation Radar',     desc:'Spotted a mismatch before submission and closed the loop with clean reconciliation notes.',                                        hint:"Catch it before it becomes someone else's fire.",                          related:['tc_data_validation','tc_balance_import','cr_records']},
+  {id:'census_whisperer',       cat:'data',      rarity:'rare',      icon:'fa-users',                name:'Census Whisperer',         desc:'Took a rough census file and turned it into a usable, structured input with fewer review comments than expected.',                  hint:'Messy files are where trust gets built.',                                  related:['tc_census','tc_excel','tc_data_validation']},
+  {id:'power_query_pathfinder', cat:'data',      rarity:'epic',      icon:'fa-robot',                name:'Power Query Pathfinder',   desc:'Built or adapted a transformation flow that removed a real manual cleanup step from repeat work.',                                 hint:'Automation that actually sticks is rare in the best way.',                 related:['tc_powerquery','ld_process','tc_excel']},
+  {id:'perfect_record',         cat:'data',      rarity:'epic',      icon:'fa-star',                 name:'Perfect Record',           desc:'Put together several consecutive clean submissions or data packages with zero avoidable validation defects.',                       hint:'Consistency, not just one good day.',                                      related:['tc_data_validation','tc_balance_import','ld_initiative']},
+  // ── DATA (new) ──
+  {id:'census_surgeon',         cat:'data',      rarity:'rare',      icon:'fa-microscope',           name:'Census Surgeon',           desc:'Caught, documented, and corrected every error in a complex census file before submission. No resubmit loop.',                      hint:'Clean data is a craft, not a coincidence.',                               related:['tc_census','tc_data_validation','tc_excel']},
+  // ── TOOLS ──
+  {id:'first_checklist',        cat:'tools',     rarity:'common',    icon:'fa-clipboard-list',       name:'First Checklist',          desc:'Generated or completed a formal checklist for live work instead of relying on memory or loose notes.',                             hint:'The boring reliable stuff is the good stuff.',                             related:['pw_checklist','sy_documents']},
+  {id:'payroll_checklist',      cat:'tools',     rarity:'common',    icon:'fa-receipt',              name:'Payroll Checklist Pro',    desc:'Used the payroll checklist flow correctly for a real setup and captured the right implementation details.',                        hint:'Structured execution wins.',                                               related:['pw_checklist','pw_timeline','sy_documents']},
+  {id:'email_builder',          cat:'tools',     rarity:'common',    icon:'fa-envelope-open-text',   name:'Email Builder',            desc:'Generated or used a consistent client-facing communication template instead of reinventing the message.',                          hint:'Clear communication is a system, not a vibe.',                             related:['cr_communication','sy_documents']},
+  {id:'macro_launcher',         cat:'tools',     rarity:'uncommon',  icon:'fa-bolt',                 name:'Macro Launcher',           desc:'Used an internal macro, helper, or automation to reduce manual rework on a live task.',                                            hint:'Time saved for you is time saved for the team.',                           related:['tc_excel','ld_process']},
+  {id:'toa_transformer',        cat:'tools',     rarity:'rare',      icon:'fa-wand-magic-sparkles',  name:'TOA Transformer',          desc:'Converted a messy source or transfer artifact into a clean working format the team could actually use.',                            hint:'Great operations people reduce friction for everyone downstream.',          related:['tc_excel','tc_powerquery','sy_documents']},
+  {id:'resource_keeper',        cat:'tools',     rarity:'uncommon',  icon:'fa-folder-open',          name:'Resource Keeper',          desc:'Organized or updated a shared file, note set, or template so the next person could move faster.',                                  hint:'Shared clarity is a tool too.',                                            related:['sy_documents','ld_process']},
+  {id:'console_confident',      cat:'tools',     rarity:'rare',      icon:'fa-terminal',             name:'Console Confident',        desc:'Used an internal tool or console comfortably enough to replace a slower manual path in live work.',                                hint:'The tool only counts when it actually helps.',                             related:['sy_reporting','sy_portal','tc_powerquery']},
+  {id:'full_toolkit',           cat:'tools',     rarity:'epic',      icon:'fa-toolbox',              name:'Full Toolkit',             desc:"Used the department's main tools and templates across multiple work types rather than staying in one narrow lane.",                 hint:'Shows growing operating range.',                                           related:['sy_portal','tc_excel','pw_checklist']},
+  // ── TEAM ──
+  {id:'first_feedback',         cat:'team',      rarity:'common',    icon:'fa-comment-dots',         name:'First Feedback',           desc:"Submitted a bug, improvement, or process note that could make the team's operating system better.",                                hint:'Healthy teams get better because people speak up.',                        related:['ld_process','ld_initiative']},
+  {id:'bright_idea',            cat:'team',      rarity:'uncommon',  icon:'fa-lightbulb',            name:'Bright Idea',              desc:'Suggested a practical improvement that clearly addressed a real workflow annoyance or bottleneck.',                                hint:'Not every great contribution is a big project.',                           related:['ld_process','ld_initiative']},
+  {id:'bug_hunter',             cat:'team',      rarity:'uncommon',  icon:'fa-bug',                  name:'Bug Hunter',               desc:'Caught a broken instruction, wrong routing, bad link, or outdated step before it kept tripping people up.',                        hint:'Saving other people from confusion counts.',                               related:['ld_process','sy_documents']},
+  {id:'mentor_mode',            cat:'team',      rarity:'rare',      icon:'fa-graduation-cap',       name:'Mentor Mode',              desc:'Walked a teammate or newer hire through a workflow with enough clarity that they could repeat it on their own.',                    hint:"That's real leverage.",                                                   related:['ld_training','ld_mentoring']},
+  {id:'shipped_it',             cat:'team',      rarity:'rare',      icon:'fa-rocket',               name:'Shipped It',               desc:"Suggested an improvement that actually made it into the team's tools, docs, or process.",                                          hint:'Ideas are good. Landed ideas are better.',                                related:['ld_process','ld_collaboration']},
+  {id:'meeting_captain',        cat:'team',      rarity:'uncommon',  icon:'fa-clipboard',            name:'Meeting Captain',          desc:'Left a meeting with decisions, owners, and next steps documented clearly enough that nothing drifted afterward.',                   hint:'Documentation is follow-through.',                                         related:['cr_meetings','cr_records','cr_communication']},
+  {id:'calm_escalation',        cat:'team',      rarity:'rare',      icon:'fa-phone',                name:'Calm Escalation',          desc:'Escalated a real issue with the right context, the right tone, and enough prep that the next step was obvious.',                    hint:'Good escalation is a skill, not a panic move.',                           related:['pw_escalation','cr_communication','ld_collaboration']},
+  {id:'peer_lift',              cat:'team',      rarity:'rare',      icon:'fa-arrow-up-right-dots',  name:'Peer Lift',                desc:'Unblocked a teammate with guidance, notes, or cleanup work that genuinely changed their day for the better.',                       hint:'Helping counts when it creates momentum.',                                 related:['ld_training','ld_mentoring','ld_collaboration']},
+  {id:'knowledge_builder',      cat:'team',      rarity:'epic',      icon:'fa-book-open',            name:'Knowledge Builder',        desc:"Contributed multiple useful fixes, notes, or improvements that made the team's shared operating space stronger over time.",        hint:'A compounding contribution milestone.',                                    related:['ld_training','ld_process','ld_initiative']},
+  // ── TEAM (new) ──
+  {id:'process_architect',      cat:'team',      rarity:'epic',      icon:'fa-sitemap',              name:'Process Architect',        desc:'Redesigned a repeating process step that reduced handling time for everyone, not just yourself.',                                   hint:'The best process improvements help the whole team.',                       related:['ld_process','ld_initiative','ld_collaboration']},
+  // ── LEGEND ──
+  {id:'data_consultant',        cat:'legend',    rarity:'epic',      icon:'fa-chart-line',           name:'Data Consultant',          desc:'Completed a meaningful end-to-end implementation path with intake, setup, data work, and launch coordination all holding together.', hint:"One of the first 'you can really trust this person' milestones.",         related:['pw_timeline','tc_balance_import','cr_communication','pw_handoff']},
+  {id:'audit_ready_run',        cat:'legend',    rarity:'epic',      icon:'fa-file-shield',          name:'Audit-Ready Run',          desc:'Worked through a stretch of assignments with documentation, controls, and supporting detail clean enough to stand up to scrutiny.',  hint:'This is the kind of reliability managers notice fast.',                    related:['co_audit','cr_records','pw_checklist']},
+  {id:'portal_pillar',          cat:'legend',    rarity:'epic',      icon:'fa-globe',                name:'Portal Pillar',            desc:"Built, taught, and improved the team's operating environment instead of only using it.",                                             hint:'A real force multiplier for onboarding.',                                  related:['ld_training','ld_process','ld_collaboration']},
+  {id:'steady_hand',            cat:'legend',    rarity:'legendary', icon:'fa-hands',                name:'Steady Hand',              desc:'Became the person people trust to take messy work, calm it down, and move it forward without drama.',                              hint:'A reputation milestone, not just a task milestone.',                       related:['cr_problem_solving','pw_handoff','ld_initiative','ld_collaboration']},
+  {id:'full_journey',           cat:'legend',    rarity:'legendary', icon:'fa-map-location-dot',     name:'Full Journey',             desc:'Demonstrated broad competence across the major operating paths, tools, and workflow types that matter for the role.',              hint:'Range plus consistency.',                                                  related:['sy_portal','pw_checklist','tc_data_validation','cr_expectations']},
+  {id:'error_zero_season',      cat:'legend',    rarity:'legendary', icon:'fa-gem',                  name:'Error Zero Season',        desc:'Worked through an extended stretch with clean output, strong controls, and no avoidable validation or process misses.',            hint:'That is hard. It should feel hard.',                                       related:['tc_data_validation','pw_checklist','co_audit']},
+  {id:'the_goat',               cat:'legend',    rarity:'legendary', icon:'fa-trophy',               name:'The GOAT',                 desc:'Stacked standout performance, knowledge-sharing, and dependable execution across the board over time.',                            hint:'Reserved for people who are genuinely hard to replace.',                   related:['ld_mentoring','ld_initiative','cr_problem_solving','co_audit']},
+  // ── LEGEND (new) ──
+  {id:'the_anchor',             cat:'legend',    rarity:'epic',      icon:'fa-anchor',               name:'The Anchor',               desc:'Became the consistent point of contact that clients and partners could rely on across multiple active projects.',                   hint:'Consistency at scale is a career reputation builder.',                     related:['cr_communication','cr_expectations','pw_handoff']},
+];
+
+// Filter state
+const filters = {status:'all', cat:'all', rar:'all'};
+
+function rarityStars(rarity) {
+  const n = RARITY_STAR_COUNTS[rarity] || 1;
+  const c = RARITY_STAR_COLORS[rarity] || '#8e8e93';
+  return Array(5).fill(0).map((_,i) =>
+    `<i class="fa-solid fa-star" style="font-size:9px;color:${i<n?c:'rgba(0,0,0,.12)'}"></i>`
+  ).join('');
+}
+
+function buildCard(a) {
+  const isEarned = EARNED_IDS.has(a.id);
+  const isNew = NEW_IDS.has(a.id);
+  const xp = ACH_XP_MAP[a.rarity];
+  const tier = TIER_MAP[a.rarity];
+  const tierLabel = TIER_LABELS[tier];
+  const tc = TIER_COLORS[tier];
+  const state = isEarned ? 'earned' : 'locked';
+  const stateClass = isEarned ? 'earned' : 'locked-s';
+  const stateIcon = isEarned ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-lock" style="font-size:8px"></i>';
+  const stateText = isEarned ? 'Earned' : 'Locked';
+
+  return `<article class="ach-card ach-r-${a.rarity} ${state}" data-cat="${a.cat}" data-rar="${a.rarity}" data-earned="${isEarned}">
+    ${isNew ? '<div class="ach-new-badge">New</div>' : ''}
+    <div class="ach-topbar"></div>
+    <div class="ach-icon-wrap">
+      <div class="ach-icon-bg">
+        <i class="fa-solid ${a.icon} ach-icon-fa"></i>
+        ${isEarned ? '<div class="ach-earned-check"><i class="fa-solid fa-check"></i></div>' : ''}
+      </div>
+    </div>
+    <div class="ach-body">
+      <div class="ach-head">
+        <div class="ach-stars">${rarityStars(a.rarity)}</div>
+        <div class="ach-state ${stateClass}">${stateIcon} ${stateText}</div>
+      </div>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+      ${!isEarned ? `<div class="ach-hint">${a.hint}</div>` : ''}
+      <div class="ach-footer">
+        <span class="ach-xp"><i class="fa-solid fa-bolt"></i> +${xp} XP</span>
+        <span class="ach-tier" style="background:${tc.bg};color:${tc.c}">${tierLabel}</span>
+      </div>
+    </div>
+  </article>`;
+}
+
+function applyFilters() {
+  const {status, cat, rar} = filters;
+  const all = ACHIEVEMENTS;
+  let visible = all.filter(a => {
+    if (status === 'earned' && !EARNED_IDS.has(a.id)) return false;
+    if (status === 'locked' && EARNED_IDS.has(a.id)) return false;
+    if (cat !== 'all' && a.cat !== cat) return false;
+    if (rar !== 'all' && a.rarity !== rar) return false;
+    return true;
+  });
+
+  const grid = document.getElementById('ach-grid');
+  if (visible.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-box-open"></i></div><div class="empty-msg">No achievements match these filters.</div></div>`;
+  } else {
+    grid.innerHTML = visible.map(buildCard).join('');
+  }
+
+  // Update results header
+  const total = ACHIEVEMENTS.length;
+  const earnedCount = visible.filter(a => EARNED_IDS.has(a.id)).length;
+  const filterLabel = status === 'earned' ? 'Earned' : status === 'locked' ? 'Locked' : 'All';
+  const catLabel = cat !== 'all' ? ` · ${cat.charAt(0).toUpperCase()+cat.slice(1)}` : '';
+  const rarLabel = rar !== 'all' ? ` · ${rar.charAt(0).toUpperCase()+rar.slice(1)}` : '';
+  document.getElementById('results-title').textContent = `${filterLabel} Achievements${catLabel}${rarLabel}`;
+  document.getElementById('results-count').textContent = `${visible.length} of ${total}`;
+
+  // Update stat cards based on visible
+  document.getElementById('s-total').textContent = visible.length;
+  const visEarned = visible.filter(a => EARNED_IDS.has(a.id)).length;
+  document.getElementById('s-earned').textContent = visEarned;
+  const visXP = visible.filter(a => EARNED_IDS.has(a.id)).reduce((s,a)=>s+ACH_XP_MAP[a.rarity],0);
+  document.getElementById('s-xp').textContent = visXP.toLocaleString();
+  document.getElementById('s-rare').textContent = visible.filter(a=>EARNED_IDS.has(a.id)&&a.rarity==='rare').length;
+  document.getElementById('s-epic').textContent = visible.filter(a=>EARNED_IDS.has(a.id)&&a.rarity==='epic').length;
+  document.getElementById('s-legend').textContent = visible.filter(a=>EARNED_IDS.has(a.id)&&a.rarity==='legendary').length;
+}
+
+function wireChips(groupId, filterKey) {
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      filters[filterKey] = chip.dataset.val;
+      applyFilters();
+    });
+  });
+}
+
+wireChips('filter-status','status');
+wireChips('filter-cat','cat');
+wireChips('filter-rar','rar');
+
+// Initial render
+applyFilters();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -758,7 +758,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text'
 <!-- DETAIL MODAL -->
 <div id="modal-overlay" onclick="closeModal(event)">
   <div id="modal-box">
-    <button id="modal-close" onclick="closeModal()">✕</button>
+    <button id="modal-close" onclick="closeModal()">âœ•</button>
     <div id="modal-header"></div>
     <div id="modal-body"></div>
   </div>
@@ -793,10 +793,10 @@ const DEPT_CONFIG = {
 // For employee copies, set:
 // role:'employee', employeeProfileId:'p1', autoPullOnOpen:true, autoPullUrl:'./update.json'
 const APP_SYNC = {
-  role: 'manager', // 'manager' | 'employee'
-  employeeProfileId: '',
-  autoPullOnOpen: false,
-  autoPullUrl: '',
+  role: 'employee', // 'manager' | 'employee'
+  employeeProfileId: 'p4',
+  autoPullOnOpen: true,
+  autoPullUrl: './update.json',
 };
 
 const LEVELS = [
@@ -1713,7 +1713,7 @@ function renderDashboard() {
         <span class="comp-row-name">${comp.title}</span>
         <div class="comp-row-meta">
           ${hasManagerTarget?`<span class="mgr-req-badge" title="Manager has set a target for this skill">Manager Request</span>`:''}
-          ${behind?`<span class="comp-behind">↓${target-rating}</span>`:''}
+          ${behind?`<span class="comp-behind">â†“${target-rating}</span>`:''}
         </div>
         <span class="comp-row-badge ${levelClass(rating)}">${lv.short}</span>
       </div>`;
@@ -1827,17 +1827,17 @@ function renderManage() {
 
   page.innerHTML = `
     <div class="manage-section">
-      <div class="manage-section-title">👥 Team Members</div>
+      <div class="manage-section-title">ðŸ‘¥ Team Members</div>
       ${profilesHtml}
       <div style="margin-top:12px"><button class="btn btn-primary" onclick="openAddForm()">+ Add Profile</button></div>
     </div>
     <div class="manage-section">
-      <div class="manage-section-title">🎯 Target Levels</div>
+      <div class="manage-section-title">ðŸŽ¯ Target Levels</div>
       ${targetProfileSelect}
       ${state.profiles.length ? targetsTable : '<div style="color:var(--text-secondary);font-size:13px">Add team members first.</div>'}
     </div>
     <div class="manage-section">
-      <div class="manage-section-title">🔄 Export & Import</div>
+      <div class="manage-section-title">ðŸ”„ Export & Import</div>
       <div class="sync-box">
         <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Export individual profiles for employees to self-rate, then import their updates back.</p>
         <div class="sync-row">
@@ -2275,7 +2275,7 @@ function renderQuests() {
   const progress = getAchievementProgress(xp);
   const earnedAchievements = ACHIEVEMENTS.filter(item=>earnedIds.includes(item.id));
 
-  // ── INDIVIDUAL MODE: gallery of earned achievements ──────────────────────
+  // â”€â”€ INDIVIDUAL MODE: gallery of earned achievements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (state.appMode === 'individual') {
     const featuredIds = profile.featuredIds || [];
     const rarityOrder = {legendary:0,epic:1,rare:2,uncommon:3,common:4};
@@ -2363,7 +2363,7 @@ function renderQuests() {
     return;
   }
 
-  // ── MANAGER MODE: full award grid ────────────────────────────────────────
+  // â”€â”€ MANAGER MODE: full award grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const rank = getAchievementRank(profile.id);
   const stats = getAchievementCategoryStats(profile);
   const topCat = ACH_CATEGORIES.map(cat=>({cat,pct:stats[cat.id].pct})).sort((a,b)=>b.pct-a.pct)[0];
@@ -2881,3 +2881,5 @@ init();
 </script>
 </body>
 </html>
+
+

@@ -1,0 +1,39 @@
+﻿{
+    "type":  "dc-growth-employee-sync",
+    "version":  1,
+    "exportedAt":  "2026-03-27T04:51:03.2932068Z",
+    "profileId":  "p3",
+    "profile":  {
+                    "ratings":  {
+                                    "pw_timeline":  1,
+                                    "cr_communication":  2,
+                                    "tc_excel":  3,
+                                    "pa_eligibility":  2,
+                                    "pa_doc_review":  2
+                                },
+                    "id":  "p3",
+                    "avatarIcon":  "fa-seedling",
+                    "color":  "#15803d",
+                    "featuredIds":  [
+
+                                    ],
+                    "earnedIds":  [
+                                      "welcome_portal",
+                                      "first_walkthrough",
+                                      "template_grabber",
+                                      "first_checklist"
+                                  ],
+                    "notes":  "New hire; strong attention to detail",
+                    "role":  "Data Consultant I",
+                    "name":  "Aisha Patel",
+                    "joinDate":  "2024-06",
+                    "targets":  {
+                                    "tc_excel":  3,
+                                    "pa_doc_review":  3
+                                },
+                    "targetDates":  {
+                                        "tc_excel":  "2026-05-25",
+                                        "pa_doc_review":  "2026-05-20"
+                                    }
+                }
+}

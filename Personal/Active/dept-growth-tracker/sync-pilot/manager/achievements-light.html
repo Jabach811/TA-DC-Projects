@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Achievements — Light 3D Preview</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f0f0f5;
+  color: #1c1c1e;
+  min-height: 100vh;
+  padding: 32px 24px 64px;
+}
+
+/* ── Page shell ── */
+.shell {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Hero ── */
+.hero {
+  border-radius: 22px;
+  padding: 28px 28px 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5fa 55%, #eef2ff 100%);
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.9) inset,
+    0 4px 6px rgba(0,0,0,.04),
+    0 12px 32px rgba(0,0,0,.07);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,122,255,.07), transparent 68%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: 60px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52,199,89,.07), transparent 68%);
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+.hero-kicker { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #6e6e7a; margin-bottom: 8px; }
+.hero-title { font-size: 26px; font-weight: 800; letter-spacing: -.6px; line-height: 1.06; color: #111; }
+.hero-copy { margin-top: 9px; font-size: 13px; color: #6e6e7a; line-height: 1.65; max-width: 52ch; }
+.hero-panel {
+  min-width: 240px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.82);
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  backdrop-filter: blur(6px);
+}
+.hero-panel-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #aeaeb2; }
+.hero-panel-name { margin-top: 5px; font-size: 17px; font-weight: 800; color: #111; }
+.hero-panel-role { font-size: 11px; color: #8e8e93; margin-top: 2px; }
+.hero-panel-meta { margin-top: 8px; font-size: 11px; color: #636366; line-height: 1.5; }
+.hero-progress { margin-top: 16px; position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; }
+.progress-track { flex: 1; height: 8px; border-radius: 999px; background: rgba(0,0,0,.08); overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.1); }
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #007aff, #34c759); width: 62%; transition: width .5s ease; }
+.progress-text { font-size: 11px; color: #8e8e93; white-space: nowrap; }
+
+/* ── Controls bar ── */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.1);
+  background: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  color: #636366;
+  cursor: pointer;
+  transition: all .13s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.chip:hover { border-color: rgba(0,122,255,.3); color: #007aff; }
+.chip.active { background: #007aff; border-color: #007aff; color: #fff; box-shadow: 0 2px 8px rgba(0,122,255,.28); }
+.chip.active.rookie { background: #34c759; border-color: #34c759; box-shadow: 0 2px 8px rgba(52,199,89,.28); }
+.chip.active.pro    { background: #007aff; border-color: #007aff; }
+.chip.active.expert { background: #af52de; border-color: #af52de; box-shadow: 0 2px 8px rgba(175,82,222,.28); }
+.divider { width: 1px; height: 24px; background: rgba(0,0,0,.08); flex-shrink: 0; }
+
+/* ── Section headers ── */
+.ach-section { display: flex; flex-direction: column; gap: 16px; }
+.ach-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(0,0,0,.06);
+}
+.ach-section-icon {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.ach-section-title { font-size: 17px; font-weight: 800; letter-spacing: -.3px; flex: 1; color: #111; }
+.ach-section-desc { font-size: 11px; color: #aeaeb2; margin-top: 2px; }
+.ach-section-meta {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8e8e93;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.04);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* ── Tier blocks ── */
+.tier-block { display: flex; flex-direction: column; gap: 12px; }
+.tier-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+.tier-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.tier-title { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.tier-desc { font-size: 11px; color: #8e8e93; }
+.tier-count { margin-left: auto; font-size: 11px; font-weight: 700; }
+
+/* ── Achievement Grid ── */
+.ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  gap: 14px;
+}
+
+/* ── ACHIEVEMENT CARDS — LIGHT 3D ── */
+.ach-card {
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .22s;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.ach-card:hover {
+  transform: translateY(-5px) scale(1.018);
+}
+
+/* Rarity card backgrounds — light tints */
+.r-common    { background: linear-gradient(160deg, #f8f8fa 0%, #f0f0f5 100%); }
+.r-uncommon  { background: linear-gradient(160deg, #f2fbf5 0%, #e8f5ec 100%); }
+.r-rare      { background: linear-gradient(160deg, #eef4ff 0%, #e4eeff 100%); }
+.r-epic      { background: linear-gradient(160deg, #f8f0ff 0%, #f0e6ff 100%); }
+.r-legendary { background: linear-gradient(160deg, #fffcee 0%, #fff8dc 100%); }
+
+/* Rarity card box-shadows — layered 3D depth */
+.r-common {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 2px 4px rgba(0,0,0,.05),
+    0 6px 18px rgba(0,0,0,.08),
+    0 1px 2px rgba(0,0,0,.06);
+}
+.r-uncommon {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 2px 4px rgba(52,199,89,.06),
+    0 6px 20px rgba(52,199,89,.1),
+    0 1px 2px rgba(0,0,0,.05);
+}
+.r-rare {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 2px 4px rgba(0,122,255,.06),
+    0 6px 22px rgba(0,122,255,.12),
+    0 1px 2px rgba(0,0,0,.05);
+}
+.r-epic {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 2px 4px rgba(175,82,222,.07),
+    0 6px 24px rgba(175,82,222,.14),
+    0 1px 2px rgba(0,0,0,.05);
+}
+.r-legendary {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 2px 4px rgba(255,179,0,.1),
+    0 6px 28px rgba(255,179,0,.18),
+    0 1px 2px rgba(0,0,0,.05);
+  border-color: rgba(255,179,0,.2);
+}
+
+/* Earned lifted glow */
+.ach-card.earned.r-common    { box-shadow: 0 1px 0 rgba(255,255,255,.95) inset, 0 4px 6px rgba(0,0,0,.04), 0 10px 32px rgba(142,142,147,.18); border-color: rgba(142,142,147,.28); }
+.ach-card.earned.r-uncommon  { box-shadow: 0 1px 0 rgba(255,255,255,.95) inset, 0 4px 6px rgba(52,199,89,.06), 0 10px 36px rgba(52,199,89,.2); border-color: rgba(52,199,89,.3); }
+.ach-card.earned.r-rare      { box-shadow: 0 1px 0 rgba(255,255,255,.95) inset, 0 4px 6px rgba(0,122,255,.07), 0 10px 40px rgba(0,122,255,.22); border-color: rgba(0,122,255,.32); }
+.ach-card.earned.r-epic      { box-shadow: 0 1px 0 rgba(255,255,255,.95) inset, 0 4px 6px rgba(175,82,222,.08), 0 10px 44px rgba(175,82,222,.24); border-color: rgba(175,82,222,.36); }
+.ach-card.earned.r-legendary { box-shadow: 0 1px 0 rgba(255,255,255,.95) inset, 0 4px 8px rgba(255,179,0,.12), 0 12px 50px rgba(255,179,0,.28); border-color: rgba(255,179,0,.42); }
+
+/* Locked dim */
+.ach-card.locked {
+  opacity: .52;
+  filter: saturate(.3) grayscale(.4);
+}
+.ach-card.locked:hover {
+  opacity: .68;
+  filter: saturate(.5) grayscale(.2);
+  transform: translateY(-2px);
+}
+
+/* Top color stripe */
+.ach-topbar { height: 4px; width: 100%; flex-shrink: 0; }
+.r-common    .ach-topbar { background: linear-gradient(90deg, #c7c7cc, #aeaeb2); }
+.r-uncommon  .ach-topbar { background: linear-gradient(90deg, #34c759, #28a745); }
+.r-rare      .ach-topbar { background: linear-gradient(90deg, #007aff, #0560bf); }
+.r-epic      .ach-topbar { background: linear-gradient(90deg, #af52de, #8a30c8); }
+.r-legendary .ach-topbar { background: linear-gradient(90deg, #ffcc00, #ff9500, #ffcc00); background-size: 200% 100%; animation: lgStripe 2.8s ease infinite; }
+@keyframes lgStripe { 0% { background-position: 0% center } 100% { background-position: 200% center } }
+
+/* Legendary shimmer */
+.ach-card.earned.r-legendary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(108deg, transparent 30%, rgba(255,200,0,.06) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: lgSweep 3.2s linear infinite;
+  pointer-events: none;
+  border-radius: 17px;
+  z-index: 0;
+}
+@keyframes lgSweep { 0% { background-position: -200% center } 100% { background-position: 200% center } }
+
+/* Icon area */
+.ach-icon-wrap { display: flex; justify-content: center; padding: 22px 0 14px; position: relative; z-index: 1; }
+.ach-icon-bg {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  transition: transform .16s, box-shadow .2s;
+}
+.ach-card:hover .ach-icon-bg { transform: scale(1.08); }
+.ach-icon-fa { font-size: 30px; position: relative; z-index: 1; }
+
+/* Icon bg per rarity — light 3D with inner highlight + shadow */
+.r-common .ach-icon-bg {
+  background: linear-gradient(160deg, #f5f5f7, #e8e8ed);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 0 0 2px rgba(142,142,147,.18),
+    0 6px 20px rgba(142,142,147,.18);
+}
+.r-common .ach-icon-fa { color: #8e8e93; }
+
+.r-uncommon .ach-icon-bg {
+  background: linear-gradient(160deg, #e6fced, #d4f5df);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 0 0 2px rgba(52,199,89,.22),
+    0 6px 22px rgba(52,199,89,.2);
+}
+.r-uncommon .ach-icon-fa { color: #1f8d46; }
+
+.r-rare .ach-icon-bg {
+  background: linear-gradient(160deg, #e0eeff, #cce0ff);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 0 0 2px rgba(0,122,255,.22),
+    0 6px 24px rgba(0,122,255,.2);
+}
+.r-rare .ach-icon-fa { color: #007aff; }
+
+.r-epic .ach-icon-bg {
+  background: linear-gradient(160deg, #f0e0ff, #e4ccff);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 0 0 2px rgba(175,82,222,.26),
+    0 6px 28px rgba(175,82,222,.22);
+}
+.r-epic .ach-icon-fa { color: #9b30c8; }
+
+.r-legendary .ach-icon-bg {
+  background: linear-gradient(160deg, #fff8cc, #ffecaa);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 0 0 2px rgba(255,179,0,.32),
+    0 6px 32px rgba(255,179,0,.26);
+}
+.r-legendary .ach-icon-fa { color: #cc8800; }
+
+/* Earned checkmark */
+.ach-earned-check {
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #34c759;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  color: #fff;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(52,199,89,.4);
+  border: 2px solid #fff;
+}
+
+/* Card body */
+.ach-card-body { padding: 0 13px 13px; display: flex; flex-direction: column; gap: 7px; flex: 1; position: relative; z-index: 1; }
+.ach-card-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 22px; }
+.ach-rarity-stars { display: flex; gap: 2px; align-items: center; }
+
+/* State badges */
+.ach-card-state {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.state-earned { background: rgba(52,199,89,.12); color: #1f8d46; border: 1px solid rgba(52,199,89,.25); }
+.state-action { background: rgba(0,122,255,.1); color: #0066d0; border: 1px solid rgba(0,122,255,.2); }
+.state-locked { background: rgba(0,0,0,.05); color: #aeaeb2; border: 1px solid rgba(0,0,0,.08); }
+
+/* Card text */
+.ach-card-name { font-size: 13px; font-weight: 800; line-height: 1.3; color: #1c1c1e; }
+.ach-card.locked .ach-card-name { color: #aeaeb2; }
+.ach-card-desc { font-size: 11px; color: #6e6e7a; line-height: 1.55; }
+.ach-card.locked .ach-card-desc { color: #c7c7cc; }
+.ach-card-hint { font-size: 10px; color: #aeaeb2; line-height: 1.5; font-style: italic; }
+
+/* Footer */
+.ach-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+.ach-xp-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.r-common    .ach-xp-badge { background: rgba(142,142,147,.12); color: #636366; }
+.r-uncommon  .ach-xp-badge { background: rgba(52,199,89,.12); color: #1f8d46; }
+.r-rare      .ach-xp-badge { background: rgba(0,122,255,.1); color: #0066d0; }
+.r-epic      .ach-xp-badge { background: rgba(175,82,222,.1); color: #8a30c8; }
+.r-legendary .ach-xp-badge { background: rgba(255,179,0,.14); color: #996600; }
+
+.ach-tier-pill {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+/* Rarity category tag */
+.ach-cat-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.08);
+  color: #8e8e93;
+  background: rgba(0,0,0,.04);
+}
+
+/* ── Trophy case ── */
+.trophy-case {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 2px 8px rgba(0,0,0,.05), 0 6px 20px rgba(0,0,0,.06);
+}
+.trophy-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.trophy-title { font-size: 15px; font-weight: 800; letter-spacing: -.2px; flex: 1; color: #111; }
+.trophy-sub { font-size: 11px; color: #aeaeb2; }
+.trophy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.trophy-card {
+  border-radius: 14px;
+  padding: 13px 12px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-height: 110px;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.trophy-card.r-common    { background: linear-gradient(160deg, #f8f8fa, #f0f0f5); }
+.trophy-card.r-uncommon  { background: linear-gradient(160deg, #f2fbf5, #e4f5ea); border-color: rgba(52,199,89,.2); box-shadow: 0 2px 10px rgba(52,199,89,.1); }
+.trophy-card.r-rare      { background: linear-gradient(160deg, #eef4ff, #e2edff); border-color: rgba(0,122,255,.2); box-shadow: 0 2px 12px rgba(0,122,255,.1); }
+.trophy-card.r-epic      { background: linear-gradient(160deg, #f8f0ff, #eee0ff); border-color: rgba(175,82,222,.2); box-shadow: 0 2px 14px rgba(175,82,222,.12); }
+.trophy-card.r-legendary { background: linear-gradient(160deg, #fffcee, #fff5cc); border-color: rgba(255,179,0,.3); box-shadow: 0 2px 16px rgba(255,179,0,.16); }
+.trophy-icon { font-size: 22px; line-height: 1; }
+.trophy-card.r-common    .trophy-icon { color: #8e8e93; }
+.trophy-card.r-uncommon  .trophy-icon { color: #1f8d46; }
+.trophy-card.r-rare      .trophy-icon { color: #007aff; }
+.trophy-card.r-epic      .trophy-icon { color: #9b30c8; }
+.trophy-card.r-legendary .trophy-icon { color: #cc8800; }
+.trophy-name { font-size: 11px; font-weight: 800; line-height: 1.3; color: #1c1c1e; }
+.trophy-meta { display: flex; justify-content: space-between; gap: 4px; align-items: center; margin-top: auto; }
+.trophy-rarity { font-size: 9px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #c7c7cc; }
+.trophy-xp { font-size: 10px; font-weight: 700; color: #aeaeb2; }
+
+/* ── Section wrapper ── */
+.section-wrap { display: flex; flex-direction: column; gap: 20px; }
+.section-block { display: flex; flex-direction: column; gap: 14px; }
+
+/* ── NEW badge ── */
+.new-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255,45,85,.12);
+  color: #cc1f42;
+  border: 1px solid rgba(255,45,85,.2);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+@media (max-width: 640px) {
+  .ach-grid { grid-template-columns: 1fr; }
+  .hero-inner { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-kicker">Milestones &amp; Momentum</div>
+        <div class="hero-title">Award achievements to the team.</div>
+        <div class="hero-copy">Click any locked card to award it. Click an earned card to remove it. Awarded achievements appear in the individual's gallery and on their dashboard.</div>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel-label">Currently Viewing</div>
+        <div class="hero-panel-name">Alex Rivera</div>
+        <div class="hero-panel-role">Implementation Specialist</div>
+        <div class="hero-panel-meta"><i class="fa-solid fa-chart-line"></i> Level 4 | Reliable Operator<br>11 of 46 earned | #2 team rank</div>
+      </div>
+    </div>
+    <div class="hero-progress">
+      <div class="progress-track"><div class="progress-fill" style="width:62%"></div></div>
+      <div class="progress-text">1,240 XP | 460 to Level 5</div>
+    </div>
+  </div>
+
+  <!-- TROPHY CASE -->
+  <div class="trophy-case">
+    <div class="trophy-head">
+      <div class="trophy-title"><i class="fa-solid fa-trophy"></i> Trophy Case</div>
+      <div class="trophy-sub">6 earned | 1,060 XP | strongest: Workflow</div>
+    </div>
+    <div class="trophy-grid">
+      <div class="trophy-card r-common">
+        <div class="trophy-icon"><i class="fa-solid fa-door-open"></i></div>
+        <div class="trophy-name">Welcome to the Portal</div>
+        <div class="trophy-meta"><span class="trophy-rarity">common</span><span class="trophy-xp">+40 XP</span></div>
+      </div>
+      <div class="trophy-card r-uncommon">
+        <div class="trophy-icon"><i class="fa-solid fa-route"></i></div>
+        <div class="trophy-name">First Walkthrough</div>
+        <div class="trophy-meta"><span class="trophy-rarity">uncommon</span><span class="trophy-xp">+80 XP</span></div>
+      </div>
+      <div class="trophy-card r-rare">
+        <div class="trophy-icon"><i class="fa-solid fa-house-chimney-check"></i></div>
+        <div class="trophy-name">Full House</div>
+        <div class="trophy-meta"><span class="trophy-rarity">rare</span><span class="trophy-xp">+150 XP</span></div>
+      </div>
+      <div class="trophy-card r-uncommon">
+        <div class="trophy-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+        <div class="trophy-name">Payroll Pioneer</div>
+        <div class="trophy-meta"><span class="trophy-rarity">uncommon</span><span class="trophy-xp">+80 XP</span></div>
+      </div>
+      <div class="trophy-card r-uncommon">
+        <div class="trophy-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+        <div class="trophy-name">Balance Verified</div>
+        <div class="trophy-meta"><span class="trophy-rarity">uncommon</span><span class="trophy-xp">+80 XP</span></div>
+      </div>
+      <div class="trophy-card r-rare">
+        <div class="trophy-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <div class="trophy-name">Zero Defect</div>
+        <div class="trophy-meta"><span class="trophy-rarity">rare</span><span class="trophy-xp">+150 XP</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER CONTROLS -->
+  <div class="controls">
+    <div class="chip-row">
+      <button class="chip active">All</button>
+      <button class="chip">Earned</button>
+      <button class="chip">Locked</button>
+    </div>
+    <div class="divider"></div>
+    <div class="chip-row">
+      <button class="chip active">All Tiers</button>
+      <button class="chip rookie"><i class="fa-solid fa-seedling"></i> Rookie</button>
+      <button class="chip pro"><i class="fa-solid fa-chart-line"></i> Pro</button>
+      <button class="chip expert"><i class="fa-solid fa-crown"></i> Expert</button>
+    </div>
+    <div class="divider"></div>
+    <div class="chip-row">
+      <button class="chip active">All Categories</button>
+      <button class="chip"><i class="fa-solid fa-door-open"></i> Onboarding</button>
+      <button class="chip"><i class="fa-solid fa-gears"></i> Workflow</button>
+      <button class="chip"><i class="fa-solid fa-chart-bar"></i> Data Quality</button>
+      <button class="chip"><i class="fa-solid fa-wrench"></i> Tools</button>
+      <button class="chip"><i class="fa-solid fa-users"></i> Team</button>
+      <button class="chip"><i class="fa-solid fa-trophy"></i> Milestones</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ONBOARDING ═══════════════ -->
+  <div class="section-block">
+    <div class="ach-section-header">
+      <div class="ach-section-icon" style="color:#34c759"><i class="fa-solid fa-door-open"></i></div>
+      <div>
+        <div class="ach-section-title">Onboarding</div>
+        <div class="ach-section-desc">First-system wins, orientation, and early confidence builders.</div>
+      </div>
+      <div class="ach-section-meta">3/7 earned</div>
+    </div>
+
+    <!-- Rookie tier -->
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(52,199,89,.07)">
+        <div class="tier-dot" style="background:#34c759"></div>
+        <div class="tier-title" style="color:#1f8d46">Rookie</div>
+        <div class="tier-desc">Early proof points and onboarding wins.</div>
+        <div class="tier-count" style="color:#1f8d46">3/5</div>
+      </div>
+      <div class="ach-grid">
+
+        <!-- EARNED -->
+        <article class="ach-card r-common earned">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-door-open ach-icon-fa"></i>
+              <div class="ach-earned-check"><i class="fa-solid fa-check"></i></div>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★<span style="color:#c7c7cc">★★★★</span></div>
+              <div class="ach-card-state state-earned"><i class="fa-solid fa-circle-check"></i> Earned</div>
+            </div>
+            <div class="ach-card-name">Welcome to the Portal</div>
+            <div class="ach-card-desc">Accessed the team portal and started working from the shared home base.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +40 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- EARNED -->
+        <article class="ach-card r-uncommon earned">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-route ach-icon-fa"></i>
+              <div class="ach-earned-check"><i class="fa-solid fa-check"></i></div>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#34c759">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-earned"><i class="fa-solid fa-circle-check"></i> Earned</div>
+            </div>
+            <div class="ach-card-name">First Walkthrough</div>
+            <div class="ach-card-desc">Completed one full walkthrough from start to finish without dropping out halfway.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- EARNED -->
+        <article class="ach-card r-common earned">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-file-lines ach-icon-fa"></i>
+              <div class="ach-earned-check"><i class="fa-solid fa-check"></i></div>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★<span style="color:#c7c7cc">★★★★</span></div>
+              <div class="ach-card-state state-earned"><i class="fa-solid fa-circle-check"></i> Earned</div>
+            </div>
+            <div class="ach-card-name">Template Grabber</div>
+            <div class="ach-card-desc">Pulled the correct template for a live task without needing someone else to find it.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +40 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- LOCKED -->
+        <article class="ach-card r-uncommon locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-sitemap ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Org Navigator</div>
+            <div class="ach-card-desc">Found the right escalation contact using the org structure instead of guessing.</div>
+            <div class="ach-card-hint">Good onboarding means knowing who to pull in.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- LOCKED -->
+        <article class="ach-card r-common locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-magnifying-glass ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★<span style="color:#c7c7cc">★★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Search Sleuth</div>
+            <div class="ach-card-desc">Used search or linked docs to find the right answer without asking for a rescue right away.</div>
+            <div class="ach-card-hint">Quiet self-sufficiency matters.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +40 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- Pro tier (Onboarding) -->
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(0,122,255,.06)">
+        <div class="tier-dot" style="background:#007aff"></div>
+        <div class="tier-title" style="color:#0066d0">Pro</div>
+        <div class="tier-desc">Solid repeatable execution on real work.</div>
+        <div class="tier-count" style="color:#0066d0">0/1</div>
+      </div>
+      <div class="ach-grid">
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-house-chimney-check ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Full House</div>
+            <div class="ach-card-desc">Visited the major operating sections, used search, and completed at least one key onboarding action in the same week.</div>
+            <div class="ach-card-hint">A real "I know where things live now" moment.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ WORKFLOW ═══════════════ -->
+  <div class="section-block">
+    <div class="ach-section-header">
+      <div class="ach-section-icon" style="color:#007aff"><i class="fa-solid fa-gears"></i></div>
+      <div>
+        <div class="ach-section-title">Workflow</div>
+        <div class="ach-section-desc">Core implementation flows, deadlines, and process execution.</div>
+      </div>
+      <div class="ach-section-meta">2/9 earned</div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(52,199,89,.07)">
+        <div class="tier-dot" style="background:#34c759"></div>
+        <div class="tier-title" style="color:#1f8d46">Rookie</div>
+        <div class="tier-desc">Early proof points.</div>
+        <div class="tier-count" style="color:#1f8d46">2/4</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-uncommon earned">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-money-bill-wave ach-icon-fa"></i>
+              <div class="ach-earned-check"><i class="fa-solid fa-check"></i></div>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#34c759">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-earned"><i class="fa-solid fa-circle-check"></i> Earned</div>
+            </div>
+            <div class="ach-card-name">Payroll Pioneer</div>
+            <div class="ach-card-desc">Completed a payroll integration flow from setup through the key decision points with the right supporting notes.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-uncommon locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-arrow-right-arrow-left ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">TIK Tracker</div>
+            <div class="ach-card-desc">Worked through a re-registration or transfer workflow with deadlines, dependencies, and checks all accounted for.</div>
+            <div class="ach-card-hint">Good process handling under moving parts.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-uncommon locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-paper-plane ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Clean Handoff</div>
+            <div class="ach-card-desc">Passed work to the next owner with enough clarity that no avoidable follow-up questions came back.</div>
+            <div class="ach-card-hint">A clean handoff saves invisible hours.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NEW -->
+        <article class="ach-card r-uncommon locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-forward-fast ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Ahead of the Curve <span class="new-badge">New</span></div>
+            <div class="ach-card-desc">Completed a deadline-sensitive workflow step early enough that the next owner had breathing room.</div>
+            <div class="ach-card-hint">Buffer time is a gift. Creating it is a skill.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(0,122,255,.06)">
+        <div class="tier-dot" style="background:#007aff"></div>
+        <div class="tier-title" style="color:#0066d0">Pro</div>
+        <div class="tier-desc">Solid repeatable execution on real work.</div>
+        <div class="tier-count" style="color:#0066d0">0/3</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-flag-checkered ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Live Run Ready</div>
+            <div class="ach-card-desc">Reached the live-run scheduling stage with prep work, dependencies, and timing clean enough to move confidently.</div>
+            <div class="ach-card-hint">This is where process discipline starts to show.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-clock ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Timeline Guard</div>
+            <div class="ach-card-desc">Caught a timing risk early enough to prevent a real delay and adjusted the plan before it turned messy.</div>
+            <div class="ach-card-hint">Proactive beats heroic every time.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-handshake ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Expectation Setter</div>
+            <div class="ach-card-desc">Set a realistic expectation with a client or partner early enough that the work stayed calm and aligned.</div>
+            <div class="ach-card-hint">Half of project success is expectation control.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(175,82,222,.06)">
+        <div class="tier-dot" style="background:#af52de"></div>
+        <div class="tier-title" style="color:#8a30c8">Expert</div>
+        <div class="tier-desc">Leadership, mastery, and standout impact.</div>
+        <div class="tier-count" style="color:#8a30c8">0/1</div>
+      </div>
+      <div class="ach-grid">
+        <article class="ach-card r-epic locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-layer-group ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#af52de">★★★★<span style="color:#c7c7cc">★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">The Full Seven</div>
+            <div class="ach-card-desc">Completed the full set of major walkthroughs and can navigate the operating suite without hand-holding.</div>
+            <div class="ach-card-hint">A broad workflow coverage milestone.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +260 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(175,82,222,.1);color:#8a30c8">Expert</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DATA QUALITY ═══════════════ -->
+  <div class="section-block">
+    <div class="ach-section-header">
+      <div class="ach-section-icon" style="color:#32ade6"><i class="fa-solid fa-chart-bar"></i></div>
+      <div>
+        <div class="ach-section-title">Data Quality</div>
+        <div class="ach-section-desc">Validation, balance work, reconciliation, and file discipline.</div>
+      </div>
+      <div class="ach-section-meta">2/9 earned</div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(52,199,89,.07)">
+        <div class="tier-dot" style="background:#34c759"></div>
+        <div class="tier-title" style="color:#1f8d46">Rookie</div>
+        <div class="tier-desc">Early proof points.</div>
+        <div class="tier-count" style="color:#1f8d46">0/2</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-common locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-circle-check ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★<span style="color:#c7c7cc">★★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Clean First Pass</div>
+            <div class="ach-card-desc">Submitted a file or data package that passed the first real review without avoidable formatting misses.</div>
+            <div class="ach-card-hint">Clean input saves everybody time.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +40 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-common locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-calendar-check ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★<span style="color:#c7c7cc">★★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Date Whisperer</div>
+            <div class="ach-card-desc">Handled date formatting and field prep correctly across a live file without revision for formatting errors.</div>
+            <div class="ach-card-hint">Tiny detail, big downstream effect.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +40 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(0,122,255,.06)">
+        <div class="tier-dot" style="background:#007aff"></div>
+        <div class="tier-title" style="color:#0066d0">Pro</div>
+        <div class="tier-desc">Solid repeatable execution on real work.</div>
+        <div class="tier-count" style="color:#0066d0">2/4</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-uncommon earned">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-scale-balanced ach-icon-fa"></i>
+              <div class="ach-earned-check"><i class="fa-solid fa-check"></i></div>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#34c759">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-earned"><i class="fa-solid fa-circle-check"></i> Earned</div>
+            </div>
+            <div class="ach-card-name">Balance Verified</div>
+            <div class="ach-card-desc">Prepared or checked a balance-related work item with totals, mapping, and follow-through all reconciled.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-uncommon locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-signal ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Reconciliation Radar</div>
+            <div class="ach-card-desc">Spotted a mismatch before submission and closed the loop with clean reconciliation notes.</div>
+            <div class="ach-card-hint">Catch it before it becomes someone else's fire.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-rare earned">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-bullseye ach-icon-fa"></i>
+              <div class="ach-earned-check"><i class="fa-solid fa-check"></i></div>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-earned"><i class="fa-solid fa-circle-check"></i> Earned</div>
+            </div>
+            <div class="ach-card-name">Zero Defect</div>
+            <div class="ach-card-desc">Finished a meaningful implementation segment with no validation errors or preventable data cleanup coming back.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-users ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Census Whisperer</div>
+            <div class="ach-card-desc">Took a rough census file and turned it into a usable, structured input with fewer review comments than expected.</div>
+            <div class="ach-card-hint">Messy files are where trust gets built.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(175,82,222,.06)">
+        <div class="tier-dot" style="background:#af52de"></div>
+        <div class="tier-title" style="color:#8a30c8">Expert</div>
+        <div class="tier-desc">Leadership, mastery, and standout impact.</div>
+        <div class="tier-count" style="color:#8a30c8">0/3</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-epic locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-robot ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#af52de">★★★★<span style="color:#c7c7cc">★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Power Query Pathfinder</div>
+            <div class="ach-card-desc">Built or adapted a transformation flow that removed a real manual cleanup step from repeat work.</div>
+            <div class="ach-card-hint">Automation that actually sticks is rare in the best way.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +260 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(175,82,222,.1);color:#8a30c8">Expert</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-epic locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-star ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#af52de">★★★★<span style="color:#c7c7cc">★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Perfect Record</div>
+            <div class="ach-card-desc">Put together several consecutive clean submissions or data packages with zero avoidable validation defects.</div>
+            <div class="ach-card-hint">Consistency, not just one good day.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +260 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(175,82,222,.1);color:#8a30c8">Expert</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NEW -->
+        <article class="ach-card r-epic locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-microscope ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#af52de">★★★★<span style="color:#c7c7cc">★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Under the Microscope <span class="new-badge">New</span></div>
+            <div class="ach-card-desc">Completed a high-stakes data review with no errors found on second look — passed scrutiny without a single revision round.</div>
+            <div class="ach-card-hint">When the stakes go up, the standard has to hold.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +260 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(175,82,222,.1);color:#8a30c8">Expert</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TEAM CONTRIBUTION ═══════════════ -->
+  <div class="section-block">
+    <div class="ach-section-header">
+      <div class="ach-section-icon" style="color:#ff2d55"><i class="fa-solid fa-users"></i></div>
+      <div>
+        <div class="ach-section-title">Team Contribution</div>
+        <div class="ach-section-desc">Mentoring, feedback, documentation, and collaboration.</div>
+      </div>
+      <div class="ach-section-meta">0/9 earned</div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(52,199,89,.07)">
+        <div class="tier-dot" style="background:#34c759"></div>
+        <div class="tier-title" style="color:#1f8d46">Rookie</div>
+        <div class="tier-desc">Early proof points.</div>
+        <div class="tier-count" style="color:#1f8d46">0/3</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-common locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-comment-dots ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★<span style="color:#c7c7cc">★★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">First Feedback</div>
+            <div class="ach-card-desc">Submitted a bug, improvement, or process note that could make the team's operating system better.</div>
+            <div class="ach-card-hint">Healthy teams get better because people speak up.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +40 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-uncommon locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-lightbulb ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Bright Idea</div>
+            <div class="ach-card-desc">Suggested a practical improvement that clearly addressed a real workflow annoyance or bottleneck.</div>
+            <div class="ach-card-hint">Not every great contribution is a big project.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NEW -->
+        <article class="ach-card r-uncommon locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-handshake-angle ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars">★★<span style="color:#c7c7cc">★★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">First Assist <span class="new-badge">New</span></div>
+            <div class="ach-card-desc">Stepped in to help a teammate who was stuck — answered the question, shared the resource, or pointed them in the right direction.</div>
+            <div class="ach-card-hint">Small helps compound into real team trust.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +80 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(52,199,89,.1);color:#1f8d46">Rookie</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(0,122,255,.06)">
+        <div class="tier-dot" style="background:#007aff"></div>
+        <div class="tier-title" style="color:#0066d0">Pro</div>
+        <div class="tier-desc">Solid repeatable execution on real work.</div>
+        <div class="tier-count" style="color:#0066d0">0/4</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-graduation-cap ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Mentor Mode</div>
+            <div class="ach-card-desc">Walked a teammate or newer hire through a workflow with enough clarity that they could repeat it on their own.</div>
+            <div class="ach-card-hint">That's real leverage.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-phone ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Calm Escalation</div>
+            <div class="ach-card-desc">Escalated a real issue with the right context, the right tone, and enough prep that the next step was obvious.</div>
+            <div class="ach-card-hint">Good escalation is a skill, not a panic move.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NEW -->
+        <article class="ach-card r-rare locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-microphone-lines ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#007aff">★★★<span style="color:#c7c7cc">★★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Voice in the Room <span class="new-badge">New</span></div>
+            <div class="ach-card-desc">Contributed a clear, well-timed input during a team discussion that changed the direction of a decision for the better.</div>
+            <div class="ach-card-hint">Speaking up at the right moment is its own skill.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +150 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(0,122,255,.1);color:#0066d0">Pro</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ BIG MILESTONES ═══════════════ -->
+  <div class="section-block">
+    <div class="ach-section-header">
+      <div class="ach-section-icon" style="color:#b8860b"><i class="fa-solid fa-trophy"></i></div>
+      <div>
+        <div class="ach-section-title">Big Milestones</div>
+        <div class="ach-section-desc">High-trust work and longer-horizon standout accomplishments.</div>
+      </div>
+      <div class="ach-section-meta">0/9 earned</div>
+    </div>
+
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(175,82,222,.06)">
+        <div class="tier-dot" style="background:#af52de"></div>
+        <div class="tier-title" style="color:#8a30c8">Expert</div>
+        <div class="tier-desc">Leadership, mastery, and standout impact.</div>
+        <div class="tier-count" style="color:#8a30c8">0/4</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-epic locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-chart-line ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#af52de">★★★★<span style="color:#c7c7cc">★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Data Consultant</div>
+            <div class="ach-card-desc">Completed a meaningful end-to-end implementation path with intake, setup, data work, and launch coordination all holding together.</div>
+            <div class="ach-card-hint">One of the first "you can really trust this person" milestones.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +260 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(175,82,222,.1);color:#8a30c8">Expert</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-epic locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-file-shield ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#af52de">★★★★<span style="color:#c7c7cc">★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Audit-Ready Run</div>
+            <div class="ach-card-desc">Worked through a stretch of assignments with documentation, controls, and supporting detail clean enough to stand up to scrutiny.</div>
+            <div class="ach-card-hint">This is the kind of reliability managers notice fast.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +260 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(175,82,222,.1);color:#8a30c8">Expert</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NEW -->
+        <article class="ach-card r-epic locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-tower-broadcast ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#af52de">★★★★<span style="color:#c7c7cc">★</span></div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Cornerstone <span class="new-badge">New</span></div>
+            <div class="ach-card-desc">Became the go-to person for a critical recurring process — the one others check with before they move.</div>
+            <div class="ach-card-hint">Becoming the reference point is a real milestone.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +260 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(175,82,222,.1);color:#8a30c8">Expert</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- Legendary tier -->
+    <div class="tier-block">
+      <div class="tier-head" style="background:rgba(255,179,0,.07)">
+        <div class="tier-dot" style="background:#ffcc00"></div>
+        <div class="tier-title" style="color:#996600">Legendary</div>
+        <div class="tier-desc">Reserved for standout, long-run achievement.</div>
+        <div class="tier-count" style="color:#996600">0/5</div>
+      </div>
+      <div class="ach-grid">
+
+        <article class="ach-card r-legendary locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-hands ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#cc8800">★★★★★</div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Steady Hand</div>
+            <div class="ach-card-desc">Became the person people trust to take messy work, calm it down, and move it forward without drama.</div>
+            <div class="ach-card-hint">A reputation milestone, not just a task milestone.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +420 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(255,179,0,.14);color:#996600">Legendary</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-legendary locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-gem ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#cc8800">★★★★★</div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Error Zero Season</div>
+            <div class="ach-card-desc">Worked through an extended stretch with clean output, strong controls, and no avoidable validation or process misses.</div>
+            <div class="ach-card-hint">That is hard. It should feel hard.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +420 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(255,179,0,.14);color:#996600">Legendary</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-legendary locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-map-location-dot ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#cc8800">★★★★★</div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">Full Journey</div>
+            <div class="ach-card-desc">Demonstrated broad competence across the major operating paths, tools, and workflow types that matter for the role.</div>
+            <div class="ach-card-hint">Range plus consistency.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +420 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(255,179,0,.14);color:#996600">Legendary</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NEW -->
+        <article class="ach-card r-legendary locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-shield-halved ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#cc8800">★★★★★</div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">The Standard <span class="new-badge">New</span></div>
+            <div class="ach-card-desc">Worked at a level that quietly raised what the team expected from everyone — not through pressure, but through example.</div>
+            <div class="ach-card-hint">The rarest kind of influence. Reserved for those who earn it without asking for it.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +420 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(255,179,0,.14);color:#996600">Legendary</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ach-card r-legendary locked">
+          <div class="ach-topbar"></div>
+          <div class="ach-icon-wrap">
+            <div class="ach-icon-bg">
+              <i class="fa-solid fa-trophy ach-icon-fa"></i>
+            </div>
+          </div>
+          <div class="ach-card-body">
+            <div class="ach-card-head">
+              <div class="ach-rarity-stars" style="color:#cc8800">★★★★★</div>
+              <div class="ach-card-state state-action"><i class="fa-solid fa-gift"></i> Award</div>
+            </div>
+            <div class="ach-card-name">The GOAT</div>
+            <div class="ach-card-desc">Stacked standout performance, knowledge-sharing, and dependable execution across the board over time.</div>
+            <div class="ach-card-hint">Reserved for people who are genuinely hard to replace.</div>
+            <div class="ach-card-footer">
+              <span class="ach-xp-badge"><i class="fa-solid fa-bolt"></i> +420 XP</span>
+              <span class="ach-tier-pill" style="background:rgba(255,179,0,.14);color:#996600">Legendary</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
