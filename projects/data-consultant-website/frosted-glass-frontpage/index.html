@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Consultant Workspace | Frosted Glass Front Page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: {
+                display: ["Space Grotesk", "sans-serif"],
+                body: ["IBM Plex Sans", "sans-serif"],
+                mono: ["IBM Plex Mono", "monospace"]
+            },
+            colors: {
+                mist: {
+                    50: "#f8fbfd",
+                    100: "#eef4f8",
+                    200: "#d9e4ec",
+                    300: "#bfcddb",
+                    400: "#8ea5bc",
+                    500: "#5b7288",
+                    600: "#44566b",
+                    700: "#304052",
+                    800: "#1f2b39",
+                    900: "#111923"
+                }
+            },
+            boxShadow: {
+                glass: "0 26px 60px rgba(17,25,35,.16), 0 10px 24px rgba(17,25,35,.09)",
+                bevel: "inset 0 1px 0 rgba(255,255,255,.92), inset 0 -1px 0 rgba(148,163,184,.35), 0 22px 34px rgba(15,23,42,.12)",
+                button: "inset 0 1px 0 rgba(255,255,255,.72), 0 14px 24px rgba(15,23,42,.14)"
+            }
+        }
+    }
+};
+</script>
+<style>
+    :root{
+        color-scheme: light;
+        --graphite: #353535ff;
+        --stormy-teal: #3c6e71ff;
+        --white: #ffffffff;
+        --alabaster-grey: #d9d9d9ff;
+        --yale-blue: #284b63ff;
+        --bg-1: rgba(255,255,255,.64);
+        --bg-2: rgba(236,242,247,.52);
+        --line-soft: rgba(60, 110, 113, .13);
+        --line-strong: rgba(40, 75, 99, .24);
+        --text-strong: var(--graphite);
+        --text-muted: rgba(53, 53, 53, .76);
+        --accent: var(--stormy-teal);
+        --accent-soft: var(--yale-blue);
+        --success: var(--stormy-teal);
+        --glass-border: rgba(255,255,255,.62);
+    }
+
+    *{
+        box-sizing:border-box;
+    }
+
+    html{
+        scroll-behavior:smooth;
+    }
+
+    body{
+        min-height:100vh;
+        margin:0;
+        color:var(--text-strong);
+        font-family:"IBM Plex Sans", sans-serif;
+        background:
+            radial-gradient(circle at 12% 18%, rgba(144, 195, 222, .32), transparent 26%),
+            radial-gradient(circle at 88% 12%, rgba(217, 230, 238, .9), transparent 28%),
+            radial-gradient(circle at 80% 78%, rgba(166, 188, 206, .28), transparent 24%),
+            linear-gradient(180deg, #f9fbfc 0%, #edf2f6 44%, #e8eef3 100%);
+        position:relative;
+        overflow-x:hidden;
+    }
+
+    body::before{
+        content:"";
+        position:fixed;
+        inset:0;
+        pointer-events:none;
+        background:
+            repeating-linear-gradient(0deg, transparent 0, transparent 31px, var(--line-soft) 31px, var(--line-soft) 32px),
+            repeating-linear-gradient(90deg, transparent 0, transparent 31px, var(--line-soft) 31px, var(--line-soft) 32px),
+            linear-gradient(180deg, rgba(255,255,255,.46), rgba(255,255,255,.08));
+        opacity:.95;
+    }
+
+    body::after{
+        content:"";
+        position:fixed;
+        inset:0;
+        pointer-events:none;
+        background:
+            linear-gradient(135deg, rgba(255,255,255,.54), transparent 38%),
+            radial-gradient(circle at center, rgba(255,255,255,.16), transparent 58%);
+        mix-blend-mode:screen;
+    }
+
+    .ambient-svg{
+        position:fixed;
+        inset:0;
+        width:100%;
+        height:100%;
+        pointer-events:none;
+        z-index:2;
+        opacity:1;
+        mix-blend-mode:multiply;
+        filter:saturate(1.08) contrast(1.04);
+    }
+
+    .ambient-geometry{
+        transform-box:fill-box;
+        transform-origin:center;
+        animation:ambient-spin 24s linear infinite;
+    }
+
+    .ambient-geometry.reverse{
+        animation-direction:reverse;
+        animation-duration:30s;
+    }
+
+    .ambient-geometry.float{
+        animation-name:ambient-float;
+        animation-duration:12s;
+        animation-timing-function:ease-in-out;
+        animation-iteration-count:infinite;
+    }
+
+    .ambient-geometry.pulse{
+        animation-name:ambient-pulse;
+        animation-duration:8s;
+        animation-timing-function:ease-in-out;
+        animation-iteration-count:infinite;
+    }
+
+    .glass-panel{
+        background:linear-gradient(180deg, var(--bg-1), var(--bg-2));
+        border:1px solid var(--glass-border);
+        backdrop-filter:blur(24px) saturate(140%);
+        -webkit-backdrop-filter:blur(24px) saturate(140%);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.94),
+            inset 0 -1px 0 rgba(148,163,184,.28),
+            0 24px 60px rgba(15,23,42,.12),
+            0 10px 20px rgba(15,23,42,.08);
+    }
+
+    .glass-card{
+        position:relative;
+        isolation:isolate;
+        overflow:hidden;
+        transition:transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+    }
+
+    .glass-card::before{
+        content:"";
+        position:absolute;
+        inset:1px;
+        border-radius:inherit;
+        background:
+            linear-gradient(145deg, rgba(255,255,255,.55), transparent 36%),
+            radial-gradient(circle at top right, rgba(255,255,255,.35), transparent 28%);
+        pointer-events:none;
+        z-index:-1;
+    }
+
+    .glass-card:hover{
+        transform:translateY(-8px) scale(1.01);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.94),
+            inset 0 -1px 0 rgba(148,163,184,.28),
+            0 34px 70px rgba(15,23,42,.16),
+            0 18px 28px rgba(15,23,42,.10);
+    }
+
+    .glass-button{
+        --tile-face: #7aa7bc;
+        --tile-face-strong: #678ea2;
+        --tile-edge: rgba(73, 102, 122, .72);
+        --tile-floor: rgba(27, 41, 53, .14);
+        --tile-text: #f8fbff;
+        --tile-idle-top: rgba(255,255,255,.98);
+        --tile-idle-bottom: rgba(236,240,244,.98);
+        --tile-idle-text: rgba(43, 58, 72, .92);
+        position:relative;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        overflow:visible;
+        transform:skewX(-18deg);
+        transform-origin:center;
+        transition:transform .24s ease, box-shadow .24s ease, filter .24s ease, border-color .24s ease;
+        will-change:transform;
+    }
+
+    .glass-button .button-label{
+        position:relative;
+        z-index:2;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        transform:skewX(18deg);
+        color:var(--tile-idle-text);
+        transition:color .24s ease, letter-spacing .24s ease;
+    }
+
+    .glass-button .button-fill{
+        position:absolute;
+        inset:0;
+        z-index:1;
+        border-radius:inherit;
+        background:
+            linear-gradient(145deg, rgba(255,255,255,.2), transparent 38%),
+            linear-gradient(180deg, var(--tile-face), var(--tile-face-strong));
+        clip-path:inset(100% 0 0 0 round 22px);
+        transition:clip-path .3s ease;
+        pointer-events:none;
+    }
+
+    .glass-button::before,
+    .glass-button::after{
+        content:"";
+        position:absolute;
+        pointer-events:none;
+        border-radius:inherit;
+        transition:inherit;
+    }
+
+    .glass-button::before{
+        inset:0;
+        z-index:1;
+        background:
+            linear-gradient(145deg, rgba(255,255,255,.62), transparent 40%),
+            linear-gradient(180deg, var(--tile-idle-top), var(--tile-idle-bottom));
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.76),
+            inset 0 -1px 0 rgba(0,0,0,.08);
+    }
+
+    .glass-button::after{
+        top:100%;
+        left:12px;
+        right:-4px;
+        height:12px;
+        z-index:0;
+        border-top-left-radius:0;
+        background:linear-gradient(180deg, rgba(34,48,60,.2), var(--tile-edge));
+        transform:skewX(36deg) translateY(-1px);
+        opacity:.94;
+    }
+
+    .glass-button:hover{
+        transform:translateY(-8px) skewX(-18deg);
+        filter:saturate(1.06);
+    }
+
+    .glass-button:hover .button-label{
+        color:var(--tile-text);
+        letter-spacing:.22em;
+    }
+
+    .glass-button:hover .button-fill{
+        clip-path:inset(0 0 0 0 round 22px);
+    }
+
+    .glass-button.primary-button{
+        border:1px solid rgba(255,255,255,.44);
+        background:transparent;
+        color:var(--tile-text);
+        box-shadow:
+            0 18px 0 rgba(255,255,255,.12),
+            0 24px 22px var(--tile-floor);
+    }
+
+    .glass-button.primary-button:hover{
+        box-shadow:
+            0 24px 0 rgba(255,255,255,.08),
+            0 34px 28px rgba(27,41,53,.18);
+    }
+
+    .glass-button.primary-button:active{
+        transform:translateY(-2px) skewX(-18deg);
+        box-shadow:
+            0 12px 0 rgba(255,255,255,.1),
+            0 18px 18px rgba(27,41,53,.14);
+    }
+
+    .hero-orb{
+        position:absolute;
+        border-radius:999px;
+        filter:blur(1px);
+        opacity:.7;
+        pointer-events:none;
+    }
+
+    .hero-orb.one{
+        width:180px;
+        height:180px;
+        right:4%;
+        top:-30px;
+        background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(158,196,221,.36) 52%, rgba(108,166,205,.16) 72%, transparent 100%);
+        box-shadow:inset 18px 18px 28px rgba(255,255,255,.62), inset -18px -24px 34px rgba(72,110,145,.12), 0 18px 34px rgba(72,110,145,.12);
+    }
+
+    .hero-orb.two{
+        width:120px;
+        height:120px;
+        left:-18px;
+        bottom:16px;
+        background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(200,219,232,.42) 55%, rgba(148,163,184,.16) 76%, transparent 100%);
+        box-shadow:inset 14px 14px 22px rgba(255,255,255,.58), inset -14px -18px 22px rgba(72,110,145,.10), 0 14px 28px rgba(72,110,145,.10);
+    }
+
+    .metric-chip{
+        background:linear-gradient(180deg, rgba(255,255,255,.62), rgba(233,240,245,.46));
+        border:1px solid rgba(255,255,255,.55);
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.85), inset 0 -1px 0 rgba(148,163,184,.22), 0 14px 24px rgba(15,23,42,.08);
+        backdrop-filter:blur(14px);
+    }
+
+    .focus-ring:focus-visible{
+        outline:2px solid rgba(63,127,175,.45);
+        outline-offset:3px;
+    }
+
+    @keyframes ambient-spin{
+        from{transform:rotate(0deg)}
+        to{transform:rotate(360deg)}
+    }
+
+    @keyframes ambient-float{
+        0%,100%{transform:translate3d(0,0,0) rotate(0deg)}
+        50%{transform:translate3d(0,-18px,0) rotate(6deg)}
+    }
+
+    @keyframes ambient-pulse{
+        0%,100%{transform:scale(1);opacity:.78}
+        50%{transform:scale(1.08);opacity:1}
+    }
+</style>
+</head>
+<body>
+<svg class="ambient-svg" viewBox="0 0 1600 1000" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+    <g class="ambient-geometry" opacity=".7">
+        <polygon points="-20,180 470,170 615,405 300,820 -40,680" fill="#c1ebef"></polygon>
+    </g>
+    <g class="ambient-geometry reverse" opacity=".52">
+        <polygon points="980,95 1450,120 1590,360 1190,645 900,280" fill="#d8e7f9"></polygon>
+    </g>
+    <g class="ambient-geometry" opacity=".46">
+        <polygon points="860,320 1545,720 1460,1145 760,1120 620,690" fill="#cbe0f7"></polygon>
+    </g>
+    <g class="ambient-geometry float" opacity=".68">
+        <polygon points="1070,475 1315,610 1265,900 995,930 890,650" fill="#9ccaf1"></polygon>
+    </g>
+    <g class="ambient-geometry float" opacity=".66">
+        <polygon points="675,300 790,190 935,275 910,445 730,470" fill="#a7d7e2"></polygon>
+    </g>
+    <g class="ambient-geometry reverse float" opacity=".56">
+        <polygon points="500,740 835,630 760,1000" fill="#b7d8f2"></polygon>
+    </g>
+    <g class="ambient-geometry reverse" opacity=".62">
+        <polygon points="1220,205 1335,235 1288,390" fill="#aac2dd"></polygon>
+    </g>
+    <circle class="ambient-geometry pulse" cx="360" cy="720" r="56" fill="#8fc2ef" opacity=".88"></circle>
+    <circle class="ambient-geometry pulse" cx="950" cy="245" r="24" fill="#79c7c5" opacity=".88"></circle>
+    <circle class="ambient-geometry pulse" cx="1385" cy="760" r="18" fill="#9fd4d5" opacity=".82"></circle>
+</svg>
+<div class="relative z-10">
+    <main class="mx-auto flex min-h-screen w-full max-w-[1320px] flex-col px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+        <section class="glass-panel relative overflow-hidden rounded-[34px] px-5 py-5 sm:px-7 sm:py-7 lg:px-10 lg:py-8">
+            <div class="hero-orb one"></div>
+            <div class="hero-orb two"></div>
+            <div class="relative flex flex-col gap-5">
+                <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                    <div class="max-w-3xl">
+                        <div class="mb-4 inline-flex items-center gap-3 rounded-full border border-white/60 bg-white/45 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.28em] text-mist-700 shadow-bevel">
+                            <span class="inline-block h-2 w-2 rounded-full bg-sky-500"></span>
+                            Data Consultant Workspace
+                        </div>
+                        <h1 class="max-w-4xl font-display text-4xl font-bold leading-[0.96] tracking-[-0.05em] text-slate-900 sm:text-5xl lg:text-[4.35rem]">
+                            Data Consultant Command Deck
+                        </h1>
+                        <p class="mt-4 max-w-2xl text-base leading-8 text-slate-700 sm:text-lg">
+                            One polished front page for the tools, guides, and workspaces that keep delivery moving.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel w-full max-w-[280px] rounded-[28px] p-5 shadow-glass lg:min-w-[260px]">
+                        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500">Mission</div>
+                        <p class="mt-3 text-sm leading-7 text-slate-700">
+                            Clear launches. Faster handoffs. Better visibility across implementation work.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-5">
+            <div id="tool-grid" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+        </section>
+    </main>
+</div>
+
+<script>
+const tools = [
+    {
+        code: "DC",
+        title: "Resource Library",
+        description: "Central site for documentation, walkthroughs, reference material, and the broader Data Consultant knowledge base.",
+        accent: "from-slate-500/35 via-sky-300/20 to-transparent",
+        button: { face: "#95a8b6", strong: "#7f93a1", edge: "rgba(89, 103, 116, .84)", floor: "rgba(44, 58, 70, .18)", text: "#f8fbff" },
+        primary: { label: "Launch Portal", href: "../Data_Consultant_Website_v2_10.html" }
+    },
+    {
+        code: "MC",
+        title: "Implementation Planner",
+        description: "Build project checklists, manage execution status, and coordinate delivery work across dashboard, vault, and calendar views.",
+        accent: "from-sky-500/35 via-cyan-300/25 to-transparent",
+        button: { face: "#6ebfd7", strong: "#4f9ab3", edge: "rgba(61, 110, 127, .84)", floor: "rgba(34, 79, 93, .18)", text: "#f8fbff" },
+        primary: { label: "Launch App", href: "../../../Work/Internal/Mine/Working/Apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html" }
+    },
+    {
+        code: "PY",
+        title: "Payroll Onboarding Planner",
+        description: "Handle payroll setup projects with dedicated planning, vendor coordination, and implementation task tracking.",
+        accent: "from-emerald-500/35 via-green-300/25 to-transparent",
+        button: { face: "#72c5a2", strong: "#539779", edge: "rgba(58, 95, 77, .82)", floor: "rgba(30, 73, 57, .18)", text: "#f7fffb" },
+        primary: { label: "Launch App", href: "../../../Work/Internal/Mine/Working/Apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html" }
+    },
+    {
+        code: "FX",
+        title: "Report Extraction Console",
+        description: "Parse fixed-width source files, validate source layouts, preview structured output, and export polished reporting workbooks.",
+        accent: "from-amber-500/35 via-orange-300/25 to-transparent",
+        button: { face: "#e3ad63", strong: "#c78a40", edge: "rgba(124, 80, 30, .84)", floor: "rgba(98, 63, 21, .18)", text: "#fff8ef" },
+        primary: { label: "Launch Console", href: "../../../Work/Internal/Mine/Working/Apps/fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone.html" }
+    },
+    {
+        code: "RQ",
+        title: "Project Intake Desk",
+        description: "Submit new site and app requests, capture requirements clearly, and generate a ready-to-send intake summary.",
+        accent: "from-indigo-500/35 via-violet-300/25 to-transparent",
+        button: { face: "#8b8cda", strong: "#6f70b8", edge: "rgba(78, 79, 128, .84)", floor: "rgba(50, 53, 96, .18)", text: "#fbfbff" },
+        primary: { label: "Open Form", href: "../../../Work/Internal/Mine/Working/Apps/project-intake/Project Intake Form.html" }
+    },
+    {
+        code: "AX",
+        title: "Amex Budget Tracker",
+        description: "Review spending, monitor budget movement, and keep the active planning dashboard close at hand.",
+        accent: "from-teal-500/35 via-emerald-300/25 to-transparent",
+        button: { face: "#62c2b8", strong: "#48988f", edge: "rgba(53, 102, 96, .84)", floor: "rgba(29, 74, 69, .18)", text: "#f6fffd" },
+        primary: { label: "Launch Tracker", href: "../../../Personal/amex-dashboard-budget-tracker/Actual Working Dashboard.html" }
+    },
+    {
+        code: "FM",
+        title: "Forma Workspace",
+        description: "Jump into the active Forma build, with the current shell front and center and Forma Pro available as the fallback route.",
+        accent: "from-rose-500/35 via-orange-300/25 to-transparent",
+        button: { face: "#df8c8e", strong: "#bc6b6d", edge: "rgba(124, 71, 74, .82)", floor: "rgba(97, 48, 52, .18)", text: "#fff8f8" },
+        primary: { label: "Launch App", href: "../../../Personal/forma-claude/New App/index.html" }
+    },
+    {
+        code: "AH",
+        title: "Achievement Hub",
+        description: "Track progress, earned achievements, level movement, and team momentum inside the DC hub.",
+        accent: "from-yellow-400/40 via-amber-300/25 to-transparent",
+        button: { face: "#e7bf61", strong: "#cb9f3f", edge: "rgba(129, 94, 32, .84)", floor: "rgba(98, 70, 23, .18)", text: "#fffaf0" },
+        primary: { label: "Open Hub", href: "../../../Personal/dc-achievement-hub.html" }
+    }
+];
+
+const buttonClass = "glass-button primary-button focus-ring inline-flex min-h-[56px] w-full items-center justify-center rounded-[22px] px-4 py-3 font-mono text-[11px] uppercase tracking-[0.22em]";
+
+document.getElementById("tool-grid").innerHTML = tools.map((tool) => `
+    <article class="glass-panel glass-card flex min-h-[320px] flex-col rounded-[30px] p-5 sm:min-h-[340px] sm:p-6">
+        <div class="absolute inset-0 rounded-[30px] bg-gradient-to-br ${tool.accent}"></div>
+        <div class="relative flex h-full flex-col">
+            <div class="flex items-start gap-4">
+                <div class="glass-panel flex h-16 w-16 shrink-0 items-center justify-center rounded-[22px] font-mono text-base font-semibold tracking-[0.16em] text-slate-800 shadow-bevel">
+                    ${tool.code}
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-display text-[1.65rem] font-bold leading-tight tracking-[-0.04em] text-slate-900">${tool.title}</h3>
+                    <p class="mt-3 text-sm leading-7 text-slate-700">${tool.description}</p>
+                </div>
+            </div>
+            <div class="mt-auto pb-3 pt-6">
+                <a
+                    class="${buttonClass}"
+                    href="${tool.primary.href}"
+                    style="--tile-face:${tool.button.face}; --tile-face-strong:${tool.button.strong}; --tile-edge:${tool.button.edge}; --tile-floor:${tool.button.floor}; --tile-text:${tool.button.text};"
+                ><span class="button-fill" aria-hidden="true"></span><span class="button-label">${tool.primary.label}</span></a>
+            </div>
+        </div>
+    </article>
+`).join("");
+</script>
+</body>
+</html>
