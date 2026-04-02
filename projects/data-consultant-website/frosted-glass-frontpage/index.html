@@ -272,6 +272,158 @@ tailwind.config = {
         clip-path:inset(0 0 0 0 round 22px);
     }
 
+    .theme-toggle-wrapper{
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    .toggle-switch{
+        position:relative;
+        display:inline-block;
+        width:80px;
+        height:40px;
+        transform:scale(1.02);
+        transition:transform .2s ease;
+        cursor:pointer;
+        user-select:none;
+    }
+
+    .toggle-switch:hover{
+        transform:scale(1.08);
+    }
+
+    .theme-toggle-input{
+        position:absolute;
+        opacity:0;
+        width:0;
+        height:0;
+    }
+
+    .slider{
+        position:absolute;
+        inset:0;
+        border-radius:999px;
+        background:linear-gradient(145deg, #f1c40f, #f39c12);
+        box-shadow:0 0 15px rgba(241,196,15,.35);
+        transition:.4s ease-in-out;
+        overflow:hidden;
+        border:1px solid rgba(255,255,255,.2);
+    }
+
+    .slider::before{
+        content:"";
+        position:absolute;
+        height:32px;
+        width:32px;
+        left:4px;
+        bottom:4px;
+        background:linear-gradient(180deg, #fffdf8 0%, #f4ecde 100%);
+        border-radius:50%;
+        box-shadow:0 0 10px rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.85);
+        transition:.4s ease-in-out;
+        z-index:2;
+    }
+
+    .clouds{
+        position:absolute;
+        inset:0;
+        overflow:hidden;
+        pointer-events:none;
+    }
+
+    .cloud{
+        position:absolute;
+        width:20px;
+        height:20px;
+        fill:rgba(255,255,255,.82);
+        filter:drop-shadow(0 2px 3px rgba(0,0,0,.1));
+        transition:opacity .35s ease, transform .4s ease;
+    }
+
+    .cloud1{
+        top:9px;
+        left:10px;
+        animation:floatCloud1 8s infinite linear;
+    }
+
+    .cloud2{
+        top:14px;
+        left:40px;
+        transform:scale(.8);
+        animation:floatCloud2 12s infinite linear;
+    }
+
+    .theme-toggle-input:checked + .slider{
+        background:linear-gradient(145deg, #2c3e50, #34495e);
+        box-shadow:0 0 15px rgba(44,62,80,.42);
+    }
+
+    .theme-toggle-input:checked + .slider::before{
+        transform:translateX(40px);
+    }
+
+    .theme-toggle-input:checked + .slider .cloud{
+        opacity:0;
+        transform:translateY(-20px);
+    }
+
+    .theme-toggle-thumb-icons{
+        position:absolute;
+        inset:0;
+        z-index:1;
+        pointer-events:none;
+    }
+
+    .theme-toggle-thumb-icon{
+        position:absolute;
+        top:50%;
+        transform:translateY(-50%);
+        width:13px;
+        height:13px;
+        color:rgba(255,255,255,.78);
+        transition:opacity .2s ease, color .2s ease;
+    }
+
+    .theme-toggle-sun{
+        left:10px;
+    }
+
+    .theme-toggle-moon{
+        right:10px;
+    }
+
+    .theme-toggle-input:checked + .slider .theme-toggle-sun{
+        opacity:1;
+    }
+
+    .theme-toggle-input:not(:checked) + .slider .theme-toggle-sun{
+        opacity:0;
+    }
+
+    .theme-toggle-input:checked + .slider .theme-toggle-moon{
+        opacity:0;
+    }
+
+    .theme-toggle-input:not(:checked) + .slider .theme-toggle-moon{
+        opacity:1;
+    }
+
+    .theme-toggle-label{
+        min-width:70px;
+        text-align:left;
+        letter-spacing:.01em;
+        color:#334e67;
+        font-family:"Space Grotesk", sans-serif;
+        font-size:12px;
+        font-weight:600;
+    }
+
+    .theme-toggle-wrapper:focus-within .slider{
+        outline:2px solid rgba(63,127,175,.45);
+        outline-offset:3px;
+    }
+
     .glass-button.primary-button{
         border:1px solid rgba(255,255,255,.44);
         background:transparent;
@@ -346,6 +498,94 @@ tailwind.config = {
         0%,100%{transform:scale(1);opacity:.78}
         50%{transform:scale(1.08);opacity:1}
     }
+
+    @keyframes floatCloud1{
+        0%{transform:translateX(-20px);opacity:0}
+        20%{opacity:1}
+        80%{opacity:1}
+        100%{transform:translateX(80px);opacity:0}
+    }
+
+    @keyframes floatCloud2{
+        0%{transform:translateX(-20px) scale(.8);opacity:0}
+        20%{opacity:.7}
+        80%{opacity:.7}
+        100%{transform:translateX(80px) scale(.8);opacity:0}
+    }
+
+    body[data-theme="dark"]{
+        color:#ecf3fa;
+        background:
+            radial-gradient(circle at 12% 18%, rgba(83, 130, 160, .24), transparent 26%),
+            radial-gradient(circle at 88% 12%, rgba(52, 74, 99, .42), transparent 28%),
+            radial-gradient(circle at 80% 78%, rgba(58, 85, 112, .2), transparent 24%),
+            linear-gradient(180deg, #0e1520 0%, #121c29 44%, #161f2b 100%);
+    }
+
+    body[data-theme="dark"]::before{
+        background:
+            repeating-linear-gradient(0deg, transparent 0, transparent 31px, rgba(98, 122, 150, .08) 31px, rgba(98, 122, 150, .08) 32px),
+            repeating-linear-gradient(90deg, transparent 0, transparent 31px, rgba(98, 122, 150, .08) 31px, rgba(98, 122, 150, .08) 32px),
+            linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+    }
+
+    body[data-theme="dark"]::after{
+        background:
+            linear-gradient(135deg, rgba(255,255,255,.06), transparent 38%),
+            radial-gradient(circle at center, rgba(255,255,255,.04), transparent 58%);
+    }
+
+    body[data-theme="dark"] .glass-panel{
+        background:linear-gradient(180deg, rgba(19,28,39,.74), rgba(14,21,31,.82));
+        border-color:rgba(158,176,198,.16);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.08),
+            inset 0 -1px 0 rgba(0,0,0,.32),
+            0 24px 60px rgba(0,0,0,.24),
+            0 10px 20px rgba(0,0,0,.18);
+    }
+
+    body[data-theme="dark"] .glass-card::before{
+        background:
+            linear-gradient(145deg, rgba(255,255,255,.1), transparent 36%),
+            radial-gradient(circle at top right, rgba(255,255,255,.08), transparent 28%);
+    }
+
+    body[data-theme="dark"] .glass-button.primary-button{
+        border-color:rgba(255,255,255,.18);
+        box-shadow:0 18px 0 rgba(255,255,255,.05), 0 24px 22px rgba(0,0,0,.34);
+    }
+
+    body[data-theme="dark"] .glass-button.primary-button:hover{
+        box-shadow:0 24px 0 rgba(255,255,255,.04), 0 34px 28px rgba(0,0,0,.42);
+    }
+
+    body[data-theme="dark"] .theme-toggle-label{
+        color:#dce8f3;
+    }
+
+    body[data-theme="dark"] .text-slate-900,
+    body[data-theme="dark"] .text-slate-800{
+        color:#eef5fb !important;
+    }
+
+    body[data-theme="dark"] .text-slate-700{
+        color:#c3d2df !important;
+    }
+
+    body[data-theme="dark"] .text-slate-500{
+        color:#8ea3b7 !important;
+    }
+
+    body[data-theme="dark"] .text-slate-400{
+        color:#7390a8 !important;
+    }
+
+    body[data-theme="dark"] .glass-button::before{
+        background:
+            linear-gradient(145deg, rgba(255,255,255,.1), transparent 40%),
+            linear-gradient(180deg, rgba(31,47,62,.96), rgba(20,31,45,.98));
+    }
 </style>
 </head>
 <body>
@@ -383,9 +623,45 @@ tailwind.config = {
             <div class="relative flex flex-col gap-5">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                     <div class="max-w-3xl">
-                        <div class="mb-4 inline-flex items-center gap-3 rounded-full border border-white/60 bg-white/45 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.28em] text-mist-700 shadow-bevel">
-                            <span class="inline-block h-2 w-2 rounded-full bg-sky-500"></span>
-                            Data Consultant Workspace
+                        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                            <div class="inline-flex items-center gap-3 rounded-full border border-white/60 bg-white/45 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.28em] text-mist-700 shadow-bevel">
+                                <span class="inline-block h-2 w-2 rounded-full bg-sky-500"></span>
+                                Data Consultant Workspace
+                            </div>
+                            <div class="theme-toggle-wrapper" id="themeToggleWrap">
+                                <label class="toggle-switch" for="themeToggle">
+                                    <input class="theme-toggle-input" id="themeToggle" type="checkbox" aria-label="Toggle light mode">
+                                    <span class="slider" aria-hidden="true">
+                                        <span class="clouds">
+                                            <svg viewBox="0 0 100 100" class="cloud cloud1" aria-hidden="true" focusable="false">
+                                                <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
+                                            </svg>
+                                            <svg viewBox="0 0 100 100" class="cloud cloud2" aria-hidden="true" focusable="false">
+                                                <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="theme-toggle-thumb-icons" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" class="theme-toggle-thumb-icon theme-toggle-sun" focusable="false">
+                                                <circle cx="12" cy="12" r="4.5" fill="currentColor"></circle>
+                                                <g fill="currentColor">
+                                                    <rect x="11.3" y="1.5" width="1.4" height="4" rx=".7"></rect>
+                                                    <rect x="11.3" y="18.5" width="1.4" height="4" rx=".7"></rect>
+                                                    <rect x="1.5" y="11.3" width="4" height="1.4" rx=".7"></rect>
+                                                    <rect x="18.5" y="11.3" width="4" height="1.4" rx=".7"></rect>
+                                                    <rect x="3.2" y="3.2" width="1.4" height="4" rx=".7" transform="rotate(-45 3.9 5.2)"></rect>
+                                                    <rect x="19.4" y="16.8" width="1.4" height="4" rx=".7" transform="rotate(-45 20.1 18.8)"></rect>
+                                                    <rect x="16.8" y="3.2" width="1.4" height="4" rx=".7" transform="rotate(45 17.5 5.2)"></rect>
+                                                    <rect x="3.2" y="16.8" width="1.4" height="4" rx=".7" transform="rotate(45 3.9 18.8)"></rect>
+                                                </g>
+                                            </svg>
+                                            <svg viewBox="0 0 24 24" class="theme-toggle-thumb-icon theme-toggle-moon" focusable="false">
+                                                <path d="M16.7 12.2a7.2 7.2 0 1 1-4.9-6.9 8.2 8.2 0 1 0 4.9 6.9z" fill="currentColor"></path>
+                                            </svg>
+                                        </span>
+                                    </span>
+                                </label>
+                                <span class="theme-toggle-label" id="themeToggleLabel">Light mode</span>
+                            </div>
                         </div>
                         <h1 class="max-w-4xl font-display text-4xl font-bold leading-[0.96] tracking-[-0.05em] text-slate-900 sm:text-5xl lg:text-[4.35rem]">
                             Data Consultant Command Deck
@@ -412,6 +688,43 @@ tailwind.config = {
 </div>
 
 <script>
+const THEME_STORAGE_KEY = "dc-frontpage-theme";
+
+function getPreferredTheme() {
+    try {
+        const saved = localStorage.getItem(THEME_STORAGE_KEY);
+        if (saved === "light" || saved === "dark") return saved;
+    } catch (_) {}
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+
+function syncThemeToggle(theme) {
+    const input = document.getElementById("themeToggle");
+    const label = document.getElementById("themeToggleLabel");
+    const isLight = theme === "light";
+    if (input) input.checked = isLight;
+    if (label) label.textContent = isLight ? "Light mode" : "Dark mode";
+}
+
+function applyTheme(theme) {
+    document.body.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    syncThemeToggle(theme);
+}
+
+function initTheme() {
+    applyTheme(getPreferredTheme());
+    const input = document.getElementById("themeToggle");
+    if (!input) return;
+    input.addEventListener("change", () => {
+        const nextTheme = input.checked ? "light" : "dark";
+        try {
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+        } catch (_) {}
+        applyTheme(nextTheme);
+    });
+}
+
 const tools = [
     {
         code: "DC",
@@ -504,6 +817,8 @@ document.getElementById("tool-grid").innerHTML = tools.map((tool) => `
         </div>
     </article>
 `).join("");
+
+initTheme();
 </script>
 </body>
 </html>
