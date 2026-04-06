@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pearl Atelier Hybrid</title>
+<title>Extreme Data Parser</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
 :root{--bg:linear-gradient(180deg,#dceffc,#c7e2f7);--bg-overlay:linear-gradient(rgba(255,255,255,.35) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.35) 1px, transparent 1px);--panel:rgba(244,251,255,.9);--panel-alt:#f9fdff;--text:#163040;--muted:#5c7586;--line:#a8c8dc;--line-soft:#cfe1ea;--field-bg:#fafdff;--field-line:#b8d1e0;--table-head:#e6f4fb;--chip-bg:#ecf7fd;--chip-line:#bcd7e6;--accent:#2d78a5;--hero-bg:linear-gradient(135deg,#184e73,#2c84b3);--hero-text:#f5fbff;--hero-kicker:#bfe8ff;--hero-sub:#def1fa;--glow:rgba(58,153,205,.28);--radius:14px;--shadow:0 18px 38px rgba(39,104,145,.14);--font-body:"Segoe UI",Tahoma,sans-serif;--font-display:"Segoe UI",Tahoma,sans-serif;--font-mono:Consolas,monospace;}
 *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:var(--font-body);background:var(--bg);color:var(--text)}
@@ -15,6 +16,11 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
 .hero h1{position:relative;z-index:1;margin:0 0 10px;font:700 clamp(34px,4vw,56px)/1.02 var(--font-display);letter-spacing:-.03em}.hero p{position:relative;z-index:1;max-width:760px;margin:0;color:var(--hero-sub);line-height:1.7}
 .panel{position:relative;padding:20px;background:linear-gradient(155deg,rgba(249,253,255,.54),rgba(228,241,250,.42));backdrop-filter:blur(18px) saturate(1.08);border-color:rgba(255,255,255,.46);box-shadow:0 26px 46px rgba(39,104,145,.14),inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(255,255,255,.18)}.panel::before{content:"";position:absolute;inset:1px;border-radius:calc(var(--radius) - 2px);background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.06) 58%,transparent);pointer-events:none}.section-head{display:flex;justify-content:flex-end;align-items:flex-start;gap:14px;margin-bottom:18px}.section-tag{font:700 10px/1 var(--font-mono);letter-spacing:.26em;text-transform:uppercase;color:var(--accent)} h2{margin:0;font:700 20px/1.08 var(--font-display);letter-spacing:-.02em}.panel-stack{display:grid;gap:18px}
 .field-block{display:flex;flex-direction:column;gap:10px}.field-block label{font-weight:700} input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--field-line);border-radius:14px;background:var(--field-bg);color:var(--text);font:500 14px/1.4 var(--font-mono)}
+.icon-input-row{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:0 14px;border:1px solid var(--field-line);border-radius:14px;background:var(--field-bg);box-shadow:inset 0 1px 0 rgba(255,255,255,.82)}
+.icon-input-row input{width:100%;padding:12px 0 !important;border:0 !important;background:transparent !important;border-radius:0 !important;box-shadow:none !important;outline:none !important;appearance:none;min-width:0}
+.icon-input-row input:focus{border:0 !important;box-shadow:none !important;outline:none !important}
+.field-icon{display:flex;align-items:center;justify-content:center;width:28px;color:var(--accent);opacity:.72;font-size:14px;line-height:1}
+.icon-input-row:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.1), inset 0 1px 0 rgba(255,255,255,.82)}
 .source-select-native{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;padding:0;border:0}
 .source-card-select{position:relative;z-index:40;isolation:isolate;width:100%;min-height:108px;--source-accent:#2f7eae;--source-accent-soft:rgba(47,126,174,.18);--source-accent-strong:#58a8d1;--source-glass-top:rgba(250,253,255,.82);--source-glass-bottom:rgba(228,242,251,.72)}
 .source-card-trigger{width:100%;min-height:108px;padding:0;border:0;background:transparent;cursor:pointer;text-align:left}
@@ -47,7 +53,9 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
 .mode-shell{display:grid;gap:6px;transition:opacity .18s ease,filter .18s ease}.mode-shell.is-inactive{opacity:.48;filter:saturate(.75)}.mode-shell.is-inactive .file-picker{background:rgba(237,243,247,.78);border-color:#c5d4df;cursor:not-allowed}.mode-shell.is-inactive .file-button{background:rgba(226,235,241,.82);color:#7a92a1;border-color:#c7d7e2}.mode-shell.is-inactive .field-note{color:#7e95a4}
 .panel.is-muted{opacity:.68}.panel.is-muted .breakdown-box,.panel.is-muted .mini-stat{background:#f1f6fa}
 .file-input-native{display:none}.file-picker{min-height:48px;border:1px solid rgba(255,255,255,.58);border-radius:18px;background:linear-gradient(155deg,rgba(255,255,255,.5),rgba(228,241,250,.34));backdrop-filter:blur(16px) saturate(1.05);display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:12px;padding:8px 12px;cursor:pointer;min-width:0;max-width:100%;overflow:hidden;box-shadow:0 16px 28px rgba(39,104,145,.08),inset 0 1px 0 rgba(255,255,255,.86)}.file-button{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:0 12px;border:1px solid rgba(86,143,183,.4);border-radius:11px;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(230,241,249,.56));background-image:linear-gradient(180deg,#7ec9f4 0%, #3f9fda 42%, #256eaa 100%),linear-gradient(180deg,rgba(255,255,255,.72),rgba(230,241,249,.56));background-repeat:no-repeat;background-size:100% 0,100% 100%;background-position:0 100%,0 0;font:700 12px/1 var(--font-body);color:var(--text);white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.9);transition:color .24s ease,border-color .24s ease,box-shadow .24s ease,background-size .28s ease}.file-button:hover,.file-button:focus-visible{color:#f7fcff;border-color:#2f88c5;box-shadow:0 10px 20px rgba(41,118,170,.18),inset 0 1px 0 rgba(255,255,255,.22);background-size:100% 100%,100% 100%}.file-picker-text{width:100%;min-width:0;max-width:100%;display:block;font:500 13px/1.3 var(--font-mono);color:var(--muted);white-space:nowrap;overflow-x:auto;overflow-y:hidden;text-overflow:clip;scrollbar-width:thin}
-.loading-box{display:none;margin-top:14px;padding:14px 14px 12px;border:1px solid var(--field-line);border-radius:16px;background:linear-gradient(180deg,rgba(233,247,255,.92),rgba(247,252,255,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.65)}.loading-box.is-active{display:block}.loading-box.is-complete{border-color:#84bbd9;background:linear-gradient(180deg,rgba(223,245,255,.98),rgba(241,251,255,.98))}.loading-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.loading-title{font:700 12px/1 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}.loading-percent{font:800 18px/1 var(--font-display);color:var(--text)}.loading-track{position:relative;height:18px;margin-top:12px;border-radius:999px;overflow:hidden;background:rgba(173,205,223,.45);border:1px solid rgba(122,171,198,.35)}.loading-fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#1d6f9d,#45a9da,#93ddff);border-radius:999px;box-shadow:0 0 18px rgba(69,169,218,.35);transition:width .18s ease}.loading-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.18) 35%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.18) 65%,transparent 100%);background-size:160px 100%;animation:loading-stripe 1.15s linear infinite}.loading-kinetic-shell{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;pointer-events:none;opacity:0;transform:scale(.92);transition:opacity .18s ease,transform .18s ease}.loading-kinetic{--loader-size:28px;--dot-size:6px;--dot-size-half:calc(var(--dot-size) / 2);--dot-size-half-neg:calc(var(--dot-size-half) * -1);--light-color:rgba(255,255,255,.42);position:relative;display:block;width:var(--loader-size);height:1px;background:var(--light-color);color:#fff;filter:drop-shadow(0 0 8px rgba(255,255,255,.28))}.loading-kinetic::before,.loading-kinetic::after{content:"";position:absolute;top:calc(var(--dot-size-half-neg) + 1px);left:var(--dot-size-half-neg);width:var(--dot-size);aspect-ratio:1 / 1;border-radius:50%;background:currentColor;animation:kinetic-loader 1s cubic-bezier(.27,.08,.26,.7) infinite}.loading-kinetic::after{animation-delay:-.33s}.loading-note{margin-top:10px;font-size:12px;color:var(--muted)}.loading-box.is-active:not(.is-complete) .loading-kinetic-shell{opacity:1;transform:scale(1)}.loading-box.is-complete .loading-fill::after{animation:none;opacity:.45}.loading-box.is-complete .loading-kinetic-shell{opacity:0;transform:scale(.82)}
+.file-picker-icon{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:10px;background:linear-gradient(180deg,rgba(50, 3, 97, 0.16),rgba(49, 3, 118, 0.1));color:#2b0594;flex:0 0 auto;box-shadow:inset 0 1px 0 rgba(255,255,255,.84)}
+.file-picker-icon i{font-size:13px;line-height:1}
+ .loading-box{display:none;margin-top:14px;padding:14px 14px 12px;border:1px solid var(--field-line);border-radius:16px;background:linear-gradient(180deg,rgba(233,247,255,.92),rgba(247,252,255,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.65)}.loading-box.is-active{display:block}.loading-box.is-complete{border-color:#84bbd9;background:linear-gradient(180deg,rgba(223,245,255,.98),rgba(241,251,255,.98))}.loading-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.loading-title{font:700 12px/1 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}.loading-percent{font:800 18px/1 var(--font-display);color:var(--text)}.loading-track{position:relative;height:18px;margin-top:12px;border-radius:999px;overflow:hidden;background:rgba(173,205,223,.45);border:1px solid rgba(122,171,198,.35)}.loading-fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#1d6f9d,#45a9da,#93ddff);border-radius:999px;box-shadow:0 0 18px rgba(69,169,218,.35);transition:width .18s ease}.loading-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.18) 35%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.18) 65%,transparent 100%);background-size:160px 100%;animation:loading-stripe 1.15s linear infinite}.loading-kinetic-shell{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;pointer-events:none;opacity:0;transform:scale(.92);transition:opacity .18s ease,transform .18s ease}.loading-kinetic{--loader-size:28px;--dot-size:6px;--dot-size-half:calc(var(--dot-size) / 2);--dot-size-half-neg:calc(var(--dot-size-half) * -1);--light-color:rgba(255,255,255,.42);position:relative;display:block;width:var(--loader-size);height:1px;background:var(--light-color);color:#fff;filter:drop-shadow(0 0 8px rgba(255,255,255,.28))}.loading-kinetic::before,.loading-kinetic::after{content:"";position:absolute;top:calc(var(--dot-size-half-neg) + 1px);left:var(--dot-size-half-neg);width:var(--dot-size);aspect-ratio:1 / 1;border-radius:50%;background:currentColor;animation:kinetic-loader 1s cubic-bezier(.27,.08,.26,.7) infinite}.loading-kinetic::after{animation-delay:-.33s}.loading-note{margin-top:10px;font-size:12px;color:var(--muted)}.loading-box.is-active:not(.is-complete) .loading-kinetic-shell{opacity:1;transform:scale(1)}.loading-box.is-complete .loading-fill::after{animation:none;opacity:.45}.loading-box.is-complete .loading-kinetic-shell{opacity:0;transform:scale(.82)}
 .export-btn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;width:100%;margin-top:4px;padding:0 24px;border:1px solid #16597d;border-radius:18px;background:linear-gradient(135deg,#0f699b,#2f9fd6 58%,#7fd4ff);color:#f8fdff;font:800 15px/1 var(--font-body);cursor:pointer;box-shadow:0 18px 28px rgba(18,90,131,.22),0 8px 16px rgba(43,143,200,.18)}.export-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 22px 34px rgba(18,90,131,.28),0 10px 18px rgba(43,143,200,.22)}.export-btn:disabled{border-color:#a8c8dc;background:linear-gradient(180deg,#dbeaf5,#c9dbe8);color:#6e8798;cursor:not-allowed;box-shadow:none}
 .field-note{margin-top:-4px;font-size:12px;color:var(--muted)}
 .field-note.error{color:#a13131}
@@ -70,28 +78,49 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
 .breakdown-flip-front{backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .breakdown-flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);display:flex;flex-direction:column;overflow:hidden}
 .breakdown-front-count{font:800 clamp(22px,1.7vw,30px)/1.05 var(--font-display);color:#184e73;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;text-shadow:0 1px 0 rgba(255,255,255,.55);margin-top:8px}
-@keyframes breakdown-pulse{0%,100%{box-shadow:0 18px 32px rgba(39,104,145,.08),inset 0 1px 0 rgba(255,255,255,.86),0 0 0 0 rgba(14,94,136,0)}60%{box-shadow:0 18px 32px rgba(39,104,145,.08),inset 0 1px 0 rgba(255,255,255,.86),0 0 0 5px rgba(14,94,136,.24)}}
-.breakdown-flip-wrap.has-data .breakdown-flip-front{animation:breakdown-pulse 2.2s ease-in-out infinite;border-color:rgba(14,94,136,.45)!important}
-.breakdown-flip-wrap.has-data .breakdown-flip-front > strong{color:#0e5e88!important}
-.breakdown-flip-wrap.has-data .breakdown-front-count{color:#0e5e88}
+  @keyframes breakdown-pulse{0%,100%{box-shadow:0 18px 32px rgba(39,104,145,.08),inset 0 1px 0 rgba(255,255,255,.86),0 0 0 0 rgba(154,126,255,0)}60%{box-shadow:0 18px 32px rgba(39,104,145,.08),inset 0 1px 0 rgba(255,255,255,.86),0 0 0 5px rgba(154,126,255,.22)}}
+  .breakdown-flip-wrap.has-data .breakdown-flip-front{
+   animation:breakdown-pulse 2.2s ease-in-out infinite;
+   border-color:rgba(154,126,255,.52)!important;
+  }
+ .breakdown-flip-wrap.has-data .breakdown-flip-front > strong{color:#4f43c8!important}
+ .breakdown-flip-wrap.has-data .breakdown-front-count{color:#4f43c8;text-shadow:0 1px 0 rgba(255,255,255,.7)}
 .breakdown-panel{align-self:start}.breakdown-grid{display:grid;grid-template-columns:1fr;gap:12px}.mini-stat{padding:14px;min-width:0}.mini-stat strong{display:block;margin-bottom:8px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#476173}.mini-stat div{font:800 clamp(24px,1.9vw,32px)/1.05 var(--font-display);color:#184e73;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;text-shadow:0 1px 0 rgba(255,255,255,.55)}.breakdown-box{padding:12px}.breakdown-box strong{display:block;margin-bottom:8px;color:#28485d}.breakdown-list{display:grid;gap:8px;max-height:220px;overflow:auto}.breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid rgba(255,255,255,.56);border-radius:14px;background:linear-gradient(155deg,rgba(255,255,255,.58),rgba(233,244,251,.42));backdrop-filter:blur(14px);box-shadow:0 14px 24px rgba(39,104,145,.06),inset 0 1px 0 rgba(255,255,255,.88)}.breakdown-key{min-width:0;font:800 12px/1.35 var(--font-mono);color:#163040;word-break:break-word}.breakdown-value{flex:0 0 auto;font:800 15px/1 var(--font-display);letter-spacing:.01em;color:#0e5e88;text-shadow:0 1px 0 rgba(255,255,255,.65)}.breakdown-empty{font-size:13px;color:var(--muted)}
-.export-rail{padding:18px 18px 20px;background:linear-gradient(180deg,rgba(23,88,126,.96),rgba(39,135,187,.96));color:#00080C;overflow:hidden;position:relative}
+ .export-rail{padding:18px 18px 20px;background:linear-gradient(180deg,rgba(23,88,126,.96),rgba(39,135,187,.96));color:#00080C;overflow:hidden;position:relative}
 .export-rail::after{content:"";position:absolute;inset:auto -40px -55px auto;width:180px;height:180px;border-radius:50%;background:rgba(150,222,255,.18);filter:blur(10px)}
 .export-rail .section-head{position:relative;z-index:1;margin-bottom:14px}
 .export-rail h2{color:#00080C;font-size:1.35rem}
-.export-stack{position:relative;z-index:1;display:grid;gap:14px}
+ .export-stack{position:relative;z-index:1;display:grid;gap:14px}
 .export-input{display:none}
 .mapping-status{padding:10px 12px;border-radius:14px;border:1px solid rgba(214,241,252,.28);background:linear-gradient(180deg,rgba(244,251,255,.12),rgba(212,236,248,.08));color:#d4ebf8;font-size:12px;line-height:1.5;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 .mapping-status strong{display:block;margin-bottom:4px;font:700 10px/1 var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:#bfe7ff}
-.rail-btn{width:100%;min-height:82px;padding:16px 16px 15px;border-radius:18px;border:1px solid rgba(224,244,255,.68);text-align:left;background:linear-gradient(180deg,rgba(245,252,255,.36),rgba(206,237,250,.2));box-shadow:0 20px 30px rgba(8,48,73,.24),0 8px 0 rgba(16,72,104,.32),inset 0 2px 0 rgba(255,255,255,.22);color:#f7fcff;display:grid;gap:6px;cursor:pointer;transform:translateY(0);transition:transform .14s ease,box-shadow .14s ease,filter .14s ease}
-.rail-btn.primary{background:linear-gradient(180deg,#76d3ff 0%,#3aa8dd 52%,#237eb0 100%);border-color:rgba(224,246,255,.72);box-shadow:0 22px 36px rgba(10,62,93,.3),0 9px 0 rgba(15,89,126,.38),inset 0 2px 0 rgba(255,255,255,.3)}
-.rail-btn.secondary{background:linear-gradient(180deg,#ffffff 0%,#edf8ff 58%,#dceef9 100%);color:#1a4e6b;border-color:rgba(228,246,255,.86);box-shadow:0 20px 30px rgba(8,48,73,.18),0 8px 0 rgba(159,198,220,.85),inset 0 2px 0 rgba(255,255,255,.96)}
+.mapping-status.is-valid{position:relative;padding-right:40px;border-color:rgba(176,153,255,.92);background:linear-gradient(180deg,#3f2a86 0%,#23124f 100%);color:#f6f1ff;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 20px rgba(26,10,63,.2)}
+.mapping-status.is-valid strong{color:#efe6ff;font-weight:800}
+.mapping-status-badge{position:absolute;top:10px;right:10px;display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:#dacbff;opacity:1;pointer-events:none;filter:drop-shadow(0 0 4px rgba(255,255,255,.08))}
+.mapping-status-badge svg{width:16px;height:16px;display:block}
+.mapping-summary{display:grid;gap:8px;margin-top:6px}
+.mapping-summary-line{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mapping-summary-label{color:#f4ebff;font:800 12px/1.3 var(--font-sans);letter-spacing:.01em}
+.mapping-summary-chip{min-width:32px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);text-align:center;font:800 12px/1 var(--font-mono);letter-spacing:.04em;color:#ffffff;box-shadow:none}
+.mapping-status.is-error{border-color:rgba(239,148,148,.5);background:linear-gradient(180deg,rgba(255,237,237,.16),rgba(243,204,204,.12));color:#ffe3e3}
+.mapping-status.is-error strong{color:#ffc4c4}
+.rail-btn{width:100%;min-height:82px;padding:16px 16px 15px;border-radius:20px;border:1px solid rgba(224,244,255,.72);text-align:left;background:linear-gradient(180deg,rgba(247,253,255,.42),rgba(206,237,250,.22));box-shadow:inset 0 -28px 34px rgba(0,0,0,.08),0 0 0 1px rgba(190,190,190,.92),0 20px 34px rgba(8,48,73,.22),0 10px 0 rgba(16,72,104,.26),inset 0 2px 0 rgba(255,255,255,.26);color:#f7fcff;display:grid;gap:6px;cursor:pointer;transform:translateY(0);transition:transform .14s ease,box-shadow .14s ease,filter .14s ease,border-color .14s ease}
+.rail-btn.primary{background:linear-gradient(180deg,#7ae0ff 0%,#3baadd 52%,#2179aa 100%);border-color:rgba(224,246,255,.78);box-shadow:inset 0 -30px 34px rgba(0,0,0,.1),0 0 0 1px rgba(190,190,190,.88),0 22px 38px rgba(10,62,93,.32),0 10px 0 rgba(15,89,126,.34),inset 0 2px 0 rgba(255,255,255,.28)}
+.rail-btn.secondary{background:linear-gradient(180deg,#ffffff 0%,#f0f9ff 58%,#ddeef8 100%);color:#1a4e6b;border-color:rgba(228,246,255,.9);box-shadow:inset 0 -30px 34px rgba(0,0,0,.08),0 0 0 1px rgb(190,190,190),0 20px 34px rgba(8,48,73,.16),0 10px 0 rgba(159,198,220,.82),inset 0 2px 0 rgba(255,255,255,.96)}
 .rail-btn.secondary span,.rail-btn.secondary em{color:#5b7d90}
-.rail-btn.is-loaded{position:relative;isolation:isolate;background:linear-gradient(180deg,#eef8ff 0%,#d8ecfb 58%,#bddaf0 100%);color:#123f33;border-color:rgba(190,223,247,.98);box-shadow:0 22px 34px rgba(27,96,145,.2),0 9px 0 rgba(54,127,183,.24),inset 0 2px 0 rgba(255,255,255,.92);animation:mapping-loaded-pulse 2.1s ease-in-out infinite}
-.rail-btn.is-loaded::before{content:"";position:absolute;inset:-4px;border-radius:22px;border:1px solid rgba(110,204,255,.72);box-shadow:0 0 0 0 rgba(96,196,255,.28),0 0 16px rgba(96,196,255,.26),0 0 30px rgba(96,196,255,.14);opacity:.9;pointer-events:none;animation:mapping-loaded-aura 2.1s ease-in-out infinite}
-.rail-btn.is-loaded::after{content:"";position:absolute;inset:1px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.26),transparent 46%);pointer-events:none;opacity:.7}
-.rail-btn.is-loaded span,.rail-btn.is-loaded em{color:#406f8f}
-.rail-btn.is-disabled,.rail-btn:disabled{background:linear-gradient(180deg,rgba(196,222,235,.32),rgba(146,187,210,.18));border-color:rgba(198,223,237,.42);box-shadow:0 14px 22px rgba(8,48,73,.14),0 7px 0 rgba(61,106,132,.22),inset 0 2px 0 rgba(255,255,255,.14);color:rgba(247,252,255,.62);cursor:not-allowed;filter:saturate(.65)}
+.rail-btn.is-loaded{position:relative;isolation:isolate;min-height:116px;padding:14px 16px 12px 16px;padding-right:42px;background:linear-gradient(180deg,#f4efff 0%,#dccdff 58%,#b796ff 100%);color:#23124f;border-color:rgba(195,175,255,.98);box-shadow:inset 0 -30px 36px rgba(45,23,116,.14),0 0 0 1px rgba(190,190,190,.84),0 24px 40px rgba(63,42,134,.26),0 10px 0 rgba(86,61,167,.24),inset 0 2px 0 rgba(255,255,255,.92);animation:mapping-loaded-pulse 2.1s ease-in-out infinite}
+.rail-btn.is-loaded::before{content:"";position:absolute;inset:-4px;border-radius:24px;border:1px solid rgba(154,126,255,.62);box-shadow:0 0 0 0 rgba(154,126,255,.18),0 0 18px rgba(154,126,255,.24),0 0 34px rgba(154,126,255,.14);opacity:.92;pointer-events:none;animation:mapping-loaded-aura 2.1s ease-in-out infinite}
+.rail-btn.is-loaded::after{content:"";position:absolute;inset:1px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.28),transparent 48%);pointer-events:none;opacity:.72}
+.rail-btn.is-loaded span,.rail-btn.is-loaded em{color:#41247f}
+.rail-btn.is-loaded strong{color:#1f0e45;font-size:1.03rem;font-weight:800;line-height:1.02;max-width:calc(100% - 22px);letter-spacing:-.02em}
+.rail-btn.is-loaded em{color:#2f185d;font-size:11px;line-height:1.28;margin-top:-1px}
+.rail-btn.is-loaded .rail-check-badge{position:absolute;top:10px;right:10px;display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:#5b40cc;pointer-events:none;filter:drop-shadow(0 0 4px rgba(255,255,255,.12))}
+.rail-btn.is-loaded .rail-check-badge svg{width:16px;height:16px;display:block}
+.rail-btn.is-loaded .rail-summary{display:grid;gap:6px;margin-top:4px}
+.rail-btn.is-loaded .rail-summary-line{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.rail-btn.is-loaded .rail-summary-label{font:800 11px/1.15 var(--font-sans);color:#2a154f;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.rail-btn.is-loaded .rail-summary-chip{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:24px;padding:0 11px;border-radius:999px;background:#3216b8;color:#ffffff !important;-webkit-text-fill-color:#ffffff;font:900 15px/1.05 Arial, Helvetica, sans-serif;letter-spacing:0;text-align:center;box-shadow:0 4px 10px rgba(58,35,120,.24);text-shadow:none;flex:0 0 auto}
+.rail-btn.is-disabled,.rail-btn:disabled{background:linear-gradient(180deg,rgba(196,222,235,.32),rgba(146,187,210,.18));border-color:rgba(198,223,237,.42);box-shadow:inset 0 -26px 28px rgba(0,0,0,.06),0 0 0 1px rgba(190,190,190,.7),0 14px 22px rgba(8,48,73,.14),0 7px 0 rgba(61,106,132,.22),inset 0 2px 0 rgba(255,255,255,.14);color:rgba(247,252,255,.62);cursor:not-allowed;filter:saturate(.65)}
 .rail-btn.is-disabled span,.rail-btn.is-disabled em,.rail-btn:disabled span,.rail-btn:disabled em{color:rgba(201,231,246,.62)}
 .rail-btn:hover:not(:disabled):not(.is-disabled){transform:translateY(-3px);filter:brightness(1.02)}
 .rail-btn:active:not(:disabled):not(.is-disabled){transform:translateY(3px);box-shadow:0 10px 18px rgba(8,48,73,.2),0 2px 0 rgba(16,72,104,.26),inset 0 2px 0 rgba(255,255,255,.18)}
@@ -133,10 +162,17 @@ a{color:inherit} .page{position:relative;z-index:1;width:min(1720px,calc(100vw -
 @media (max-width:1700px){.layout-canvas .workspace{grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:none}.layout-canvas .source-panel{grid-column:span 4}.layout-canvas .input-panel{grid-column:span 4}.layout-canvas .summary-panel{grid-column:span 4}.layout-canvas .report-list-panel{grid-column:span 8}.layout-canvas .breakdown-panel{grid-column:span 4}.layout-canvas .export-rail{grid-column:span 12}.layout-canvas .reports-panel{grid-column:1 / -1}}
 @media (max-width:980px){.layout-canvas .workspace{grid-template-columns:1fr;grid-template-areas:none}.layout-canvas .source-panel,.layout-canvas .input-panel,.layout-canvas .report-list-panel,.layout-canvas .summary-panel,.layout-canvas .breakdown-panel,.layout-canvas .export-rail,.layout-canvas .reports-panel{grid-column:auto}}
 @media (max-width:640px){.report-list-grid{grid-template-columns:1fr}.report-card-head{flex-direction:column;align-items:stretch}.report-card-actions{justify-content:flex-start}.source-card-select{min-height:120px}.source-card-trigger,.source-card-face{min-height:120px}.source-card-face{padding:16px}.source-card-copy strong{font-size:16px}.report-list-head{flex-direction:column;align-items:stretch}}
+@media (max-width:980px){body.theme-pearl .hero{padding:30px 52px 26px}body.theme-pearl .hero-ambient{display:none}}
 @keyframes loading-stripe{from{background-position:0 0}to{background-position:160px 0}}
 @keyframes kinetic-loader{0%,100%{transform:none}44%{transform:translateX(calc(var(--loader-size) + var(--dot-size-half)))}} 
 @keyframes mapping-loaded-pulse{0%,100%{box-shadow:0 22px 34px rgba(27,96,145,.2),0 9px 0 rgba(54,127,183,.24),inset 0 2px 0 rgba(255,255,255,.92)}50%{box-shadow:0 24px 38px rgba(27,96,145,.24),0 9px 0 rgba(54,127,183,.24),0 0 26px rgba(96,196,255,.24),inset 0 2px 0 rgba(255,255,255,.96)}}
 @keyframes mapping-loaded-aura{0%,100%{opacity:.72;transform:scale(1);box-shadow:0 0 0 0 rgba(96,196,255,.18),0 0 16px rgba(96,196,255,.22),0 0 30px rgba(96,196,255,.12)}50%{opacity:1;transform:scale(1.01);box-shadow:0 0 0 4px rgba(96,196,255,.08),0 0 22px rgba(96,196,255,.3),0 0 38px rgba(96,196,255,.18)}}
+@keyframes hero-float-a{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-12px,-18px,0) scale(1.04)}}
+@keyframes hero-float-b{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(10px,14px,0) scale(.96)}}
+@keyframes hero-float-c{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-8px,12px,0) scale(1.08)}}
+@keyframes hero-drift-a{0%,100%{transform:rotate(45deg) translate3d(0,0,0)}50%{transform:rotate(45deg) translate3d(12px,-10px,0)}}
+@keyframes hero-drift-b{0%,100%{transform:rotate(0deg) translate3d(0,0,0)}50%{transform:rotate(12deg) translate3d(-10px,8px,0)}}
+@keyframes hero-drift-c{0%,100%{transform:rotate(18deg) translate3d(0,0,0)}50%{transform:rotate(26deg) translate3d(8px,-6px,0)}}
 
 body.theme-pearl{
   --bg:#f6f4f1;
@@ -175,10 +211,11 @@ body.theme-pearl .page{padding:24px 0 44px}
 body.theme-pearl .hero,
 body.theme-pearl .panel{border-width:1px;border-color:var(--line);box-shadow:var(--shadow)}
 body.theme-pearl .hero{
-  padding:46px 52px;
+  padding:34px 176px 30px 52px;
   background:
     radial-gradient(circle at 12% 18%, rgba(255,255,255,.04), transparent 22%),
     radial-gradient(circle at 88% 72%, rgba(255,255,255,.03), transparent 18%),
+    linear-gradient(90deg, rgba(23,20,17,0) 28%, rgba(23,20,17,.04) 46%, rgba(23,20,17,.11) 62%, rgba(23,20,17,.26) 80%, rgba(23,20,17,.5) 100%),
     linear-gradient(135deg,#171411,#26211b 54%,#1e1913 100%);
   color:var(--hero-text);
   overflow:hidden;
@@ -187,6 +224,109 @@ body.theme-pearl .hero-copy{
   position:relative;
   z-index:2;
   max-width:760px;
+}
+body.theme-pearl .hero-ambient{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:.92;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0%, transparent 26%, rgba(0,0,0,.32) 42%, rgba(0,0,0,.72) 62%, rgba(0,0,0,.96) 100%);
+  mask-image:linear-gradient(90deg, transparent 0%, transparent 26%, rgba(0,0,0,.32) 42%, rgba(0,0,0,.72) 62%, rgba(0,0,0,.96) 100%);
+}
+body.theme-pearl .hero-ambient::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 84% 42%, rgba(97,88,235,.2), transparent 30%),
+    linear-gradient(90deg, rgba(17,14,11,0) 0%, rgba(17,14,11,.01) 24%, rgba(17,14,11,.03) 40%, rgba(17,14,11,.07) 58%, rgba(17,14,11,.16) 76%, rgba(17,14,11,.34) 100%);
+  filter:blur(6px);
+  mix-blend-mode:screen;
+  pointer-events:none;
+}
+body.theme-pearl .hero-ambient::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(17,14,11,0) 0%, rgba(17,14,11,.01) 30%, rgba(17,14,11,.04) 48%, rgba(17,14,11,.12) 72%, rgba(17,14,11,.26) 100%);
+  opacity:.54;
+  pointer-events:none;
+}
+body.theme-pearl .hero-ambient .orb,
+body.theme-pearl .hero-ambient .diamond,
+body.theme-pearl .hero-ambient .square{
+  position:absolute;
+  display:block;
+  will-change:transform,opacity;
+  opacity:.78;
+  filter:blur(.4px);
+}
+body.theme-pearl .hero-ambient .orb{
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 36%),
+    linear-gradient(145deg, rgba(127,121,255,.34), rgba(79,70,229,.14) 58%, rgba(20,16,48,.03));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    0 0 18px rgba(127,121,255,.14),
+    0 0 34px rgba(79,70,229,.12);
+  filter:saturate(1.02);
+}
+body.theme-pearl .hero-ambient .diamond{
+  background:linear-gradient(145deg, rgba(213,210,255,.14), rgba(79,70,229,.08));
+  box-shadow:0 0 18px rgba(79,70,229,.08);
+  transform:rotate(45deg);
+}
+body.theme-pearl .hero-ambient .square{
+  border-radius:18px;
+  border:1px solid rgba(220,216,255,.16);
+  background:linear-gradient(145deg, rgba(255,255,255,.1), rgba(79,70,229,.11));
+  box-shadow:0 0 18px rgba(79,70,229,.08);
+}
+body.theme-pearl .hero-ambient .orb.one{
+  top:18%;
+  right:10%;
+  width:126px;
+  height:126px;
+  animation:hero-float-a 12s ease-in-out infinite;
+}
+body.theme-pearl .hero-ambient .orb.two{
+  top:52%;
+  right:24%;
+  width:84px;
+  height:84px;
+  animation:hero-float-b 10s ease-in-out infinite;
+}
+body.theme-pearl .hero-ambient .orb.three{
+  bottom:12%;
+  right:6%;
+  width:58px;
+  height:58px;
+  animation:hero-float-c 14s ease-in-out infinite;
+}
+body.theme-pearl .hero-ambient .diamond.one{
+  top:28%;
+  right:42%;
+  width:46px;
+  height:46px;
+  animation:hero-drift-a 16s ease-in-out infinite;
+}
+body.theme-pearl .hero-ambient .square.one{
+  top:64%;
+  right:36%;
+  width:36px;
+  height:36px;
+  animation:hero-drift-b 13s ease-in-out infinite;
+}
+body.theme-pearl .hero-ambient .square.two{
+  top:8%;
+  right:34%;
+  width:22px;
+  height:22px;
+  transform:rotate(18deg);
+  animation:hero-drift-c 11s ease-in-out infinite;
 }
 body.theme-pearl .hero::before{
   content:"";
@@ -237,19 +377,37 @@ body.theme-pearl .hero p{
   font-size:15px;
   line-height:1.75;
 }
+body.theme-pearl .hero-kicker{
+  display:none;
+}
 body.theme-pearl .panel{
-  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,246,243,.96));
+  position:relative;
+  isolation:isolate;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,.88), transparent 32%),
+    linear-gradient(180deg,rgba(250,248,244,.99),rgba(237,231,224,.98));
   backdrop-filter:none;
-  box-shadow:0 1px 0 rgba(255,255,255,.7),0 18px 34px rgba(36,27,15,.06);
+  border-color:rgba(184,173,163,.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 -38px 48px rgba(0,0,0,.08),
+    0 1px 0 rgba(255,255,255,.74),
+    0 34px 66px rgba(28,20,14,.16),
+    0 18px 34px rgba(79,70,229,.06);
   transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease;
 }
 body.theme-pearl .panel::before{
-  background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.18) 56%,transparent);
+  background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.22) 30%,rgba(255,255,255,.08) 58%,transparent);
 }
 body.theme-pearl .panel:hover{
-  transform:translateY(-2px);
-  border-color:#d4cec7;
-  box-shadow:0 2px 6px rgba(0,0,0,.06),0 24px 48px rgba(79,70,229,.08);
+  transform:translateY(-3px);
+  border-color:#bfb3a8;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.94),
+    inset 0 -40px 52px rgba(0,0,0,.08),
+    0 2px 8px rgba(0,0,0,.08),
+    0 38px 76px rgba(79,70,229,.14),
+    0 20px 38px rgba(28,20,14,.13);
 }
 body.theme-pearl .source-panel,
 body.theme-pearl .input-panel,
@@ -258,6 +416,15 @@ body.theme-pearl .breakdown-panel{
   min-height:var(--top-card-height);
   display:flex;
   flex-direction:column;
+  background:
+    radial-gradient(circle at 20% 14%, rgba(255,255,255,.84), transparent 28%),
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,244,239,.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.96),
+    inset 0 -30px 38px rgba(0,0,0,.04),
+    0 1px 0 rgba(255,255,255,.8),
+    0 28px 56px rgba(31,23,16,.11),
+    0 12px 24px rgba(79,70,229,.05);
 }
 body.theme-pearl .source-panel .setup-card-stack,
 body.theme-pearl .input-panel .setup-card-stack,
@@ -299,6 +466,16 @@ body.theme-pearl .summary-panel .stat-card{
   min-height:76px;
   gap:9px;
   padding:13px 14px;
+  border:1px solid rgba(189,177,167,.95);
+  border-radius:16px;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255,255,255,.88), transparent 30%),
+    linear-gradient(180deg,#fffefc,#f0e8df 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 -20px 28px rgba(0,0,0,.055),
+    0 1px 0 rgba(255,255,255,.76),
+    0 16px 28px rgba(36,27,15,.085);
 }
 body.theme-pearl .summary-panel .stat-card strong{
   font-size:11px;
@@ -397,6 +574,14 @@ body.theme-pearl .summary-panel .summary-stack > div > strong{
 body.theme-pearl .summary-panel .stack-box{
   padding:10px 12px 11px;
   min-height:0;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,.82), transparent 28%),
+    linear-gradient(180deg,rgba(249,245,240,.98),rgba(235,228,220,.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -20px 28px rgba(0,0,0,.055),
+    0 1px 0 rgba(255,255,255,.74),
+    0 16px 28px rgba(36,27,15,.075);
 }
 body.theme-pearl .breakdown-panel .panel-stack{
   gap:12px;
@@ -409,20 +594,32 @@ body.theme-pearl .breakdown-panel .breakdown-flip-front{
   flex-direction:column;
   justify-content:center;
   padding:14px;
-  min-height:80px;
+  min-height:92px;
+  border:1px solid rgba(89,129,156,.38);
+  border-radius:18px;
+  background:linear-gradient(155deg,rgba(255,255,255,.5),rgba(228,241,250,.34));
+  backdrop-filter:blur(16px) saturate(1.04);
+}
+body.theme-pearl .breakdown-flip-wrap.has-data .breakdown-flip-front{
+  border-color:rgba(154,126,255,.55)!important;
+  animation:breakdown-pulse 2.2s ease-in-out infinite;
+}
+body.theme-pearl .breakdown-flip-wrap.has-data .breakdown-flip-front > strong,
+body.theme-pearl .breakdown-flip-wrap.has-data .breakdown-front-count{
+  color:#4f43c8!important;
 }
 body.theme-pearl .breakdown-panel .breakdown-flip-front > strong{
   display:block;
-  font-size:10px;
+  font-size:12px;
   letter-spacing:.18em;
   text-transform:uppercase;
-  color:#476173;
+  color:#4a4139;
   margin-bottom:8px;
   line-height:1.2;
 }
 body.theme-pearl .breakdown-panel .breakdown-front-count{
-  font:800 clamp(22px,1.7vw,28px)/1.05 var(--font-display);
-  color:#184e73;
+  font:700 clamp(26px,2vw,34px)/1 var(--font-display);
+  color:#4f46e5;
   margin-top:0;
   text-shadow:0 1px 0 rgba(255,255,255,.55);
   white-space:nowrap;
@@ -435,6 +632,16 @@ body.theme-pearl .breakdown-panel .breakdown-flip-back{
   padding:12px 12px 14px;
   gap:6px;
   overflow:visible;
+  border:1px solid rgba(189,177,167,.95);
+  border-radius:16px;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255,255,255,.88), transparent 30%),
+    linear-gradient(180deg,#fffefc,#f0e8df 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 -20px 28px rgba(0,0,0,.055),
+    0 1px 0 rgba(255,255,255,.76),
+    0 16px 28px rgba(36,27,15,.085);
 }
 body.theme-pearl .breakdown-panel .breakdown-flip-back > strong{
   flex:0 0 auto;
@@ -523,9 +730,16 @@ body.theme-pearl .source-card-select{
 }
 body.theme-pearl .source-card-face{
   border-radius:26px;
-  border-color:rgba(79,70,229,.14);
-  background:linear-gradient(160deg,rgba(255,255,255,.96),rgba(245,241,255,.84) 58%,rgba(243,239,234,.92));
-  box-shadow:0 26px 52px rgba(30,22,12,.08),0 8px 20px rgba(79,70,229,.08),inset 0 1px 0 rgba(255,255,255,.98);
+  border-color:rgba(79,70,229,.28);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,.88), transparent 28%),
+    linear-gradient(160deg,rgba(251,249,255,.98),rgba(238,234,251,.92) 52%,rgba(229,223,217,.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.94),
+    inset 0 -38px 46px rgba(0,0,0,.08),
+    0 1px 0 rgba(255,255,255,.76),
+    0 34px 64px rgba(30,22,12,.16),
+    0 14px 28px rgba(79,70,229,.15);
 }
 body.theme-pearl .source-card-face::after{
   background:radial-gradient(circle at center, rgba(79,70,229,.18), transparent 72%);
@@ -562,14 +776,23 @@ body.theme-pearl .source-card-option.is-selected{
 }
 body.theme-pearl .source-card-option-main span{color:#554c44}
 body.theme-pearl .file-picker{
-  border:1.5px solid #e2ddd8;
+  border:1.5px solid #c9c0b8;
   border-radius:12px;
-  background:linear-gradient(180deg,#fbfaf8,#f6f1ec);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255,255,255,.82), transparent 26%),
+    linear-gradient(180deg,#fffdfb,#ece5de);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.94),
+    inset 0 -20px 26px rgba(0,0,0,.05),
+    0 14px 24px rgba(36,27,15,.08),
+    0 1px 0 rgba(255,255,255,.7);
 }
 body.theme-pearl .file-picker:hover{
   border-color:rgba(79,70,229,.28);
-  box-shadow:0 0 0 3px rgba(79,70,229,.07), inset 0 1px 0 rgba(255,255,255,.92);
+  box-shadow:
+    0 0 0 3px rgba(79,70,229,.1),
+    0 18px 30px rgba(36,27,15,.1),
+    inset 0 1px 0 rgba(255,255,255,.94);
 }
 body.theme-pearl .file-button{
   border-color:rgba(79,70,229,.24);
@@ -599,13 +822,16 @@ body.theme-pearl .breakdown-box,
 body.theme-pearl .report-list-item,
 body.theme-pearl .discard-item,
 body.theme-pearl .report-table-wrap{
-  border:1px solid #e3ddd7;
-  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(249,246,242,.94));
-  box-shadow:0 12px 26px rgba(36,27,15,.05), inset 0 1px 0 rgba(255,255,255,.9);
+  border:1px solid #e0d9d2;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(250,246,242,.96));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96), inset 0 -18px 24px rgba(0,0,0,.03), 0 1px 0 rgba(255,255,255,.7), 0 14px 30px rgba(36,27,15,.06), 0 8px 18px rgba(79,70,229,.03);
 }
 body.theme-pearl .breakdown-box{
-  border-color:#cfc3b6;
-  box-shadow:0 12px 26px rgba(36,27,15,.06), inset 0 1px 0 rgba(255,255,255,.92);
+  border-color:#d0c4b8;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96), inset 0 -18px 24px rgba(0,0,0,.03), 0 1px 0 rgba(255,255,255,.76), 0 14px 28px rgba(36,27,15,.06);
+}
+body.theme-pearl .breakdown-flip-wrap.has-data .breakdown-box{
+  box-shadow:none;
 }
 body.theme-pearl .pill{
   border-color:rgba(79,70,229,.18);
@@ -721,19 +947,20 @@ body.theme-pearl .export-rail::after{
 }
 body.theme-pearl .rail-btn{
   border-color:rgba(255,255,255,.08);
-  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));
-  box-shadow:0 18px 28px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08);
+  background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04));
+  box-shadow:inset 0 -28px 34px rgba(0,0,0,.16),0 0 0 1px rgba(190,190,190,.46),0 20px 30px rgba(0,0,0,.24),0 8px 0 rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.08);
+  border-radius:20px;
 }
 body.theme-pearl .rail-btn.primary{
   background:linear-gradient(180deg,#7f79ff 0%,#5f58eb 54%,#433bcf 100%);
   border-color:rgba(194,190,255,.24);
-  box-shadow:0 22px 34px rgba(38,30,114,.34), inset 0 1px 0 rgba(255,255,255,.22);
+  box-shadow:inset 0 -30px 34px rgba(15,12,61,.18),0 0 0 1px rgba(190,190,190,.36),0 24px 38px rgba(38,30,114,.34),0 10px 0 rgba(25,20,98,.18),inset 0 1px 0 rgba(255,255,255,.22);
 }
 body.theme-pearl .rail-btn.secondary{
   background:linear-gradient(180deg,#fffefe,#f3efea 56%,#e6dfd7 100%);
   color:#231d17;
   border-color:#d6cec7;
-  box-shadow:0 14px 26px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.92);
+  box-shadow:inset 0 -28px 30px rgba(0,0,0,.08),0 0 0 1px rgb(190,190,190),0 16px 26px rgba(0,0,0,.14),0 8px 0 rgba(159,198,220,.78),inset 0 1px 0 rgba(255,255,255,.92);
 }
 body.theme-pearl .rail-btn.secondary span,
 body.theme-pearl .rail-btn.secondary em{color:#7c7269}
@@ -741,6 +968,7 @@ body.theme-pearl .rail-btn.is-loaded{
   background:linear-gradient(180deg,#f8f7ff,#edeaff 58%,#dfdbff 100%);
   border-color:rgba(136,125,255,.36);
   color:#241c78;
+  box-shadow:inset 0 -30px 36px rgba(53,34,120,.12),0 0 0 1px rgba(190,190,190,.42),0 24px 38px rgba(63,42,134,.24),0 10px 0 rgba(86,61,167,.16),inset 0 1px 0 rgba(255,255,255,.94);
 }
 body.theme-pearl .rail-btn.is-loaded span,
 body.theme-pearl .rail-btn.is-loaded em{color:#5f58b4}
@@ -768,9 +996,16 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
 <div class="page">
 <div class="hero">
   <div class="hero-copy">
-    <div class="hero-kicker">Pearl Atelier Console Variant</div>
     <h1>Fixed-Width Report Extraction <em>Console</em></h1>
-    <p>Refined front page concept for routing inbound flat files, validating expected record sets, and reviewing parsed report outputs with the softer Pearl Atelier visual system.</p>
+    <p>Upload a text file and optional mapping workbook, validate the incoming data, and generate the parsed report tabs and export files from one place.</p>
+  </div>
+  <div class="hero-ambient" aria-hidden="true">
+    <span class="orb one"></span>
+    <span class="orb two"></span>
+    <span class="orb three"></span>
+    <span class="diamond one"></span>
+    <span class="square one"></span>
+    <span class="square two"></span>
   </div>
 </div>
 <div class="workspace">
@@ -808,12 +1043,18 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       </div>
       <div class="field-block">
         <label for="caseNumberInput">Case Number</label>
-        <input id="caseNumberInput" type="text" placeholder="Enter case number">
+        <div class="icon-input-row">
+          <span class="field-icon" aria-hidden="true"><i class="fa-solid fa-hashtag"></i></span>
+          <input id="caseNumberInput" type="text" placeholder="Enter case number">
+        </div>
         <div id="caseNumberMessage" class="field-note"></div>
       </div>
       <div class="field-block">
         <label for="planNameInput">Plan Name</label>
-        <input id="planNameInput" type="text" placeholder="Enter plan name">
+        <div class="icon-input-row">
+          <span class="field-icon" aria-hidden="true"><i class="fa-solid fa-file-signature"></i></span>
+          <input id="planNameInput" type="text" placeholder="Enter plan name">
+        </div>
       </div>
     </div>
   </section>
@@ -827,6 +1068,7 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       <div id="fileInputBlock" class="field-block mode-shell">
         <label for="fileInput">Select Text File</label>
         <label for="fileInput" class="file-picker">
+          <span class="file-picker-icon" aria-hidden="true"><i class="fa-solid fa-file-lines"></i></span>
           <span class="file-button">Choose File</span>
           <span id="filePickerText" class="file-picker-text">No file chosen</span>
         </label>
@@ -835,6 +1077,7 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       <div id="folderInputBlock" class="field-block mode-shell is-inactive">
         <label for="folderInput">Select Extract Folder</label>
         <label for="folderInput" class="file-picker">
+          <span class="file-picker-icon" aria-hidden="true"><i class="fa-solid fa-folder-open"></i></span>
           <span class="file-button">Choose Folder</span>
           <span id="folderPickerText" class="file-picker-text">No folder chosen</span>
         </label>
@@ -934,16 +1177,12 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       <h2>Export Panel</h2>
     </div>
     <div class="export-stack">
-      <input id="mappingFileInput" class="export-input" type="file" accept=".xlsx,.xls,.csv,.txt">
+      <input id="mappingFileInput" class="export-input" type="file" accept=".xlsx">
       <label id="mappingImportBtn" for="mappingFileInput" class="rail-btn secondary">
         <span>Import</span>
         <strong>Upload Mapping File</strong>
-        <em>Load source and fund mapping data before running downstream export transforms.</em>
+        <em>Load and validate a Source Mapping / Fund Mapping workbook before enabling the Conv File export.</em>
       </label>
-      <div id="mappingStatus" class="mapping-status">
-        <strong>Mapping Status</strong>
-        No mapping file loaded. FMC Export will stay locked until a mapping file is selected.
-      </div>
       <button id="exportWorkbookBtn" class="rail-btn primary" type="button" disabled>
         <span>Primary</span>
         <strong>Export Workbook</strong>
@@ -952,7 +1191,7 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       <button id="fmcExportBtn" class="rail-btn is-disabled" type="button" disabled>
         <span>Downstream</span>
         <strong>FMC Export</strong>
-        <em>Requires a mapping file before the FMC-specific outbound package can be prepared.</em>
+        <em>Requires a validated mapping workbook before the downstream package can be prepared.</em>
       </button>
       <button id="mappingExportBtn" class="rail-btn is-disabled" type="button" disabled>
         <span>Support</span>
@@ -6373,7 +6612,6 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
   var exportBtn = document.getElementById("exportWorkbookBtn");
   var mappingFileInput = document.getElementById("mappingFileInput");
   var mappingImportBtn = document.getElementById("mappingImportBtn");
-  var mappingStatus = document.getElementById("mappingStatus");
   var fmcExportBtn = document.getElementById("fmcExportBtn");
   var mappingExportBtn = document.getElementById("mappingExportBtn");
   var clearCustomReportsBtn = document.getElementById("clearCustomReportsBtn");
@@ -6388,6 +6626,7 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
   var currentFileName = "";
   var currentFolderName = "";
   var currentMappingFileName = "";
+  var currentMappingValidation = null;
   var lastParseResult = null;
   var PREVIEW_ROW_LIMIT = 20;
   var SOURCE_CARD_META = {
@@ -6500,6 +6739,51 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       sourceHeaders: ["Source"],
       fundHeaders: ["Fund Identifier", "Identifier"],
       amountHeaders: ["Amount"]
+    }
+  };
+
+  var CIT_ELECTION_RULES = {
+    NEWPORT: {
+      reportCode: "VA",
+      participantHeaders: ["PART-TAX-ID"],
+      sourceHeaders: ["CONTR-MONEY-TY-CODE", "CONTR-MONEY-TY-CDE", "CONTR-MONEY-TY-CD"],
+      fundHeaders: ["PROV-EXT-INV-VH-ID"],
+      percentHeaders: ["PART-ALLOCAT-RATE"]
+    },
+    NATIONWIDE: {
+      reportCode: "VA",
+      participantHeaders: ["Participant Tax ID"],
+      sourceHeaders: ["Money Type Code Value", "Money Type Code"],
+      fundHeaders: ["Vehicle ID"],
+      percentHeaders: ["Participant Allocation Rate"]
+    },
+    EMPOWER: {
+      reportCode: "ALLOC",
+      participantHeaders: ["SSN"],
+      sourceHeaders: ["MONEY TYPE", "Money Type"],
+      fundHeaders: ["INVESTMENT OPTION", "Investment Option"],
+      percentHeaders: ["PERCENT", "Percent"]
+    },
+    ADP: {
+      reportCode: "PF",
+      participantHeaders: ["Social Security Number"],
+      sourceHeaders: ["Source ID"],
+      fundHeaders: ["Fund ID"],
+      percentHeaders: ["Contribution Allocation Percent"]
+    },
+    VOYA: {
+      reportCode: null,
+      participantHeaders: [],
+      sourceHeaders: [],
+      fundHeaders: [],
+      percentHeaders: []
+    },
+    FIDELITY: {
+      reportCode: null,
+      participantHeaders: [],
+      sourceHeaders: [],
+      fundHeaders: [],
+      percentHeaders: []
     }
   };
 
@@ -7487,24 +7771,59 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
     }
   }
 
+  function setMappingImportContent(title, note, summaryHtml, isLoaded) {
+    if (!mappingImportBtn) {
+      return;
+    }
+    mappingImportBtn.innerHTML =
+      "<span>Import</span>" +
+      "<strong>" + escapeHtml(title) + "</strong>" +
+      "<em>" + escapeHtml(note) + "</em>" +
+      (isLoaded ? "<span class=\"rail-check-badge\" aria-hidden=\"true\"><svg viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 10.5l3.2 3.2L16 5.9\"></path></svg></span>" : "") +
+      (summaryHtml || "");
+    mappingImportBtn.classList.toggle("is-loaded", !!isLoaded);
+  }
+
   function updateExportRailState() {
     var source = getSelectedSource();
     var isVoya = isFolderModeSource(source);
-    var hasMapping = !!currentMappingFileName;
-    if (mappingImportBtn) {
-      mappingImportBtn.classList.toggle("is-loaded", hasMapping);
-      mappingImportBtn.querySelector("strong").textContent = hasMapping ? "Mapping File Loaded" : "Upload Mapping File";
-      mappingImportBtn.querySelector("em").textContent = hasMapping ? currentMappingFileName : "Load source and fund mapping data before running downstream export transforms.";
-    }
-    if (mappingStatus) {
-      mappingStatus.innerHTML = hasMapping ?
-        "<strong>Mapping Status</strong>Loaded mapping file: " + escapeHtml(currentMappingFileName) :
-        "<strong>Mapping Status</strong>No mapping file loaded. FMC Export will stay locked until a mapping file is selected.";
+    var mappingState = currentMappingValidation;
+    var hasMappingFile = !!currentMappingFileName;
+    var hasValidatedMapping = !!(mappingState && mappingState.status === "valid");
+    var isMappingPending = !!(mappingState && mappingState.status === "pending");
+    if (hasValidatedMapping) {
+      setMappingImportContent(
+        "Mapping File Validated",
+        "Validated workbook ready for export",
+        "<div class=\"rail-summary\"><div class=\"rail-summary-line\"><span class=\"rail-summary-label\">Sources:</span><span class=\"rail-summary-chip\">" + String(mappingState.sourceCitCount || 0) + "</span></div><div class=\"rail-summary-line\"><span class=\"rail-summary-label\">Funds:</span><span class=\"rail-summary-chip\">" + String(mappingState.fundCitCount || 0) + "</span></div></div>",
+        true
+      );
+    } else if (isMappingPending) {
+      setMappingImportContent(
+        "Validating Mapping File",
+        "Reading workbook sheets and validating the required layout.",
+        "",
+        false
+      );
+    } else if (hasMappingFile) {
+      setMappingImportContent(
+        "Review Mapping File",
+        "Workbook selected. Validation is required before export.",
+        "",
+        false
+      );
+    } else {
+      setMappingImportContent(
+        "Upload Mapping File",
+        "Load and validate a Source Mapping / Fund Mapping workbook before enabling the Conv File export.",
+        "",
+        false
+      );
     }
     if (fmcExportBtn) {
-      fmcExportBtn.classList.toggle("is-disabled", !hasMapping);
-      fmcExportBtn.disabled = !hasMapping;
-      fmcExportBtn.title = hasMapping ? "Coming soon." : "Load a mapping file first.";
+      fmcExportBtn.classList.toggle("is-disabled", !hasValidatedMapping);
+      fmcExportBtn.disabled = !hasValidatedMapping;
+      fmcExportBtn.title = hasValidatedMapping ? "Coming soon." : (hasMappingFile ? "Validate the mapping workbook first." : "Load a mapping file first.");
     }
     if (mappingExportBtn) {
       mappingExportBtn.classList.add("is-disabled");
@@ -7800,9 +8119,496 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
     return sliceValue(line, source.recordStart, source.recordLength);
   }
 
-  function handleMappingFileChange() {
+  function normalizeWorkbookKey(value) {
+    return trimValue(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  }
+
+  function resolveZipPath(basePath, targetPath) {
+    var normalizedTarget = String(targetPath || "").replace(/^\/+/, "");
+    if (!normalizedTarget) {
+      return "";
+    }
+    if (normalizedTarget.indexOf("xl/") === 0) {
+      return normalizedTarget;
+    }
+    var combined = [];
+    var parts;
+    var i;
+    var segment;
+    var baseParts = String(basePath || "").split("/");
+    baseParts.pop();
+    parts = baseParts.concat(normalizedTarget.split("/"));
+    for (i = 0; i < parts.length; i += 1) {
+      segment = parts[i];
+      if (!segment || segment === ".") {
+        continue;
+      }
+      if (segment === "..") {
+        if (combined.length) {
+          combined.pop();
+        }
+        continue;
+      }
+      combined.push(segment);
+    }
+    return combined.join("/");
+  }
+
+  function readUint16LE(view, offset) {
+    return view.getUint16(offset, true);
+  }
+
+  function readUint32LE(view, offset) {
+    return view.getUint32(offset, true);
+  }
+
+  function findEndOfCentralDirectory(bytes) {
+    var signature = [0x50, 0x4b, 0x05, 0x06];
+    for (var i = bytes.length - 22; i >= 0; i -= 1) {
+      if (bytes[i] === signature[0] && bytes[i + 1] === signature[1] && bytes[i + 2] === signature[2] && bytes[i + 3] === signature[3]) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  async function inflateZipEntry(compressedBytes, method) {
+    if (method === 0) {
+      return compressedBytes.buffer.slice(compressedBytes.byteOffset, compressedBytes.byteOffset + compressedBytes.byteLength);
+    }
+    if (method !== 8) {
+      throw new Error("Unsupported XLSX compression method: " + method);
+    }
+    if (typeof DecompressionStream !== "function") {
+      throw new Error("This browser cannot decompress the selected XLSX workbook.");
+    }
+    var stream = new Blob([compressedBytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+    return new Response(stream).arrayBuffer();
+  }
+
+  async function readZipEntries(arrayBuffer) {
+    var bytes = new Uint8Array(arrayBuffer);
+    var view = new DataView(arrayBuffer);
+    var eocdOffset = findEndOfCentralDirectory(bytes);
+    var entries = {};
+    var decoder = new TextDecoder("utf-8");
+    var i;
+    if (eocdOffset < 0) {
+      throw new Error("The selected file is not a valid XLSX workbook.");
+    }
+    var totalEntries = readUint16LE(view, eocdOffset + 10);
+    var centralDirOffset = readUint32LE(view, eocdOffset + 16);
+    var cursor = centralDirOffset;
+    for (i = 0; i < totalEntries; i += 1) {
+      if (readUint32LE(view, cursor) !== 0x02014b50) {
+        throw new Error("Unable to read the XLSX archive contents.");
+      }
+      var method = readUint16LE(view, cursor + 10);
+      var compressedSize = readUint32LE(view, cursor + 20);
+      var nameLength = readUint16LE(view, cursor + 28);
+      var extraLength = readUint16LE(view, cursor + 30);
+      var commentLength = readUint16LE(view, cursor + 32);
+      var localOffset = readUint32LE(view, cursor + 42);
+      var fileName = decoder.decode(bytes.slice(cursor + 46, cursor + 46 + nameLength));
+      var localNameLength = readUint16LE(view, localOffset + 26);
+      var localExtraLength = readUint16LE(view, localOffset + 28);
+      var dataStart = localOffset + 30 + localNameLength + localExtraLength;
+      var dataEnd = dataStart + compressedSize;
+      var compressedBytes = bytes.slice(dataStart, dataEnd);
+      var uncompressedBytes = new Uint8Array(await inflateZipEntry(compressedBytes, method));
+      entries[fileName] = uncompressedBytes;
+      cursor += 46 + nameLength + extraLength + commentLength;
+    }
+    return entries;
+  }
+
+  function decodeZipText(entryBytes) {
+    if (!entryBytes) {
+      return "";
+    }
+    return new TextDecoder("utf-8").decode(entryBytes);
+  }
+
+  function parseXmlDocument(xmlText) {
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(xmlText, "application/xml");
+    if (doc.getElementsByTagName("parsererror").length) {
+      throw new Error("Unable to parse the XLSX workbook XML.");
+    }
+    return doc;
+  }
+
+  function xmlDecode(text) {
+    return String(text || "")
+      .replace(/&apos;/g, "'")
+      .replace(/&quot;/g, "\"")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&amp;/g, "&");
+  }
+
+  function getXmlAttribute(tagText, attrName) {
+    var match = new RegExp(attrName + "=\"([^\"]*)\"").exec(tagText);
+    return match ? xmlDecode(match[1]) : "";
+  }
+
+  function stripXmlTags(text) {
+    return xmlDecode(String(text || "").replace(/<[^>]*>/g, ""));
+  }
+
+  function parseWorkbookSheets(workbookText, relsText) {
+    var sheets = [];
+    var relMap = {};
+    var relRegex = /<Relationship\b[^>]*>/g;
+    var sheetRegex = /<sheet\b[^>]*>/g;
+    var relMatch;
+    var sheetMatch;
+    while ((relMatch = relRegex.exec(relsText || ""))) {
+      var relTag = relMatch[0];
+      relMap[getXmlAttribute(relTag, "Id")] = getXmlAttribute(relTag, "Target");
+    }
+    while ((sheetMatch = sheetRegex.exec(workbookText || ""))) {
+      var sheetTag = sheetMatch[0];
+      var relId = getXmlAttribute(sheetTag, "r:id");
+      var target = relMap[relId] || "";
+      sheets.push({
+        name: getXmlAttribute(sheetTag, "name"),
+        id: relId,
+        path: target ? resolveZipPath("xl/workbook.xml", target) : ""
+      });
+    }
+    return sheets;
+  }
+
+  function getColumnIndexFromRef(ref) {
+    var letters = String(ref || "").replace(/[0-9]/g, "");
+    var total = 0;
+    for (var i = 0; i < letters.length; i += 1) {
+      total = (total * 26) + (letters.charCodeAt(i) - 64);
+    }
+    return total - 1;
+  }
+
+  function parseSharedStrings(sharedStringsText) {
+    var values = [];
+    var match;
+    var cellRegex = /<si\b[^>]*>([\s\S]*?)<\/si>/g;
+    if (!sharedStringsText) {
+      return values;
+    }
+    while ((match = cellRegex.exec(sharedStringsText))) {
+      values.push(trimValue(stripXmlTags(match[1])));
+    }
+    return values;
+  }
+
+  function parseWorksheetRows(worksheetText, sharedStrings) {
+    var rows = [];
+    var rowRegex = /<row\b[^>]*>([\s\S]*?)<\/row>/g;
+    var cellRegex = /<c\b[^>]*>([\s\S]*?)<\/c>/g;
+    var rowMatch;
+    while ((rowMatch = rowRegex.exec(worksheetText || ""))) {
+      var rowXml = rowMatch[1];
+      cellRegex.lastIndex = 0;
+      var cellMatch;
+      var row = [];
+      while ((cellMatch = cellRegex.exec(rowXml))) {
+        var cellXml = cellMatch[0];
+        var ref = getXmlAttribute(cellXml, "r");
+        var colIndex = getColumnIndexFromRef(ref);
+        var type = getXmlAttribute(cellXml, "t") || "";
+        var value = "";
+        var vMatch = /<v>([\s\S]*?)<\/v>/.exec(cellMatch[0]);
+        var inlineMatch = /<t[^>]*>([\s\S]*?)<\/t>/.exec(cellMatch[0]);
+        if (type === "s" && vMatch) {
+          value = sharedStrings[parseInt(stripXmlTags(vMatch[1]), 10)] || "";
+        } else if (type === "inlineStr" && inlineMatch) {
+          value = trimValue(stripXmlTags(inlineMatch[1]));
+        } else if (vMatch) {
+          value = trimValue(stripXmlTags(vMatch[1]));
+        }
+        row[colIndex] = value;
+      }
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  function findBestWorkbookSheet(sheetNames, targetLabel) {
+    var targetNormalized = normalizeWorkbookKey(targetLabel);
+    var targetTokens = targetLabel.toLowerCase().split(/[^a-z0-9]+/g).filter(function (value) { return !!value; });
+    var bestName = "";
+    var bestScore = -1;
+    var i;
+    for (i = 0; i < sheetNames.length; i += 1) {
+      var sheetName = sheetNames[i];
+      var normalized = normalizeWorkbookKey(sheetName);
+      var score = 0;
+      var containsAll = true;
+      var j;
+      if (normalized === targetNormalized) {
+        score += 100;
+      }
+      if (normalized.indexOf(targetNormalized) !== -1) {
+        score += 50;
+      }
+      for (j = 0; j < targetTokens.length; j += 1) {
+        if (targetTokens[j] && normalized.indexOf(targetTokens[j]) === -1) {
+          containsAll = false;
+          break;
+        }
+      }
+      if (containsAll) {
+        score += 25;
+      }
+      if (normalized.indexOf("mapping") !== -1) {
+        score += 5;
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        bestName = sheetName;
+      }
+    }
+    return bestScore > 0 ? bestName : "";
+  }
+
+  function validateMappingSheet(sheetLabel, sheetRows, requiredHeaders) {
+    var errors = [];
+    var warnings = [];
+    var headers = sheetRows.length ? sheetRows[0] : [];
+    var i;
+    for (i = 0; i < requiredHeaders.length; i += 1) {
+      var requirement = requiredHeaders[i];
+      var actual = trimValue(headers[requirement.index] || "");
+      if (!actual) {
+        errors.push(sheetLabel + " is missing column " + requirement.letter + " (" + requirement.name + ").");
+      } else if (actual !== requirement.name) {
+        errors.push(sheetLabel + " column " + requirement.letter + " should be \"" + requirement.name + "\" but found \"" + actual + "\".");
+      }
+    }
+    return {
+      errors: errors,
+      warnings: warnings
+    };
+  }
+
+  function buildMappingRowIndex(rows, priorFundIndex) {
+    var byPriorCode = {};
+    var duplicates = [];
+    var i;
+    for (i = 0; i < rows.length; i += 1) {
+      var row = rows[i];
+      var priorCode = trimValue(row[priorFundIndex] || "");
+      if (!priorCode) {
+        continue;
+      }
+      if (byPriorCode[priorCode]) {
+        duplicates.push(priorCode);
+        continue;
+      }
+      byPriorCode[priorCode] = row;
+    }
+    return {
+      byPriorCode: byPriorCode,
+      duplicates: duplicates
+    };
+  }
+
+  function buildValidatedMappingState(payload, fileName, sourceSheetName, fundSheetName, sourceRows, fundRows, sourceMeta, fundMeta, warnings) {
+    return {
+      status: "valid",
+      fileName: fileName,
+      workbookSheets: {
+        source: sourceSheetName,
+        fund: fundSheetName
+      },
+      sourceRows: sourceRows,
+      fundRows: fundRows,
+      sourceCount: sourceRows.length,
+      fundCount: fundRows.length,
+      sourceCitCount: sourceMeta.citCount,
+      fundCitCount: fundMeta.citCount,
+      sourceRowIndex: sourceMeta.rowIndex,
+      fundRowIndex: fundMeta.rowIndex,
+      sourceHeaders: sourceMeta.headers,
+      fundHeaders: fundMeta.headers,
+      sourceWarnings: sourceMeta.warnings,
+      fundWarnings: fundMeta.warnings,
+      warnings: warnings || [],
+      payload: payload
+    };
+  }
+
+  async function validateMappingWorkbook(fileBuffer, fileName) {
+    var entries = await readZipEntries(fileBuffer);
+    var workbookXml = decodeZipText(entries["xl/workbook.xml"]);
+    var workbookRelsXml = decodeZipText(entries["xl/_rels/workbook.xml.rels"]);
+    var sharedStrings = parseSharedStrings(decodeZipText(entries["xl/sharedStrings.xml"]));
+    var sheets = parseWorkbookSheets(workbookXml, workbookRelsXml);
+    var i;
+
+    var sourceSheetName = findBestWorkbookSheet(sheets.map(function (sheet) { return sheet.name; }), "Source Mapping");
+    var fundSheetName = findBestWorkbookSheet(sheets.map(function (sheet) { return sheet.name; }), "Fund Mapping");
+    var errors = [];
+    var warnings = [];
+    var sourceSheet;
+    var fundSheet;
+    var sourceRows;
+    var fundRows;
+    var sourceValidation;
+    var fundValidation;
+    var sourceMeta;
+    var fundMeta;
+
+    if (!sourceSheetName) {
+      errors.push("Missing Source Mapping tab.");
+    }
+    if (!fundSheetName) {
+      errors.push("Missing Fund Mapping tab.");
+    }
+    if (errors.length) {
+      return {
+        status: "invalid",
+        fileName: fileName,
+        errors: errors,
+        warnings: warnings
+      };
+    }
+
+    sourceSheet = null;
+    fundSheet = null;
+    for (i = 0; i < sheets.length; i += 1) {
+      if (sheets[i].name === sourceSheetName) {
+        sourceSheet = sheets[i];
+      }
+      if (sheets[i].name === fundSheetName) {
+        fundSheet = sheets[i];
+      }
+    }
+    if (!sourceSheet || !fundSheet) {
+      return {
+        status: "invalid",
+        fileName: fileName,
+        errors: ["Unable to resolve workbook tabs for validation."],
+        warnings: warnings
+      };
+    }
+
+    sourceRows = parseWorksheetRows(decodeZipText(entries[sourceSheet.path]), sharedStrings);
+    fundRows = parseWorksheetRows(decodeZipText(entries[fundSheet.path]), sharedStrings);
+
+    sourceValidation = validateMappingSheet("Source Mapping", sourceRows, [
+      { index: 0, letter: "A", name: "Filter" },
+      { index: 1, letter: "B", name: "Previous Source Code" },
+      { index: 2, letter: "C", name: "Previous Source Name" },
+      { index: 3, letter: "D", name: "Previous Source Description" },
+      { index: 8, letter: "I", name: "Source I" }
+    ]);
+    fundValidation = validateMappingSheet("Fund Mapping", fundRows, [
+      { index: 0, letter: "A", name: "Filter" },
+      { index: 1, letter: "B", name: "Previous Fund Code" },
+      { index: 2, letter: "C", name: "TA Fund Code" },
+      { index: 3, letter: "D", name: "Ratio" },
+      { index: 4, letter: "E", name: "Split" },
+      { index: 5, letter: "F", name: "Takeover Amount" },
+      { index: 6, letter: "G", name: "Total Amount" },
+      { index: 7, letter: "H", name: "Ref Number" },
+      { index: 16, letter: "Q", name: "Fund Descriptor Code" },
+      { index: 19, letter: "T", name: "Registering Y/N" }
+    ]);
+
+    if (sourceValidation.errors.length) {
+      errors = errors.concat(sourceValidation.errors);
+    }
+    if (fundValidation.errors.length) {
+      errors = errors.concat(fundValidation.errors);
+    }
+
+    sourceMeta = {
+      headers: sourceRows.length ? sourceRows[0] : [],
+      warnings: sourceValidation.warnings,
+      citCount: 0,
+      rowIndex: 0
+    };
+    fundMeta = {
+      headers: fundRows.length ? fundRows[0] : [],
+      warnings: fundValidation.warnings,
+      citCount: 0,
+      rowIndex: 0
+    };
+
+    if (!errors.length) {
+      var sourceRowIndex = buildMappingRowIndex(sourceRows.slice(1), 1);
+      var fundRowIndex = buildMappingRowIndex(fundRows.slice(1), 2);
+      for (i = 1; i < sourceRows.length; i += 1) {
+        if (trimValue(sourceRows[i][0] || "") === "CIT") {
+          sourceMeta.citCount += 1;
+        }
+      }
+      for (i = 1; i < fundRows.length; i += 1) {
+        if (trimValue(fundRows[i][0] || "") === "CIT") {
+          fundMeta.citCount += 1;
+        }
+      }
+      sourceMeta.rowIndex = sourceRowIndex;
+      fundMeta.rowIndex = fundRowIndex;
+      warnings = warnings.concat(sourceRowIndex.duplicates.length ? ["Duplicate Source Mapping previous source code(s): " + sourceRowIndex.duplicates.join(", ")] : []);
+      warnings = warnings.concat(fundRowIndex.duplicates.length ? ["Duplicate Fund Mapping previous fund code(s): " + fundRowIndex.duplicates.join(", ")] : []);
+      return buildValidatedMappingState(
+        null,
+        fileName,
+        sourceSheetName,
+        fundSheetName,
+        sourceRows,
+        fundRows,
+        sourceMeta,
+        fundMeta,
+        warnings
+      );
+    }
+
+    return {
+      status: "invalid",
+      fileName: fileName,
+      errors: errors,
+      warnings: warnings,
+      workbookSheets: {
+        source: sourceSheetName,
+        fund: fundSheetName
+      }
+    };
+  }
+
+  async function handleMappingFileChange() {
     var file = mappingFileInput && mappingFileInput.files && mappingFileInput.files[0];
     currentMappingFileName = file ? file.name : "";
+    currentMappingValidation = null;
+    if (!file) {
+      updateExportRailState();
+      return;
+    }
+    currentMappingValidation = { status: "pending", fileName: file.name };
+    updateExportRailState();
+    try {
+      var buffer = file.arrayBuffer ? await file.arrayBuffer() : await new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          resolve(event.target.result);
+        };
+        reader.onerror = function () {
+          reject(new Error("Unable to read the selected mapping workbook."));
+        };
+        reader.readAsArrayBuffer(file);
+      });
+      currentMappingValidation = await validateMappingWorkbook(buffer, file.name);
+    } catch (err) {
+      currentMappingValidation = {
+        status: "invalid",
+        fileName: file.name,
+        errors: [err && err.message ? err.message : "Unable to validate the selected mapping workbook."],
+        warnings: []
+      };
+    }
     updateExportRailState();
   }
 
@@ -7951,6 +8757,11 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       }
     }
     return indices;
+  }
+
+  function getHeaderValueByCandidates(row, layouts, headerCandidates) {
+    var index = getHeaderIndex(layouts, headerCandidates || []);
+    return index > -1 ? trimValue(row[index] || "") : "";
   }
 
   function parseAmountValue(raw) {
@@ -8431,10 +9242,12 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
     return "<c r=\"" + ref + "\" t=\"str\" s=\"" + styleId + "\"><f>" + escapeXml(formula) + "</f><v>" + escapeXml(text) + "</v></c>";
   }
 
-  function worksheetXml(rows, columns) {
+  function worksheetXml(rows, columns, options) {
     var colsXml = columns && columns.length ? "<cols>" + columns.join("") + "</cols>" : "";
+    var sheetViewsXml = options && options.freezeTopRow ? "<sheetViews><sheetView workbookViewId=\"0\"><pane ySplit=\"1\" topLeftCell=\"A2\" activePane=\"bottomLeft\" state=\"frozen\"/><selection pane=\"bottomLeft\" activeCell=\"A2\" sqref=\"A2\"/></sheetView></sheetViews>" : "";
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
       "<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">" +
+      sheetViewsXml +
       colsXml +
       "<sheetData>" + rows.join("") + "</sheetData>" +
       "</worksheet>";
@@ -8503,18 +9316,137 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       name: "Balance Export",
       path: "xl/worksheets/sheet2.xml",
       content: worksheetXml(exportRows, [
-        "<col min=\"1\" max=\"1\" width=\"18\" customWidth=\"1\"/>",
-        "<col min=\"2\" max=\"2\" width=\"12\" customWidth=\"1\"/>",
-        "<col min=\"3\" max=\"3\" width=\"16\" customWidth=\"1\"/>",
-        "<col min=\"4\" max=\"4\" width=\"16\" customWidth=\"1\"/>",
-        "<col min=\"5\" max=\"5\" width=\"18\" customWidth=\"1\"/>",
-        "<col min=\"6\" max=\"6\" width=\"14\" customWidth=\"1\"/>"
-      ])
+        "<col min=\"1\" max=\"1\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"2\" max=\"2\" width=\"12\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"3\" max=\"3\" width=\"16\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"4\" max=\"4\" width=\"16\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"5\" max=\"5\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"6\" max=\"6\" width=\"14\" bestFit=\"1\" customWidth=\"1\"/>"
+      ], { freezeTopRow: true })
     };
   }
 
-  function buildWorkbookFiles(result, reportCodes, caseNumber) {
+  function buildConvFileSheet(result, caseNumber, mappingState, sheetNumber) {
     var source = getSelectedSource();
+    var summary;
+    var mappingIndex;
+    var exportRows = [];
+    var rows;
+    var i;
+    var rowNumber;
+    if (!source || !mappingState || mappingState.status !== "valid") {
+      return null;
+    }
+    summary = buildSummaryTotals(result);
+    if (!summary.fundTotals || !summary.fundTotals.length) {
+      return null;
+    }
+
+    rows = mappingState.fundRows || [];
+    mappingIndex = buildMappingRowIndex(rows.slice(1), 2);
+
+    exportRows.push("<row r=\"1\">" +
+      textCell("A1", "Case Number", 6) +
+      textCell("B1", "Prior Fund Code", 6) +
+      textCell("C1", "TA Fund Code", 6) +
+      textCell("D1", "Ref Number", 6) +
+      textCell("E1", "Total Dollars", 6) +
+      "</row>");
+
+    for (i = 0; i < summary.fundTotals.length; i += 1) {
+      var item = summary.fundTotals[i];
+      var mappingRow = mappingIndex.byPriorCode[item.key] || null;
+      var priorFundCode = mappingRow ? trimValue(mappingRow[1] || "") : "";
+      var taFundCode = mappingRow ? trimValue(mappingRow[2] || "") : "";
+      var refNumber = "";
+      var rowStyle = (mappingRow && taFundCode) ? 1 : 8;
+      var amountStyle = (mappingRow && taFundCode) ? 3 : 8;
+      rowNumber = i + 2;
+      exportRows.push("<row r=\"" + rowNumber + "\">" +
+        textCell("A" + rowNumber, caseNumber, rowStyle) +
+        textCell("B" + rowNumber, priorFundCode, rowStyle) +
+        textCell("C" + rowNumber, taFundCode || "UNMAPPED", rowStyle) +
+        textCell("D" + rowNumber, refNumber, rowStyle) +
+        numberCell("E" + rowNumber, String(Number(item.value || 0)), amountStyle) +
+        "</row>");
+    }
+
+    return {
+      name: "CONV FILE",
+      path: "xl/worksheets/sheet" + sheetNumber + ".xml",
+      content: worksheetXml(exportRows, [
+        "<col min=\"1\" max=\"1\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"2\" max=\"2\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"3\" max=\"3\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"4\" max=\"4\" width=\"16\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"5\" max=\"5\" width=\"14\" bestFit=\"1\" customWidth=\"1\"/>"
+      ], { freezeTopRow: true })
+    };
+  }
+
+  function buildCITElectionsSheet(result, caseNumber, sheetNumber) {
+    var source = getSelectedSource();
+    var spec;
+    var layouts;
+    var rows;
+    var exportRows = [];
+    var i;
+    if (!source) {
+      return null;
+    }
+    spec = CIT_ELECTION_RULES[source.key];
+    if (!spec) {
+      return null;
+    }
+
+    layouts = spec.reportCode ? result.layoutsByReport[spec.reportCode] : null;
+    rows = spec.reportCode ? result.grouped[spec.reportCode] : null;
+
+    exportRows.push("<row r=\"1\">" +
+      textCell("A1", "Case Number", 6) +
+      textCell("B1", "SSN", 6) +
+      textCell("C1", "Source ID", 6) +
+      textCell("D1", "Fund ID", 6) +
+      textCell("E1", "Percent", 6) +
+      textCell("F1", "Default", 6) +
+      "</row>");
+
+    if (layouts && rows && rows.length) {
+      for (i = 0; i < rows.length; i += 1) {
+        var currentRow = rows[i] || [];
+        var ssnValue = getHeaderValueByCandidates(currentRow, layouts, spec.participantHeaders);
+        var sourceValue = getHeaderValueByCandidates(currentRow, layouts, spec.sourceHeaders);
+        var fundValue = getHeaderValueByCandidates(currentRow, layouts, spec.fundHeaders);
+        var percentValue = getHeaderValueByCandidates(currentRow, layouts, spec.percentHeaders);
+        var rowNumber = i + 2;
+        exportRows.push("<row r=\"" + rowNumber + "\">" +
+          textCell("A" + rowNumber, caseNumber, 1) +
+          textCell("B" + rowNumber, ssnValue, 1) +
+          textCell("C" + rowNumber, sourceValue, 1) +
+          textCell("D" + rowNumber, fundValue, 1) +
+          (percentValue ? numberCell("E" + rowNumber, String(parseAmountValue(percentValue)), 3) : textCell("E" + rowNumber, "", 1)) +
+          textCell("F" + rowNumber, "N", 1) +
+          "</row>");
+      }
+    }
+
+    return {
+      name: "CIT Elections",
+      path: "xl/worksheets/sheet" + sheetNumber + ".xml",
+      content: worksheetXml(exportRows, [
+        "<col min=\"1\" max=\"1\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"2\" max=\"2\" width=\"16\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"3\" max=\"3\" width=\"16\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"4\" max=\"4\" width=\"16\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"5\" max=\"5\" width=\"12\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"6\" max=\"6\" width=\"12\" bestFit=\"1\" customWidth=\"1\"/>"
+      ], { freezeTopRow: true })
+    };
+  }
+
+  function buildWorkbookFiles(result, reportCodes, caseNumber, mappingState) {
+    var source = getSelectedSource();
+    var summary = buildSummaryTotals(result);
     if (!source) {
       return [];
     }
@@ -8526,6 +9458,11 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
     var workbookRels = [];
     var i;
     var sheetIndex = 1;
+    var reportTotalCount = 0;
+    var reportNameWidth = 28;
+    var citSpec = CIT_ELECTION_RULES[source.key] || null;
+    var citIncludeSheet = !!citSpec && (!reportCodes || !reportCodes.length || !citSpec.reportCode || reportCodes.indexOf(citSpec.reportCode) !== -1);
+    var citRowCount = (citSpec && citSpec.reportCode && result.grouped[citSpec.reportCode]) ? result.grouped[citSpec.reportCode].length : 0;
 
     if (reportCodes && reportCodes.length) {
       for (i = 0; i < reportCodes.length; i += 1) {
@@ -8537,21 +9474,39 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       includedReports = source.reports.slice(0);
     }
 
-    titleRows.push("<row r=\"1\">" + textCell("A1", "Fixed-Width Report Extraction Console", 5) + textCell("B1", "", 1) + textCell("C1", "", 1) + "</row>");
+    for (i = 0; i < includedReports.length; i += 1) {
+      var reportCount = result.grouped[includedReports[i]] ? result.grouped[includedReports[i]].length : 0;
+      reportTotalCount += reportCount;
+      reportNameWidth = Math.max(reportNameWidth, String(getReportName(source, includedReports[i]) || includedReports[i]).length + 6);
+    }
+
+    titleRows.push("<row r=\"1\" ht=\"26\" customHeight=\"1\">" + textCell("A1", "Fixed-Width Report Extraction Console", 5) + textCell("B1", "Export Summary", 5) + textCell("C1", "", 1) + textCell("D1", "", 1) + "</row>");
     titleRows.push("<row r=\"2\">" + textCell("A2", "Data Source", 6) + textCell("B2", result.sourceLabel, 1) + "</row>");
     titleRows.push("<row r=\"3\">" + textCell("A3", "Input File", 6) + textCell("B3", result.currentFileName || "Not Provided", 1) + "</row>");
-    titleRows.push("<row r=\"4\">" + textCell("A4", "Total Lines", 6) + numberCell("B4", String(result.totalLines), 2) + "</row>");
-    titleRows.push("<row r=\"6\">" + textCell("A6", "Report Code", 6) + textCell("B6", "Report Name", 6) + textCell("C6", "Row Count", 6) + textCell("D6", "Open Sheet", 6) + "</row>");
+    titleRows.push("<row r=\"4\">" + textCell("A4", "Included Reports", 6) + numberCell("B4", String(includedReports.length), 9) + textCell("C4", "Total Records", 6) + numberCell("D4", String(reportTotalCount), 9) + "</row>");
+    titleRows.push("<row r=\"5\">" + textCell("A5", "Mapping Summary", 6) + textCell("B5", (mappingState && mappingState.status === "valid" && summary.fundTotals && summary.fundTotals.length) ? String(summary.fundTotals.length) + " CONV FILE row(s)" : "Not included", 10) + textCell("C5", "Mapping File", 6) + textCell("D5", (mappingState && mappingState.status === "valid") ? currentMappingFileName : "No validated mapping workbook", 10) + "</row>");
+    titleRows.push("<row r=\"6\">" + textCell("A6", "Quick Record Counts", 6) + textCell("B6", "", 1) + textCell("C6", "", 1) + textCell("D6", "", 1) + "</row>");
+    titleRows.push("<row r=\"7\">" + textCell("A7", "Report Code", 6) + textCell("B7", "Report Name", 6) + textCell("C7", "Row Count", 6) + textCell("D7", "Open Sheet", 6) + "</row>");
 
     for (i = 0; i < includedReports.length; i += 1) {
       var code = includedReports[i];
       var count = result.grouped[code] ? result.grouped[code].length : 0;
-      var titleRowNumber = 7 + i;
+      var titleRowNumber = 8 + i;
       titleRows.push("<row r=\"" + titleRowNumber + "\">" +
         textCell("A" + titleRowNumber, code, 1) +
         textCell("B" + titleRowNumber, getReportName(source, code), 1) +
-        numberCell("C" + titleRowNumber, String(count), 2) +
+        numberCell("C" + titleRowNumber, String(count), 9) +
         formulaCell("D" + titleRowNumber, "HYPERLINK(\"#'" + code + "'!A1\",\"Open\")", "Open", 7) +
+        "</row>");
+    }
+
+    if (citSpec && citIncludeSheet) {
+      var citTitleRowNumber = 8 + includedReports.length;
+      titleRows.push("<row r=\"" + citTitleRowNumber + "\">" +
+        textCell("A" + citTitleRowNumber, "CIT", 1) +
+        textCell("B" + citTitleRowNumber, "CIT Elections", 1) +
+        numberCell("C" + citTitleRowNumber, String(citRowCount), 9) +
+        formulaCell("D" + citTitleRowNumber, "HYPERLINK(\"#'CIT Elections'!A1\",\"Open\")", "Open", 7) +
         "</row>");
     }
 
@@ -8561,10 +9516,10 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
     sheetFiles.push({
       path: "xl/worksheets/sheet1.xml",
       content: worksheetXml(titleRows, [
-        "<col min=\"1\" max=\"1\" width=\"24\" customWidth=\"1\"/>",
-        "<col min=\"2\" max=\"2\" width=\"28\" bestFit=\"1\" customWidth=\"1\"/>",
-        "<col min=\"3\" max=\"3\" width=\"14\" customWidth=\"1\"/>",
-        "<col min=\"4\" max=\"4\" width=\"14\" customWidth=\"1\"/>"
+        "<col min=\"1\" max=\"1\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"2\" max=\"2\" width=\"" + Math.max(32, reportNameWidth) + "\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"3\" max=\"3\" width=\"14\" bestFit=\"1\" customWidth=\"1\"/>",
+        "<col min=\"4\" max=\"4\" width=\"16\" bestFit=\"1\" customWidth=\"1\"/>"
       ])
     });
 
@@ -8577,6 +9532,30 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       sheetFiles.push({
         path: customSheet.path,
         content: customSheet.content
+      });
+    }
+
+    var convSheet = buildConvFileSheet(result, caseNumber, mappingState, sheetIndex + 1);
+    if (convSheet) {
+      sheetIndex += 1;
+      sheetDefs.push({ name: convSheet.name, path: convSheet.path });
+      workbookRels.push("<Relationship Id=\"rId" + sheetIndex + "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/" + convSheet.path.split("/").pop() + "\"/>");
+      contentOverrides.push("<Override PartName=\"/" + convSheet.path + "\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
+      sheetFiles.push({
+        path: convSheet.path,
+        content: convSheet.content
+      });
+    }
+
+    var citSheet = buildCITElectionsSheet(result, caseNumber, sheetIndex + 1);
+    if (citSheet && citIncludeSheet) {
+      sheetIndex += 1;
+      sheetDefs.push({ name: citSheet.name, path: citSheet.path });
+      workbookRels.push("<Relationship Id=\"rId" + sheetIndex + "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/" + citSheet.path.split("/").pop() + "\"/>");
+      contentOverrides.push("<Override PartName=\"/" + citSheet.path + "\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
+      sheetFiles.push({
+        path: citSheet.path,
+        content: citSheet.content
       });
     }
 
@@ -8618,8 +9597,8 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       sheetFiles.push({
         path: sheetPath,
         content: worksheetXml(rowXml, [
-          "<col min=\"1\" max=\"" + fields.length + "\" width=\"18\" customWidth=\"1\"/>"
-        ])
+          "<col min=\"1\" max=\"" + fields.length + "\" width=\"18\" bestFit=\"1\" customWidth=\"1\"/>"
+        ], { freezeTopRow: true })
       });
     }
 
@@ -8635,7 +9614,7 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       { path: "docProps/app.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\"><Application>Microsoft Excel</Application></Properties>" },
       { path: "xl/workbook.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><sheets>" + workbookSheets.join("") + "</sheets></workbook>" },
       { path: "xl/_rels/workbook.xml.rels", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" + workbookRels.join("") + "<Relationship Id=\"rId" + (sheetDefs.length + 1) + "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/></Relationships>" },
-      { path: "xl/styles.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><fonts count=\"3\"><font><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"16\"/><name val=\"Calibri\"/></font></fonts><fills count=\"3\"><fill><patternFill patternType=\"none\"/></fill><fill><patternFill patternType=\"gray125\"/></fill><fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFD9ECFF\"/><bgColor indexed=\"64\"/></patternFill></fill></fills><borders count=\"1\"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/></cellStyleXfs><cellXfs count=\"8\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"14\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"2\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"1\" fillId=\"2\" borderId=\"0\" xfId=\"0\" applyFont=\"1\" applyFill=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf></cellXfs><cellStyles count=\"1\"><cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/></cellStyles></styleSheet>" }
+      { path: "xl/styles.xml", content: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><fonts count=\"3\"><font><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"16\"/><name val=\"Calibri\"/></font></fonts><fills count=\"4\"><fill><patternFill patternType=\"none\"/></fill><fill><patternFill patternType=\"gray125\"/></fill><fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFD9ECFF\"/><bgColor indexed=\"64\"/></patternFill></fill><fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFFFD9D9\"/><bgColor indexed=\"64\"/></patternFill></fill></fills><borders count=\"2\"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style=\"thin\"><color rgb=\"FF7F7F7F\"/></left><right style=\"thin\"><color rgb=\"FF7F7F7F\"/></right><top style=\"thin\"><color rgb=\"FF7F7F7F\"/></top><bottom style=\"thin\"><color rgb=\"FF7F7F7F\"/></bottom><diagonal/></border></borders><cellStyleXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/></cellStyleXfs><cellXfs count=\"11\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"14\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"2\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"1\" fillId=\"2\" borderId=\"1\" xfId=\"0\" applyFont=\"1\" applyFill=\"1\" applyBorder=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"3\" borderId=\"1\" xfId=\"0\" applyFill=\"1\" applyBorder=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"1\" xfId=\"0\" applyNumberFormat=\"1\" applyBorder=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"1\" xfId=\"0\" applyBorder=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\"/></xf></cellXfs><cellStyles count=\"1\"><cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/></cellStyles></styleSheet>" }
     ].concat(sheetFiles);
   }
 
@@ -8774,7 +9753,7 @@ body.theme-pearl .report-table-wrap td{color:#2f2822}
       }
       return;
     }
-    var files = buildWorkbookFiles(lastParseResult, reportCodes, caseState.formatted);
+    var files = buildWorkbookFiles(lastParseResult, reportCodes, caseState.formatted, currentMappingValidation);
     triggerWorkbookDownload(
       files,
       safeFilePart(caseState.formatted, "Case Number") + " - " + safeFilePart(lastParseResult.planName, "Plan Name") + " - " + suffix + ".xlsx"
