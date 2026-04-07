@@ -1,534 +1,833 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Consultant Toolkit</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<style>
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: "Manrope", sans-serif;
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 5%,  rgba(62,100,130,0.22) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 90% 90%, rgba(80,100,170,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 55% 45%, rgba(30,80,90,0.14) 0%, transparent 55%),
-    linear-gradient(160deg, #070e1f 0%, #0b1428 40%, #080d22 75%, #040a18 100%);
-  overflow-x: hidden;
-}
-
-/* ── ANIMATED BACKGROUND BLOBS ── */
-.blob {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(100px);
-  pointer-events: none;
-  z-index: 0;
-  animation: blobDrift 14s ease-in-out infinite alternate;
-}
-@keyframes blobDrift {
-  0%   { transform: translate(0px, 0px) scale(1); }
-  100% { transform: translate(28px, -18px) scale(1.07); }
-}
-
-/* ── PAGE WRAPPER ── */
-.page {
-  position: relative;
-  z-index: 10;
-  width: min(1260px, calc(100vw - 32px));
-  margin: 0 auto;
-  padding: 28px 0 48px;
-}
-
-/* ── HERO ── */
-.hero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 34px;
-  padding: 52px 56px 46px;
-  background: rgba(255,255,255,0.053);
-  backdrop-filter: blur(36px) saturate(200%) brightness(1.04);
-  -webkit-backdrop-filter: blur(36px) saturate(200%) brightness(1.04);
-  border: 1px solid rgba(255,255,255,0.115);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.26),
-    inset 0 -1px 0 rgba(0,0,0,0.30),
-    inset 1px 0 0 rgba(255,255,255,0.07),
-    inset -1px 0 0 rgba(0,0,0,0.07),
-    0 36px 88px rgba(0,0,0,0.52),
-    0 10px 28px rgba(0,0,0,0.32),
-    0 0 0 1px rgba(255,255,255,0.035);
-}
-
-/* Diagonal specular sheen */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    132deg,
-    rgba(255,255,255,0.20) 0%,
-    rgba(255,255,255,0.07) 20%,
-    rgba(255,255,255,0.01) 40%,
-    transparent 55%
-  );
-  pointer-events: none;
-  border-radius: inherit;
-}
-
-/* Hero accent glow */
-.hero::after {
-  content: "";
-  position: absolute;
-  top: -60px; right: -40px;
-  width: 360px; height: 360px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(98,146,158,0.26), transparent 68%);
-  pointer-events: none;
-}
-
-.eyebrow {
-  position: relative;
-  z-index: 1;
-  margin-bottom: 18px;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(130,190,210,0.78);
-}
-
-.hero h1 {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  max-width: 860px;
-  font-size: clamp(38px, 5.8vw, 70px);
-  line-height: 0.94;
-  letter-spacing: -0.052em;
-  color: rgba(240,248,255,0.96);
-  font-weight: 800;
-}
-
-.hero h1 span {
-  background: linear-gradient(132deg, #8ecfdf 0%, #62929e 40%, #a2d8e8 80%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-copy {
-  position: relative;
-  z-index: 1;
-  max-width: 740px;
-  margin-top: 22px;
-  color: rgba(170,198,218,0.70);
-  font-size: 15.5px;
-  line-height: 1.88;
-}
-
-/* ── TOOL GRID ── */
-.tools {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 20px;
-  margin-top: 22px;
-}
-
-/* ── TOOL CARD ── */
-.tool-card {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  min-height: 272px;
-  padding: 28px 30px;
-  border-radius: 28px;
-  background: rgba(255,255,255,0.055);
-  backdrop-filter: blur(32px) saturate(180%) brightness(1.02);
-  -webkit-backdrop-filter: blur(32px) saturate(180%) brightness(1.02);
-  border: 1px solid rgba(255,255,255,0.096);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.23),
-    inset 0 -1px 0 rgba(0,0,0,0.20),
-    inset 1px 0 0 rgba(255,255,255,0.07),
-    inset -1px 0 0 rgba(0,0,0,0.06),
-    0 28px 60px rgba(0,0,0,0.42),
-    0 10px 22px rgba(0,0,0,0.24),
-    0 0 0 1px rgba(255,255,255,0.032),
-    0 0 50px var(--outer-glow, transparent);
-  transition: box-shadow 0.18s ease, border-color 0.18s ease;
-  will-change: transform;
-  transform-style: preserve-3d;
-}
-
-/* Specular diagonal sheen — main highlight */
-.tool-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    140deg,
-    rgba(255,255,255,0.21) 0%,
-    rgba(255,255,255,0.07) 18%,
-    rgba(255,255,255,0.015) 36%,
-    transparent 52%
-  );
-  pointer-events: none;
-  z-index: 0;
-  border-radius: inherit;
-}
-
-/* Accent color glow — top-right corner */
-.tool-card::after {
-  content: "";
-  position: absolute;
-  top: -35px; right: -35px;
-  width: 160px; height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-glow, rgba(98,146,158,0.40)), transparent 68%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.tool-card:hover {
-  border-color: rgba(255,255,255,0.15);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.30),
-    inset 0 -1px 0 rgba(0,0,0,0.22),
-    inset 1px 0 0 rgba(255,255,255,0.09),
-    inset -1px 0 0 rgba(0,0,0,0.06),
-    0 36px 80px rgba(0,0,0,0.52),
-    0 14px 32px rgba(0,0,0,0.30),
-    0 0 0 1px rgba(255,255,255,0.06),
-    0 0 80px var(--outer-glow, transparent);
-}
-
-/* ── ICON ── */
-.tool-top {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.tool-icon {
-  position: relative;
-  overflow: hidden;
-  width: 62px; height: 62px;
-  flex: 0 0 62px;
-  display: grid;
-  place-items: center;
-  border-radius: 20px;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: rgba(240,250,255,0.95);
-  background: linear-gradient(
-    155deg,
-    rgba(255,255,255,0.22) 0%,
-    rgba(255,255,255,0.08) 50%,
-    rgba(0,0,0,0.04) 100%
-  );
-  border: 1px solid rgba(255,255,255,0.20);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.40),
-    inset 0 -1.5px 0 rgba(0,0,0,0.18),
-    0 10px 24px rgba(0,0,0,0.26),
-    0 0 18px var(--accent-glow, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Icon inner sheen */
-.tool-icon::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(138deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.04) 45%, transparent 65%);
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.tool-card h2 {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-size: 22px;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  color: rgba(236,248,255,0.95);
-  font-weight: 700;
-}
-
-.tool-card p {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.88;
-  color: rgba(170,200,220,0.62);
-}
-
-/* ── LINKS ── */
-.tool-links {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: auto;
-  padding-top: 24px;
-}
-
-.tool-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 9px 17px;
-  border-radius: 13px;
-  text-decoration: none;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(195,220,238,0.82);
-  background: rgba(255,255,255,0.072);
-  border: 1px solid rgba(255,255,255,0.13);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,0.20),
-    inset 0 -1px 0 rgba(0,0,0,0.14),
-    0 6px 14px rgba(0,0,0,0.20);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
-}
-
-.tool-link:hover {
-  transform: translateY(-2px);
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.22);
-  color: rgba(220,242,255,0.96);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,0.26),
-    inset 0 -1px 0 rgba(0,0,0,0.14),
-    0 10px 22px rgba(0,0,0,0.26);
-}
-
-.tool-link.primary {
-  color: rgba(255,255,255,0.97);
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--accent) 72%, white 28%) 0%,
-    var(--accent) 60%,
-    color-mix(in srgb, var(--accent) 88%, black 12%) 100%
-  );
-  border-color: rgba(255,255,255,0.16);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.32),
-    inset 0 -1.5px 0 rgba(0,0,0,0.25),
-    0 8px 22px color-mix(in srgb, var(--accent) 50%, transparent),
-    0 2px 6px rgba(0,0,0,0.28);
-}
-
-.tool-link.primary:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.10) saturate(1.1);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.36),
-    inset 0 -1.5px 0 rgba(0,0,0,0.25),
-    0 14px 32px color-mix(in srgb, var(--accent) 60%, transparent),
-    0 4px 12px rgba(0,0,0,0.34);
-}
-
-/* ── CARD COLOR TOKENS ── */
-.tool-site    { --accent: #546a7b; --accent-glow: rgba(84,106,123,0.42);  --outer-glow: rgba(84,106,123,0.10); }
-.tool-main    { --accent: #62929e; --accent-glow: rgba(98,146,158,0.48);  --outer-glow: rgba(98,146,158,0.13); }
-.tool-payroll { --accent: #6e8f73; --accent-glow: rgba(110,143,115,0.44); --outer-glow: rgba(110,143,115,0.11); }
-.tool-parser  { --accent: #8d6d53; --accent-glow: rgba(141,109,83,0.42);  --outer-glow: rgba(141,109,83,0.10); }
-.tool-intake  { --accent: #6a78a6; --accent-glow: rgba(106,120,166,0.48); --outer-glow: rgba(106,120,166,0.13); }
-.tool-amex    { --accent: #2f7d6b; --accent-glow: rgba(47,125,107,0.48);  --outer-glow: rgba(47,125,107,0.13); }
-.tool-forma   { --accent: #9a5f3e; --accent-glow: rgba(154,95,62,0.44);   --outer-glow: rgba(154,95,62,0.11); }
-.tool-achieve { --accent: #b8860b; --accent-glow: rgba(184,134,11,0.48);  --outer-glow: rgba(184,134,11,0.13); }
-
-/* ── FOOTER ── */
-.footer {
-  padding: 26px 4px 0;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(120,155,180,0.38);
-}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 980px) {
-  .tools { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 720px) {
-  .hero { padding: 30px 24px 28px; border-radius: 26px; }
-  .hero h1 { font-size: 40px; }
-  .tool-card { min-height: auto; padding: 22px 22px; border-radius: 22px; }
-  .tool-top { align-items: flex-start; }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Consultant Site</title>
+  <meta name="description" content="A focused surface for the Data Consultant pages, apps, and programs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#050816;
+      --bg2:#091126;
+      --panel:rgba(10,18,39,.78);
+      --panel-strong:rgba(12,20,44,.94);
+      --line:rgba(154,174,255,.14);
+      --line-strong:rgba(154,174,255,.24);
+      --text:#edf2ff;
+      --muted:rgba(237,242,255,.66);
+      --soft:rgba(237,242,255,.1);
+      --accent:#8bf1d3;
+      --accent2:#7ca7ff;
+      --accent3:#c08cff;
+      --radius:28px;
+      --shadow:0 30px 80px rgba(0,0,0,.45);
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(124,167,255,.18), transparent 30%),
+        radial-gradient(circle at 82% 8%, rgba(139,241,211,.14), transparent 26%),
+        radial-gradient(circle at 70% 76%, rgba(192,140,255,.12), transparent 28%),
+        linear-gradient(180deg, #040611 0%, #070c1c 38%, #050816 100%);
+      color:var(--text);
+      font-family:"IBM Plex Sans",system-ui,sans-serif;
+      line-height:1.5;
+      overflow-x:hidden;
+    }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.16;
+      background-image:linear-gradient(rgba(148,168,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(148,168,255,.08) 1px, transparent 1px);
+      background-size:72px 72px;
+      mask-image:linear-gradient(180deg, rgba(0,0,0,.88), rgba(0,0,0,.2));
+    }
+    body:after{
+      content:"";
+      position:fixed;
+      inset:-20%;
+      pointer-events:none;
+      opacity:.08;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,.12), transparent 24%),
+        radial-gradient(circle at 75% 20%, rgba(255,255,255,.1), transparent 20%),
+        radial-gradient(circle at 60% 78%, rgba(255,255,255,.08), transparent 23%);
+      filter:blur(40px);
+      transform:rotate(-6deg);
+    }
+    a{color:inherit;text-decoration:none}
+    .shell{width:min(var(--max), calc(100% - 32px)); margin:0 auto}
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter:blur(18px);
+      background:rgba(5,8,22,.72);
+      border-bottom:1px solid rgba(154,174,255,.12);
+    }
+    .topbar-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      min-height:74px;
+      width:min(var(--max), calc(100% - 32px));
+      margin:0 auto;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-weight:700;
+      letter-spacing:-.04em;
+    }
+    .mark{
+      width:34px;height:34px;border-radius:12px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(139,241,211,.95), rgba(139,241,211,.18) 48%, transparent 49%),
+        linear-gradient(135deg, rgba(124,167,255,.96), rgba(192,140,255,.78));
+      box-shadow:0 0 0 1px rgba(255,255,255,.08) inset, 0 10px 30px rgba(124,167,255,.24);
+    }
+    .nav{display:flex; gap:18px; flex-wrap:wrap; justify-content:flex-end}
+    .nav a{
+      color:var(--muted);
+      font-size:13px;
+      padding:10px 12px;
+      border-radius:999px;
+      transition:background .2s ease, color .2s ease, transform .2s ease;
+    }
+    .nav a:hover{background:rgba(255,255,255,.05); color:var(--text); transform:translateY(-1px)}
+    .nav .cta{
+      color:#04111e;
+      background:linear-gradient(135deg, var(--accent), #c8fff1);
+      font-weight:700;
+    }
+    .hero{
+      min-height:calc(100svh - 74px);
+      display:grid;
+      align-items:center;
+      padding:46px 0 28px;
+      position:relative;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:32px;
+      align-items:center;
+    }
+    .eyebrow{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:rgba(237,242,255,.76);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .eyebrow:before{
+      content:"";
+      width:8px;height:8px;border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 18px rgba(139,241,211,.7);
+    }
+    h1{
+      margin:18px 0 18px;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:clamp(3.2rem, 8vw, 6.8rem);
+      line-height:.94;
+      letter-spacing:-.08em;
+      max-width:12ch;
+    }
+    .lede{
+      font-size:clamp(1.02rem, 1.6vw, 1.2rem);
+      color:var(--muted);
+      max-width:56ch;
+    }
+    .hero-actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:28px}
+    .button{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:14px 18px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      transition:transform .2s ease, border-color .2s ease, background .2s ease;
+      font-weight:700;
+    }
+    .button:hover{transform:translateY(-2px); border-color:var(--line-strong); background:rgba(255,255,255,.06)}
+    .button.primary{
+      border-color:transparent;
+      color:#04111e;
+      background:linear-gradient(135deg, var(--accent), #7fe6ff);
+    }
+    .hero-panel{
+      border-radius:34px;
+      border:1px solid rgba(154,174,255,.16);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), transparent 18%),
+        linear-gradient(180deg, rgba(8,15,36,.95), rgba(7,10,23,.94));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+      transform:translateY(18px) rotate(-.35deg);
+    }
+    .hero-panel:before{
+      content:"";
+      position:absolute;
+      inset:-40px -40px auto auto;
+      width:220px;height:220px;
+      background:radial-gradient(circle, rgba(124,167,255,.28), transparent 68%);
+      filter:blur(4px);
+    }
+    .console{
+      padding:22px;
+      display:grid;
+      gap:16px;
+    }
+    .console-header{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .console-title{
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:1.3rem;
+      letter-spacing:-.05em;
+      margin:0;
+    }
+    .chiprow{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      font-size:12px;
+      color:rgba(237,242,255,.78);
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      border-radius:999px;
+      padding:7px 10px;
+    }
+    .console-stage{
+      border-radius:24px;
+      border:1px solid rgba(154,174,255,.14);
+      background:linear-gradient(180deg, rgba(11,19,44,.96), rgba(5,9,22,.98));
+      padding:18px;
+      display:grid;
+      gap:12px;
+    }
+    .surface-name{
+      margin:0;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:clamp(1.2rem, 2vw, 2rem);
+      line-height:1.06;
+      letter-spacing:-.06em;
+    }
+    .surface-desc{margin:0; color:var(--muted); max-width:40ch}
+    .surface-meta{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+      margin-top:6px;
+    }
+    .meta{
+      border-radius:18px;
+      border:1px solid rgba(154,174,255,.12);
+      background:rgba(255,255,255,.03);
+      padding:12px;
+    }
+    .meta b{display:block; font-size:18px; font-family:"Space Grotesk",sans-serif}
+    .meta span{font-size:12px; color:var(--muted)}
+    .section{
+      padding:34px 0;
+      position:relative;
+    }
+    .section-title{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+      padding-left:14px;
+      border-left:2px solid rgba(139,241,211,.36);
+    }
+    .section-title h2{
+      margin:0;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:clamp(1.7rem, 3vw, 2.8rem);
+      letter-spacing:-.06em;
+    }
+    .section-title p{
+      margin:0;
+      color:var(--muted);
+      max-width:54ch;
+    }
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:16px;
+    }
+    .mini-card{
+      border-radius:24px;
+      border:1px solid rgba(154,174,255,.14);
+      background:rgba(255,255,255,.03);
+      padding:18px;
+      min-height:170px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .mini-card svg{width:34px;height:34px;color:var(--accent)}
+    .mini-card h3{
+      margin:0;
+      font-family:"Bricolage Grotesque",sans-serif;
+      letter-spacing:-.05em;
+      font-size:1.2rem;
+    }
+    .mini-card p{margin:0;color:var(--muted)}
+    .stack{
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);
+      gap:18px;
+      align-items:start;
+    }
+    .stack-grid{
+      display:grid;
+      gap:14px;
+    }
+    .route-card{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:14px;
+      align-items:center;
+      border-radius:24px;
+      border:1px solid rgba(154,174,255,.14);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding:16px 18px;
+      min-height:88px;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+      cursor:pointer;
+    }
+    .route-icon{
+      width:38px;height:38px;border-radius:12px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(124,167,255,.18), rgba(139,241,211,.12));
+      border:1px solid rgba(154,174,255,.12);
+      color:var(--text);
+      box-shadow:0 12px 24px rgba(0,0,0,.2) inset;
+    }
+    .route-icon i{font-size:15px}
+    .route-card:hover,
+    .route-card:focus-visible,
+    .route-card.active{
+      transform:translateY(-2px);
+      border-color:rgba(139,241,211,.4);
+      background:linear-gradient(180deg, rgba(124,167,255,.12), rgba(255,255,255,.03));
+      box-shadow:0 16px 40px rgba(0,0,0,.24);
+      outline:none;
+    }
+    .num{
+      width:38px;height:38px;border-radius:12px;
+      display:grid;place-items:center;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(154,174,255,.12);
+      font-family:"IBM Plex Mono",monospace;
+      font-size:12px;
+      color:rgba(237,242,255,.8);
+    }
+    .route-card h3{
+      margin:0;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:1.1rem;
+      letter-spacing:-.04em;
+    }
+    .route-card p{margin:4px 0 0; color:var(--muted); font-size:.95rem}
+    .route-kind{
+      align-self:start;
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(237,242,255,.56);
+      border:1px solid var(--line);
+      padding:7px 9px;
+      border-radius:999px;
+    }
+    .inspector{
+      position:sticky;
+      top:92px;
+      border-radius:30px;
+      border:1px solid rgba(154,174,255,.14);
+      background:linear-gradient(180deg, rgba(11,18,40,.96), rgba(7,10,23,.96));
+      box-shadow:var(--shadow);
+      padding:20px;
+      overflow:hidden;
+    }
+    .inspector-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:18px;
+    }
+    .inspector-top strong{
+      display:block;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:1.1rem;
+      letter-spacing:-.04em;
+    }
+    .preview{
+      border-radius:24px;
+      border:1px solid rgba(154,174,255,.14);
+      background:
+        radial-gradient(circle at 28% 22%, rgba(139,241,211,.18), transparent 26%),
+        radial-gradient(circle at 82% 26%, rgba(124,167,255,.2), transparent 24%),
+        linear-gradient(180deg, rgba(14,24,55,.96), rgba(5,8,19,.96));
+      min-height:220px;
+      padding:18px;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:18px;
+    }
+    .preview-icon{
+      width:68px;height:68px;border-radius:22px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(124,167,255,.18), rgba(139,241,211,.14));
+      border:1px solid rgba(154,174,255,.16);
+      color:var(--text);
+      box-shadow:0 18px 38px rgba(0,0,0,.26);
+    }
+    .preview-icon i{font-size:26px}
+    .preview svg{width:100%; height:auto; opacity:.95}
+    .preview-text{
+      display:grid;
+      gap:8px;
+    }
+    .preview-text h4{
+      margin:0;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:1.5rem;
+      letter-spacing:-.06em;
+    }
+    .preview-text p{margin:0; color:var(--muted)}
+    .preview-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .preview-meta span{
+      border:1px solid rgba(154,174,255,.14);
+      background:rgba(255,255,255,.04);
+      color:rgba(237,242,255,.78);
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12px;
+    }
+    .program-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:16px;
+    }
+    .program-card{
+      border-radius:24px;
+      border:1px solid rgba(154,174,255,.14);
+      background:rgba(255,255,255,.03);
+      padding:18px;
+      min-height:190px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .program-card .label{
+      color:rgba(237,242,255,.56);
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .program-card h3{
+      margin:10px 0 6px;
+      font-family:"Bricolage Grotesque",sans-serif;
+      font-size:1.35rem;
+      letter-spacing:-.05em;
+    }
+    .program-card p{margin:0;color:var(--muted)}
+    .footer{
+      padding:24px 0 40px;
+      border-top:1px solid rgba(154,174,255,.12);
+      color:rgba(237,242,255,.62);
+      font-size:13px;
+    }
+    .footer-inner{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease}
+    .reveal.in{opacity:1; transform:none}
+    .deerflow-badge{
+      position:fixed;
+      right:14px;
+      bottom:14px;
+      z-index:60;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(154,174,255,.14);
+      background:rgba(5,8,22,.68);
+      backdrop-filter:blur(14px);
+      color:rgba(237,242,255,.62);
+      font-size:11px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      transition:transform .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .deerflow-badge:hover{
+      transform:translateY(-1px);
+      color:var(--text);
+      border-color:rgba(139,241,211,.28);
+    }
+    .deerflow-badge i{color:var(--accent); font-size:11px}
+    .hero .reveal:nth-child(1){transition-delay:.04s}
+    .hero .reveal:nth-child(2){transition-delay:.12s}
+    .hero .reveal:nth-child(3){transition-delay:.2s}
+    .hero .reveal:nth-child(4){transition-delay:.28s}
+    @media (max-width: 980px){
+      .hero-grid,.stack,.mini-grid,.program-grid{grid-template-columns:1fr}
+      .surface-meta{grid-template-columns:1fr}
+      .nav{display:none}
+      h1{max-width:10ch}
+      .inspector{position:relative; top:auto}
+      .hero-panel{transform:none}
+    }
+    @media (max-width: 640px){
+      .shell,.topbar-inner{width:calc(100% - 20px)}
+      .hero{padding:28px 0 20px}
+      .console,.section{padding-left:0;padding-right:0}
+      .route-card{grid-template-columns:auto 1fr}
+      .route-kind{grid-column:2}
+      .route-card p{grid-column:2}
+    }
+  </style>
 </head>
 <body>
-
-<!-- Background floating color blobs -->
-<div class="blob" style="width:580px;height:580px;top:-120px;left:-120px;background:radial-gradient(circle,rgba(70,110,145,0.20),transparent 70%);animation-delay:0s;"></div>
-<div class="blob" style="width:440px;height:440px;bottom:-100px;right:-100px;background:radial-gradient(circle,rgba(90,100,175,0.17),transparent 70%);animation-delay:-5s;animation-duration:17s;"></div>
-<div class="blob" style="width:320px;height:320px;top:42%;left:32%;background:radial-gradient(circle,rgba(40,100,85,0.14),transparent 70%);animation-delay:-2.5s;animation-duration:11s;"></div>
-<div class="blob" style="width:260px;height:260px;top:18%;right:18%;background:radial-gradient(circle,rgba(165,120,10,0.11),transparent 70%);animation-delay:-7s;animation-duration:18s;"></div>
-<div class="blob" style="width:200px;height:200px;top:65%;left:8%;background:radial-gradient(circle,rgba(98,100,160,0.12),transparent 70%);animation-delay:-3.5s;animation-duration:13s;"></div>
-
-<div class="page">
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="eyebrow">Data Consultant Workspace</div>
-    <h1>Internal tools and request intake in one <span>lighter launcher</span>.</h1>
-    <div class="hero-copy">
-      This page groups the main Data Consultant tools in one place with a simpler layout and cleaner launch flow. Open the resource site, checklist tools, parsing console, request intake form, the DC achievement hub, and personal project launches from here.
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="mark" aria-hidden="true"></span>
+        <span>Data Consultant</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#products">Platform</a>
+        <a href="#pages">Routes</a>
+        <a href="#programs">Archive</a>
+        <a class="cta" href="#pages">Open the index</a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <!-- TOOLS GRID -->
-  <section class="tools">
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <span class="eyebrow reveal">Internal surface / Appwrite-inspired rewrite</span>
+          <h1 class="reveal">One place for the work, the tools, and the next move.</h1>
+          <p class="lede reveal">A cleaner index for the Data Consultant ecosystem. The old portal becomes a product-style surface with clear routes, quick context, and a calmer path into the pages that matter most.</p>
+          <div class="hero-actions reveal">
+            <a class="button primary" href="#pages">Browse routes</a>
+            <a class="button" href="#about">Read the structure</a>
+          </div>
+        </div>
 
-    <article class="tool-card tool-site">
-      <div class="tool-top">
-        <div class="tool-icon">DC</div>
-        <h2>DC Resource Site</h2>
+        <aside class="hero-panel reveal" aria-label="Selected route preview">
+          <div class="console">
+            <div class="console-header">
+              <p class="console-title">Live index preview</p>
+              <div class="chiprow">
+                <span class="chip">10 routes</span>
+                <span class="chip">Hover inspector</span>
+              </div>
+            </div>
+            <div class="console-stage">
+              <p class="surface-name" id="surface-name">Data Consultant Portal v3.0</p>
+              <p class="surface-desc" id="surface-desc">The main portal surface, reframed like a product launch page so the index feels intentional instead of utility-first.</p>
+              <div class="surface-meta">
+                <div class="meta"><b id="surface-count">LIVE</b><span>Priority route</span></div>
+                <div class="meta"><b id="surface-type">Portal</b><span>Surface type</span></div>
+                <div class="meta"><b id="surface-status">Ready</b><span>Open state</span></div>
+              </div>
+              <svg viewBox="0 0 520 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M18 134H502" stroke="rgba(154,174,255,.28)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M72 112h86a18 18 0 0 0 18-18V36a18 18 0 0 1 18-18h184a18 18 0 0 1 18 18v58a18 18 0 0 0 18 18h62" stroke="rgba(139,241,211,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="68" y="98" width="122" height="18" rx="9" fill="rgba(124,167,255,.15)"/>
+                <rect x="218" y="30" width="160" height="18" rx="9" fill="rgba(192,140,255,.16)"/>
+                <circle cx="418" cy="104" r="26" fill="rgba(139,241,211,.16)" stroke="rgba(139,241,211,.75)" stroke-width="2"/>
+                <path d="M418 92v24M406 104h24" stroke="rgba(139,241,211,.9)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </aside>
       </div>
-      <p>Main Data Consultant portal for documentation, walkthroughs, process references, and quick-launch internal tools.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="Data_Consultant_Website_v2_10.html">Launch Portal</a>
-      </div>
-    </article>
+    </section>
 
-    <article class="tool-card tool-main">
-      <div class="tool-top">
-        <div class="tool-icon">MC</div>
-        <h2>Main Checklist Generator</h2>
+    <section class="section" id="about">
+      <div class="shell">
+        <div class="section-title reveal">
+          <h2>Built like a product surface.</h2>
+          <p>The index reads like an operating system for your work: fewer distractions, stronger hierarchy, and a faster path to the right page.</p>
+        </div>
+        <div class="mini-grid">
+          <article class="mini-card reveal">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <h3>Build</h3>
+            <p>Lead with the main surface and give each route a crisp role. The index should feel assembled, not piled up.</p>
+          </article>
+          <article class="mini-card reveal">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 15.5c2.5-4 4.5-6 7-6s4.5 2 7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6 7.5h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <h3>Guide</h3>
+            <p>Keep the structure simple enough that people can understand the page by scanning the section titles alone.</p>
+          </article>
+          <article class="mini-card reveal">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 4h10v16H7z" stroke="currentColor" stroke-width="1.8"/><path d="M10 8h4M10 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <h3>Launch</h3>
+            <p>Use the page as a launchpad for about ten key places across the site, without making it feel like a directory dump.</p>
+          </article>
+        </div>
       </div>
-      <p>Generate implementation plans, manage live checklist execution, pin task notes, and work from dashboard, vault, and calendar views.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="../../Apps/checklist-generators/main-checklist-generator/App - Main Checklist Generator.html">Launch App</a>
-        <a class="tool-link" href="../../Resources/guides/Main_Checklist_Generator_How_To_Guide.docx">Open Guide</a>
-      </div>
-    </article>
+    </section>
 
-    <article class="tool-card tool-payroll">
-      <div class="tool-top">
-        <div class="tool-icon">PY</div>
-        <h2>Payroll Checklist Generator</h2>
+    <section class="section" id="products">
+      <div class="shell">
+        <div class="section-title reveal">
+          <h2>Three anchors for the first scroll.</h2>
+          <p>The homepage should answer three questions fast: what is this, what can I do here, and where should I go first.</p>
+        </div>
+        <div class="mini-grid">
+          <article class="mini-card reveal">
+            <h3>Portal first</h3>
+            <p>The main portal becomes the loudest surface in the system, with the rest of the pages acting like focused satellites around it.</p>
+          </article>
+          <article class="mini-card reveal">
+            <h3>Atlas structure</h3>
+            <p>Library, walkthroughs, and operations read as a suite, so the user can move from reference to execution without losing context.</p>
+          </article>
+          <article class="mini-card reveal">
+            <h3>Launch surfaces</h3>
+            <p>Every card behaves like a clean product tile, with enough copy to orient the user and enough restraint to keep the page premium.</p>
+          </article>
+        </div>
       </div>
-      <p>Create payroll onboarding checklists, manage vendor setup work, and track payroll implementation tasks in a dedicated app shell.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="../../Apps/checklist-generators/payroll-checklist-generator/App - Payroll Checklist Generator.html">Launch App</a>
-        <a class="tool-link" href="../../Resources/guides/Payroll_Checklist_Generator_Guide.docx">Open Guide</a>
-      </div>
-    </article>
+    </section>
 
-    <article class="tool-card tool-parser">
-      <div class="tool-top">
-        <div class="tool-icon">FX</div>
-        <h2>Fixed-Width Report Extraction Console</h2>
+    <section class="section" id="pages">
+      <div class="shell">
+        <div class="section-title reveal">
+          <h2>Routes.</h2>
+          <p>Ten pages and programs, rewritten as a compact launch matrix with a sticky inspector that updates as you move through the stack.</p>
+        </div>
+        <div class="stack">
+          <div class="stack-grid" id="route-grid"></div>
+          <aside class="inspector reveal">
+            <div class="inspector-top">
+              <div>
+                <strong>Selected route</strong>
+                <div style="color:var(--muted); font-size:13px;">Hover or tab through the grid</div>
+              </div>
+              <span class="chip">System view</span>
+            </div>
+            <div class="preview" id="preview">
+              <div class="preview-text">
+                <h4 id="preview-title">Data Consultant Portal v3.0</h4>
+                <p id="preview-copy">The central portal surface, redesigned as the index's main launch point.</p>
+              </div>
+              <div class="preview-icon" id="preview-icon" aria-hidden="true">
+                <i class="fa-solid fa-gauge-high"></i>
+              </div>
+              <svg viewBox="0 0 420 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#8bf1d3" stop-opacity=".9"/>
+                    <stop offset="50%" stop-color="#7ca7ff" stop-opacity=".7"/>
+                    <stop offset="100%" stop-color="#c08cff" stop-opacity=".85"/>
+                  </linearGradient>
+                </defs>
+                <rect x="10" y="24" width="260" height="132" rx="26" fill="rgba(255,255,255,.04)" stroke="rgba(154,174,255,.16)"/>
+                <rect x="34" y="52" width="112" height="16" rx="8" fill="url(#g1)"/>
+                <rect x="34" y="82" width="186" height="12" rx="6" fill="rgba(255,255,255,.18)"/>
+                <rect x="34" y="104" width="140" height="12" rx="6" fill="rgba(255,255,255,.12)"/>
+                <circle cx="328" cy="90" r="34" fill="rgba(139,241,211,.12)" stroke="url(#g1)" stroke-width="2"/>
+                <path d="M316 90h24M328 78v24" stroke="url(#g1)" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+              <div class="preview-meta">
+                <span id="preview-tag">Portal</span>
+                <span id="preview-file">index route</span>
+                <span>Open on click</span>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
-      <p>Load inbound flat files, validate record sets by data source, preview parsed reports, and export a formatted workbook with report sheets.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="frosted-glass-frontpage/index.html">Open Front Page</a>
-        <a class="tool-link" href="../../Resources/guides/Fixed_Width_Report_Extraction_Console_Guide.docx">Open Guide</a>
-      </div>
-    </article>
+    </section>
 
-    <article class="tool-card tool-intake">
-      <div class="tool-top">
-        <div class="tool-icon">RQ</div>
-        <h2>Internal Request Form</h2>
+    <section class="section" id="programs">
+      <div class="shell">
+        <div class="section-title reveal">
+          <h2>Archive and programs.</h2>
+          <p>Older versions stay visible as part of the system story instead of disappearing into a dead-end archive.</p>
+        </div>
+        <div class="program-grid">
+          <article class="program-card reveal">
+            <div>
+              <div class="label">Foundation</div>
+              <h3>v2.10 / origin build</h3>
+              <p>The earliest stable surface in the current sequence, kept as a reference point for the rest of the site.</p>
+            </div>
+            <span class="chip">Legacy route</span>
+          </article>
+          <article class="program-card reveal">
+            <div>
+              <div class="label">Recovery</div>
+              <h3>v2.11 / archive pass</h3>
+              <p>A middle-era page that shows how the system started to stabilize and name its sections more clearly.</p>
+            </div>
+            <span class="chip">Archive route</span>
+          </article>
+          <article class="program-card reveal">
+            <div>
+              <div class="label">Visual lab</div>
+              <h3>v2.12 / visual study</h3>
+              <p>The experimental branch where layout, spacing, and visual rhythm started carrying more of the experience.</p>
+            </div>
+            <span class="chip">Study route</span>
+          </article>
+        </div>
       </div>
-      <p>Capture website and web app requests, preview the receipt email before submit, and launch the receipt draft with the request summary in the body.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="../../Apps/project-intake/Project Intake Form.html">Open Form</a>
-      </div>
-    </article>
+    </section>
 
-    <article class="tool-card tool-amex">
-      <div class="tool-top">
-        <div class="tool-icon">AX</div>
-        <h2>Amex Tracker</h2>
+    <section class="section">
+      <div class="shell">
+        <div class="hero-panel reveal" style="padding:24px;">
+          <div class="console-header" style="margin-bottom:18px;">
+            <p class="console-title">Ready when you are.</p>
+            <span class="chip">Surface complete</span>
+          </div>
+          <p class="lede" style="margin:0; max-width:58ch;">If you want, I can take this one step further and make the route cards open real pages, add a stronger product screenshot treatment, or push the art direction even closer to Appwrite's release-page energy.</p>
+          <div class="hero-actions" style="margin-top:22px;">
+            <a class="button primary" href="#top">Back to top</a>
+            <a class="button" href="#pages">Jump to routes</a>
+          </div>
+        </div>
       </div>
-      <p>Open the active Amex budget tracker workspace for dashboard review, tracking, and personal planning work.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="../../../../../../Personal/amex-dashboard-budget-tracker/Actual Working Dashboard.html">Launch Tracker</a>
-      </div>
-    </article>
+    </section>
+  </main>
 
-    <article class="tool-card tool-forma">
-      <div class="tool-top">
-        <div class="tool-icon">FM</div>
-        <h2>Forma App</h2>
-      </div>
-      <p>Launch the active Claude-managed Forma workspace. The main entry point goes to the newer app shell, with Forma Pro available as a backup route.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="../../../../../../Personal/forma-claude/New App/index.html">Launch App</a>
-        <a class="tool-link" href="../../../../../../Personal/forma-claude/Forma Pro/app.html">Open Forma Pro</a>
-      </div>
-    </article>
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <div>Data Consultant Site</div>
+      <div>Appwrite-inspired index rewrite</div>
+      <div>10 routes, one surface</div>
+    </div>
+  </footer>
 
-    <article class="tool-card tool-achieve">
-      <div class="tool-top">
-        <div class="tool-icon">AH</div>
-        <h2>DC Achievement Hub</h2>
-      </div>
-      <p>Track earned achievements, levels, leaderboard rank, and team progress in the DC gamification hub.</p>
-      <div class="tool-links">
-        <a class="tool-link primary" href="../../../../../../Personal/dc-achievement-hub.html">Open Hub</a>
-        <a class="tool-link" href="../../Resources/guides/DC_Achievement_Hub_Guide.docx">Open Guide</a>
-      </div>
-    </article>
+  <a class="deerflow-badge" href="https://deerflow.tech" target="_blank" rel="noopener noreferrer" title="Created By Deerflow">
+    <i class="fa-solid fa-wand-sparkles" aria-hidden="true"></i>
+    <span>Created By Deerflow</span>
+  </a>
 
-  </section>
+  <script>
+    const routes = [
+      { badge: "LIVE", icon: "fa-solid fa-chart-line", title: "Amex Dashboard Budget Tracker", desc: "A working dashboard for tracking spend, budgets, and financial movement in one place.", kind: "Program", file: "../amex-dashboard-budget-tracker/Actual%20Working%20Dashboard.html", href: "../amex-dashboard-budget-tracker/Actual%20Working%20Dashboard.html" },
+      { badge: "DATA", icon: "fa-solid fa-file-waveform", title: "Fixed-Width Report Extraction Console", desc: "Validate fixed-width inputs, review parsed report tabs, and package the workbook with source-aware summaries.", kind: "Program", file: "../fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone-Frontpage-Layout-v3-Pearl-Atelier.html", href: "../fixed-width-report-extraction-console/Fixed-Width-Report-Extraction-Console-Standalone-Frontpage-Layout-v3-Pearl-Atelier.html" },
+      { badge: "FORMA", icon: "fa-solid fa-pen-ruler", title: "Forma Pro App Redesign", desc: "A concept surface for Forma Pro with a cleaner product narrative and stronger visual system.", kind: "Program", file: "../Forma%20Pro/app-redesign-concept.html", href: "../Forma%20Pro/app-redesign-concept.html" },
+      { badge: "TASKS", icon: "fa-solid fa-clipboard-check", title: "Main Checklist Generator", desc: "The primary checklist workspace used to build, review, and launch operational tasks.", kind: "Program", file: "../main-checklist-generator-workspaces/test-env/App%20-%20Main%20Checklist%20Generator.html", href: "../main-checklist-generator-workspaces/test-env/App%20-%20Main%20Checklist%20Generator.html" },
+      { badge: "TRAIN", icon: "fa-solid fa-graduation-cap", title: "Training App", desc: "A training space for onboarding, walkthroughs, and practical internal learning.", kind: "Program", file: "../training-app/index-filled.html", href: "../training-app/index-filled.html" },
+      { badge: "PORTAL", icon: "fa-solid fa-gauge-high", title: "Data Consultant Portal v3.0", desc: "The main portal surface, reframed as the homepage launch point.", kind: "Portal", file: "../Data_Consultant_Website_Atlas_v3.html", href: "../Data_Consultant_Website_Atlas_v3.html" },
+      { badge: "LIB", icon: "fa-solid fa-layer-group", title: "Data Consultant Library Launches Atlas", desc: "Launches and reference materials grouped into a clear editorial library.", kind: "Atlas", file: "../Data_Consultant_Library_Launches_Atlas.html", href: "../Data_Consultant_Library_Launches_Atlas.html" },
+      { badge: "GUIDE", icon: "fa-solid fa-compass-drafting", title: "Data Consultant Walkthroughs Atlas", desc: "Step-by-step guidance and internal walkthroughs for the working team.", kind: "Atlas", file: "../Data_Consultant_Walkthroughs_Atlas.html", href: "../Data_Consultant_Walkthroughs_Atlas.html" },
+      { badge: "OPS", icon: "fa-solid fa-gears", title: "Data Consultant Operations Atlas", desc: "Operational notes and working rules for how the site and programs stay coordinated.", kind: "Atlas", file: "../Data_Consultant_Operations_Atlas.html", href: "../Data_Consultant_Operations_Atlas.html" },
+      { badge: "UI LAB", icon: "fa-solid fa-wand-magic-sparkles", title: "Button Lab v3", desc: "A focused lab for button systems, interaction polish, and UI experiments.", kind: "Program", file: "../Button_Lab_v3.html", href: "../Button_Lab_v3.html" }
+    ];
 
-  <div class="footer">Data Consultant Workspace</div>
-</div>
+    const grid = document.getElementById("route-grid");
+    const name = document.getElementById("surface-name");
+    const desc = document.getElementById("surface-desc");
+    const count = document.getElementById("surface-count");
+    const type = document.getElementById("surface-type");
+    const status = document.getElementById("surface-status");
+    const pTitle = document.getElementById("preview-title");
+    const pCopy = document.getElementById("preview-copy");
+    const pTag = document.getElementById("preview-tag");
+    const pFile = document.getElementById("preview-file");
+    const pIcon = document.getElementById("preview-icon");
 
-<script>
-// Real-time 3D tilt on mouse position within each card
-document.querySelectorAll('.tool-card').forEach(card => {
-  let rafId = null;
+    function setPreview(route) {
+      name.textContent = route.title;
+      desc.textContent = route.desc;
+      count.textContent = route.badge;
+      type.textContent = route.kind;
+      status.textContent = "Ready";
+      pTitle.textContent = route.title;
+      pCopy.textContent = route.desc;
+      pTag.textContent = route.kind;
+      pFile.textContent = route.file;
+      pIcon.innerHTML = `<i class="${route.icon}"></i>`;
+    }
 
-  card.addEventListener('mousemove', e => {
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(() => {
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width  - 0.5; // -0.5 to 0.5
-      const y = (e.clientY - rect.top)  / rect.height - 0.5; // -0.5 to 0.5
-      card.style.transition = 'box-shadow 0.18s ease, border-color 0.18s ease';
-      card.style.transform  = `perspective(880px) rotateX(${-y * 10}deg) rotateY(${x * 10}deg) translateY(-7px) scale(1.012)`;
+    routes.forEach((route, index) => {
+      const card = document.createElement("a");
+      card.className = "route-card reveal";
+      card.href = route.href;
+      card.tabIndex = 0;
+      card.innerHTML = `
+        <div class="route-icon"><i class="${route.icon}"></i></div>
+        <div>
+          <h3>${route.title}</h3>
+          <p>${route.desc}</p>
+        </div>
+        <span class="route-kind">${route.kind}</span>
+      `;
+      card.addEventListener("mouseenter", () => setPreview(route));
+      card.addEventListener("focus", () => setPreview(route));
+      grid.appendChild(card);
+      if (index === 0) card.classList.add("active");
     });
-  });
 
-  card.addEventListener('mouseleave', () => {
-    if (rafId) cancelAnimationFrame(rafId);
-    card.style.transition = 'transform 0.45s cubic-bezier(0.23,1,0.32,1), box-shadow 0.22s ease, border-color 0.18s ease';
-    card.style.transform  = '';
-    setTimeout(() => { card.style.transition = ''; }, 460);
-  });
-});
-</script>
+    const revealItems = document.querySelectorAll(".reveal");
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add("in");
+      });
+    }, { threshold: 0.12 });
+    revealItems.forEach((el) => revealObserver.observe(el));
+
+    const routeCards = document.querySelectorAll(".route-card");
+    routeCards.forEach((card, index) => {
+      card.addEventListener("mouseenter", () => {
+        routeCards.forEach((other) => other.classList.remove("active"));
+        card.classList.add("active");
+      });
+      card.addEventListener("focus", () => {
+        routeCards.forEach((other) => other.classList.remove("active"));
+        card.classList.add("active");
+      });
+      if (index === 0) setPreview(routes[0]);
+    });
+  </script>
 </body>
 </html>
